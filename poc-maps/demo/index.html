@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adventurer RPG - Map POC</title>
+  <link rel="stylesheet" href="tilemap.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+      color: #fff;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      border: 2px solid #4a9eff;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #4a9eff, #7b68ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: #aaa;
+      font-style: italic;
+    }
+
+    .info-section {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      border: 1px solid #444;
+    }
+
+    .info-section h2 {
+      color: #4a9eff;
+      margin-bottom: 15px;
+    }
+
+    .info-section p {
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .info-section ul {
+      margin-left: 20px;
+      line-height: 1.8;
+    }
+
+    .info-section code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+
+    #maps-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .map-legend {
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      padding: 20px;
+      color: #888;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: #4a9eff;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .tech-info {
+      background: rgba(74, 158, 255, 0.1);
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #4a9eff;
+      margin-top: 15px;
+    }
+
+    .tech-info strong {
+      color: #4a9eff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚔️ Adventurer RPG ⚔️</h1>
+    <div class="subtitle">Map System - Proof of Concept</div>
+  </header>
+
+  <div class="info-section">
+    <h2>📋 About This Demo</h2>
+    <p>
+      This is a proof-of-concept demonstration of 2D tile-based maps for the Adventurer RPG campaign
+      <strong>"The Spire of the Lich King"</strong>. All maps are rendered using pure CSS with no external
+      tileset images required (though they can easily be swapped in).
+    </p>
+
+    <div class="tech-info">
+      <strong>🎨 Implementation Approach:</strong>
+      <ul>
+        <li><strong>CSS Grid</strong> - Fast, responsive, no canvas required</li>
+        <li><strong>CSS Gradients</strong> - Procedural textures without image files</li>
+        <li><strong>Unicode Emojis</strong> - Interactive elements (player, enemies, NPCs, items)</li>
+        <li><strong>CSS Animations</strong> - Water shimmer, void pulse, player glow effects</li>
+        <li><strong>Modular Design</strong> - Easy to swap with actual tilesets from OpenGameArt or Kenney</li>
+      </ul>
+    </div>
+
+    <h2 style="margin-top: 30px;">🗺️ Campaign Locations</h2>
+    <p>Below are all 5 main locations from the first campaign, plus a bonus hex grid example:</p>
+    <ol>
+      <li><strong>Oakhaven Village</strong> - Safe starting zone with NPCs and shops</li>
+      <li><strong>Blackwood Forest</strong> - Corrupted wilderness area</li>
+      <li><strong>Tower - Foyer</strong> - Entrance hall with enemies</li>
+      <li><strong>Tower - Alchemist's Lab</strong> - Upper level with experiments</li>
+      <li><strong>Underground Catacombs</strong> - Maze-like burial chambers</li>
+      <li><strong>Void Sanctum</strong> - Final boss arena</li>
+    </ol>
+  </div>
+
+  <div id="maps-container"></div>
+
+  <div class="map-legend">
+    <h3>🎮 Legend</h3>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-tile tile tile-grass"></div>
+        <span>Grass</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-dark-grass"></div>
+        <span>Dark Grass (Corrupted)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-tree"></div>
+        <span>Trees</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-water"></div>
+        <span>Water</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-cobblestone"></div>
+        <span>Cobblestone Path</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-path"></div>
+        <span>Dirt Path</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-stone-floor"></div>
+        <span>Stone Floor</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-wood-floor"></div>
+        <span>Wood Floor</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-wall"></div>
+        <span>Wall</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-door"></div>
+        <span>Door</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-crypt-floor"></div>
+        <span>Crypt Floor</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-void"></div>
+        <span>Void</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-grass tile-player"></div>
+        <span>Player ⚔️</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-stone-floor tile-enemy"></div>
+        <span>Enemy 👹</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-stone-floor tile-npc"></div>
+        <span>NPC 🧙</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-stone-floor tile-chest"></div>
+        <span>Chest 📦</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-stone-floor tile-stairs-up"></div>
+        <span>Stairs Up ⬆️</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-tile tile tile-void tile-altar"></div>
+        <span>Altar ✨</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-section">
+    <h2>🎨 Using Real Tilesets</h2>
+    <p>This demo uses CSS gradients, but you can easily swap to real tileset images:</p>
+
+    <h3 style="margin-top: 20px; color: #7b68ee;">Recommended Free Sources:</h3>
+    <ul>
+      <li><strong><a href="https://opengameart.org" target="_blank">OpenGameArt.org</a></strong> - LPC Terrain, Dungeon Tileset (CC0/CC-BY)</li>
+      <li><strong><a href="https://kenney.nl" target="_blank">Kenney.nl</a></strong> - Micro Roguelike, Tiny Dungeon (CC0)</li>
+      <li><strong><a href="https://itch.io" target="_blank">Itch.io</a></strong> - 0x72 Dungeon Tileset II (Free)</li>
+    </ul>
+
+    <h3 style="margin-top: 20px; color: #7b68ee;">Implementation with Real Tiles:</h3>
+    <pre style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; overflow-x: auto; margin-top: 10px;"><code>.tile-grass {
+  background-image: url('/tilesets/grass.png');
+  background-size: cover;
+  image-rendering: pixelated;
+}
+
+.tile-stone-floor {
+  background-image: url('/tilesets/stone_floor.png');
+}</code></pre>
+
+    <h3 style="margin-top: 20px; color: #7b68ee;">Next Steps:</h3>
+    <ol style="margin-top: 10px;">
+      <li>Download tilesets (32x32 recommended)</li>
+      <li>Update CSS classes to reference tileset images</li>
+      <li>Add to React app using CSS Grid or Canvas</li>
+      <li>Consider using <strong>Tiled Map Editor</strong> for complex maps</li>
+      <li>Implement fog of war, tile interactions, animations</li>
+    </ol>
+  </div>
+
+  <footer>
+    <p>Made for <strong>Adventurer RPG</strong> | POC Demo - December 2025</p>
+    <p style="margin-top: 10px;">
+      🎨 This demo uses CSS gradients only. For production, consider:
+      <a href="https://opengameart.org" target="_blank">OpenGameArt</a> |
+      <a href="https://kenney.nl" target="_blank">Kenney.nl</a> |
+      <a href="https://itch.io" target="_blank">Itch.io</a>
+    </p>
+  </footer>
+
+  <script src="../maps/campaign-maps.js"></script>
+  <script>
+    // Render all maps when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAllMaps();
+    });
+  </script>
+</body>
+</html>
