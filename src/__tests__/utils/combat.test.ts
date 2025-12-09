@@ -33,6 +33,38 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
     reflex: 0,
     will: 0,
   },
+  skills: {
+    Athletics: 0,
+    Stealth: 0,
+    Perception: 0,
+    Arcana: 0,
+    Medicine: 0,
+    Intimidate: 0,
+  },
+  feats: [],
+  equipment: {
+    weapon: {
+      name: 'Longsword',
+      damage: '1d8',
+      damageType: 'slashing',
+      finesse: false,
+      description: 'A standard longsword',
+    },
+    armor: {
+      name: 'Chainmail',
+      baseAC: 16,
+      maxDexBonus: 2,
+      description: 'Standard chainmail armor',
+    },
+    shield: {
+      equipped: true,
+      acBonus: 2,
+    },
+    items: [],
+  },
+  resources: {
+    abilities: [],
+  },
   ...overrides,
 });
 
@@ -56,6 +88,38 @@ const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
     fortitude: 0,
     reflex: 2,
     will: 0,
+  },
+  skills: {
+    Athletics: 0,
+    Stealth: 0,
+    Perception: 0,
+    Arcana: 0,
+    Medicine: 0,
+    Intimidate: 0,
+  },
+  feats: [],
+  equipment: {
+    weapon: {
+      name: 'Dagger',
+      damage: '1d4',
+      damageType: 'piercing',
+      finesse: true,
+      description: 'A small dagger',
+    },
+    armor: {
+      name: 'Leather',
+      baseAC: 12,
+      maxDexBonus: null,
+      description: 'Light leather armor',
+    },
+    shield: {
+      equipped: false,
+      acBonus: 0,
+    },
+    items: [],
+  },
+  resources: {
+    abilities: [],
   },
   ...overrides,
 });
