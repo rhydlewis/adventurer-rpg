@@ -6,3 +6,4 @@ export * from './skill';
 export * from './feat';
 export * from './equipment';
 export * from './resource';
+export * from './action';

@@ -260,6 +260,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);
@@ -289,6 +291,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);
@@ -319,6 +323,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);
@@ -350,6 +356,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(1);
@@ -389,6 +397,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);
@@ -417,6 +427,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [{ turn: 1, actor: 'system', message: 'Combat start' }],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);
@@ -448,6 +460,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: originalLog,
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);
@@ -481,6 +495,8 @@ describe('utils/combat', () => {
         enemy: enemy,
         log: [],
         winner: null,
+        initiative: null,
+        currentActor: 'player',
       };
 
       vi.mocked(calculateModifier).mockReturnValue(3);

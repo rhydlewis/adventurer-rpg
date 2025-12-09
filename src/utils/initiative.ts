@@ -30,11 +30,9 @@ export function calculateInitiativeBonus(character: Character): InitiativeResult
   // Feat bonuses (Improved Initiative)
   let featBonus = 0;
   for (const feat of character.feats) {
-    const initiativeEffect = feat.effects.find(
-      (e) => e.type === 'passive' && e.stat === 'initiative'
-    );
-    if (initiativeEffect && initiativeEffect.type === 'passive') {
-      featBonus += initiativeEffect.bonus;
+    const effect = feat.effect;
+    if (effect.type === 'passive' && effect.stat === 'initiative') {
+      featBonus += effect.bonus;
     }
   }
 

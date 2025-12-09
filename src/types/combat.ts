@@ -10,10 +10,35 @@ export interface CombatLogEntry {
   message: string;
 }
 
+export interface InitiativeResult {
+  actor: 'player' | 'enemy';
+  roll: number;
+  bonus: number;
+  total: number;
+}
+
 export interface CombatState {
   turn: number;
   playerCharacter: Character;
   enemy: Creature;
   log: CombatLogEntry[];
   winner: 'player' | 'enemy' | null;
+  // Phase 1.2: Initiative and turn order
+  initiative: {
+    player: InitiativeResult;
+    enemy: InitiativeResult;
+    order: ('player' | 'enemy')[];
+  } | null;
+  currentActor: 'player' | 'enemy';
+  // Phase 1.2+: Fumble effects tracking
+  fumbleEffects?: {
+    player?: {
+      type: string;
+      turnsRemaining?: number;
+    };
+    enemy?: {
+      type: string;
+      turnsRemaining?: number;
+    };
+  };
 }

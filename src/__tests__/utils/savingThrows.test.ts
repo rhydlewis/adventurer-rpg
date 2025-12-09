@@ -3,7 +3,6 @@ import {
   calculateSaveDC,
   makeSavingThrow,
   applySaveResult,
-  type SaveType,
   type SaveResult,
 } from '../../utils/savingThrows';
 import type { Character } from '../../types';

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { calculateInitiativeBonus, type InitiativeResult } from '../../utils/initiative';
+import { calculateInitiativeBonus } from '../../utils/initiative';
 import type { Character } from '../../types';
-import { calculateModifier } from '../../utils/dice';
 
 const createTestCharacter = (overrides?: Partial<Character>): Character => ({
   name: 'Test Hero',
@@ -79,7 +78,7 @@ describe('Initiative System', () => {
           {
             name: 'Improved Initiative',
             description: '+4 initiative',
-            effects: [{ type: 'passive', stat: 'initiative', bonus: 4 }],
+            effect: { type: 'passive', stat: 'initiative', bonus: 4 },
           },
         ],
       });
@@ -182,7 +181,7 @@ describe('Initiative System', () => {
           {
             name: 'Improved Initiative',
             description: '+4 initiative',
-            effects: [{ type: 'passive', stat: 'initiative', bonus: 4 }],
+            effect: { type: 'passive', stat: 'initiative', bonus: 4 },
           },
         ],
       });

@@ -45,7 +45,7 @@ export function isCriticalFumble(naturalRoll: number): boolean {
 export function calculateCriticalDamage(baseDamage: string): CriticalDamageResult {
   // Parse damage formula and double all dice
   // Pattern: XdY where X is number of dice, Y is die size
-  const critFormula = baseDamage.replace(/(\d+)d(\d+)/g, (match, count, size) => {
+  const critFormula = baseDamage.replace(/(\d+)d(\d+)/g, (_match, count, size) => {
     const doubledCount = parseInt(count) * 2;
     return `${doubledCount}d${size}`;
   });

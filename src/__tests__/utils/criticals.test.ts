@@ -4,7 +4,6 @@ import {
   isCriticalFumble,
   calculateCriticalDamage,
   determineFumbleEffect,
-  type FumbleEffect,
 } from '../../utils/criticals';
 
 describe('Critical Hits and Fumbles', () => {
