@@ -7,6 +7,7 @@ vi.mock('../../utils/dice', () => ({
   rollAttack: vi.fn(),
   rollDamage: vi.fn(),
   calculateModifier: vi.fn(),
+  roll: vi.fn(),
 }));
 
 // Mock critical utilities
@@ -612,6 +613,299 @@ describe('utils/combat', () => {
       expect(result.log[0].actor).toBe('player');
       expect(result.log[1].actor).toBe('system');
       expect(result.winner).toBe('player');
+    });
+  });
+
+  describe('Class Abilities - Integration Tests', () => {
+    describe('Fighter: Second Wind', () => {
+      it('should heal Fighter and consume resource', () => {
+        const fighter = createTestCharacter({
+          class: 'Fighter',
+          hp: 5,
+          maxHp: 12,
+          resources: {
+            abilities: [
+              { name: 'Second Wind', type: 'encounter', maxUses: 1, currentUses: 1, description: 'Heal 1d10+1' },
+            ],
+          },
+        });
+
+        const state: CombatState = {
+          playerCharacter: fighter,
+          enemy: createTestEnemy(),
+          turn: 1,
+          log: [],
+          winner: null,
+          initiative: {
+            player: { total: 10, roll: 8, bonus: 2 },
+            enemy: { total: 5, roll: 5, bonus: 0 },
+            order: ['player', 'enemy'],
+          },
+        };
+
+        const action = {
+          type: 'use_ability' as const,
+          name: 'Second Wind',
+          description: 'Heal 1d10+1',
+          available: true,
+          abilityId: 'Second Wind',
+        };
+
+        const result = resolveCombatRound(state, action);
+
+        // Resource should be consumed
+        const secondWind = result.playerCharacter.resources.abilities.find(a => a.name === 'Second Wind');
+        expect(secondWind?.currentUses).toBe(0);
+
+        // Log should show healing (before enemy attack)
+        const healingLog = result.log.find(entry => entry.message.includes('Second Wind') && entry.message.includes('HP restored'));
+        expect(healingLog).toBeDefined();
+        expect(healingLog?.actor).toBe('player');
+
+        // Should have multiple log entries (healing + enemy attack)
+        expect(result.log.length).toBeGreaterThanOrEqual(2);
+      });
+    });
+
+    describe('Rogue: Dodge', () => {
+      it('should activate Dodge and consume resource', () => {
+        const rogue = createTestCharacter({
+          class: 'Rogue',
+          resources: {
+            abilities: [
+              { name: 'Dodge', type: 'encounter', maxUses: 1, currentUses: 1, description: '+4 AC' },
+            ],
+          },
+        });
+
+        const state: CombatState = {
+          playerCharacter: rogue,
+          enemy: createTestEnemy(),
+          turn: 1,
+          log: [],
+          winner: null,
+          initiative: {
+            player: { total: 10, roll: 8, bonus: 2 },
+            enemy: { total: 5, roll: 5, bonus: 0 },
+            order: ['player', 'enemy'],
+          },
+        };
+
+        const action = {
+          type: 'use_ability' as const,
+          name: 'Dodge',
+          description: '+4 AC until next turn',
+          available: true,
+          abilityId: 'Dodge',
+        };
+
+        const result = resolveCombatRound(state, action);
+
+        // Dodge should be active
+        expect(result.dodgeActive?.player).toBe(true);
+
+        // Resource should be consumed
+        const dodge = result.playerCharacter.resources.abilities.find(a => a.name === 'Dodge');
+        expect(dodge?.currentUses).toBe(0);
+
+        // Log should show activation
+        const dodgeLog = result.log.find(entry => entry.message.includes('Dodge'));
+        expect(dodgeLog).toBeDefined();
+        expect(dodgeLog?.actor).toBe('player');
+      });
+    });
+
+    describe('Cleric: Channel Energy', () => {
+      it('should heal Cleric and consume resource', () => {
+        const cleric = createTestCharacter({
+          class: 'Cleric',
+          hp: 6,
+          maxHp: 12,
+          resources: {
+            abilities: [
+              { name: 'Channel Energy', type: 'daily', maxUses: 2, currentUses: 2, description: 'Heal 1d6' },
+            ],
+            spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } },
+          },
+        });
+
+        const state: CombatState = {
+          playerCharacter: cleric,
+          enemy: createTestEnemy(),
+          turn: 1,
+          log: [],
+          winner: null,
+          initiative: {
+            player: { total: 10, roll: 8, bonus: 2 },
+            enemy: { total: 5, roll: 5, bonus: 0 },
+            order: ['player', 'enemy'],
+          },
+        };
+
+        const action = {
+          type: 'use_ability' as const,
+          name: 'Channel Energy',
+          description: 'Heal 1d6 HP',
+          available: true,
+          abilityId: 'Channel Energy',
+        };
+
+        const result = resolveCombatRound(state, action);
+
+        // Resource should be consumed (2 -> 1)
+        const channelEnergy = result.playerCharacter.resources.abilities.find(a => a.name === 'Channel Energy');
+        expect(channelEnergy?.currentUses).toBe(1);
+
+        // Log should show healing (before enemy attack)
+        const healingLog = result.log.find(entry => entry.message.includes('Channel Energy') && entry.message.includes('HP restored'));
+        expect(healingLog).toBeDefined();
+        expect(healingLog?.actor).toBe('player');
+
+        // Should have multiple log entries (healing + enemy attack)
+        expect(result.log.length).toBeGreaterThanOrEqual(2);
+      });
+    });
+
+    describe('Wizard/Cleric: Cantrips', () => {
+      it('should cast damage cantrip (Ray of Frost)', () => {
+        const wizard = createTestCharacter({
+          class: 'Wizard',
+          attributes: { STR: 8, DEX: 14, CON: 12, INT: 16, WIS: 10, CHA: 8 },
+          resources: {
+            abilities: [],
+            spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } },
+          },
+        });
+
+        const state: CombatState = {
+          playerCharacter: wizard,
+          enemy: createTestEnemy(),
+          turn: 1,
+          log: [],
+          winner: null,
+          initiative: {
+            player: { total: 10, roll: 8, bonus: 2 },
+            enemy: { total: 5, roll: 5, bonus: 0 },
+            order: ['player', 'enemy'],
+          },
+        };
+
+        const action = {
+          type: 'cast_spell' as const,
+          spellId: 'ray_of_frost',
+          name: 'Ray of Frost',
+          description: '1d3 cold damage',
+          available: true,
+          spellLevel: 0,
+          requiresSlot: false,
+        };
+
+        const result = resolveCombatRound(state, action);
+
+        // Should have spell cast log entry
+        const spellLog = result.log.find(entry => entry.message.includes('Ray of Frost'));
+        expect(spellLog).toBeDefined();
+        expect(spellLog?.actor).toBe('player');
+
+        // Should not consume spell slots (cantrip)
+        expect(result.playerCharacter.resources.spellSlots?.level1.current).toBe(2);
+      });
+
+      it('should cast buff cantrip (Divine Favor)', () => {
+        const cleric = createTestCharacter({
+          class: 'Cleric',
+          attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: 16, CHA: 12 },
+          resources: {
+            abilities: [],
+            spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } },
+          },
+        });
+
+        const state: CombatState = {
+          playerCharacter: cleric,
+          enemy: createTestEnemy(),
+          turn: 1,
+          log: [],
+          winner: null,
+          initiative: {
+            player: { total: 10, roll: 8, bonus: 2 },
+            enemy: { total: 5, roll: 5, bonus: 0 },
+            order: ['player', 'enemy'],
+          },
+        };
+
+        const action = {
+          type: 'cast_spell' as const,
+          spellId: 'divine_favor',
+          name: 'Divine Favor',
+          description: '+1 to next attack or save',
+          available: true,
+          spellLevel: 0,
+          requiresSlot: false,
+        };
+
+        const result = resolveCombatRound(state, action);
+
+        // Should have buff active
+        expect(result.activeBuffs?.player).toContain('Divine Favor');
+
+        // Should have spell cast log entry
+        const spellLog = result.log.find(entry => entry.message.includes('Divine Favor'));
+        expect(spellLog).toBeDefined();
+      });
+    });
+
+    describe('Fighter: Power Attack', () => {
+      it('should apply attack penalties and damage bonuses', () => {
+        const fighter = createTestCharacter({
+          class: 'Fighter',
+        });
+
+        const state: CombatState = {
+          playerCharacter: fighter,
+          enemy: createTestEnemy(),
+          turn: 1,
+          log: [],
+          winner: null,
+          initiative: {
+            player: { total: 10, roll: 8, bonus: 2 },
+            enemy: { total: 5, roll: 5, bonus: 0 },
+            order: ['player', 'enemy'],
+          },
+        };
+
+        const action = {
+          type: 'attack' as const,
+          variant: 'power_attack',
+          name: 'Power Attack',
+          description: '-2 to hit, +4 damage',
+          available: true,
+          attackModifier: -2,
+          damageModifier: 4,
+        };
+
+        vi.mocked(rollAttack).mockReturnValue({
+          total: 18, // High enough to hit even with -2
+          bonus: 4,
+          d20Result: 14,
+          output: '1d20+2: [14]+2 = 16', // -2 penalty applied
+        });
+        vi.mocked(isCriticalHit).mockReturnValue(false);
+        vi.mocked(isCriticalFumble).mockReturnValue(false);
+        vi.mocked(rollDamage).mockReturnValue({
+          total: 12, // 8 base + 4 Power Attack bonus
+          output: '1d8+7: [5]+7 = 12',
+        });
+
+        const result = resolveCombatRound(state, action);
+
+        // Should have attack log with Power Attack label
+        const attackLog = result.log.find(entry => entry.message.includes('Power Attack'));
+        expect(attackLog).toBeDefined();
+
+        // Enemy should take damage
+        expect(result.enemy.hp).toBeLessThan(state.enemy.hp);
+      });
     });
   });
 });

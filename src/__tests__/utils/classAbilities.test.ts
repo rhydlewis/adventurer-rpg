@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   useSecondWind,
+  useChannelEnergy,
   getFeatBonuses,
   canSneakAttack,
   calculateSneakAttackDamage,
@@ -83,6 +84,62 @@ describe('Fighter Abilities - Second Wind', () => {
     const result = useSecondWind(fighter);
 
     expect(result.newHp).toBe(fighter.maxHp); // Still capped
+  });
+});
+
+describe('Cleric Abilities - Channel Energy', () => {
+  const createCleric = (wis: number = 14): Character => ({
+    name: 'Test Cleric',
+    class: 'Cleric',
+    level: 1,
+    attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: wis, CHA: 12 },
+    hp: 8,
+    maxHp: 12,
+    ac: 18,
+    bab: 0,
+    saves: { fortitude: 2, reflex: 0, will: 2 },
+    skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
+    feats: [],
+    equipment: { weapon: WEAPONS.Mace, armor: ARMORS.Chainmail, shield: { equipped: true, acBonus: 2 }, items: [] },
+    resources: {
+      abilities: [
+        { name: 'Channel Energy', type: 'daily', maxUses: 2, currentUses: 2, description: 'Heal 1d6 HP' },
+      ],
+      spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } },
+    },
+  });
+
+  it('should heal 1d6 HP', () => {
+    const cleric = createCleric();
+    cleric.hp = 5;
+
+    const result = useChannelEnergy(cleric);
+
+    expect(result.newHp).toBeGreaterThanOrEqual(6); // 5 + 1 min
+    expect(result.newHp).toBeLessThanOrEqual(11); // 5 + 6 max
+    expect(result.healed).toBeGreaterThanOrEqual(1);
+    expect(result.healed).toBeLessThanOrEqual(6);
+    expect(result.output).toContain('Channel Energy');
+  });
+
+  it('should not exceed max HP', () => {
+    const cleric = createCleric();
+    cleric.hp = 11; // Near max (12)
+
+    const result = useChannelEnergy(cleric);
+
+    expect(result.newHp).toBeLessThanOrEqual(cleric.maxHp);
+    expect(result.newHp).toBe(12); // Capped at maxHp
+  });
+
+  it('should work when at full HP', () => {
+    const cleric = createCleric();
+    cleric.hp = cleric.maxHp;
+
+    const result = useChannelEnergy(cleric);
+
+    expect(result.newHp).toBe(cleric.maxHp); // Still capped
+    expect(result.healed).toBe(0); // No healing applied
   });
 });
 
