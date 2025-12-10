@@ -137,6 +137,7 @@ export function createCharacter(params: CreateCharacterParams): Character {
       currentUses: 1,
       description: 'Heal 1d10+1 HP as a standard action',
     });
+    // Power Attack is now a modified attack action, not a resource
   } else if (className === 'Rogue') {
     resources.abilities.push({
       name: 'Dodge',

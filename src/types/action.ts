@@ -20,6 +20,9 @@ export interface CombatAction {
  */
 export interface AttackAction extends CombatAction {
   type: 'attack';
+  variant?: 'power_attack'; // Fighter-specific attack variant
+  attackModifier?: number;
+  damageModifier?: number;
 }
 
 /**

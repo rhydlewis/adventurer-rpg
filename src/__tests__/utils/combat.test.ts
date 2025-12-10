@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { Character, Creature, CombatState } from '../../types';
+import type { AttackAction } from '../../types/action';
 
 // Mock dice utilities
 vi.mock('../../utils/dice', () => ({
@@ -132,6 +133,14 @@ const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
   },
   ...overrides,
 });
+
+// Default attack action for tests
+const attackAction: AttackAction = {
+  type: 'attack',
+  name: 'Attack',
+  description: 'Basic attack',
+  available: true,
+};
 
 describe('utils/combat', () => {
   beforeEach(() => {
@@ -287,7 +296,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [0]+3 = 3',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       expect(result.log).toHaveLength(2);
       expect(result.log[0].actor).toBe('player');
@@ -318,7 +327,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [2]+3 = 5',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       // Player hits, enemy takes 5 damage (10 - 5 = 5)
       expect(result.enemy.hp).toBe(5);
@@ -350,7 +359,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [5]+3 = 8',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       expect(result.enemy.hp).toBeLessThanOrEqual(0);
       expect(result.winner).toBe('player');
@@ -392,7 +401,7 @@ describe('utils/combat', () => {
         output: '1d6+1: [4]+1 = 5',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       expect(result.playerCharacter.hp).toBeLessThanOrEqual(0);
       expect(result.winner).toBe('enemy');
@@ -424,7 +433,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [0]+3 = 3',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       expect(result.turn).toBe(4);
       expect(result.winner).toBeNull();
@@ -454,7 +463,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [2]+3 = 5',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       expect(result.log).toHaveLength(3); // Existing + player + enemy
       expect(result.log[0].turn).toBe(1); // Preserved
@@ -487,7 +496,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [2]+3 = 5',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       // Original state unchanged
       expect(state.log).toHaveLength(1);
@@ -537,7 +546,7 @@ describe('utils/combat', () => {
         output: '1d4+1: [2]+1 = 3',
       });
 
-      const round1 = resolveCombatRound(state);
+      const round1 = resolveCombatRound(state, attackAction);
 
       // Player fumbled, fumble effect stored
       expect(round1.fumbleEffects?.player).toBeDefined();
@@ -557,7 +566,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [2]+3 = 5',
       });
 
-      const round2 = resolveCombatRound(round1);
+      const round2 = resolveCombatRound(round1, attackAction);
 
       // Player's turn shows recovery message, not attack
       const playerTurn = round2.log.find(entry => entry.turn === 2 && entry.actor === 'player');
@@ -595,7 +604,7 @@ describe('utils/combat', () => {
         output: '1d8+3: [7]+3 = 10',
       });
 
-      const result = resolveCombatRound(state);
+      const result = resolveCombatRound(state, attackAction);
 
       // Only 2 log entries: player attack + defeat message
       // No enemy attack

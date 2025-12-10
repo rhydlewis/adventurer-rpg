@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import type { CombatState, Character, Creature } from '../types';
+import type { Action } from '../types/action';
 import { resolveCombatRound } from '../utils/combat';
 import { rollInitiative } from '../utils/initiative';
 
 interface CombatStore {
   combat: CombatState | null;
   startCombat: (player: Character, enemy: Creature) => void;
-  executeTurn: () => void;
+  executeTurn: (playerAction: Action) => void;
   resetCombat: () => void;
 }
 
@@ -71,11 +72,12 @@ export const useCombatStore = create<CombatStore>((set) => ({
     });
   },
 
-  executeTurn: () => {
+  executeTurn: (playerAction) => {
     set((state) => {
       if (!state.combat) return state;
+      // Phase 1.3: Pass player action to combat resolution
       return {
-        combat: resolveCombatRound(state.combat),
+        combat: resolveCombatRound(state.combat, playerAction),
       };
     });
   },

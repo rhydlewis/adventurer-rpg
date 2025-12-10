@@ -19,5 +19,4 @@ export interface SpellSlots {
 export interface Resources {
   abilities: AbilityResource[]; // e.g., Second Wind, Dodge, Channel Energy
   spellSlots?: SpellSlots; // Only for Wizard/Cleric
-  powerAttackActive?: boolean; // Fighter-specific toggle
 }

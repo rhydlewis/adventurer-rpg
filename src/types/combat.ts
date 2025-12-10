@@ -41,4 +41,9 @@ export interface CombatState {
       turnsRemaining?: number;
     };
   };
+  // Phase 1.3: Rogue Dodge tracking
+  dodgeActive?: {
+    player?: boolean;
+    enemy?: boolean;
+  };
 }

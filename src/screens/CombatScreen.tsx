@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCombatStore } from '../stores/combatStore';
 import { setForcedD20Roll } from '../utils/dice';
+import { getAvailableActions } from '../utils/actions';
 
 interface CombatScreenProps {
   onEndCombat: () => void;
@@ -93,6 +94,28 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 <span>+{combat.playerCharacter.bab}</span>
               </div>
             </div>
+
+            {/* Active Effects */}
+            {(combat.dodgeActive?.player || combat.fumbleEffects?.player) && (
+              <div className="mt-3 pt-3 border-t border-blue-700">
+                <div className="text-xs font-semibold text-blue-300 mb-2">Active Effects:</div>
+                <div className="space-y-1">
+                  {combat.dodgeActive?.player && (
+                    <div className="text-xs bg-green-700 text-white px-2 py-1 rounded">
+                      ✓ Dodge: +4 AC (until your next turn)
+                    </div>
+                  )}
+                  {combat.fumbleEffects?.player && (
+                    <div className="text-xs bg-yellow-700 text-white px-2 py-1 rounded">
+                      ⚠️ {combat.fumbleEffects.player.type.replace('_', ' ').toUpperCase()}
+                      {combat.fumbleEffects.player.turnsRemaining && combat.fumbleEffects.player.turnsRemaining > 0
+                        ? ` (${combat.fumbleEffects.player.turnsRemaining} turn${combat.fumbleEffects.player.turnsRemaining > 1 ? 's' : ''})`
+                        : ''}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Enemy */}
@@ -117,6 +140,28 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 <span>+{combat.enemy.bab}</span>
               </div>
             </div>
+
+            {/* Active Effects */}
+            {(combat.dodgeActive?.enemy || combat.fumbleEffects?.enemy) && (
+              <div className="mt-3 pt-3 border-t border-red-700">
+                <div className="text-xs font-semibold text-red-300 mb-2">Active Effects:</div>
+                <div className="space-y-1">
+                  {combat.dodgeActive?.enemy && (
+                    <div className="text-xs bg-green-700 text-white px-2 py-1 rounded">
+                      ✓ Dodge: +4 AC (until next turn)
+                    </div>
+                  )}
+                  {combat.fumbleEffects?.enemy && (
+                    <div className="text-xs bg-yellow-700 text-white px-2 py-1 rounded">
+                      ⚠️ {combat.fumbleEffects.enemy.type.replace('_', ' ').toUpperCase()}
+                      {combat.fumbleEffects.enemy.turnsRemaining && combat.fumbleEffects.enemy.turnsRemaining > 0
+                        ? ` (${combat.fumbleEffects.enemy.turnsRemaining} turn${combat.fumbleEffects.enemy.turnsRemaining > 1 ? 's' : ''})`
+                        : ''}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -220,12 +265,49 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             </button>
           </div>
         ) : (
-          <button
-            onClick={executeTurn}
-            className="w-full px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-lg"
-          >
-            ⚔️ Attack
-          </button>
+          <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
+            <h3 className="text-lg font-bold mb-3">Your Actions</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {getAvailableActions(combat.playerCharacter).map((action, index) => {
+                const isDisabled = !action.available || action.disabled;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => !isDisabled && executeTurn(action)}
+                    disabled={isDisabled}
+                    className={`px-4 py-3 rounded-lg text-left transition-colors ${
+                      isDisabled
+                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                        : action.type === 'attack'
+                        ? 'bg-green-600 hover:bg-green-700 text-white font-semibold shadow-lg'
+                        : action.type === 'cast_spell'
+                        ? 'bg-purple-600 hover:bg-purple-700 text-white font-semibold'
+                        : action.type === 'use_ability'
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white font-semibold'
+                        : 'bg-yellow-600 hover:bg-yellow-700 text-white font-semibold'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-bold">{action.name}</div>
+                        <div className="text-sm opacity-90 mt-1">{action.description}</div>
+                        {action.type === 'use_ability' && action.usesRemaining !== undefined && (
+                          <div className="text-xs mt-1 opacity-75">
+                            Uses: {action.usesRemaining}/{action.maxUses}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {isDisabled && action.disabledReason && (
+                      <div className="text-xs text-gray-400 mt-1">
+                        {action.disabledReason}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         )}
       </div>
     </div>
