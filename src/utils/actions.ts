@@ -1,5 +1,6 @@
 import type { Character } from '../types/character';
 import type { Action, AttackAction, UseAbilityAction, CastSpellAction } from '../types/action';
+import { getCantripsForClass } from '../data/spells';
 
 /**
  * Get all available actions for a character during combat
@@ -49,22 +50,25 @@ export function getAvailableActions(character: Character): Action[] {
   if (character.resources.spellSlots) {
     const slots = character.resources.spellSlots;
 
-    // Cantrips (at-will)
-    if (character.class === 'Wizard' || character.class === 'Cleric') {
+    // Cantrips (at-will) - create an action for each cantrip
+    const cantrips = getCantripsForClass(character.class);
+    cantrips.forEach((cantrip) => {
       actions.push({
         type: 'cast_spell',
-        name: 'Cast Cantrip',
-        description: 'Cast an at-will cantrip',
+        spellId: cantrip.id,
+        name: cantrip.name,
+        description: cantrip.description,
         available: true,
         spellLevel: 0,
         requiresSlot: false,
       } as CastSpellAction);
-    }
+    });
 
-    // Level 1 spells
+    // Level 1 spells (TODO: Phase 1.3+ - implement specific spell selection UI)
     if (slots.level1.current > 0) {
       actions.push({
         type: 'cast_spell',
+        spellId: 'placeholder_level1',
         name: 'Cast Spell (Level 1)',
         description: `Cast a level 1 spell (${slots.level1.current}/${slots.level1.max} slots remaining)`,
         available: true,

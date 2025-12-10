@@ -2,6 +2,58 @@ import { useState } from 'react';
 import { useCombatStore } from '../stores/combatStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
+import type { CombatState } from '../types/combat';
+
+// Reusable Active Effects component
+interface ActiveEffectsProps {
+  combat: CombatState;
+  combatant: 'player' | 'enemy';
+  borderColor: string; // e.g., 'blue-700' or 'red-700'
+  textColor: string; // e.g., 'blue-300' or 'red-300'
+}
+
+function ActiveEffects({ combat, combatant, borderColor, textColor }: ActiveEffectsProps) {
+  const hasEffects =
+    combat.dodgeActive?.[combatant] ||
+    combat.fumbleEffects?.[combatant] ||
+    (combat.activeBuffs?.[combatant] && combat.activeBuffs[combatant]!.length > 0);
+
+  if (!hasEffects) return null;
+
+  return (
+    <div className={`mt-3 pt-3 border-t border-${borderColor}`}>
+      <div className={`text-xs font-semibold text-${textColor} mb-2`}>Active Effects:</div>
+      <div className="space-y-1">
+        {/* Dodge */}
+        {combat.dodgeActive?.[combatant] && (
+          <div className="text-xs bg-green-700 text-white px-2 py-1 rounded">
+            ✓ Dodge: +4 AC (until {combatant === 'player' ? 'your' : ''} next turn)
+          </div>
+        )}
+
+        {/* Buffs */}
+        {combat.activeBuffs?.[combatant]?.map((buff, idx) => (
+          <div key={idx} className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
+            ✨ {buff}
+          </div>
+        ))}
+
+        {/* Fumbles/Debuffs */}
+        {combat.fumbleEffects?.[combatant] && (
+          <div className="text-xs bg-yellow-700 text-white px-2 py-1 rounded">
+            ⚠️ {combat.fumbleEffects[combatant]!.type.replace('_', ' ').toUpperCase()}
+            {combat.fumbleEffects[combatant]!.turnsRemaining &&
+             combat.fumbleEffects[combatant]!.turnsRemaining! > 0
+              ? ` (${combat.fumbleEffects[combatant]!.turnsRemaining} turn${
+                  combat.fumbleEffects[combatant]!.turnsRemaining! > 1 ? 's' : ''
+                })`
+              : ''}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 interface CombatScreenProps {
   onEndCombat: () => void;
@@ -96,26 +148,12 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             </div>
 
             {/* Active Effects */}
-            {(combat.dodgeActive?.player || combat.fumbleEffects?.player) && (
-              <div className="mt-3 pt-3 border-t border-blue-700">
-                <div className="text-xs font-semibold text-blue-300 mb-2">Active Effects:</div>
-                <div className="space-y-1">
-                  {combat.dodgeActive?.player && (
-                    <div className="text-xs bg-green-700 text-white px-2 py-1 rounded">
-                      ✓ Dodge: +4 AC (until your next turn)
-                    </div>
-                  )}
-                  {combat.fumbleEffects?.player && (
-                    <div className="text-xs bg-yellow-700 text-white px-2 py-1 rounded">
-                      ⚠️ {combat.fumbleEffects.player.type.replace('_', ' ').toUpperCase()}
-                      {combat.fumbleEffects.player.turnsRemaining && combat.fumbleEffects.player.turnsRemaining > 0
-                        ? ` (${combat.fumbleEffects.player.turnsRemaining} turn${combat.fumbleEffects.player.turnsRemaining > 1 ? 's' : ''})`
-                        : ''}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+            <ActiveEffects
+              combat={combat}
+              combatant="player"
+              borderColor="blue-700"
+              textColor="blue-300"
+            />
           </div>
 
           {/* Enemy */}
@@ -142,26 +180,12 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             </div>
 
             {/* Active Effects */}
-            {(combat.dodgeActive?.enemy || combat.fumbleEffects?.enemy) && (
-              <div className="mt-3 pt-3 border-t border-red-700">
-                <div className="text-xs font-semibold text-red-300 mb-2">Active Effects:</div>
-                <div className="space-y-1">
-                  {combat.dodgeActive?.enemy && (
-                    <div className="text-xs bg-green-700 text-white px-2 py-1 rounded">
-                      ✓ Dodge: +4 AC (until next turn)
-                    </div>
-                  )}
-                  {combat.fumbleEffects?.enemy && (
-                    <div className="text-xs bg-yellow-700 text-white px-2 py-1 rounded">
-                      ⚠️ {combat.fumbleEffects.enemy.type.replace('_', ' ').toUpperCase()}
-                      {combat.fumbleEffects.enemy.turnsRemaining && combat.fumbleEffects.enemy.turnsRemaining > 0
-                        ? ` (${combat.fumbleEffects.enemy.turnsRemaining} turn${combat.fumbleEffects.enemy.turnsRemaining > 1 ? 's' : ''})`
-                        : ''}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+            <ActiveEffects
+              combat={combat}
+              combatant="enemy"
+              borderColor="red-700"
+              textColor="red-300"
+            />
           </div>
         </div>
 
@@ -174,9 +198,9 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 Combat has not started yet. Click Attack to begin!
               </p>
             ) : (
-              combat.log.slice().reverse().map((entry, idx) => (
+              combat.log.map((entry, idx) => (
                 <div
-                  key={combat.log.length - 1 - idx}
+                  key={idx}
                   className={`text-sm p-2 rounded ${
                     entry.actor === 'player'
                       ? 'bg-blue-900/30 text-blue-200'

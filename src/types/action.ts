@@ -27,12 +27,13 @@ export interface AttackAction extends CombatAction {
 
 /**
  * Spell casting action (Wizard, Cleric)
- * Phase 1.3+ will expand with specific spells
+ * Phase 1.3: Cantrips implemented
  */
 export interface CastSpellAction extends CombatAction {
   type: 'cast_spell';
-  spellLevel?: number; // 0 = cantrip
-  requiresSlot?: boolean;
+  spellId: string; // ID of the spell to cast (e.g., 'ray_of_frost')
+  spellLevel: number; // 0 = cantrip, 1 = level 1, etc.
+  requiresSlot: boolean; // False for cantrips (at-will)
 }
 
 /**

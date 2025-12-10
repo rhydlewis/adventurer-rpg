@@ -46,4 +46,9 @@ export interface CombatState {
     player?: boolean;
     enemy?: boolean;
   };
+  // Phase 1.3: Spell buff tracking (Divine Favor, Resistance, etc.)
+  activeBuffs?: {
+    player?: string[]; // Array of active buff names
+    enemy?: string[];
+  };
 }

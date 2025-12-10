@@ -145,14 +145,14 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
                 className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
               >
                 🔮 Wizard
-                <div className="text-xs opacity-75 mt-1">Cantrips, Spells (TODO)</div>
+                <div className="text-xs opacity-75 mt-1">Cantrips, Spells</div>
               </button>
               <button
                 onClick={() => handleStartCombat('Cleric')}
                 className="px-4 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-colors"
               >
                 ✨ Cleric
-                <div className="text-xs opacity-75 mt-1">Healing, Turn Undead (TODO)</div>
+                <div className="text-xs opacity-75 mt-1">Healing, Turn Undead</div>
               </button>
             </div>
           </div>

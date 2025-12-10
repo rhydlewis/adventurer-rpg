@@ -1,6 +1,6 @@
 import { rollAttack, rollDamage, calculateModifier } from './dice';
 import type { Character, Creature, CombatState } from '../types';
-import type { Action } from '../types/action';
+import type { Action, CastSpellAction } from '../types/action';
 import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 import {
   useSecondWind,
@@ -10,6 +10,8 @@ import {
   canSneakAttack,
   calculateSneakAttackDamage,
 } from './classAbilities';
+import { castSpell } from './spellcasting';
+import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -95,12 +97,18 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   const log = [...state.log];
   const fumbleEffects = { ...state.fumbleEffects };
   const dodgeActive = state.dodgeActive ? { ...state.dodgeActive } : {};
+  const activeBuffs = state.activeBuffs ? { ...state.activeBuffs, player: [...(state.activeBuffs.player || [])], enemy: [...(state.activeBuffs.enemy || [])] } : { player: [], enemy: [] };
   let playerCharacter = state.playerCharacter;
   let enemy = state.enemy;
 
   // Clear player's Dodge at start of their turn (it lasted until their next turn)
   if (dodgeActive.player) {
     dodgeActive.player = false;
+  }
+
+  // Clear player's buffs at start of their turn (they lasted until next turn)
+  if (activeBuffs.player && activeBuffs.player.length > 0) {
+    activeBuffs.player = [];
   }
 
   // Player's turn
@@ -169,7 +177,47 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           });
         }
       }
-      // TODO: Add Wizard, Cleric abilities in next task
+    } else if (playerAction.type === 'cast_spell') {
+      // Cast spell action (Wizard/Cleric cantrips)
+      const spellAction = playerAction as CastSpellAction;
+
+      // Find the spell
+      const allCantrips = [...WIZARD_CANTRIPS, ...CLERIC_CANTRIPS];
+      const spell = allCantrips.find((s) => s.id === spellAction.spellId);
+
+      if (!spell) {
+        log.push({
+          turn: state.turn,
+          actor: 'system',
+          message: `Spell not found: ${spellAction.spellId}`,
+        });
+      } else {
+        // Cast the spell
+        const result = castSpell(playerCharacter, enemy, spell);
+
+        // Apply damage if successful
+        if (result.success && result.damage) {
+          enemy = {
+            ...enemy,
+            hp: enemy.hp - result.damage,
+          };
+        }
+
+        // Log the spell casting
+        log.push({
+          turn: state.turn,
+          actor: 'player',
+          message: result.output,
+        });
+
+        // Track buff spells (Divine Favor, Resistance)
+        if (result.success && spell.effect.type === 'buff') {
+          activeBuffs.player = activeBuffs.player || [];
+          activeBuffs.player.push(spell.name);
+        }
+
+        // TODO: Apply conditions (Daze -> Stunned) in Phase 1.4
+      }
     } else {
       // Attack action (normal or Power Attack)
       let attackModifiers: { attackBonus?: number; damageBonus?: number; label?: string } | undefined;
@@ -264,7 +312,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs };
   }
 
   // Check if player defeated (could happen from self-damage or free attack)
@@ -274,12 +322,17 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs };
   }
 
   // Clear enemy's Dodge at start of their turn
   if (dodgeActive.enemy) {
     dodgeActive.enemy = false;
+  }
+
+  // Clear enemy's buffs at start of their turn
+  if (activeBuffs.enemy && activeBuffs.enemy.length > 0) {
+    activeBuffs.enemy = [];
   }
 
   // Enemy's turn
@@ -359,7 +412,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs };
   }
 
   // Check if enemy defeated (could happen from self-damage or free attack)
@@ -369,7 +422,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs };
   }
 
   return {
@@ -380,5 +433,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     turn: state.turn + 1,
     fumbleEffects,
     dodgeActive,
+    activeBuffs,
   };
 }
