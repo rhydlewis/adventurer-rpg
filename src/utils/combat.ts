@@ -94,8 +94,14 @@ export function performAttack(
 export function resolveCombatRound(state: CombatState, playerAction: Action): CombatState {
   const log = [...state.log];
   const fumbleEffects = { ...state.fumbleEffects };
+  const dodgeActive = state.dodgeActive ? { ...state.dodgeActive } : {};
   let playerCharacter = state.playerCharacter;
   let enemy = state.enemy;
+
+  // Clear player's Dodge at start of their turn (it lasted until their next turn)
+  if (dodgeActive.player) {
+    dodgeActive.player = false;
+  }
 
   // Player's turn
   const playerFumble = fumbleEffects?.player;
@@ -154,8 +160,8 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         } else {
           const result = useDodge();
           playerCharacter = consumeAbilityUse(playerCharacter, 'Dodge');
-          // Activate dodge (will be cleared at end of turn)
-          state.dodgeActive = { ...state.dodgeActive, player: true };
+          // Activate dodge (will be cleared at start of next turn)
+          dodgeActive.player = true;
           log.push({
             turn: state.turn,
             actor: 'player',
@@ -249,9 +255,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     if (fumbleEffects.player?.type === 'off_balance') {
       delete fumbleEffects.player;
     }
-
-    // Clear Dodge effect at start of next turn (it lasts until your next turn)
-    // This is handled at the start of the NEXT round, so Dodge protects against enemy attack
   }
 
   // Check if enemy defeated
@@ -261,7 +264,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive };
   }
 
   // Check if player defeated (could happen from self-damage or free attack)
@@ -271,7 +274,12 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive };
+  }
+
+  // Clear enemy's Dodge at start of their turn
+  if (dodgeActive.enemy) {
+    dodgeActive.enemy = false;
   }
 
   // Enemy's turn
@@ -351,7 +359,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive };
   }
 
   // Check if enemy defeated (could happen from self-damage or free attack)
@@ -361,7 +369,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive };
   }
 
   return {
@@ -371,5 +379,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     log,
     turn: state.turn + 1,
     fumbleEffects,
+    dodgeActive,
   };
 }
