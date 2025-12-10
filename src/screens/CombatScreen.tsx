@@ -4,6 +4,54 @@ import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import type { CombatState } from '../types/combat';
 
+// Reusable Resources component
+interface ResourcesProps {
+  character: CombatState['playerCharacter'];
+  borderColor: string;
+  textColor: string;
+}
+
+function Resources({ character, borderColor, textColor }: ResourcesProps) {
+  const hasResources =
+    character.resources.abilities.length > 0 ||
+    character.resources.spellSlots;
+
+  if (!hasResources) return null;
+
+  return (
+    <div className={`mt-3 pt-3 border-t border-${borderColor}`}>
+      <div className={`text-xs font-semibold text-${textColor} mb-2`}>Resources:</div>
+      <div className="space-y-1">
+        {/* Spell Slots */}
+        {character.resources.spellSlots && (
+          <div className="text-xs text-gray-300">
+            <span className="font-semibold">Spell Slots:</span>
+            {character.resources.spellSlots.level1 && (
+              <span className="ml-2">
+                Level 1: {character.resources.spellSlots.level1.current}/{character.resources.spellSlots.level1.max}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Abilities */}
+        {character.resources.abilities
+          .filter(ability => ability.type === 'encounter' || ability.type === 'daily')
+          .map((ability, idx) => (
+            <div key={idx} className="text-xs text-gray-300">
+              <span className="font-semibold">{ability.name}:</span>
+              <span className="ml-2">
+                {ability.currentUses}/{ability.maxUses}
+                {ability.type === 'encounter' && <span className="text-gray-500 ml-1">(per combat)</span>}
+                {ability.type === 'daily' && <span className="text-gray-500 ml-1">(per day)</span>}
+              </span>
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+}
+
 // Reusable Active Effects component
 interface ActiveEffectsProps {
   combat: CombatState;
@@ -146,6 +194,13 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 <span>+{combat.playerCharacter.bab}</span>
               </div>
             </div>
+
+            {/* Resources */}
+            <Resources
+              character={combat.playerCharacter}
+              borderColor="blue-700"
+              textColor="blue-300"
+            />
 
             {/* Active Effects */}
             <ActiveEffects
