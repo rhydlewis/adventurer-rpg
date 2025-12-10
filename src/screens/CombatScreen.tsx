@@ -123,15 +123,15 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
         {/* Combat Log */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
           <h3 className="text-lg font-bold mb-3">Combat Log</h3>
-          <div className="bg-gray-900 p-4 rounded h-80 overflow-y-auto space-y-2">
+          <div className="bg-gray-900 p-4 rounded h-80 overflow-y-auto space-y-2 flex flex-col-reverse">
             {combat.log.length === 0 ? (
               <p className="text-gray-500 text-center">
                 Combat has not started yet. Click Attack to begin!
               </p>
             ) : (
-              combat.log.map((entry, idx) => (
+              combat.log.slice().reverse().map((entry, idx) => (
                 <div
-                  key={idx}
+                  key={combat.log.length - 1 - idx}
                   className={`text-sm p-2 rounded ${
                     entry.actor === 'player'
                       ? 'bg-blue-900/30 text-blue-200'

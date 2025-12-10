@@ -8,8 +8,17 @@ vi.mock('../../utils/dice', () => ({
   calculateModifier: vi.fn(),
 }));
 
+// Mock critical utilities
+vi.mock('../../utils/criticals', () => ({
+  isCriticalHit: vi.fn(),
+  isCriticalFumble: vi.fn(),
+  calculateCriticalDamage: vi.fn(),
+  rollFumbleEffect: vi.fn(),
+}));
+
 import { performAttack, resolveCombatRound } from '../../utils/combat';
 import { rollAttack, rollDamage, calculateModifier } from '../../utils/dice';
+import { isCriticalHit, isCriticalFumble, rollFumbleEffect } from '../../utils/criticals';
 
 // Test fixtures
 const createTestCharacter = (overrides?: Partial<Character>): Character => ({
@@ -127,6 +136,9 @@ const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
 describe('utils/combat', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default: no crits or fumbles unless specifically testing them
+    vi.mocked(isCriticalHit).mockReturnValue(false);
+    vi.mocked(isCriticalFumble).mockReturnValue(false);
   });
 
   describe('performAttack', () => {
@@ -484,6 +496,79 @@ describe('utils/combat', () => {
       // New state has new log
       expect(result.log).toHaveLength(3);
       expect(result.log).not.toBe(originalLog);
+    });
+
+    it('loses turn after drop_weapon fumble', () => {
+      const player = createTestCharacter();
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy: enemy,
+        log: [],
+        winner: null,
+        initiative: null,
+        currentActor: 'player',
+      };
+
+      vi.mocked(calculateModifier).mockReturnValue(3);
+
+      // Player fumbles with drop_weapon
+      vi.mocked(isCriticalFumble).mockReturnValueOnce(true);
+      vi.mocked(rollFumbleEffect).mockReturnValueOnce({
+        type: 'drop_weapon',
+        description: 'You drop your weapon! Lose next turn picking it up.',
+        loseTurn: true,
+      });
+      vi.mocked(rollAttack).mockReturnValueOnce({
+        total: 5,
+        d20Result: 1,
+        output: '1d20+4: [1]+4 = 5',
+      });
+
+      // Enemy attacks normally (no fumble)
+      vi.mocked(rollAttack).mockReturnValueOnce({
+        total: 15,
+        d20Result: 11,
+        output: '1d20+1: [11]+1 = 12',
+      });
+      vi.mocked(rollDamage).mockReturnValueOnce({
+        total: 3,
+        output: '1d4+1: [2]+1 = 3',
+      });
+
+      const round1 = resolveCombatRound(state);
+
+      // Player fumbled, fumble effect stored
+      expect(round1.fumbleEffects?.player).toBeDefined();
+      expect(round1.fumbleEffects?.player?.type).toBe('drop_weapon');
+      expect(round1.fumbleEffects?.player?.turnsRemaining).toBe(1);
+
+      // Next round - player should recover instead of attacking
+      // Reset fumble check for round 2
+      vi.mocked(isCriticalFumble).mockReturnValue(false);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 15,
+        d20Result: 11,
+        output: '1d20+4: [11]+4 = 15',
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 5,
+        output: '1d8+3: [2]+3 = 5',
+      });
+
+      const round2 = resolveCombatRound(round1);
+
+      // Player's turn shows recovery message, not attack
+      const playerTurn = round2.log.find(entry => entry.turn === 2 && entry.actor === 'player');
+      expect(playerTurn?.message).toContain('recovers their weapon');
+
+      // Enemy still attacks normally
+      const enemyTurn = round2.log.find(entry => entry.turn === 2 && entry.actor === 'enemy');
+      expect(enemyTurn?.message).toContain('vs AC');
+
+      // Fumble effect cleared after recovery
+      expect(round2.fumbleEffects?.player).toBeUndefined();
     });
 
     it('enemy does not attack if defeated by player', () => {
