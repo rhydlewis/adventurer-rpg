@@ -2,6 +2,17 @@ import { DiceRoller, DiceRoll } from '@dice-roller/rpg-dice-roller';
 
 const roller = new DiceRoller();
 
+// Debug mode: force next d20 roll to a specific value (1-20)
+let forcedD20Roll: number | null = null;
+
+export function setForcedD20Roll(value: number | null) {
+  forcedD20Roll = value;
+}
+
+export function clearForcedD20Roll() {
+  forcedD20Roll = null;
+}
+
 /**
  * Roll dice using standard notation
  * Examples: '1d20', '2d6+3', '1d8+2'
@@ -27,6 +38,22 @@ export function rollAttack(bab: number, abilityMod: number): {
   d20Result: number;
   output: string;
 } {
+  // Check if we're forcing the d20 roll for debug purposes
+  if (forcedD20Roll !== null) {
+    const d20 = forcedD20Roll;
+    const modifier = bab + abilityMod;
+    const total = d20 + modifier;
+
+    // Clear the forced roll after using it
+    forcedD20Roll = null;
+
+    return {
+      total,
+      d20Result: d20,
+      output: `1d20+${modifier}: [${d20}]+${modifier} = ${total} [DEBUG]`,
+    };
+  }
+
   const result = roller.roll(`1d20+${bab + abilityMod}`) as DiceRoll;
   // Extract the d20 roll from the result for critical hit checking
   const d20Result = (result.rolls[0] as any)?.value ?? result.total;

@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useCombatStore } from '../stores/combatStore';
+import { setForcedD20Roll } from '../utils/dice';
 
 interface CombatScreenProps {
   onEndCombat: () => void;
@@ -6,6 +8,11 @@ interface CombatScreenProps {
 
 export function CombatScreen({ onEndCombat }: CombatScreenProps) {
   const { combat, executeTurn, resetCombat } = useCombatStore();
+  const [debugMode, setDebugMode] = useState(false);
+
+  const handleForceRoll = (value: number) => {
+    setForcedD20Roll(value);
+  };
 
   if (!combat) {
     return (
@@ -40,6 +47,27 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             End Combat
           </button>
         </div>
+
+        {/* Initiative Display */}
+        {combat.initiative && (
+          <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
+            <h3 className="text-lg font-bold mb-3">Initiative Order</h3>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className={`px-4 py-2 rounded ${combat.currentActor === 'player' ? 'bg-blue-700 font-bold ring-2 ring-blue-400' : 'bg-gray-700'}`}>
+                  {combat.playerCharacter.name}: {combat.initiative.player.total}
+                </div>
+                <span className="text-gray-400">vs</span>
+                <div className={`px-4 py-2 rounded ${combat.currentActor === 'enemy' ? 'bg-red-700 font-bold ring-2 ring-red-400' : 'bg-gray-700'}`}>
+                  {combat.enemy.name}: {combat.initiative.enemy.total}
+                </div>
+              </div>
+              <div className="text-sm text-gray-400">
+                {combat.currentActor === 'player' ? combat.playerCharacter.name : combat.enemy.name}'s Turn
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Character Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -123,6 +151,52 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
               ))
             )}
           </div>
+        </div>
+
+        {/* Debug Panel */}
+        <div className="bg-gray-800 border border-yellow-600 rounded-lg p-4 mb-6">
+          <button
+            onClick={() => setDebugMode(!debugMode)}
+            className="w-full text-left font-bold text-yellow-400 hover:text-yellow-300 flex items-center justify-between"
+          >
+            <span>🐛 Debug Mode</span>
+            <span>{debugMode ? '▼' : '▶'}</span>
+          </button>
+
+          {debugMode && (
+            <div className="mt-4 space-y-3">
+              <p className="text-sm text-gray-400">Force next attack roll (affects both player and enemy):</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <button
+                  onClick={() => handleForceRoll(20)}
+                  className="px-4 py-2 bg-green-700 hover:bg-green-600 rounded font-semibold text-sm"
+                >
+                  Force Crit (20)
+                </button>
+                <button
+                  onClick={() => handleForceRoll(1)}
+                  className="px-4 py-2 bg-red-700 hover:bg-red-600 rounded font-semibold text-sm"
+                >
+                  Force Fumble (1)
+                </button>
+                <button
+                  onClick={() => handleForceRoll(15)}
+                  className="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded font-semibold text-sm"
+                >
+                  Force Hit (15)
+                </button>
+                <button
+                  onClick={() => handleForceRoll(5)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded font-semibold text-sm"
+                >
+                  Force Miss (5)
+                </button>
+              </div>
+              <p className="text-xs text-yellow-500 italic">
+                Note: Forced roll applies to the next attack (either player or enemy, whoever attacks first)
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Actions */}

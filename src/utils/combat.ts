@@ -1,5 +1,6 @@
 import { rollAttack, rollDamage, calculateModifier } from './dice';
 import type { Character, Creature, CombatState } from '../types';
+import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -10,10 +11,47 @@ export function performAttack(
   attackTotal: number;
   damage?: number;
   output: string;
+  isCrit?: boolean;
+  isFumble?: boolean;
+  fumbleEffect?: ReturnType<typeof rollFumbleEffect>;
 } {
   const abilityMod = calculateModifier(attacker.attributes.STR);
   const attack = rollAttack(attacker.bab, abilityMod);
+  const naturalRoll = attack.d20Result;
 
+  // Check for critical hit (natural 20)
+  if (isCriticalHit(naturalRoll)) {
+    // Crits always hit
+    const baseDamage = '1d8'; // For walking skeleton, assume 1d8 weapon
+    const baseDamageWithMod = abilityMod >= 0 ? `${baseDamage}+${abilityMod}` : `${baseDamage}${abilityMod}`;
+    const critResult = calculateCriticalDamage(baseDamageWithMod);
+    const dmg = rollDamage(critResult.formula, 0); // Modifier already in formula
+
+    return {
+      hit: true,
+      attackRoll: naturalRoll,
+      attackTotal: attack.total,
+      damage: dmg.total,
+      isCrit: true,
+      output: `${attack.output} vs AC ${defender.ac} - ${critResult.description} ${dmg.output} damage`,
+    };
+  }
+
+  // Check for critical fumble (natural 1)
+  if (isCriticalFumble(naturalRoll)) {
+    // Fumbles always miss
+    const fumble = rollFumbleEffect();
+    return {
+      hit: false,
+      attackRoll: naturalRoll,
+      attackTotal: attack.total,
+      isFumble: true,
+      fumbleEffect: fumble,
+      output: `${attack.output} vs AC ${defender.ac} - FUMBLE! ${fumble.description}`,
+    };
+  }
+
+  // Normal hit/miss
   const hit = attack.total >= defender.ac;
 
   if (hit) {
@@ -22,7 +60,7 @@ export function performAttack(
 
     return {
       hit: true,
-      attackRoll: attack.d20Result,
+      attackRoll: naturalRoll,
       attackTotal: attack.total,
       damage: dmg.total,
       output: `${attack.output} vs AC ${defender.ac} - HIT! ${dmg.output} damage`,
@@ -31,7 +69,7 @@ export function performAttack(
 
   return {
     hit: false,
-    attackRoll: attack.d20Result,
+    attackRoll: naturalRoll,
     attackTotal: attack.total,
     output: `${attack.output} vs AC ${defender.ac} - MISS!`,
   };
