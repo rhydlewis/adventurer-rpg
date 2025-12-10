@@ -4,6 +4,7 @@ import type { Action, CastSpellAction } from '../types/action';
 import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 import {
   useSecondWind,
+  useChannelEnergy,
   canUseAbility,
   consumeAbilityUse,
   useDodge,
@@ -170,6 +171,28 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           playerCharacter = consumeAbilityUse(playerCharacter, 'Dodge');
           // Activate dodge (will be cleared at start of next turn)
           dodgeActive.player = true;
+          log.push({
+            turn: state.turn,
+            actor: 'player',
+            message: result.output,
+          });
+        }
+      } else if (abilityId === 'Channel Energy') {
+        // Cleric Channel Energy ability
+        const check = canUseAbility(playerCharacter, 'Channel Energy');
+        if (!check.canUse) {
+          log.push({
+            turn: state.turn,
+            actor: 'system',
+            message: `Cannot use Channel Energy: ${check.reason}`,
+          });
+        } else {
+          const result = useChannelEnergy(playerCharacter);
+          playerCharacter = {
+            ...playerCharacter,
+            hp: result.newHp,
+          };
+          playerCharacter = consumeAbilityUse(playerCharacter, 'Channel Energy');
           log.push({
             turn: state.turn,
             actor: 'player',

@@ -23,6 +23,27 @@ export function useSecondWind(character: Character): {
 }
 
 /**
+ * Cleric: Channel Energy
+ * Heal 1d6 HP (2/day, daily resource)
+ */
+export function useChannelEnergy(character: Character): {
+  healed: number;
+  newHp: number;
+  output: string;
+} {
+  const healing = rollDamage('1d6', 0);
+  const oldHp = character.hp;
+  const newHp = Math.min(character.maxHp, oldHp + healing.total);
+  const actualHealing = newHp - oldHp;
+
+  return {
+    healed: actualHealing,
+    newHp,
+    output: `Channel Energy: ${healing.output} HP restored (${oldHp} → ${newHp})`,
+  };
+}
+
+/**
  * Apply feat bonuses to combat calculations
  * Phase 1.3: Basic feat effects
  */
