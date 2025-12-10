@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCombatStore } from '../stores/combatStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
@@ -110,6 +110,12 @@ interface CombatScreenProps {
 export function CombatScreen({ onEndCombat }: CombatScreenProps) {
   const { combat, executeTurn, resetCombat } = useCombatStore();
   const [debugMode, setDebugMode] = useState(false);
+  const logEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom of combat log when new entries are added
+  useEffect(() => {
+    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [combat?.log]);
 
   const handleForceRoll = (value: number) => {
     setForcedD20Roll(value);
@@ -247,7 +253,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
         {/* Combat Log */}
         <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
           <h3 className="text-lg font-bold mb-3">Combat Log</h3>
-          <div className="bg-gray-900 p-4 rounded h-80 overflow-y-auto space-y-2 flex flex-col-reverse">
+          <div className="bg-gray-900 p-4 rounded h-80 overflow-y-auto space-y-2">
             {combat.log.length === 0 ? (
               <p className="text-gray-500 text-center">
                 Combat has not started yet. Click Attack to begin!
@@ -274,6 +280,8 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 </div>
               ))
             )}
+            {/* Scroll anchor - always scrolls to this element */}
+            <div ref={logEndRef} />
           </div>
         </div>
 
