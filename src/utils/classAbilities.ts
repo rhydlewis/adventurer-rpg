@@ -115,10 +115,12 @@ export function calculateSneakAttackDamage(): {
 export function useDodge(): {
   acBonus: number;
   output: string;
+  conditionType: 'Dodge'; // Phase 1.4: Return condition type for unified system
 } {
   return {
     acBonus: 4,
     output: 'Dodge activated: +4 AC until your next turn',
+    conditionType: 'Dodge',
   };
 }
 

@@ -691,6 +691,7 @@ describe('utils/combat', () => {
             order: ['player', 'enemy'],
           },
           currentActor: 'player',
+          activeConditions: { player: [], enemy: [] },
         };
 
         const action = {
@@ -703,8 +704,10 @@ describe('utils/combat', () => {
 
         const result = resolveCombatRound(state, action);
 
-        // Dodge should be active
-        expect(result.dodgeActive?.player).toBe(true);
+        // Dodge should be active as a condition
+        const dodgeCondition = result.activeConditions?.player.find(c => c.type === 'Dodge');
+        expect(dodgeCondition).toBeDefined();
+        expect(dodgeCondition?.turnsRemaining).toBe(1);
 
         // Resource should be consumed
         const dodge = result.playerCharacter.resources.abilities.find(a => a.name === 'Dodge');
@@ -837,6 +840,7 @@ describe('utils/combat', () => {
             order: ['player', 'enemy'],
           },
           currentActor: 'player',
+          activeConditions: { player: [], enemy: [] },
         };
 
         const action = {
@@ -851,8 +855,10 @@ describe('utils/combat', () => {
 
         const result = resolveCombatRound(state, action);
 
-        // Should have buff active
-        expect(result.activeBuffs?.player).toContain('Divine Favor');
+        // Should have Divine Favor condition active
+        const divineFavorCondition = result.activeConditions?.player.find(c => c.type === 'Divine Favor');
+        expect(divineFavorCondition).toBeDefined();
+        expect(divineFavorCondition?.turnsRemaining).toBe(1);
 
         // Should have spell cast log entry
         const spellLog = result.log.find(entry => entry.message.includes('Divine Favor'));

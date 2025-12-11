@@ -14,7 +14,7 @@ import {
 } from './classAbilities';
 import { castSpell } from './spellcasting';
 import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
-import { calculateConditionModifiers, decrementConditions, applyConditionDamage } from './conditions';
+import { calculateConditionModifiers, decrementConditions, applyConditionDamage, applyCondition } from './conditions';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -139,6 +139,17 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     activeBuffs.player = [];
   }
 
+  // Phase 1.4: Decrement player conditions at START of their turn (before DoT)
+  const playerConditionResult = decrementConditions(playerConditions);
+  playerConditions = playerConditionResult.remaining;
+  playerConditionResult.expired.forEach((condition) => {
+    log.push({
+      turn: state.turn,
+      actor: 'system',
+      message: `${condition.type} expired on ${playerCharacter.name}`,
+    });
+  });
+
   // Phase 1.4: Apply damage-over-time from conditions at start of player's turn
   const playerDoT = applyConditionDamage(playerConditions);
   if (playerDoT.totalDamage > 0) {
@@ -209,8 +220,8 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         } else {
           const result = useDodge();
           playerCharacter = consumeAbilityUse(playerCharacter, 'Dodge');
-          // Activate dodge (will be cleared at start of next turn)
-          dodgeActive.player = true;
+          // Phase 1.4: Apply Dodge as a condition (unified system)
+          playerConditions = applyCondition(playerConditions, result.conditionType, state.turn, 1);
           log.push({
             turn: state.turn,
             actor: 'player',
@@ -273,10 +284,18 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           message: result.output,
         });
 
-        // Track buff spells (Divine Favor, Resistance)
+        // Phase 1.4: Apply buff spells as conditions
         if (result.success && spell.effect.type === 'buff') {
-          activeBuffs.player = activeBuffs.player || [];
-          activeBuffs.player.push(spell.name);
+          // Map spell names to condition types
+          const conditionTypeMap: Record<string, import('../types/condition').ConditionType> = {
+            'Divine Favor': 'Divine Favor',
+            'Resistance': 'Resistance',
+          };
+
+          const conditionType = conditionTypeMap[spell.name];
+          if (conditionType) {
+            playerConditions = applyCondition(playerConditions, conditionType, state.turn, 1);
+          }
         }
 
         // TODO: Apply conditions (Daze -> Stunned) in Phase 1.4
@@ -358,7 +377,11 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - freeAttack.damage };
         }
       }
-      // Note: off_balance penalty is handled in performAttack via state check
+
+      // Phase 1.4: Migrate off_balance to conditions system
+      if (fumble.type === 'off_balance') {
+        playerConditions = applyCondition(playerConditions, 'Off-Balance', state.turn, 1);
+      }
     }
     } // End attack action
 
@@ -367,17 +390,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       delete fumbleEffects.player;
     }
   }
-
-  // Phase 1.4: Decrement player conditions at end of their turn
-  const playerConditionResult = decrementConditions(playerConditions);
-  playerConditions = playerConditionResult.remaining;
-  playerConditionResult.expired.forEach((condition) => {
-    log.push({
-      turn: state.turn,
-      actor: 'system',
-      message: `${condition.type} expired on ${playerCharacter.name}`,
-    });
-  });
 
   // Check if enemy defeated
   if (enemy.hp <= 0) {
@@ -408,6 +420,17 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   if (activeBuffs.enemy && activeBuffs.enemy.length > 0) {
     activeBuffs.enemy = [];
   }
+
+  // Phase 1.4: Decrement enemy conditions at START of their turn (before DoT)
+  const enemyConditionResult = decrementConditions(enemyConditions);
+  enemyConditions = enemyConditionResult.remaining;
+  enemyConditionResult.expired.forEach((condition) => {
+    log.push({
+      turn: state.turn,
+      actor: 'system',
+      message: `${condition.type} expired on ${enemy.name}`,
+    });
+  });
 
   // Phase 1.4: Apply damage-over-time from conditions at start of enemy's turn
   const enemyDoT = applyConditionDamage(enemyConditions);
@@ -484,6 +507,11 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           enemy = { ...enemy, hp: enemy.hp - freeAttack.damage };
         }
       }
+
+      // Phase 1.4: Migrate off_balance to conditions system
+      if (fumble.type === 'off_balance') {
+        enemyConditions = applyCondition(enemyConditions, 'Off-Balance', state.turn, 1);
+      }
     }
 
     // Clear off_balance effect after enemy's turn
@@ -491,17 +519,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       delete fumbleEffects.enemy;
     }
   }
-
-  // Phase 1.4: Decrement enemy conditions at end of their turn
-  const enemyConditionResult = decrementConditions(enemyConditions);
-  enemyConditions = enemyConditionResult.remaining;
-  enemyConditionResult.expired.forEach((condition) => {
-    log.push({
-      turn: state.turn,
-      actor: 'system',
-      message: `${condition.type} expired on ${enemy.name}`,
-    });
-  });
 
   // Check if player defeated
   if (playerCharacter.hp <= 0) {

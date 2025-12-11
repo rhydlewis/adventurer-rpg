@@ -52,52 +52,33 @@ function Resources({ character, borderColor, textColor }: ResourcesProps) {
   );
 }
 
-// Reusable Active Effects component
+// Phase 1.4: Reusable Active Effects component (unified conditions system)
 interface ActiveEffectsProps {
-  combat: CombatState;
-  combatant: 'player' | 'enemy';
+  conditions: import('../types/condition').Condition[];
   borderColor: string; // e.g., 'blue-700' or 'red-700'
   textColor: string; // e.g., 'blue-300' or 'red-300'
 }
 
-function ActiveEffects({ combat, combatant, borderColor, textColor }: ActiveEffectsProps) {
-  const hasEffects =
-    combat.dodgeActive?.[combatant] ||
-    combat.fumbleEffects?.[combatant] ||
-    (combat.activeBuffs?.[combatant] && combat.activeBuffs[combatant]!.length > 0);
-
-  if (!hasEffects) return null;
+function ActiveEffects({ conditions, borderColor, textColor }: ActiveEffectsProps) {
+  if (conditions.length === 0) return null;
 
   return (
     <div className={`mt-3 pt-3 border-t border-${borderColor}`}>
       <div className={`text-xs font-semibold text-${textColor} mb-2`}>Active Effects:</div>
       <div className="space-y-1">
-        {/* Dodge */}
-        {combat.dodgeActive?.[combatant] && (
-          <div className="text-xs bg-green-700 text-white px-2 py-1 rounded">
-            ✓ Dodge: +4 AC (until {combatant === 'player' ? 'your' : ''} next turn)
-          </div>
-        )}
+        {conditions.map((condition, idx) => {
+          const bgColor = condition.category === 'buff' ? 'bg-green-700' : 'bg-red-700';
+          const icon = condition.category === 'buff' ? '✓' : '⚠️';
 
-        {/* Buffs */}
-        {combat.activeBuffs?.[combatant]?.map((buff, idx) => (
-          <div key={idx} className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
-            ✨ {buff}
-          </div>
-        ))}
-
-        {/* Fumbles/Debuffs */}
-        {combat.fumbleEffects?.[combatant] && (
-          <div className="text-xs bg-yellow-700 text-white px-2 py-1 rounded">
-            ⚠️ {combat.fumbleEffects[combatant]!.type.replace('_', ' ').toUpperCase()}
-            {combat.fumbleEffects[combatant]!.turnsRemaining &&
-             combat.fumbleEffects[combatant]!.turnsRemaining! > 0
-              ? ` (${combat.fumbleEffects[combatant]!.turnsRemaining} turn${
-                  combat.fumbleEffects[combatant]!.turnsRemaining! > 1 ? 's' : ''
-                })`
-              : ''}
-          </div>
-        )}
+          return (
+            <div key={idx} className={`text-xs ${bgColor} text-white px-2 py-1 rounded`}>
+              {icon} {condition.type}: {condition.description}
+              <span className="ml-2 text-gray-300">
+                ({condition.turnsRemaining} turn{condition.turnsRemaining > 1 ? 's' : ''})
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -210,8 +191,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
 
             {/* Active Effects */}
             <ActiveEffects
-              combat={combat}
-              combatant="player"
+              conditions={combat.activeConditions?.player || []}
               borderColor="blue-700"
               textColor="blue-300"
             />
@@ -242,8 +222,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
 
             {/* Active Effects */}
             <ActiveEffects
-              combat={combat}
-              combatant="enemy"
+              conditions={combat.activeConditions?.enemy || []}
               borderColor="red-700"
               textColor="red-300"
             />
