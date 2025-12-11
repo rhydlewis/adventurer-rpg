@@ -1,4 +1,5 @@
 import type { Attributes } from './attributes';
+import type { Effect } from './effects';
 
 export type CharacterClass = 'Fighter' | 'Rogue' | 'Wizard' | 'Cleric';
 
@@ -16,4 +17,6 @@ export interface Character {
     reflex: number;
     will: number;
   };
+  effects?: Effect[];
+  avatarUrl?: string;
 }

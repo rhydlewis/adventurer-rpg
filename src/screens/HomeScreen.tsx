@@ -3,9 +3,10 @@ import type { Character, Creature } from '../types';
 
 interface HomeScreenProps {
   onStartCombat: () => void;
+  onViewCharacter: () => void;
 }
 
-export function HomeScreen({ onStartCombat }: HomeScreenProps) {
+export function HomeScreen({ onStartCombat, onViewCharacter }: HomeScreenProps) {
   const { startCombat } = useCombatStore();
 
   const handleStartCombat = () => {
@@ -76,12 +77,21 @@ export function HomeScreen({ onStartCombat }: HomeScreenProps) {
           </p>
         </div>
 
-        <button
-          onClick={handleStartCombat}
-          className="w-full px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
-        >
-          Start Combat
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={onViewCharacter}
+            className="w-full px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-lg"
+          >
+            View Character Sheet
+          </button>
+
+          <button
+            onClick={handleStartCombat}
+            className="w-full px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+          >
+            Start Combat
+          </button>
+        </div>
       </div>
     </div>
   );
