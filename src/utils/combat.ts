@@ -1,6 +1,7 @@
 import { rollAttack, rollDamage, calculateModifier } from './dice';
 import type { Character, Creature, CombatState } from '../types';
 import type { Action, CastSpellAction } from '../types/action';
+import type { Condition } from '../types/condition';
 import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 import {
   useSecondWind,
@@ -13,10 +14,13 @@ import {
 } from './classAbilities';
 import { castSpell } from './spellcasting';
 import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
+import { calculateConditionModifiers, decrementConditions, applyConditionDamage } from './conditions';
 
 export function performAttack(
   attacker: Character | Creature,
   defender: Character | Creature,
+  attackerConditions: Condition[] = [],
+  defenderConditions: Condition[] = [],
   modifiers?: { attackBonus?: number; damageBonus?: number; label?: string }
 ): {
   hit: boolean;
@@ -28,17 +32,35 @@ export function performAttack(
   isFumble?: boolean;
   fumbleEffect?: ReturnType<typeof rollFumbleEffect>;
 } {
+  // Calculate condition modifiers for both combatants
+  const attackerMods = calculateConditionModifiers(attackerConditions);
+  const defenderMods = calculateConditionModifiers(defenderConditions);
+
+  // Check if attacker is prevented from acting (e.g., Stunned)
+  if (attackerMods.preventActions) {
+    return {
+      hit: false,
+      attackRoll: 0,
+      attackTotal: 0,
+      output: `${attacker.name} is Stunned - cannot attack!`,
+    };
+  }
+
   const abilityMod = calculateModifier(attacker.attributes.STR);
-  const attackBonus = (modifiers?.attackBonus ?? 0);
-  const damageBonus = (modifiers?.damageBonus ?? 0);
-  const attack = rollAttack(attacker.bab, abilityMod + attackBonus);
+  // Apply attack bonuses from both explicit modifiers AND conditions
+  const totalAttackBonus = (modifiers?.attackBonus ?? 0) + (attackerMods.attackBonus ?? 0);
+  const totalDamageBonus = (modifiers?.damageBonus ?? 0) + (attackerMods.damageBonus ?? 0);
+  const attack = rollAttack(attacker.bab, abilityMod + totalAttackBonus);
   const naturalRoll = attack.d20Result;
+
+  // CRITICAL FIX: Calculate effective AC with condition bonuses (Dodge, Shielded, etc.)
+  const effectiveDefenderAC = defender.ac + (defenderMods.acBonus ?? 0);
 
   // Check for critical hit (natural 20)
   if (isCriticalHit(naturalRoll)) {
     // Crits always hit
     const baseDamage = '1d8'; // For walking skeleton, assume 1d8 weapon
-    const totalMod = abilityMod + damageBonus;
+    const totalMod = abilityMod + totalDamageBonus;
     const baseDamageWithMod = totalMod >= 0 ? `${baseDamage}+${totalMod}` : `${baseDamage}${totalMod}`;
     const critResult = calculateCriticalDamage(baseDamageWithMod);
     const dmg = rollDamage(critResult.formula, 0); // Modifier already in formula
@@ -50,7 +72,7 @@ export function performAttack(
       attackTotal: attack.total,
       damage: dmg.total,
       isCrit: true,
-      output: `${attack.output} vs AC ${defender.ac}${label} - ${critResult.description} ${dmg.output} damage`,
+      output: `${attack.output} vs AC ${effectiveDefenderAC}${label} - ${critResult.description} ${dmg.output} damage`,
     };
   }
 
@@ -64,25 +86,25 @@ export function performAttack(
       attackTotal: attack.total,
       isFumble: true,
       fumbleEffect: fumble,
-      output: `${attack.output} vs AC ${defender.ac} - FUMBLE! ${fumble.description}`,
+      output: `${attack.output} vs AC ${effectiveDefenderAC} - FUMBLE! ${fumble.description}`,
     };
   }
 
-  // Normal hit/miss
-  const hit = attack.total >= defender.ac;
+  // Normal hit/miss - CRITICAL FIX: Use effectiveDefenderAC (includes Dodge, Shielded, etc.)
+  const hit = attack.total >= effectiveDefenderAC;
 
   const label = modifiers?.label ? ` (${modifiers.label})` : '';
 
   if (hit) {
     // For walking skeleton, assume 1d8 weapon
-    const dmg = rollDamage('1d8', abilityMod + damageBonus);
+    const dmg = rollDamage('1d8', abilityMod + totalDamageBonus);
 
     return {
       hit: true,
       attackRoll: naturalRoll,
       attackTotal: attack.total,
       damage: dmg.total,
-      output: `${attack.output} vs AC ${defender.ac}${label} - HIT! ${dmg.output} damage`,
+      output: `${attack.output} vs AC ${effectiveDefenderAC}${label} - HIT! ${dmg.output} damage`,
     };
   }
 
@@ -90,7 +112,7 @@ export function performAttack(
     hit: false,
     attackRoll: naturalRoll,
     attackTotal: attack.total,
-    output: `${attack.output} vs AC ${defender.ac}${label} - MISS!`,
+    output: `${attack.output} vs AC ${effectiveDefenderAC}${label} - MISS!`,
   };
 }
 
@@ -99,6 +121,11 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   const fumbleEffects = { ...state.fumbleEffects };
   const dodgeActive = state.dodgeActive ? { ...state.dodgeActive } : {};
   const activeBuffs = state.activeBuffs ? { ...state.activeBuffs, player: [...(state.activeBuffs.player || [])], enemy: [...(state.activeBuffs.enemy || [])] } : { player: [], enemy: [] };
+
+  // Phase 1.4: Initialize conditions from state
+  let playerConditions = state.activeConditions?.player || [];
+  let enemyConditions = state.activeConditions?.enemy || [];
+
   let playerCharacter = state.playerCharacter;
   let enemy = state.enemy;
 
@@ -110,6 +137,19 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   // Clear player's buffs at start of their turn (they lasted until next turn)
   if (activeBuffs.player && activeBuffs.player.length > 0) {
     activeBuffs.player = [];
+  }
+
+  // Phase 1.4: Apply damage-over-time from conditions at start of player's turn
+  const playerDoT = applyConditionDamage(playerConditions);
+  if (playerDoT.totalDamage > 0) {
+    playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - playerDoT.totalDamage };
+    playerDoT.damageBreakdown.forEach((dmg) => {
+      log.push({
+        turn: state.turn,
+        actor: 'system',
+        message: `${dmg.condition}: ${dmg.formula} = ${dmg.amount} ${dmg.type} damage`,
+      });
+    });
   }
 
   // Player's turn
@@ -253,7 +293,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         };
       }
 
-      const playerAttack = performAttack(playerCharacter, enemy, attackModifiers);
+      const playerAttack = performAttack(playerCharacter, enemy, playerConditions, enemyConditions, attackModifiers);
 
       // Check for Rogue Sneak Attack
       let sneakAttackDamage = 0;
@@ -308,7 +348,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         });
       } else if (fumble.givesFreeAttack) {
         // Opening - enemy gets free attack immediately
-        const freeAttack = performAttack(enemy, playerCharacter);
+        const freeAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions);
         log.push({
           turn: state.turn,
           actor: 'enemy',
@@ -328,6 +368,17 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     }
   }
 
+  // Phase 1.4: Decrement player conditions at end of their turn
+  const playerConditionResult = decrementConditions(playerConditions);
+  playerConditions = playerConditionResult.remaining;
+  playerConditionResult.expired.forEach((condition) => {
+    log.push({
+      turn: state.turn,
+      actor: 'system',
+      message: `${condition.type} expired on ${playerCharacter.name}`,
+    });
+  });
+
   // Check if enemy defeated
   if (enemy.hp <= 0) {
     log.push({
@@ -335,7 +386,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
   }
 
   // Check if player defeated (could happen from self-damage or free attack)
@@ -345,7 +396,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
   }
 
   // Clear enemy's Dodge at start of their turn
@@ -356,6 +407,19 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   // Clear enemy's buffs at start of their turn
   if (activeBuffs.enemy && activeBuffs.enemy.length > 0) {
     activeBuffs.enemy = [];
+  }
+
+  // Phase 1.4: Apply damage-over-time from conditions at start of enemy's turn
+  const enemyDoT = applyConditionDamage(enemyConditions);
+  if (enemyDoT.totalDamage > 0) {
+    enemy = { ...enemy, hp: enemy.hp - enemyDoT.totalDamage };
+    enemyDoT.damageBreakdown.forEach((dmg) => {
+      log.push({
+        turn: state.turn,
+        actor: 'system',
+        message: `${dmg.condition}: ${dmg.formula} = ${dmg.amount} ${dmg.type} damage`,
+      });
+    });
   }
 
   // Enemy's turn
@@ -378,7 +442,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     }
   } else {
     // Enemy attacks normally
-    const enemyAttack = performAttack(enemy, playerCharacter);
+    const enemyAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions);
     log.push({
       turn: state.turn,
       actor: 'enemy',
@@ -410,7 +474,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         });
       } else if (fumble.givesFreeAttack) {
         // Opening - player gets free attack immediately
-        const freeAttack = performAttack(playerCharacter, enemy);
+        const freeAttack = performAttack(playerCharacter, enemy, playerConditions, enemyConditions);
         log.push({
           turn: state.turn,
           actor: 'player',
@@ -428,6 +492,17 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     }
   }
 
+  // Phase 1.4: Decrement enemy conditions at end of their turn
+  const enemyConditionResult = decrementConditions(enemyConditions);
+  enemyConditions = enemyConditionResult.remaining;
+  enemyConditionResult.expired.forEach((condition) => {
+    log.push({
+      turn: state.turn,
+      actor: 'system',
+      message: `${condition.type} expired on ${enemy.name}`,
+    });
+  });
+
   // Check if player defeated
   if (playerCharacter.hp <= 0) {
     log.push({
@@ -435,7 +510,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
   }
 
   // Check if enemy defeated (could happen from self-damage or free attack)
@@ -445,7 +520,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
   }
 
   return {
@@ -457,5 +532,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     fumbleEffects,
     dodgeActive,
     activeBuffs,
+    activeConditions: { player: playerConditions, enemy: enemyConditions },
   };
 }

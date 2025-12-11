@@ -1,4 +1,5 @@
 import type { Character } from './character';
+import type { Condition } from './condition';
 
 // For now, Creature uses the same structure as Character
 // We can differentiate them later (e.g., add AI behavior, loot, etc.)
@@ -50,5 +51,10 @@ export interface CombatState {
   activeBuffs?: {
     player?: string[]; // Array of active buff names
     enemy?: string[];
+  };
+  // Phase 1.4: Unified conditions system (replaces fumbleEffects, dodgeActive, activeBuffs)
+  activeConditions?: {
+    player: Condition[];
+    enemy: Condition[];
   };
 }

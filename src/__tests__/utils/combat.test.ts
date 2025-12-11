@@ -637,10 +637,11 @@ describe('utils/combat', () => {
           log: [],
           winner: null,
           initiative: {
-            player: { total: 10, roll: 8, bonus: 2 },
-            enemy: { total: 5, roll: 5, bonus: 0 },
+            player: { actor: 'player', total: 10, roll: 8, bonus: 2 },
+            enemy: { actor: 'enemy', total: 5, roll: 5, bonus: 0 },
             order: ['player', 'enemy'],
           },
+          currentActor: 'player',
         };
 
         const action = {
@@ -685,10 +686,11 @@ describe('utils/combat', () => {
           log: [],
           winner: null,
           initiative: {
-            player: { total: 10, roll: 8, bonus: 2 },
-            enemy: { total: 5, roll: 5, bonus: 0 },
+            player: { actor: 'player', total: 10, roll: 8, bonus: 2 },
+            enemy: { actor: 'enemy', total: 5, roll: 5, bonus: 0 },
             order: ['player', 'enemy'],
           },
+          currentActor: 'player',
         };
 
         const action = {
@@ -736,10 +738,11 @@ describe('utils/combat', () => {
           log: [],
           winner: null,
           initiative: {
-            player: { total: 10, roll: 8, bonus: 2 },
-            enemy: { total: 5, roll: 5, bonus: 0 },
+            player: { actor: 'player', total: 10, roll: 8, bonus: 2 },
+            enemy: { actor: 'enemy', total: 5, roll: 5, bonus: 0 },
             order: ['player', 'enemy'],
           },
+          currentActor: 'player',
         };
 
         const action = {
@@ -784,10 +787,11 @@ describe('utils/combat', () => {
           log: [],
           winner: null,
           initiative: {
-            player: { total: 10, roll: 8, bonus: 2 },
-            enemy: { total: 5, roll: 5, bonus: 0 },
+            player: { actor: 'player', total: 10, roll: 8, bonus: 2 },
+            enemy: { actor: 'enemy', total: 5, roll: 5, bonus: 0 },
             order: ['player', 'enemy'],
           },
+          currentActor: 'player',
         };
 
         const action = {
@@ -828,10 +832,11 @@ describe('utils/combat', () => {
           log: [],
           winner: null,
           initiative: {
-            player: { total: 10, roll: 8, bonus: 2 },
-            enemy: { total: 5, roll: 5, bonus: 0 },
+            player: { actor: 'player', total: 10, roll: 8, bonus: 2 },
+            enemy: { actor: 'enemy', total: 5, roll: 5, bonus: 0 },
             order: ['player', 'enemy'],
           },
+          currentActor: 'player',
         };
 
         const action = {
@@ -868,15 +873,16 @@ describe('utils/combat', () => {
           log: [],
           winner: null,
           initiative: {
-            player: { total: 10, roll: 8, bonus: 2 },
-            enemy: { total: 5, roll: 5, bonus: 0 },
+            player: { actor: 'player', total: 10, roll: 8, bonus: 2 },
+            enemy: { actor: 'enemy', total: 5, roll: 5, bonus: 0 },
             order: ['player', 'enemy'],
           },
+          currentActor: 'player',
         };
 
         const action = {
           type: 'attack' as const,
-          variant: 'power_attack',
+          variant: 'power_attack' as const,
           name: 'Power Attack',
           description: '-2 to hit, +4 damage',
           available: true,
@@ -886,7 +892,6 @@ describe('utils/combat', () => {
 
         vi.mocked(rollAttack).mockReturnValue({
           total: 18, // High enough to hit even with -2
-          bonus: 4,
           d20Result: 14,
           output: '1d20+2: [14]+2 = 16', // -2 penalty applied
         });
