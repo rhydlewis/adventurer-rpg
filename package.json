@@ -20,6 +20,7 @@
     "@capacitor/preferences": "^8.0.0",
     "@dice-roller/rpg-dice-roller": "^5.5.1",
     "@google/gemini-cli": "^0.20.0",
+    "lucide-react": "^0.560.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "zustand": "^5.0.9"

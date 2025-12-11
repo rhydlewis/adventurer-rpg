@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+@layer base {
+    :root {
+        /* Color System */
+        --bg-primary: #0F1419;
+        --bg-secondary: #1A1F26;
+        --text-primary: #E8E6E3;
+        --text-accent: #D4AF37;
+        --color-player: #3B82F6;
+        --color-enemy: #DC2626;
+        --color-success: #10B981;
+        --color-warning: #F59E0B;
+        --color-magic: #8B5CF6;
+        --border-default: #374151;
+
+        /* Typography Tokens */
+        --font-cinzel: "Cinzel", serif;
+        --font-inter: "Inter", sans-serif;
+        --font-merriweather: "Merriweather", serif;
+        --font-monospace: "Courier New", monospace;
+
+        /* Font Size Tokens */
+        --text-display: 32px;
+        --text-h1: 24px;
+        --text-body: 16px;
+        --text-caption: 12px;
+        --text-dice: 14px;
+
+        /* Spacing Tokens (4px grid) */
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-6: 24px;
+        --space-8: 32px;
+    }
+}

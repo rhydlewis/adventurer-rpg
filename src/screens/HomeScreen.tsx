@@ -2,6 +2,7 @@ import { useCombatStore } from '../stores/combatStore';
 import type { Creature, CharacterClass } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
+import Icon from '../components/Icon';
 
 interface HomeScreenProps {
   onStartCombat: () => void;
@@ -130,28 +131,28 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
                 onClick={() => handleStartCombat('Fighter')}
                 className="px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors"
               >
-                ⚔️ Fighter
+                <Icon name="Swords" className="inline-block mr-2" aria-hidden="true" /> Fighter
                 <div className="text-xs opacity-75 mt-1">Second Wind, Power Attack</div>
               </button>
               <button
                 onClick={() => handleStartCombat('Rogue')}
                 className="px-4 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
               >
-                🗡️ Rogue
+                <Icon name="Lock" className="inline-block mr-2" aria-hidden="true" /> Rogue
                 <div className="text-xs opacity-75 mt-1">Sneak Attack, Dodge</div>
               </button>
               <button
                 onClick={() => handleStartCombat('Wizard')}
                 className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
               >
-                🔮 Wizard
+                <Icon name="WandSparkles" className="inline-block mr-2" aria-hidden="true" /> Wizard
                 <div className="text-xs opacity-75 mt-1">Cantrips, Spells</div>
               </button>
               <button
                 onClick={() => handleStartCombat('Cleric')}
                 className="px-4 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-colors"
               >
-                ✨ Cleric
+                <Icon name="Cross" className="inline-block mr-2" aria-hidden="true" /> Cleric
                 <div className="text-xs opacity-75 mt-1">Healing, Turn Undead</div>
               </button>
             </div>
