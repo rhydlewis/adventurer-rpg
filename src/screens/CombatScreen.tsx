@@ -3,6 +3,7 @@ import { useCombatStore } from '../stores/combatStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import type { CombatState } from '../types/combat';
+import { Button, Card, StatusBar, Badge } from '../components';
 
 // Reusable Resources component
 interface ResourcesProps {
@@ -24,7 +25,7 @@ function Resources({ character, borderColor, textColor }: ResourcesProps) {
       <div className="space-y-1">
         {/* Spell Slots */}
         {character.resources.spellSlots && (
-          <div className="text-xs text-gray-300">
+          <div className="text-xs text-text-secondary font-inter">
             <span className="font-semibold">Spell Slots:</span>
             {character.resources.spellSlots.level1 && (
               <span className="ml-2">
@@ -38,12 +39,12 @@ function Resources({ character, borderColor, textColor }: ResourcesProps) {
         {character.resources.abilities
           .filter(ability => ability.type === 'encounter' || ability.type === 'daily')
           .map((ability, idx) => (
-            <div key={idx} className="text-xs text-gray-300">
+            <div key={idx} className="text-xs text-text-secondary font-inter">
               <span className="font-semibold">{ability.name}:</span>
               <span className="ml-2">
                 {ability.currentUses}/{ability.maxUses}
-                {ability.type === 'encounter' && <span className="text-gray-500 ml-1">(per combat)</span>}
-                {ability.type === 'daily' && <span className="text-gray-500 ml-1">(per day)</span>}
+                {ability.type === 'encounter' && <span className="text-text-muted ml-1">(per combat)</span>}
+                {ability.type === 'daily' && <span className="text-text-muted ml-1">(per day)</span>}
               </span>
             </div>
           ))}
@@ -52,11 +53,11 @@ function Resources({ character, borderColor, textColor }: ResourcesProps) {
   );
 }
 
-// Phase 1.4: Reusable Active Effects component (unified conditions system)
+// Phase 1.4: Active Effects using Badge component
 interface ActiveEffectsProps {
   conditions: import('../types/condition').Condition[];
-  borderColor: string; // e.g., 'blue-700' or 'red-700'
-  textColor: string; // e.g., 'blue-300' or 'red-300'
+  borderColor: string;
+  textColor: string;
 }
 
 function ActiveEffects({ conditions, borderColor, textColor }: ActiveEffectsProps) {
@@ -64,21 +65,17 @@ function ActiveEffects({ conditions, borderColor, textColor }: ActiveEffectsProp
 
   return (
     <div className={`mt-3 pt-3 border-t border-${borderColor}`}>
-      <div className={`text-xs font-semibold text-${textColor} mb-2`}>Active Effects:</div>
+      <div className={`text-xs font-semibold text-${textColor} mb-2 font-inter`}>Active Effects:</div>
       <div className="space-y-1">
-        {conditions.map((condition, idx) => {
-          const bgColor = condition.category === 'buff' ? 'bg-green-700' : 'bg-red-700';
-          const icon = condition.category === 'buff' ? '✓' : '⚠️';
-
-          return (
-            <div key={idx} className={`text-xs ${bgColor} text-white px-2 py-1 rounded`}>
-              {icon} {condition.type}: {condition.description}
-              <span className="ml-2 text-gray-300">
-                ({condition.turnsRemaining} turn{condition.turnsRemaining > 1 ? 's' : ''})
-              </span>
-            </div>
-          );
-        })}
+        {conditions.map((condition, idx) => (
+          <Badge
+            key={idx}
+            type={condition.category}
+            duration={condition.turnsRemaining}
+          >
+            {condition.type}: {condition.description}
+          </Badge>
+        ))}
       </div>
     </div>
   );
@@ -104,15 +101,12 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
 
   if (!combat) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+      <div className="flex items-center justify-center min-h-screen bg-primary text-text-primary">
         <div className="text-center">
-          <p className="text-xl">No combat active</p>
-          <button
-            onClick={onEndCombat}
-            className="mt-4 px-6 py-2 bg-gray-700 rounded hover:bg-gray-600"
-          >
+          <p className="text-xl font-inter">No combat active</p>
+          <Button onClick={onEndCombat} variant="secondary" className="mt-4">
             Return Home
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -124,59 +118,72 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+    <div className="min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-4xl mx-auto">
+        {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Combat - Turn {combat.turn}</h1>
-          <button
-            onClick={handleEndCombat}
-            className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 text-sm"
-          >
+          <h1 className="text-h1 font-cinzel font-bold text-text-accent">
+            Combat - Turn {combat.turn}
+          </h1>
+          <Button onClick={handleEndCombat} variant="secondary">
             End Combat
-          </button>
+          </Button>
         </div>
 
         {/* Initiative Display */}
         {combat.initiative && (
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
-            <h3 className="text-lg font-bold mb-3">Initiative Order</h3>
+          <Card variant="neutral" className="mb-6">
+            <h3 className="text-lg font-cinzel font-bold mb-3">Initiative Order</h3>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className={`px-4 py-2 rounded ${combat.currentActor === 'player' ? 'bg-blue-700 font-bold ring-2 ring-blue-400' : 'bg-gray-700'}`}>
+                <div className={`px-4 py-2 rounded font-inter ${
+                  combat.currentActor === 'player'
+                    ? 'bg-player font-bold ring-2 ring-player'
+                    : 'bg-surface'
+                }`}>
                   {combat.playerCharacter.name}: {combat.initiative.player.total}
                 </div>
-                <span className="text-gray-400">vs</span>
-                <div className={`px-4 py-2 rounded ${combat.currentActor === 'enemy' ? 'bg-red-700 font-bold ring-2 ring-red-400' : 'bg-gray-700'}`}>
+                <span className="text-text-muted">vs</span>
+                <div className={`px-4 py-2 rounded font-inter ${
+                  combat.currentActor === 'enemy'
+                    ? 'bg-enemy font-bold ring-2 ring-enemy'
+                    : 'bg-surface'
+                }`}>
                   {combat.enemy.name}: {combat.initiative.enemy.total}
                 </div>
               </div>
-              <div className="text-sm text-gray-400">
+              <div className="text-sm text-text-muted font-inter">
                 {combat.currentActor === 'player' ? combat.playerCharacter.name : combat.enemy.name}'s Turn
               </div>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Character Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           {/* Player */}
-          <div className="bg-blue-900 border-2 border-blue-500 p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">{combat.playerCharacter.name}</h2>
-            <p className="text-sm text-blue-300 mb-3">
+          <Card variant="player">
+            <h2 className="text-xl font-cinzel font-bold mb-2">{combat.playerCharacter.name}</h2>
+            <p className="text-sm text-text-accent mb-3 font-inter">
               Level {combat.playerCharacter.level} {combat.playerCharacter.class}
             </p>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="font-semibold">HP:</span>
-                <span className={combat.playerCharacter.hp <= 3 ? 'text-red-400' : ''}>
-                  {combat.playerCharacter.hp} / {combat.playerCharacter.maxHp}
-                </span>
-              </div>
-              <div className="flex justify-between">
+
+            {/* HP Bar */}
+            <div className="mb-3">
+              <StatusBar
+                current={combat.playerCharacter.hp}
+                max={combat.playerCharacter.maxHp}
+                label="HP"
+              />
+            </div>
+
+            {/* Stats */}
+            <div className="space-y-2 font-inter">
+              <div className="flex justify-between text-sm">
                 <span className="font-semibold">AC:</span>
                 <span>{combat.playerCharacter.ac}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm">
                 <span className="font-semibold">BAB:</span>
                 <span>+{combat.playerCharacter.bab}</span>
               </div>
@@ -185,36 +192,41 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             {/* Resources */}
             <Resources
               character={combat.playerCharacter}
-              borderColor="blue-700"
-              textColor="blue-300"
+              borderColor="border-player"
+              textColor="text-text-accent"
             />
 
             {/* Active Effects */}
             <ActiveEffects
               conditions={combat.activeConditions?.player || []}
-              borderColor="blue-700"
-              textColor="blue-300"
+              borderColor="border-player"
+              textColor="text-text-accent"
             />
-          </div>
+          </Card>
 
           {/* Enemy */}
-          <div className="bg-red-900 border-2 border-red-500 p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">{combat.enemy.name}</h2>
-            <p className="text-sm text-red-300 mb-3">
+          <Card variant="enemy">
+            <h2 className="text-xl font-cinzel font-bold mb-2">{combat.enemy.name}</h2>
+            <p className="text-sm text-text-accent mb-3 font-inter">
               Level {combat.enemy.level} {combat.enemy.class}
             </p>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="font-semibold">HP:</span>
-                <span className={combat.enemy.hp <= 2 ? 'text-red-400' : ''}>
-                  {combat.enemy.hp} / {combat.enemy.maxHp}
-                </span>
-              </div>
-              <div className="flex justify-between">
+
+            {/* HP Bar */}
+            <div className="mb-3">
+              <StatusBar
+                current={combat.enemy.hp}
+                max={combat.enemy.maxHp}
+                label="HP"
+              />
+            </div>
+
+            {/* Stats */}
+            <div className="space-y-2 font-inter">
+              <div className="flex justify-between text-sm">
                 <span className="font-semibold">AC:</span>
                 <span>{combat.enemy.ac}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-sm">
                 <span className="font-semibold">BAB:</span>
                 <span>+{combat.enemy.bab}</span>
               </div>
@@ -223,33 +235,33 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             {/* Active Effects */}
             <ActiveEffects
               conditions={combat.activeConditions?.enemy || []}
-              borderColor="red-700"
-              textColor="red-300"
+              borderColor="border-enemy"
+              textColor="text-text-accent"
             />
-          </div>
+          </Card>
         </div>
 
         {/* Combat Log */}
-        <div className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-6">
-          <h3 className="text-lg font-bold mb-3">Combat Log</h3>
-          <div className="bg-gray-900 p-4 rounded h-80 overflow-y-auto space-y-2">
+        <Card variant="neutral" className="mb-6">
+          <h3 className="text-lg font-cinzel font-bold mb-3">Combat Log</h3>
+          <div className="bg-surface p-4 rounded h-80 overflow-y-auto space-y-2">
             {combat.log.length === 0 ? (
-              <p className="text-gray-500 text-center">
+              <p className="text-text-muted text-center font-inter">
                 Combat has not started yet. Click Attack to begin!
               </p>
             ) : (
               combat.log.map((entry, idx) => (
                 <div
                   key={idx}
-                  className={`text-sm p-2 rounded ${
+                  className={`text-sm p-2 rounded font-monospace ${
                     entry.actor === 'player'
-                      ? 'bg-blue-900/30 text-blue-200'
+                      ? 'bg-player/20 text-blue-200'
                       : entry.actor === 'enemy'
-                      ? 'bg-red-900/30 text-red-200'
-                      : 'bg-yellow-900/30 text-yellow-200 font-bold'
+                      ? 'bg-enemy/20 text-red-200'
+                      : 'bg-warning/20 text-yellow-200 font-bold'
                   }`}
                 >
-                  <span className="font-mono text-gray-400">[Turn {entry.turn}]</span>{' '}
+                  <span className="text-text-muted">[Turn {entry.turn}]</span>{' '}
                   <span className="font-semibold">
                     {entry.actor === 'player' ? combat.playerCharacter.name :
                      entry.actor === 'enemy' ? combat.enemy.name :
@@ -259,16 +271,16 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 </div>
               ))
             )}
-            {/* Scroll anchor - always scrolls to this element */}
+            {/* Scroll anchor */}
             <div ref={logEndRef} />
           </div>
-        </div>
+        </Card>
 
         {/* Debug Panel */}
-        <div className="bg-gray-800 border border-yellow-600 rounded-lg p-4 mb-6">
+        <Card variant="neutral" className="mb-6 border-warning">
           <button
             onClick={() => setDebugMode(!debugMode)}
-            className="w-full text-left font-bold text-yellow-400 hover:text-yellow-300 flex items-center justify-between"
+            className="w-full text-left font-bold text-warning hover:text-warning/80 flex items-center justify-between font-inter transition-colors"
           >
             <span>🐛 Debug Mode</span>
             <span>{debugMode ? '▼' : '▶'}</span>
@@ -276,81 +288,86 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
 
           {debugMode && (
             <div className="mt-4 space-y-3">
-              <p className="text-sm text-gray-400">Force next attack roll (affects both player and enemy):</p>
+              <p className="text-sm text-text-muted font-inter">
+                Force next attack roll (affects both player and enemy):
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                <button
+                <Button
                   onClick={() => handleForceRoll(20)}
-                  className="px-4 py-2 bg-green-700 hover:bg-green-600 rounded font-semibold text-sm"
+                  variant="primary"
+                  className="bg-success hover:bg-success/90"
                 >
                   Force Crit (20)
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleForceRoll(1)}
-                  className="px-4 py-2 bg-red-700 hover:bg-red-600 rounded font-semibold text-sm"
+                  variant="danger"
                 >
                   Force Fumble (1)
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleForceRoll(15)}
-                  className="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded font-semibold text-sm"
+                  variant="primary"
                 >
                   Force Hit (15)
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleForceRoll(5)}
-                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded font-semibold text-sm"
+                  variant="secondary"
                 >
                   Force Miss (5)
-                </button>
+                </Button>
               </div>
-              <p className="text-xs text-yellow-500 italic">
+              <p className="text-xs text-warning italic font-inter">
                 Note: Forced roll applies to the next attack (either player or enemy, whoever attacks first)
               </p>
             </div>
           )}
-        </div>
+        </Card>
 
         {/* Actions */}
         {combat.winner ? (
           <div className="text-center space-y-4">
-            <div className="bg-gray-800 border-2 border-yellow-500 rounded-lg p-6">
-              <p className="text-3xl font-bold mb-2">
+            <Card variant="neutral" className="border-2 border-warning">
+              <p className="text-3xl font-cinzel font-bold mb-2">
                 {combat.winner === 'player' ? '🎉 Victory!' : '💀 Defeat!'}
               </p>
-              <p className="text-gray-300">
+              <p className="text-text-secondary font-inter">
                 {combat.winner === 'player'
                   ? `${combat.enemy.name} has been defeated!`
                   : `${combat.playerCharacter.name} has fallen in battle.`}
               </p>
-            </div>
-            <button
+            </Card>
+            <Button
               onClick={handleEndCombat}
-              className="w-full px-6 py-3 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+              variant="primary"
+              className="w-full text-lg"
             >
               Return to Home
-            </button>
+            </Button>
           </div>
         ) : (
-          <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
-            <h3 className="text-lg font-bold mb-3">Your Actions</h3>
+          <Card variant="neutral">
+            <h3 className="text-lg font-cinzel font-bold mb-3">Your Actions</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {getAvailableActions(combat.playerCharacter).map((action, index) => {
                 const isDisabled = !action.available || action.disabled;
+
                 return (
                   <button
                     key={index}
                     onClick={() => !isDisabled && executeTurn(action)}
                     disabled={isDisabled}
-                    className={`px-4 py-3 rounded-lg text-left transition-colors ${
+                    className={`min-h-[44px] px-4 py-3 rounded-lg text-left transition-all font-inter ${
                       isDisabled
-                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                        ? 'bg-surface text-text-muted cursor-not-allowed'
                         : action.type === 'attack'
-                        ? 'bg-green-600 hover:bg-green-700 text-white font-semibold shadow-lg'
+                        ? 'bg-success hover:bg-success/90 text-white font-semibold shadow-lg active:scale-[0.98]'
                         : action.type === 'cast_spell'
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white font-semibold'
+                        ? 'bg-magic hover:bg-magic/90 text-white font-semibold active:scale-[0.98]'
                         : action.type === 'use_ability'
-                        ? 'bg-blue-600 hover:bg-blue-700 text-white font-semibold'
-                        : 'bg-yellow-600 hover:bg-yellow-700 text-white font-semibold'
+                        ? 'bg-player hover:bg-player/90 text-white font-semibold active:scale-[0.98]'
+                        : 'bg-warning hover:bg-warning/90 text-white font-semibold active:scale-[0.98]'
                     }`}
                   >
                     <div className="flex items-start justify-between">
@@ -365,7 +382,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                       </div>
                     </div>
                     {isDisabled && action.disabledReason && (
-                      <div className="text-xs text-gray-400 mt-1">
+                      <div className="text-xs text-text-muted mt-1">
                         {action.disabledReason}
                       </div>
                     )}
@@ -373,7 +390,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                 );
               })}
             </div>
-          </div>
+          </Card>
         )}
       </div>
     </div>
