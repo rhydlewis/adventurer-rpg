@@ -1,5 +1,6 @@
-import { Sword, Zap, Heart, Brain, Eye, Sparkles, TrendingUp, TrendingDown } from 'lucide-react';
-import type { Character, Attribute } from '../types';
+import type { Character } from '../types';
+import { Card, StatusBar, Badge } from './index';
+import Icon from './Icon';
 
 interface CharacterSheetProps {
   character: Character;
@@ -14,14 +15,14 @@ const formatModifier = (modifier: number): string => {
   return modifier >= 0 ? `+${modifier}` : `${modifier}`;
 };
 
-// Icon mapping for each attribute
+// Icon mapping for each attribute (using Lucide icon names)
 const attributeIcons = {
-  STR: Sword,
-  DEX: Zap,
-  CON: Heart,
-  INT: Brain,
-  WIS: Eye,
-  CHA: Sparkles,
+  STR: 'Sword' as const,
+  DEX: 'Zap' as const,
+  CON: 'Heart' as const,
+  INT: 'Brain' as const,
+  WIS: 'Eye' as const,
+  CHA: 'Sparkles' as const,
 };
 
 const attributeLabels = {
@@ -33,74 +34,104 @@ const attributeLabels = {
   CHA: 'Charisma',
 };
 
+type AttributeKey = keyof typeof attributeIcons;
+
+/**
+ * CharacterSheet component displays a D&D character's complete stats.
+ *
+ * Features:
+ * - Mobile-first responsive card layout
+ * - Character avatar with fallback
+ * - HP/AC display with StatusBar
+ * - 6 core attributes with Lucide icons
+ * - Active buffs and debuffs using Badge component
+ * - Saving throws
+ * - Follows Adventurer RPG design system
+ *
+ * @example
+ * <CharacterSheet character={playerCharacter} />
+ */
 export function CharacterSheet({ character }: CharacterSheetProps) {
   const buffs = character.effects?.filter(e => e.type === 'buff') || [];
   const debuffs = character.effects?.filter(e => e.type === 'debuff') || [];
 
   return (
-    <div className="w-full max-w-md mx-auto bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl shadow-2xl overflow-hidden">
-      {/* Character Header */}
-      <div className="relative">
-        {/* Avatar */}
-        <div className="w-full h-64 bg-gradient-to-b from-gray-700 to-gray-800 flex items-center justify-center overflow-hidden">
-          {character.avatarUrl ? (
-            <img
-              src={character.avatarUrl}
-              alt={character.name}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-32 h-32 rounded-full bg-gray-600 flex items-center justify-center">
-              <span className="text-6xl text-gray-400">⚔️</span>
+    <div className="w-full max-w-md mx-auto space-y-4">
+      {/* Character Header Card */}
+      <Card variant="player" padding="default">
+        <div className="space-y-4">
+          {/* Avatar Section */}
+          <div className="flex flex-col items-center">
+            <div className="w-32 h-32 rounded-full bg-primary flex items-center justify-center overflow-hidden mb-3 border-2 border-player">
+              {character.avatarUrl ? (
+                <img
+                  src={character.avatarUrl}
+                  alt={character.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Icon name="Swords" size={48} className="text-text-accent" aria-hidden="true" />
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Character Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 via-gray-900/90 to-transparent p-4">
-          <h2 className="text-3xl font-bold text-white">{character.name}</h2>
-          <p className="text-gray-300">
-            Level {character.level} {character.class}
-          </p>
-        </div>
-      </div>
+            {/* Character Name and Class */}
+            <h2 className="font-cinzel font-bold text-display text-text-accent text-center">
+              {character.name}
+            </h2>
+            <p className="font-inter font-medium text-body text-text-primary">
+              Level {character.level} {character.class}
+            </p>
+          </div>
 
-      {/* HP and AC */}
-      <div className="grid grid-cols-2 gap-4 p-4 border-b border-gray-700">
-        <div className="bg-gray-800/50 rounded-lg p-3 text-center">
-          <div className="text-sm text-gray-400 mb-1">Hit Points</div>
-          <div className="text-2xl font-bold text-red-400">
-            {character.hp} / {character.maxHp}
+          {/* HP and AC Stats */}
+          <div className="space-y-3">
+            <StatusBar
+              current={character.hp}
+              max={character.maxHp}
+              label="HP"
+              showNumbers
+            />
+
+            <div className="flex justify-between items-center bg-secondary rounded-lg p-3">
+              <span className="font-inter font-medium text-body text-text-primary">
+                Armor Class
+              </span>
+              <span className="font-inter font-bold text-h1 text-player">
+                {character.ac}
+              </span>
+            </div>
           </div>
         </div>
-        <div className="bg-gray-800/50 rounded-lg p-3 text-center">
-          <div className="text-sm text-gray-400 mb-1">Armor Class</div>
-          <div className="text-2xl font-bold text-blue-400">{character.ac}</div>
-        </div>
-      </div>
+      </Card>
 
-      {/* Attributes */}
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-white mb-3">Attributes</h3>
+      {/* Attributes Card */}
+      <Card variant="neutral" padding="default">
+        <h3 className="font-inter font-semibold text-h1 text-text-primary mb-3">
+          Attributes
+        </h3>
         <div className="grid grid-cols-2 gap-3">
-          {(Object.keys(attributeIcons) as Attribute[]).map((attr) => {
-            const Icon = attributeIcons[attr];
+          {(Object.keys(attributeIcons) as AttributeKey[]).map((attr) => {
+            const iconName = attributeIcons[attr];
             const score = character.attributes[attr];
             const modifier = getAbilityModifier(score);
 
             return (
               <div
                 key={attr}
-                className="bg-gray-800/50 rounded-lg p-3 flex items-center space-x-3"
+                className="bg-primary rounded-lg p-3 flex items-center space-x-3 border border-border-default"
               >
-                <div className="bg-gray-700 p-2 rounded-lg">
-                  <Icon className="w-5 h-5 text-blue-400" />
+                <div className="bg-secondary p-2 rounded-lg">
+                  <Icon name={iconName} size={20} className="text-player" aria-hidden="true" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-xs text-gray-400">{attributeLabels[attr]}</div>
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-xl font-bold text-white">{score}</span>
-                    <span className="text-sm text-gray-400">
+                  <div className="font-inter text-caption text-text-primary/70">
+                    {attributeLabels[attr]}
+                  </div>
+                  <div className="flex items-baseline space-x-1.5">
+                    <span className="font-inter font-bold text-h1 text-text-primary">
+                      {score}
+                    </span>
+                    <span className="font-inter text-body text-text-primary/60">
                       ({formatModifier(modifier)})
                     </span>
                   </div>
@@ -109,42 +140,65 @@ export function CharacterSheet({ character }: CharacterSheetProps) {
             );
           })}
         </div>
-      </div>
+      </Card>
 
-      {/* Buffs and Debuffs */}
+      {/* Saving Throws Card */}
+      <Card variant="neutral" padding="default">
+        <h3 className="font-inter font-semibold text-h1 text-text-primary mb-3">
+          Saving Throws
+        </h3>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-primary rounded-lg p-3 text-center border border-border-default">
+            <div className="font-inter text-caption text-text-primary/70 mb-1">
+              Fortitude
+            </div>
+            <div className="font-inter font-bold text-h1 text-success">
+              {formatModifier(character.saves.fortitude)}
+            </div>
+          </div>
+          <div className="bg-primary rounded-lg p-3 text-center border border-border-default">
+            <div className="font-inter text-caption text-text-primary/70 mb-1">
+              Reflex
+            </div>
+            <div className="font-inter font-bold text-h1 text-warning">
+              {formatModifier(character.saves.reflex)}
+            </div>
+          </div>
+          <div className="bg-primary rounded-lg p-3 text-center border border-border-default">
+            <div className="font-inter text-caption text-text-primary/70 mb-1">
+              Will
+            </div>
+            <div className="font-inter font-bold text-h1 text-magic">
+              {formatModifier(character.saves.will)}
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Active Effects Card */}
       {(buffs.length > 0 || debuffs.length > 0) && (
-        <div className="p-4 border-t border-gray-700">
-          <h3 className="text-lg font-semibold text-white mb-3">Active Effects</h3>
+        <Card variant="neutral" padding="default">
+          <h3 className="font-inter font-semibold text-h1 text-text-primary mb-3">
+            Active Effects
+          </h3>
 
           {/* Buffs */}
           {buffs.length > 0 && (
             <div className="mb-3">
-              <div className="text-sm text-green-400 font-medium mb-2 flex items-center">
-                <TrendingUp className="w-4 h-4 mr-1" />
+              <div className="font-inter font-medium text-body text-success mb-2 flex items-center">
+                <Icon name="TrendingUp" size={16} className="mr-1.5" aria-hidden="true" />
                 Buffs
               </div>
-              <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
                 {buffs.map((buff) => (
-                  <div
+                  <Badge
                     key={buff.id}
-                    className="bg-green-900/20 border border-green-700/30 rounded-lg p-2"
+                    type="buff"
+                    duration={buff.duration}
+                    icon={<Icon name="ArrowUp" size={14} />}
                   >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-green-300">
-                          {buff.name}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {buff.description}
-                        </div>
-                      </div>
-                      {buff.duration && (
-                        <div className="text-xs text-green-400 ml-2">
-                          {buff.duration}t
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    {buff.name}: {buff.description}
+                  </Badge>
                 ))}
               </div>
             </div>
@@ -153,63 +207,26 @@ export function CharacterSheet({ character }: CharacterSheetProps) {
           {/* Debuffs */}
           {debuffs.length > 0 && (
             <div>
-              <div className="text-sm text-red-400 font-medium mb-2 flex items-center">
-                <TrendingDown className="w-4 h-4 mr-1" />
+              <div className="font-inter font-medium text-body text-enemy mb-2 flex items-center">
+                <Icon name="TrendingDown" size={16} className="mr-1.5" aria-hidden="true" />
                 Debuffs
               </div>
-              <div className="space-y-2">
+              <div className="flex flex-wrap gap-2">
                 {debuffs.map((debuff) => (
-                  <div
+                  <Badge
                     key={debuff.id}
-                    className="bg-red-900/20 border border-red-700/30 rounded-lg p-2"
+                    type="debuff"
+                    duration={debuff.duration}
+                    icon={<Icon name="ArrowDown" size={14} />}
                   >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-red-300">
-                          {debuff.name}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {debuff.description}
-                        </div>
-                      </div>
-                      {debuff.duration && (
-                        <div className="text-xs text-red-400 ml-2">
-                          {debuff.duration}t
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    {debuff.name}: {debuff.description}
+                  </Badge>
                 ))}
               </div>
             </div>
           )}
-        </div>
+        </Card>
       )}
-
-      {/* Saving Throws */}
-      <div className="p-4 border-t border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-3">Saving Throws</h3>
-        <div className="grid grid-cols-3 gap-2">
-          <div className="bg-gray-800/50 rounded-lg p-2 text-center">
-            <div className="text-xs text-gray-400">Fort</div>
-            <div className="text-lg font-bold text-white">
-              {formatModifier(character.saves.fortitude)}
-            </div>
-          </div>
-          <div className="bg-gray-800/50 rounded-lg p-2 text-center">
-            <div className="text-xs text-gray-400">Reflex</div>
-            <div className="text-lg font-bold text-white">
-              {formatModifier(character.saves.reflex)}
-            </div>
-          </div>
-          <div className="bg-gray-800/50 rounded-lg p-2 text-center">
-            <div className="text-xs text-gray-400">Will</div>
-            <div className="text-lg font-bold text-white">
-              {formatModifier(character.saves.will)}
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
