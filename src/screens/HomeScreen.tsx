@@ -2,7 +2,7 @@ import { useCombatStore } from '../stores/combatStore';
 import type { Creature, CharacterClass } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
-import Icon from '../components/Icon';
+import { Button, Card, Icon } from '../components';
 
 interface HomeScreenProps {
   onStartCombat: () => void;
@@ -93,71 +93,138 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-5xl font-bold mb-4">Adventurer RPG</h1>
-        <p className="text-gray-300 mb-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
+      <div className="max-w-md w-full text-center">
+        {/* Title Section */}
+        <h1 className="font-cinzel font-black text-[32px] leading-[1.2] mb-2 text-text-accent">
+          Adventurer RPG
+        </h1>
+        <p className="font-merriweather text-[16px] leading-[1.6] text-text-primary/80 mb-8">
           A single-player narrative RPG with streamlined d20 mechanics
         </p>
 
-        <div className="bg-gray-700 p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-semibold mb-2">Phase 1.3 Testing</h2>
-          <p className="text-sm text-gray-300">
+        {/* Phase Info Card */}
+        <Card variant="neutral" className="mb-6">
+          <h2 className="font-inter font-semibold text-h1 mb-2">Phase 1.5 Testing</h2>
+          <p className="font-inter text-body text-text-primary/70">
             Test combat with different classes - Choose your adventurer:
           </p>
-        </div>
+        </Card>
 
-        <div className="space-y-4">
-          <button
+        {/* Main Actions */}
+        <div className="space-y-3 mb-6">
+          <Button
+            variant="primary"
+            size="large"
+            fullWidth
             onClick={onCreateCharacter}
-            className="w-full px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-lg"
+            icon={<Icon name="UserPlus" />}
           >
             Create New Character
-          </button>
+          </Button>
 
           {hasCharacter && onViewCharacter && (
-            <button
+            <Button
+              variant="secondary"
+              size="large"
+              fullWidth
               onClick={onViewCharacter}
-              className="w-full px-8 py-4 bg-purple-600 text-white text-lg font-semibold rounded-lg hover:bg-purple-700 transition-colors shadow-lg"
+              icon={<Icon name="User" />}
             >
               View Character Sheet
-            </button>
+            </Button>
           )}
-
-          <div className="bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-3">Quick Combat Test</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={() => handleStartCombat('Fighter')}
-                className="px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors"
-              >
-                <Icon name="Swords" className="inline-block mr-2" aria-hidden="true" /> Fighter
-                <div className="text-xs opacity-75 mt-1">Second Wind, Power Attack</div>
-              </button>
-              <button
-                onClick={() => handleStartCombat('Rogue')}
-                className="px-4 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                <Icon name="Lock" className="inline-block mr-2" aria-hidden="true" /> Rogue
-                <div className="text-xs opacity-75 mt-1">Sneak Attack, Dodge</div>
-              </button>
-              <button
-                onClick={() => handleStartCombat('Wizard')}
-                className="px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Icon name="WandSparkles" className="inline-block mr-2" aria-hidden="true" /> Wizard
-                <div className="text-xs opacity-75 mt-1">Cantrips, Spells</div>
-              </button>
-              <button
-                onClick={() => handleStartCombat('Cleric')}
-                className="px-4 py-3 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-colors"
-              >
-                <Icon name="Cross" className="inline-block mr-2" aria-hidden="true" /> Cleric
-                <div className="text-xs opacity-75 mt-1">Healing, Turn Undead</div>
-              </button>
-            </div>
-          </div>
         </div>
+
+        {/* Quick Combat Test Section */}
+        <Card variant="neutral" padding="compact">
+          <h3 className="font-inter font-semibold text-body mb-3">Quick Combat Test</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Fighter Button */}
+            <button
+              onClick={() => handleStartCombat('Fighter')}
+              className="
+                px-3 py-3
+                bg-enemy text-white
+                font-inter font-semibold text-body
+                rounded-lg
+                hover:bg-red-700 active:bg-red-800
+                transition-all duration-200
+                active:scale-[0.98]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-player
+                focus-visible:ring-offset-2 focus-visible:ring-offset-primary
+                min-h-[44px]
+              "
+            >
+              <Icon name="Swords" className="inline-block mr-1" size={18} aria-hidden="true" />
+              <span>Fighter</span>
+              <div className="text-caption opacity-75 mt-1">Second Wind, Power Attack</div>
+            </button>
+
+            {/* Rogue Button */}
+            <button
+              onClick={() => handleStartCombat('Rogue')}
+              className="
+                px-3 py-3
+                bg-magic text-white
+                font-inter font-semibold text-body
+                rounded-lg
+                hover:bg-purple-700 active:bg-purple-800
+                transition-all duration-200
+                active:scale-[0.98]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-player
+                focus-visible:ring-offset-2 focus-visible:ring-offset-primary
+                min-h-[44px]
+              "
+            >
+              <Icon name="Lock" className="inline-block mr-1" size={18} aria-hidden="true" />
+              <span>Rogue</span>
+              <div className="text-caption opacity-75 mt-1">Sneak Attack, Dodge</div>
+            </button>
+
+            {/* Wizard Button */}
+            <button
+              onClick={() => handleStartCombat('Wizard')}
+              className="
+                px-3 py-3
+                bg-player text-white
+                font-inter font-semibold text-body
+                rounded-lg
+                hover:bg-blue-600 active:bg-blue-700
+                transition-all duration-200
+                active:scale-[0.98]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-player
+                focus-visible:ring-offset-2 focus-visible:ring-offset-primary
+                min-h-[44px]
+              "
+            >
+              <Icon name="WandSparkles" className="inline-block mr-1" size={18} aria-hidden="true" />
+              <span>Wizard</span>
+              <div className="text-caption opacity-75 mt-1">Cantrips, Spells</div>
+            </button>
+
+            {/* Cleric Button */}
+            <button
+              onClick={() => handleStartCombat('Cleric')}
+              className="
+                px-3 py-3
+                bg-warning text-white
+                font-inter font-semibold text-body
+                rounded-lg
+                hover:bg-yellow-600 active:bg-yellow-700
+                transition-all duration-200
+                active:scale-[0.98]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-player
+                focus-visible:ring-offset-2 focus-visible:ring-offset-primary
+                min-h-[44px]
+              "
+            >
+              <Icon name="Cross" className="inline-block mr-1" size={18} aria-hidden="true" />
+              <span>Cleric</span>
+              <div className="text-caption opacity-75 mt-1">Healing, Turn Undead</div>
+            </button>
+          </div>
+        </Card>
       </div>
     </div>
   );
