@@ -7,16 +7,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        'primary': 'var(--bg-primary)',
-        'secondary': 'var(--bg-secondary)',
-        'text-primary': 'var(--text-primary)',
-        'text-accent': 'var(--text-accent)',
+        'primary': 'var(--color-primary)',
+        'secondary': 'var(--color-secondary)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-accent': 'var(--color-text-accent)',
+        'text-muted': 'var(--color-text-muted)',
+        'text-secondary': 'var(--color-text-secondary)',
         'player': 'var(--color-player)',
         'enemy': 'var(--color-enemy)',
         'success': 'var(--color-success)',
         'warning': 'var(--color-warning)',
         'magic': 'var(--color-magic)',
-        'border-default': 'var(--border-default)',
+        'hint': 'var(--color-hint)',
+        'border-default': 'var(--color-border-default)',
       },
       fontFamily: {
         'cinzel': ['var(--font-cinzel)', 'serif'],

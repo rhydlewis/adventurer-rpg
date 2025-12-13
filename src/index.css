@@ -6,11 +6,14 @@
   --color-secondary: #1A1F26;
   --color-text-primary: #E8E6E3;
   --color-text-accent: #D4AF37;
+  --color-text-muted: #9CA3AF;
+  --color-text-secondary: #D1D5DB;
   --color-player: #3B82F6;
   --color-enemy: #DC2626;
-  --color-success: #10B981;
+  --color-success: #4ADE80;
   --color-warning: #F59E0B;
   --color-magic: #8B5CF6;
+  --color-hint: #CA8A04;
   --color-border-default: #374151;
 
   /* Typography - Font Families */
