@@ -11,4 +11,5 @@ export type Screen =
   | { type: 'victory' }
   | { type: 'characterSheet' }
   | { type: 'worldMap' } // Phase 3
-  | { type: 'rest' }; // Phase 4
+  | { type: 'rest' } // Phase 4
+  | { type: 'lockPicking'; difficulty: 'easy' | 'medium' | 'hard'; onSuccess: () => void; onFailure: () => void };

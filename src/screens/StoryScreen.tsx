@@ -2,12 +2,18 @@ import { useEffect, useRef } from 'react';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
 import { NarrativeLog, ChoiceButton, Card, Button, Icon } from '../components';
+import type { Screen } from '../types/navigation';
 
 interface StoryScreenProps {
   /**
    * Callback to exit story mode (return to home/world map)
    */
   onExit: () => void;
+
+  /**
+   * Optional callback for navigation to other screens (e.g., minigames)
+   */
+  onNavigate?: (screen: Screen) => void;
 }
 
 /**
@@ -23,7 +29,7 @@ interface StoryScreenProps {
  * @example
  * <StoryScreen onExit={() => setScreen('home')} />
  */
-export function StoryScreen({ onExit }: StoryScreenProps) {
+export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
   const {
     conversation,
     campaign,
@@ -100,6 +106,22 @@ export function StoryScreen({ onExit }: StoryScreenProps) {
     onExit();
   };
 
+  const handleTestLockPicking = (difficulty: 'easy' | 'medium' | 'hard') => {
+    if (!onNavigate) return;
+    onNavigate({
+      type: 'lockPicking',
+      difficulty,
+      onSuccess: () => {
+        console.log('Lock picked successfully!');
+        onNavigate({ type: 'story' });
+      },
+      onFailure: () => {
+        console.log('Lock picking failed!');
+        onNavigate({ type: 'story' });
+      },
+    });
+  };
+
   return (
     <div className="min-h-screen bg-primary flex flex-col p-4">
       {/* Header */}
@@ -137,6 +159,35 @@ export function StoryScreen({ onExit }: StoryScreenProps) {
 
       {/* Choices Section */}
       <div className="space-y-2">
+        {/* Test Lock Picking Minigame (Prototype) */}
+        {onNavigate && (
+          <Card variant="neutral" padding="compact" className="mb-2 border-warning">
+            <p className="text-caption text-text-primary font-inter mb-2 text-center font-semibold">
+              🔒 Prototype: Lock Picking Minigame
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                onClick={() => handleTestLockPicking('easy')}
+                className="px-2 py-2 bg-success text-white font-inter font-semibold text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
+              >
+                Easy
+              </button>
+              <button
+                onClick={() => handleTestLockPicking('medium')}
+                className="px-2 py-2 bg-warning text-white font-inter font-semibold text-caption rounded-lg hover:bg-yellow-600 active:bg-yellow-700 transition-all duration-200 active:scale-[0.98]"
+              >
+                Medium
+              </button>
+              <button
+                onClick={() => handleTestLockPicking('hard')}
+                className="px-2 py-2 bg-enemy text-white font-inter font-semibold text-caption rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-[0.98]"
+              >
+                Hard
+              </button>
+            </div>
+          </Card>
+        )}
+
         {/* Companion Hint Button */}
         {hasCompanionHint && (
           <Button
