@@ -240,31 +240,28 @@ function SkillsTab({ character, skillNames }: { character: Character; skillNames
           return (
             <div
               key={skillName}
-              className={`bg-surface rounded-lg p-3 flex items-center space-x-3 border ${
-                hasRanks
-                  ? 'border-border-default'
-                  : 'border-border-default/30 opacity-60'
-              }`}
+              className="bg-surface rounded-lg p-3 flex items-center space-x-3 border border-border-default"
             >
-              <div className={`p-2 rounded-lg ${hasRanks ? 'bg-primary' : 'bg-primary/50'}`}>
+              <div className="bg-primary p-2 rounded-lg">
                 <Icon
                   name={iconName}
                   size={24}
-                  className={hasRanks ? 'text-player' : 'text-text-muted'}
+                  className="text-player"
                 />
               </div>
               <div className="flex-1">
-                <div className={`font-inter text-xs uppercase ${
-                  hasRanks ? 'text-text-primary' : 'text-text-muted'
-                }`}>
+                <div className="font-inter text-xs text-text-muted uppercase">
                   {skillName}
                 </div>
                 <div className="flex items-baseline space-x-1.5">
-                  <span className={`font-cinzel font-bold text-2xl ${
-                    hasRanks ? 'text-text-accent' : 'text-text-muted'
-                  }`}>
+                  <span className="font-cinzel font-bold text-2xl text-text-accent">
                     {formatModifier(skillBonus.totalBonus)}
                   </span>
+                  {hasRanks && (
+                    <span className="font-inter text-sm text-text-secondary">
+                      ({character.skills[skillName]} ranks)
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -348,7 +345,9 @@ function CombatTab({ character }: { character: Character }) {
 
       {/* Equipment */}
       <Card variant="neutral">
-        <h2 className="text-h2 font-cinzel font-bold mb-4">Equipment</h2>
+        <h2 className="text-h2 font-cinzel font-bold mb-4">
+          Equipment
+        </h2>
 
         {/* Equipped Items */}
         <div className="space-y-3 mb-4">
