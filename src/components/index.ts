@@ -10,3 +10,4 @@ export { Button } from './Button';
 export { Card } from './Card';
 export { StatusBar } from './StatusBar';
 export { default as Icon } from './Icon';
+export { NarrativeLog } from './narrative/NarrativeLog';
