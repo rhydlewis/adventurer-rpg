@@ -29,6 +29,16 @@ const attributeLabels = {
   CHA: 'Charisma',
 };
 
+// Skill icon mapping (Lucide React icons)
+const skillIcons = {
+  Athletics: 'Dumbbell' as const,
+  Stealth: 'EyeOff' as const,
+  Perception: 'Eye' as const,
+  Arcana: 'Sparkles' as const,
+  Medicine: 'Heart' as const,
+  Intimidate: 'Flame' as const,
+};
+
 type AttributeKey = keyof typeof attributeIcons;
 type TabType = 'overview' | 'skills' | 'combat';
 
@@ -218,63 +228,49 @@ function OverviewTab({ character }: { character: Character }) {
 
 // Skills Tab
 function SkillsTab({ character, skillNames }: { character: Character; skillNames: SkillName[] }) {
-  // Separate trained and untrained skills
-  const trainedSkills = skillNames.filter(name => character.skills[name] > 0);
-  const untrainedSkills = skillNames.filter(name => character.skills[name] === 0);
-
   return (
     <Card variant="neutral">
       <h2 className="text-h2 font-cinzel font-bold mb-4">Skills</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {skillNames.map((skillName) => {
+          const skillBonus = calculateSkillBonus(character, skillName);
+          const hasRanks = character.skills[skillName] > 0;
+          const iconName = skillIcons[skillName as keyof typeof skillIcons];
 
-      {/* Trained Skills */}
-      {trainedSkills.length > 0 && (
-        <div className="mb-4">
-          <h3 className="text-sm font-inter font-semibold text-text-accent mb-2">
-            Trained
-          </h3>
-          <div className="space-y-2">
-            {trainedSkills.map((skillName) => {
-              const skillBonus = calculateSkillBonus(character, skillName);
-              return (
-                <div
-                  key={skillName}
-                  className="flex justify-between items-center p-3 rounded bg-surface font-inter"
-                >
-                  <span className="font-semibold">{skillName}</span>
-                  <span className="font-monospace text-lg text-text-accent">
+          return (
+            <div
+              key={skillName}
+              className={`bg-surface rounded-lg p-3 flex items-center space-x-3 border ${
+                hasRanks
+                  ? 'border-border-default'
+                  : 'border-border-default/30 opacity-60'
+              }`}
+            >
+              <div className={`p-2 rounded-lg ${hasRanks ? 'bg-primary' : 'bg-primary/50'}`}>
+                <Icon
+                  name={iconName}
+                  size={24}
+                  className={hasRanks ? 'text-player' : 'text-text-muted'}
+                />
+              </div>
+              <div className="flex-1">
+                <div className={`font-inter text-xs uppercase ${
+                  hasRanks ? 'text-text-primary' : 'text-text-muted'
+                }`}>
+                  {skillName}
+                </div>
+                <div className="flex items-baseline space-x-1.5">
+                  <span className={`font-cinzel font-bold text-2xl ${
+                    hasRanks ? 'text-text-accent' : 'text-text-muted'
+                  }`}>
                     {formatModifier(skillBonus.totalBonus)}
                   </span>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Untrained Skills */}
-      {untrainedSkills.length > 0 && (
-        <div>
-          <h3 className="text-sm font-inter font-semibold text-text-muted mb-2">
-            Untrained
-          </h3>
-          <div className="space-y-2">
-            {untrainedSkills.map((skillName) => {
-              const skillBonus = calculateSkillBonus(character, skillName);
-              return (
-                <div
-                  key={skillName}
-                  className="flex justify-between items-center p-3 rounded bg-surface/30 font-inter text-text-muted"
-                >
-                  <span>{skillName}</span>
-                  <span className="font-monospace text-lg">
-                    {formatModifier(skillBonus.totalBonus)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </Card>
   );
 }
