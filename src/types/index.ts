@@ -5,6 +5,8 @@ export * from './condition';
 export * from './dice';
 export * from './equipment';
 export * from './feat';
+export * from './narrative';
+export * from './navigation';
 export * from './resource';
 export * from './skill';
 export * from './spell';
