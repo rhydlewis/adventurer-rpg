@@ -8,10 +8,11 @@ interface HomeScreenProps {
   onStartCombat: () => void;
   onCreateCharacter: () => void;
   onViewCharacter?: () => void;
+  onStartStory?: () => void;
   hasCharacter: boolean;
 }
 
-export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, hasCharacter }: HomeScreenProps) {
+export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, onStartStory, hasCharacter }: HomeScreenProps) {
   const { startCombat } = useCombatStore();
 
   const handleStartCombat = (className: CharacterClass) => {
@@ -132,6 +133,18 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               icon={<Icon name="User" />}
             >
               View Character Sheet
+            </Button>
+          )}
+
+          {hasCharacter && onStartStory && (
+            <Button
+              variant="primary"
+              size="large"
+              fullWidth
+              onClick={onStartStory}
+              icon={<Icon name="Book" />}
+            >
+              Start Story
             </Button>
           )}
         </div>

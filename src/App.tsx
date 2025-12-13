@@ -1,50 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HomeScreen } from './screens/HomeScreen';
 import { CombatScreen } from './screens/CombatScreen';
 import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
 import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
+import { StoryScreen } from './screens/StoryScreen';
 import { useCharacterStore } from './stores/characterStore';
-
-type Screen = 'home' | 'combat' | 'creation' | 'sheet';
+import { useNarrativeStore } from './stores/narrativeStore';
+import type { Screen } from './types/navigation';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('home');
+  const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'home' });
   const { character, creationStep, startCreation } = useCharacterStore();
+  const { setNavigationCallback } = useNarrativeStore();
+
+  // Register navigation callback with narrative store
+  useEffect(() => {
+    setNavigationCallback(setCurrentScreen);
+  }, [setNavigationCallback]);
 
   // When character creation is complete, show character sheet
-  if (creationStep === 'complete' && character && currentScreen === 'creation') {
-    setCurrentScreen('sheet');
+  if (
+    creationStep === 'complete' &&
+    character &&
+    currentScreen.type === 'characterCreation'
+  ) {
+    setCurrentScreen({ type: 'characterSheet' });
   }
 
   const handleCreateCharacter = () => {
     startCreation();
-    setCurrentScreen('creation');
+    setCurrentScreen({ type: 'characterCreation' });
   };
 
   const handleViewSheet = () => {
-    setCurrentScreen('sheet');
+    setCurrentScreen({ type: 'characterSheet' });
   };
 
   const handleCloseSheet = () => {
-    setCurrentScreen('home');
+    setCurrentScreen({ type: 'home' });
+  };
+
+  const handleStartStory = () => {
+    setCurrentScreen({ type: 'story' });
   };
 
   return (
     <>
-      {currentScreen === 'home' && (
+      {currentScreen.type === 'home' && (
         <HomeScreen
-          onStartCombat={() => setCurrentScreen('combat')}
+          onStartCombat={() => setCurrentScreen({ type: 'combat', enemyId: 'goblin', onVictoryNodeId: '' })}
           onCreateCharacter={handleCreateCharacter}
           onViewCharacter={character ? handleViewSheet : undefined}
           hasCharacter={character !== null}
+          onStartStory={character ? handleStartStory : undefined}
         />
       )}
-      {currentScreen === 'combat' && (
-        <CombatScreen onEndCombat={() => setCurrentScreen('home')} />
+      {currentScreen.type === 'combat' && (
+        <CombatScreen onEndCombat={() => setCurrentScreen({ type: 'home' })} />
       )}
-      {currentScreen === 'creation' && <CharacterCreationScreen />}
-      {currentScreen === 'sheet' && character && (
+      {currentScreen.type === 'characterCreation' && <CharacterCreationScreen />}
+      {currentScreen.type === 'characterSheet' && character && (
         <CharacterSheetScreen character={character} onClose={handleCloseSheet} />
+      )}
+      {currentScreen.type === 'story' && (
+        <StoryScreen onExit={() => setCurrentScreen({ type: 'home' })} />
       )}
     </>
   );
