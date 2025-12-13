@@ -3,7 +3,7 @@ import type { Character } from '../types/character';
 import { calculateModifier } from '../utils/dice';
 import { calculateSkillBonus } from '../utils/skills';
 import type { SkillName } from '../types/skill';
-import { Button, Card, StatusBar, Icon } from '../components';
+import { Button, Card, Icon } from '../components';
 
 interface CharacterSheetScreenProps {
   character: Character;
@@ -30,7 +30,7 @@ const attributeLabels = {
 };
 
 type AttributeKey = keyof typeof attributeIcons;
-type TabType = 'overview' | 'skills' | 'combat' | 'equipment';
+type TabType = 'overview' | 'skills' | 'combat';
 
 const formatModifier = (value: number): string => {
   return value >= 0 ? `+${value}` : `${value}`;
@@ -45,11 +45,17 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-display font-cinzel font-bold text-text-accent">{character.name}</h1>
-            <p className="text-h2 text-text-secondary font-inter">
-              Level {character.level} {character.class}
-            </p>
+          <div className="flex items-center space-x-4">
+            {/* Character Avatar */}
+            <div className="w-20 h-20 rounded-lg bg-surface flex items-center justify-center border-2 border-border-default">
+              <Icon name="User" size={40} className="text-text-muted" />
+            </div>
+            <div>
+              <h1 className="text-display font-cinzel font-bold text-text-accent">{character.name}</h1>
+              <p className="text-h2 text-text-secondary font-inter">
+                Level {character.level} {character.class}
+              </p>
+            </div>
           </div>
           <Button onClick={onClose} variant="secondary">
             Close
@@ -79,20 +85,12 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
           >
             Combat
           </TabButton>
-          <TabButton
-            active={activeTab === 'equipment'}
-            onClick={() => setActiveTab('equipment')}
-            icon="Package"
-          >
-            Equipment
-          </TabButton>
         </div>
 
         {/* Tab Content */}
         {activeTab === 'overview' && <OverviewTab character={character} />}
         {activeTab === 'skills' && <SkillsTab character={character} skillNames={skillNames} />}
         {activeTab === 'combat' && <CombatTab character={character} />}
-        {activeTab === 'equipment' && <EquipmentTab character={character} />}
       </div>
     </div>
   );
@@ -126,38 +124,27 @@ function TabButton({ active, onClick, icon, children }: TabButtonProps) {
 function OverviewTab({ character }: { character: Character }) {
   return (
     <div className="space-y-6">
-      {/* HP and AC */}
-      <Card variant="neutral">
-        <div className="space-y-4">
-          {/* HP Bar */}
-          <StatusBar
-            current={character.hp}
-            max={character.maxHp}
-            label="HP"
-            showNumbers
-          />
-
-          {/* AC */}
-          <div className="flex justify-between items-center bg-surface rounded-lg p-3">
-            <span className="font-inter font-medium text-body text-text-primary">
-              Armor Class
-            </span>
-            <span className="font-cinzel font-bold text-3xl text-text-accent">
-              {character.ac}
-            </span>
+      {/* HP, AC, BAB Grid */}
+      <div className="grid grid-cols-3 gap-3">
+        <Card variant="neutral" className="text-center">
+          <div className="font-inter text-xs text-text-muted mb-2">Hit Points</div>
+          <div className="font-cinzel font-bold text-3xl text-text-accent">
+            {character.hp} / {character.maxHp}
           </div>
-
-          {/* BAB */}
-          <div className="flex justify-between items-center bg-surface rounded-lg p-3">
-            <span className="font-inter font-medium text-body text-text-primary">
-              Base Attack Bonus
-            </span>
-            <span className="font-cinzel font-bold text-2xl text-text-accent">
-              {formatModifier(character.bab)}
-            </span>
+        </Card>
+        <Card variant="neutral" className="text-center">
+          <div className="font-inter text-xs text-text-muted mb-2">Armor Class</div>
+          <div className="font-cinzel font-bold text-3xl text-text-accent">
+            {character.ac}
           </div>
-        </div>
-      </Card>
+        </Card>
+        <Card variant="neutral" className="text-center">
+          <div className="font-inter text-xs text-text-muted mb-2">Attack Bonus</div>
+          <div className="font-cinzel font-bold text-3xl text-text-accent">
+            {formatModifier(character.bab)}
+          </div>
+        </Card>
+      </div>
 
       {/* Attributes */}
       <Card variant="neutral">
@@ -362,58 +349,54 @@ function CombatTab({ character }: { character: Character }) {
           )}
         </Card>
       )}
-    </div>
-  );
-}
 
-// Equipment Tab
-function EquipmentTab({ character }: { character: Character }) {
-  return (
-    <Card variant="neutral">
-      <h2 className="text-h2 font-cinzel font-bold mb-4">Equipment</h2>
+      {/* Equipment */}
+      <Card variant="neutral">
+        <h2 className="text-h2 font-cinzel font-bold mb-4">Equipment</h2>
 
-      {/* Equipped Items */}
-      <div className="space-y-3 mb-4">
-        <EquipmentItem
-          icon="Sword"
-          label="Weapon"
-          value={character.equipment.weapon.name}
-        />
-        <EquipmentItem
-          icon="Shield"
-          label="Armor"
-          value={character.equipment.armor.name}
-        />
-        {character.equipment.shield.equipped && (
+        {/* Equipped Items */}
+        <div className="space-y-3 mb-4">
           <EquipmentItem
-            icon="ShieldAlert"
-            label="Shield"
-            value={`+${character.equipment.shield.acBonus} AC`}
+            icon="Sword"
+            label="Weapon"
+            value={character.equipment.weapon.name}
           />
-        )}
-      </div>
-
-      {/* Inventory */}
-      {character.equipment.items.length > 0 && (
-        <div>
-          <h3 className="font-bold text-lg mb-3 font-cinzel flex items-center">
-            <Icon name="Backpack" size={20} className="mr-2 text-text-accent" />
-            Inventory
-          </h3>
-          <div className="space-y-2">
-            {character.equipment.items.map((item, idx) => (
-              <div
-                key={idx}
-                className="flex justify-between items-center bg-surface rounded p-3 font-inter"
-              >
-                <span>{item.name}</span>
-                <span className="text-text-muted">×{item.quantity}</span>
-              </div>
-            ))}
-          </div>
+          <EquipmentItem
+            icon="Shield"
+            label="Armor"
+            value={character.equipment.armor.name}
+          />
+          {character.equipment.shield.equipped && (
+            <EquipmentItem
+              icon="ShieldAlert"
+              label="Shield"
+              value={`+${character.equipment.shield.acBonus} AC`}
+            />
+          )}
         </div>
-      )}
-    </Card>
+
+        {/* Inventory */}
+        {character.equipment.items.length > 0 && (
+          <div>
+            <h3 className="font-bold text-lg mb-3 font-cinzel flex items-center">
+              <Icon name="Backpack" size={20} className="mr-2 text-text-accent" />
+              Inventory
+            </h3>
+            <div className="space-y-2">
+              {character.equipment.items.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex justify-between items-center bg-surface rounded p-3 font-inter"
+                >
+                  <span>{item.name}</span>
+                  <span className="text-text-muted">×{item.quantity}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </Card>
+    </div>
   );
 }
 
