@@ -1,11 +1,42 @@
+import { useState } from 'react';
 import { useCharacterStore } from '../stores/characterStore';
 import { CLASSES } from '../data/classes';
-import { FIGHTER_STARTING_FEATS } from '../data/feats';
+import { FIGHTER_STARTING_FEATS, FEATS } from '../data/feats';
 import { getRemainingPoints, isValidAllocation } from '../utils/pointBuy';
 import type { CharacterClass } from '../types/character';
 import type { Attributes } from '../types/attributes';
 import type { SkillName } from '../types/skill';
 import type { FeatName } from '../types/feat';
+import { Button, Card, Icon } from '../components';
+
+// Attribute icon mapping (reused from CharacterSheet)
+const attributeIcons = {
+  STR: 'Sword' as const,
+  DEX: 'Zap' as const,
+  CON: 'Heart' as const,
+  INT: 'Brain' as const,
+  WIS: 'Eye' as const,
+  CHA: 'Sparkles' as const,
+};
+
+const attributeLabels = {
+  STR: 'Strength',
+  DEX: 'Dexterity',
+  CON: 'Constitution',
+  INT: 'Intelligence',
+  WIS: 'Wisdom',
+  CHA: 'Charisma',
+};
+
+// Skill icon mapping (reused from CharacterSheet)
+const skillIcons = {
+  Athletics: 'Dumbbell' as const,
+  Stealth: 'EyeOff' as const,
+  Perception: 'Eye' as const,
+  Arcana: 'Sparkles' as const,
+  Medicine: 'Heart' as const,
+  Intimidate: 'Flame' as const,
+};
 
 export function CharacterCreationScreen() {
   const {
@@ -89,44 +120,56 @@ function ClassSelectionStep({
     onSelect(className);
   };
 
+  const classIcons = {
+    Fighter: 'Swords' as const,
+    Rogue: 'Target' as const,
+    Wizard: 'Sparkles' as const,
+    Cleric: 'Cross' as const,
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-2xl w-full">
-        <h1 className="text-4xl font-bold mb-2">Choose Your Class</h1>
-        <p className="text-gray-300 mb-8">Select the class that fits your playstyle</p>
+        <h1 className="text-display font-cinzel font-bold mb-2 text-text-accent">Choose Your Class</h1>
+        <p className="text-text-secondary mb-8 font-inter">Select the class that fits your playstyle</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {classes.map((className) => {
             const classDef = CLASSES[className];
             const isSelected = selected === className;
+            const iconName = classIcons[className];
             return (
               <button
                 key={className}
                 onClick={() => handleSelect(className)}
-                className={`p-6 rounded-lg border-2 text-left transition-all ${
+                className={`p-6 rounded-lg border-2 text-left transition-all min-h-[44px] ${
                   isSelected
-                    ? 'border-blue-500 bg-blue-900/30'
-                    : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                    ? 'border-player bg-player/20 shadow-lg'
+                    : 'border-border-default bg-surface hover:border-player/50'
                 }`}
               >
-                <h2 className="text-2xl font-bold mb-2">{className}</h2>
-                <p className="text-sm text-gray-300 mb-4">{classDef.description}</p>
-                <div className="text-xs text-gray-400">
-                  <div>HP: {classDef.baseHP} | AC: ~{classDef.startingArmor === 'Chainmail' ? '18' : classDef.startingArmor === 'Leather' ? '15' : '12'}</div>
-                  <div>BAB: +{classDef.baseBab}</div>
+                <div className="flex items-center space-x-3 mb-3">
+                  <Icon name={iconName} size={32} className={isSelected ? 'text-player' : 'text-text-accent'} />
+                  <h2 className="text-2xl font-cinzel font-bold text-text-accent">{className}</h2>
+                </div>
+                <p className="text-sm text-text-secondary mb-4 font-inter">{classDef.description}</p>
+                <div className="text-xs text-text-muted font-inter">
+                  <div>HP: {classDef.baseHP} | BAB: +{classDef.baseBab}</div>
                 </div>
               </button>
             );
           })}
         </div>
 
-        <button
+        <Button
           onClick={onNext}
           disabled={!selected}
-          className="w-full px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+          variant="primary"
+          fullWidth
+          className="text-lg"
         >
           Next: Allocate Attributes
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -157,51 +200,60 @@ function AttributeAllocationStep({
   const attributeNames: (keyof Attributes)[] = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-4xl font-bold mb-2">Allocate Attributes</h1>
-        <p className="text-gray-300 mb-4">You have 27 points to spend</p>
-        <div className="mb-6 text-xl">
-          Points Remaining: <span className={remaining < 0 ? 'text-red-500' : 'text-green-500'}>{remaining}</span>
+        <h1 className="text-display font-cinzel font-bold mb-2 text-text-accent">Allocate Attributes</h1>
+        <p className="text-text-secondary mb-4 font-inter">You have 27 points to spend</p>
+        <div className="mb-6 text-h1 font-inter">
+          Points Remaining:{' '}
+          <span className={`font-bold ${remaining < 0 ? 'text-enemy' : remaining === 0 ? 'text-success' : 'text-text-accent'}`}>
+            {remaining}
+          </span>
         </div>
 
-        <div className="space-y-4 mb-8">
-          {attributeNames.map((attr) => (
-            <div key={attr} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
-              <span className="font-bold text-lg w-16">{attr}</span>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => adjustAttribute(attr, -1)}
-                  className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  -
-                </button>
-                <span className="text-2xl font-bold w-12 text-center">{attributes[attr]}</span>
-                <button
-                  onClick={() => adjustAttribute(attr, 1)}
-                  className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="space-y-3 mb-8">
+          {attributeNames.map((attr) => {
+            const iconName = attributeIcons[attr];
+            const label = attributeLabels[attr];
+            return (
+              <Card key={attr} variant="neutral">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-primary p-2 rounded-lg">
+                      <Icon name={iconName} size={24} className="text-player" />
+                    </div>
+                    <span className="font-inter font-bold text-lg text-text-primary w-32">{label}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => adjustAttribute(attr, -1)}
+                      className="w-10 h-10 bg-surface hover:bg-surface/80 rounded font-bold transition-colors"
+                    >
+                      -
+                    </button>
+                    <span className="text-3xl font-cinzel font-bold w-12 text-center text-text-accent">
+                      {attributes[attr]}
+                    </span>
+                    <button
+                      onClick={() => adjustAttribute(attr, 1)}
+                      className="w-10 h-10 bg-surface hover:bg-surface/80 rounded font-bold transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="flex gap-4">
-          <button
-            onClick={onBack}
-            className="flex-1 px-8 py-4 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
-          >
+          <Button onClick={onBack} variant="secondary" fullWidth>
             Back
-          </button>
-          <button
-            onClick={onNext}
-            disabled={!isValid}
-            className="flex-1 px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button onClick={onNext} disabled={!isValid} variant="primary" fullWidth>
             Next: Allocate Skills
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -224,62 +276,69 @@ function SkillAllocationStep({
 }) {
   const skillNames: SkillName[] = ['Athletics', 'Stealth', 'Perception', 'Arcana', 'Medicine', 'Intimidate'];
   const totalRanks = Object.values(skills).reduce((sum, ranks) => sum + ranks, 0);
-  const maxRanks = 8; // At level 1, can distribute up to 8 ranks total
+  const maxRanks = 8;
 
   const adjustSkill = (skill: SkillName, delta: number) => {
     const newValue = skills[skill] + delta;
     if (newValue >= 0 && newValue <= 4) {
-      // Max 4 ranks in any skill at level 1
       onChange({ ...skills, [skill]: newValue });
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-4xl font-bold mb-2">Allocate Skill Ranks</h1>
-        <p className="text-gray-300 mb-4">Distribute ranks (max 4 per skill, 8 total)</p>
-        <div className="mb-6 text-xl">
-          Ranks Used: <span className={totalRanks > maxRanks ? 'text-red-500' : 'text-green-500'}>{totalRanks}/{maxRanks}</span>
+        <h1 className="text-display font-cinzel font-bold mb-2 text-text-accent">Allocate Skill Ranks</h1>
+        <p className="text-text-secondary mb-4 font-inter">Distribute ranks (max 4 per skill, 8 total)</p>
+        <div className="mb-6 text-h1 font-inter">
+          Ranks Used:{' '}
+          <span className={`font-bold ${totalRanks > maxRanks ? 'text-enemy' : totalRanks === maxRanks ? 'text-success' : 'text-text-accent'}`}>
+            {totalRanks}/{maxRanks}
+          </span>
         </div>
 
-        <div className="space-y-4 mb-8">
-          {skillNames.map((skill) => (
-            <div key={skill} className="flex items-center justify-between bg-gray-800 p-4 rounded-lg">
-              <span className="font-bold text-lg flex-1">{skill}</span>
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() => adjustSkill(skill, -1)}
-                  className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  -
-                </button>
-                <span className="text-2xl font-bold w-12 text-center">{skills[skill]}</span>
-                <button
-                  onClick={() => adjustSkill(skill, 1)}
-                  className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="space-y-3 mb-8">
+          {skillNames.map((skill) => {
+            const iconName = skillIcons[skill as keyof typeof skillIcons];
+            return (
+              <Card key={skill} variant="neutral">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-primary p-2 rounded-lg">
+                      <Icon name={iconName} size={24} className="text-player" />
+                    </div>
+                    <span className="font-inter font-bold text-lg text-text-primary flex-1">{skill}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => adjustSkill(skill, -1)}
+                      className="w-10 h-10 bg-surface hover:bg-surface/80 rounded font-bold transition-colors"
+                    >
+                      -
+                    </button>
+                    <span className="text-3xl font-cinzel font-bold w-12 text-center text-text-accent">
+                      {skills[skill]}
+                    </span>
+                    <button
+                      onClick={() => adjustSkill(skill, 1)}
+                      className="w-10 h-10 bg-surface hover:bg-surface/80 rounded font-bold transition-colors"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="flex gap-4">
-          <button
-            onClick={onBack}
-            className="flex-1 px-8 py-4 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
-          >
+          <Button onClick={onBack} variant="secondary" fullWidth>
             Back
-          </button>
-          <button
-            onClick={onNext}
-            disabled={totalRanks > maxRanks}
-            className="flex-1 px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button onClick={onNext} disabled={totalRanks > maxRanks} variant="primary" fullWidth>
             {className === 'Fighter' ? 'Next: Choose Feat' : 'Next: Enter Name'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -299,12 +358,12 @@ function FeatSelectionStep({
   onBack: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-4xl font-bold mb-2">Choose a Combat Feat</h1>
-        <p className="text-gray-300 mb-8">Fighters get a bonus feat at level 1</p>
+        <h1 className="text-display font-cinzel font-bold mb-2 text-text-accent">Choose a Combat Feat</h1>
+        <p className="text-text-secondary mb-8 font-inter">Fighters get a bonus feat at level 1</p>
 
-        <div className="space-y-4 mb-8">
+        <div className="space-y-3 mb-8">
           {FIGHTER_STARTING_FEATS.map((featName) => {
             const feat = FEATS[featName];
             const isSelected = selectedFeat === featName;
@@ -312,33 +371,26 @@ function FeatSelectionStep({
               <button
                 key={featName}
                 onClick={() => onSelect(featName)}
-                className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
+                className={`w-full p-4 rounded-lg border-2 text-left transition-all min-h-[44px] ${
                   isSelected
-                    ? 'border-blue-500 bg-blue-900/30'
-                    : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                    ? 'border-player bg-player/20 shadow-lg'
+                    : 'border-border-default bg-surface hover:border-player/50'
                 }`}
               >
-                <h3 className="font-bold text-lg mb-1">{feat.name}</h3>
-                <p className="text-sm text-gray-300">{feat.description}</p>
+                <h3 className="font-cinzel font-bold text-lg mb-1 text-text-accent">{feat.name}</h3>
+                <p className="text-sm text-text-secondary font-inter">{feat.description}</p>
               </button>
             );
           })}
         </div>
 
         <div className="flex gap-4">
-          <button
-            onClick={onBack}
-            className="flex-1 px-8 py-4 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
-          >
+          <Button onClick={onBack} variant="secondary" fullWidth>
             Back
-          </button>
-          <button
-            onClick={onNext}
-            disabled={!selectedFeat}
-            className="flex-1 px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
-          >
+          </Button>
+          <Button onClick={onNext} disabled={!selectedFeat} variant="primary" fullWidth>
             Next: Enter Name
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -358,39 +410,29 @@ function NameEntryStep({
   onBack: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-4xl font-bold mb-2">Name Your Hero</h1>
-        <p className="text-gray-300 mb-8">Choose a name for your adventurer</p>
+        <h1 className="text-display font-cinzel font-bold mb-2 text-text-accent">Name Your Hero</h1>
+        <p className="text-text-secondary mb-8 font-inter">Choose a name for your adventurer</p>
 
         <input
           type="text"
           value={name}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Enter character name..."
-          className="w-full px-4 py-3 mb-8 bg-gray-800 border-2 border-gray-600 rounded-lg text-white text-lg focus:border-blue-500 focus:outline-none"
+          className="w-full px-4 py-3 mb-8 bg-surface border-2 border-border-default rounded-lg text-text-primary text-lg font-inter focus:border-player focus:outline-none transition-colors"
           autoFocus
         />
 
         <div className="flex gap-4">
-          <button
-            onClick={onBack}
-            className="flex-1 px-8 py-4 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition-colors"
-          >
+          <Button onClick={onBack} variant="secondary" fullWidth>
             Back
-          </button>
-          <button
-            onClick={onFinalize}
-            className="flex-1 px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors"
-          >
+          </Button>
+          <Button onClick={onFinalize} variant="primary" fullWidth className="bg-success hover:bg-success/90">
             Create Character
-          </button>
+          </Button>
         </div>
       </div>
     </div>
   );
 }
-
-// Import React useState
-import { useState } from 'react';
-import { FEATS } from '../data/feats';
