@@ -115,7 +115,7 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     set({ onNavigate: callback });
   },
 
-  enterNode: (nodeId, player) => {
+  enterNode: (nodeId, _player) => {
     const { campaign, world, conversation } = get();
 
     if (!campaign || !world || !conversation) {

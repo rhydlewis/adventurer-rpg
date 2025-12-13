@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   checkRequirement,
   checkAllRequirements,
@@ -47,10 +47,10 @@ const createTestCharacter = (
       name: 'Longsword',
       damage: '1d8',
       damageType: 'slashing',
-      twoHanded: false,
       description: '',
+      finesse: false
     },
-    armor: { name: 'Chain Mail', baseAC: 16, maxDexBonus: 2, description: '' },
+    armor: { name: 'Chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],
   },
