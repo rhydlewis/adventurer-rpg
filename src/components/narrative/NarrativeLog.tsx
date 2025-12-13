@@ -28,7 +28,7 @@ interface NarrativeLogProps {
 export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
   if (entries.length === 0) {
     return (
-      <div className={`text-muted text-sm italic ${className}`}>
+      <div className={`text-text-muted text-sm italic font-inter ${className}`}>
         Your adventure begins...
       </div>
     );
@@ -39,7 +39,7 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
       {entries.map((entry, index) => (
         <div key={index}>
           {entry.type === 'narrative' && (
-            <div className="text-primary font-inter text-body">
+            <div className="text-text-primary font-inter text-body">
               {entry.speaker && (
                 <div className="font-semibold text-player mb-1">
                   {entry.speaker}:
@@ -75,7 +75,7 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
           )}
 
           {entry.type === 'effect' && (
-            <div className="text-muted font-inter text-sm italic pl-4 border-l-2 border-border-default">
+            <div className="text-text-muted font-inter text-sm italic pl-4 border-l-2 border-border-default">
               {entry.message}
             </div>
           )}
@@ -85,7 +85,7 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
               <div className="text-hint font-semibold text-sm mb-1 font-inter">
                 Companion Hint:
               </div>
-              <div className="text-secondary text-sm font-inter">
+              <div className="text-text-secondary text-sm font-inter">
                 {entry.hint}
               </div>
             </div>
