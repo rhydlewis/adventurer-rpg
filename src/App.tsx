@@ -6,6 +6,7 @@ import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
 import { StoryScreen } from './screens/StoryScreen';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
+import { testCampaign } from './data/campaigns/test-campaign';
 import type { Screen } from './types/navigation';
 
 function App() {
@@ -41,6 +42,9 @@ function App() {
   };
 
   const handleStartStory = () => {
+    const { loadCampaign, startCampaign } = useNarrativeStore.getState();
+    loadCampaign(testCampaign);
+    startCampaign();
     setCurrentScreen({ type: 'story' });
   };
 
