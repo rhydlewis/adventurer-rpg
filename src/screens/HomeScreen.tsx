@@ -136,7 +136,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
             </Button>
           )}
 
-          {hasCharacter && onStartStory && (
+          {onStartStory && (
             <Button
               variant="primary"
               size="large"
@@ -144,7 +144,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               onClick={onStartStory}
               icon={<Icon name="Book" />}
             >
-              Start Story
+              Start Story {!hasCharacter && '(Test)'}
             </Button>
           )}
         </div>

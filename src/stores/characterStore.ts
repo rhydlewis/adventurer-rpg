@@ -35,6 +35,7 @@ interface CharacterStore {
   previousStep: () => void;
   finalizeCharacter: () => void;
   resetCreation: () => void;
+  setCharacter: (character: Character) => void; // For testing
 }
 
 const defaultAttributes: Attributes = {
@@ -203,5 +204,9 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
         selectedFeat: null,
       },
     });
+  },
+
+  setCharacter: (character) => {
+    set({ character, creationStep: 'complete' });
   },
 }));
