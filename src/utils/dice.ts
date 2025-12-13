@@ -56,7 +56,8 @@ export function rollAttack(bab: number, abilityMod: number): {
 
   const result = roller.roll(`1d20+${bab + abilityMod}`) as DiceRoll;
   // Extract the d20 roll from the result for critical hit checking
-  const d20Result = (result.rolls[0] as any)?.value ?? result.total;
+  // Type assertion needed as DiceRoll doesn't expose rolls structure
+  const d20Result = (result.rolls[0] as unknown as { value?: number })?.value ?? result.total;
 
   return {
     total: result.total,

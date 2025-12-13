@@ -4,11 +4,11 @@ import type { Action, CastSpellAction } from '../types/action';
 import type { Condition } from '../types/condition';
 import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 import {
-  useSecondWind,
-  useChannelEnergy,
+  activateSecondWind,
+  activateChannelEnergy,
   canUseAbility,
   consumeAbilityUse,
-  useDodge,
+  activateDodge,
   canSneakAttack,
   calculateSneakAttackDamage,
 } from './classAbilities';
@@ -196,7 +196,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
             message: `Cannot use Second Wind: ${check.reason}`,
           });
         } else {
-          const result = useSecondWind(playerCharacter);
+          const result = activateSecondWind(playerCharacter);
           playerCharacter = {
             ...playerCharacter,
             hp: result.newHp,
@@ -218,7 +218,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
             message: `Cannot use Dodge: ${check.reason}`,
           });
         } else {
-          const result = useDodge();
+          const result = activateDodge();
           playerCharacter = consumeAbilityUse(playerCharacter, 'Dodge');
           // Phase 1.4: Apply Dodge as a condition (unified system)
           playerConditions = applyCondition(playerConditions, result.conditionType, state.turn, 1);
@@ -238,7 +238,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
             message: `Cannot use Channel Energy: ${check.reason}`,
           });
         } else {
-          const result = useChannelEnergy(playerCharacter);
+          const result = activateChannelEnergy(playerCharacter);
           playerCharacter = {
             ...playerCharacter,
             hp: result.newHp,

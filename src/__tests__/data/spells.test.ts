@@ -52,7 +52,7 @@ describe('data/spells', () => {
 
     it('should return an empty array for an unknown class name', () => {
       // Assuming 'Bard' is not a defined class in this system
-      const cantrips = getCantripsForClass('Bard' as any);
+      const cantrips = getCantripsForClass('Bard');
       expect(cantrips).toEqual([]);
     });
   });

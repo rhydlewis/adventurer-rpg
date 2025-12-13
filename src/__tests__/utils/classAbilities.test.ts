@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
-  useSecondWind,
-  useChannelEnergy,
+  activateSecondWind,
+  activateChannelEnergy,
   getFeatBonuses,
   canSneakAttack,
   calculateSneakAttackDamage,
-  useDodge,
+  activateDodge,
   hasEvasion,
   canUseAbility,
   consumeAbilityUse,
@@ -58,7 +58,7 @@ describe('Fighter Abilities - Second Wind', () => {
     const fighter = createFighter(14);
     fighter.hp = 5; // Damaged
 
-    const result = useSecondWind(fighter);
+    const result = activateSecondWind(fighter);
 
     expect(result.newHp).toBeGreaterThanOrEqual(6); // 5 + (1+1) min
     expect(result.newHp).toBeLessThanOrEqual(15); // 5 + (10+1) max
@@ -71,7 +71,7 @@ describe('Fighter Abilities - Second Wind', () => {
     const fighter = createFighter(14);
     fighter.hp = 11; // Near max (12)
 
-    const result = useSecondWind(fighter);
+    const result = activateSecondWind(fighter);
 
     expect(result.newHp).toBeLessThanOrEqual(fighter.maxHp);
     expect(result.newHp).toBe(12); // Capped at maxHp
@@ -81,7 +81,7 @@ describe('Fighter Abilities - Second Wind', () => {
     const fighter = createFighter(14);
     fighter.hp = fighter.maxHp;
 
-    const result = useSecondWind(fighter);
+    const result = activateSecondWind(fighter);
 
     expect(result.newHp).toBe(fighter.maxHp); // Still capped
   });
@@ -113,7 +113,7 @@ describe('Cleric Abilities - Channel Energy', () => {
     const cleric = createCleric();
     cleric.hp = 5;
 
-    const result = useChannelEnergy(cleric);
+    const result = activateChannelEnergy(cleric);
 
     expect(result.newHp).toBeGreaterThanOrEqual(6); // 5 + 1 min
     expect(result.newHp).toBeLessThanOrEqual(11); // 5 + 6 max
@@ -126,7 +126,7 @@ describe('Cleric Abilities - Channel Energy', () => {
     const cleric = createCleric();
     cleric.hp = 11; // Near max (12)
 
-    const result = useChannelEnergy(cleric);
+    const result = activateChannelEnergy(cleric);
 
     expect(result.newHp).toBeLessThanOrEqual(cleric.maxHp);
     expect(result.newHp).toBe(12); // Capped at maxHp
@@ -136,7 +136,7 @@ describe('Cleric Abilities - Channel Energy', () => {
     const cleric = createCleric();
     cleric.hp = cleric.maxHp;
 
-    const result = useChannelEnergy(cleric);
+    const result = activateChannelEnergy(cleric);
 
     expect(result.newHp).toBe(cleric.maxHp); // Still capped
     expect(result.healed).toBe(0); // No healing applied
@@ -232,7 +232,7 @@ describe('Rogue Abilities - Sneak Attack', () => {
 
 describe('Rogue Abilities - Dodge', () => {
   it('should grant +4 AC bonus', () => {
-    const result = useDodge();
+    const result = activateDodge();
 
     expect(result.acBonus).toBe(4);
     expect(result.output).toContain('Dodge');

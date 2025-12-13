@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { getWeaponDamage, getWeaponAttackBonus, canUseItem, getItemEffect } from '../../utils/equipment';
 import type { Character } from '../../types';
+import type { ItemType } from '../../types/equipment';
 
 describe('utils/equipment', () => {
   const createCharacterWithWeapon = (
@@ -224,7 +225,7 @@ describe('utils/equipment', () => {
     });
 
     it('throws error for unknown item', () => {
-      expect(() => getItemEffect('Unknown Item' as any)).toThrow();
+      expect(() => getItemEffect('Unknown Item' as ItemType)).toThrow();
     });
   });
 });

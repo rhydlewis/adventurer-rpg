@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCharacterStore } from '../../stores/characterStore';
 import { createCharacter } from '../../utils/characterCreation';
 import { CLASSES } from '../../data/classes';
-import type { Attributes } from '../../types';
+import type { Attributes, Character } from '../../types';
 
 // Mock the createCharacter utility to isolate store logic
 vi.mock('../../utils/characterCreation', () => ({
@@ -157,7 +157,7 @@ describe('stores/characterStore', () => {
 
   describe('finalizeCharacter', () => {
     it('should call createCharacter with the correct data and update the store', () => {
-      const mockCharacter = { name: 'Finalized Hero', class: 'Fighter' } as any;
+      const mockCharacter = { name: 'Finalized Hero', class: 'Fighter' } as Partial<Character> as Character;
       vi.mocked(createCharacter).mockReturnValue(mockCharacter);
 
       // Set up the store with all the data needed for creation

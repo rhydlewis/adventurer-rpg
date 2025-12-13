@@ -5,7 +5,7 @@ import { rollDamage } from './dice';
  * Fighter: Second Wind
  * Heal 1d10+1 HP (1/combat, encounter resource)
  */
-export function useSecondWind(character: Character): {
+export function activateSecondWind(character: Character): {
   healed: number;
   newHp: number;
   output: string;
@@ -26,7 +26,7 @@ export function useSecondWind(character: Character): {
  * Cleric: Channel Energy
  * Heal 1d6 HP (2/day, daily resource)
  */
-export function useChannelEnergy(character: Character): {
+export function activateChannelEnergy(character: Character): {
   healed: number;
   newHp: number;
   output: string;
@@ -112,7 +112,7 @@ export function calculateSneakAttackDamage(): {
  * Rogue: Use Dodge
  * +4 AC until next turn (1/combat, encounter resource)
  */
-export function useDodge(): {
+export function activateDodge(): {
   acBonus: number;
   output: string;
   conditionType: 'Dodge'; // Phase 1.4: Return condition type for unified system
