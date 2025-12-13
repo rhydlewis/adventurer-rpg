@@ -9,10 +9,6 @@ export default {
       colors: {
         'primary': 'var(--color-primary)',
         'secondary': 'var(--color-secondary)',
-        'text-primary': 'var(--color-text-primary)',
-        'text-accent': 'var(--color-text-accent)',
-        'text-muted': 'var(--color-text-muted)',
-        'text-secondary': 'var(--color-text-secondary)',
         'player': 'var(--color-player)',
         'enemy': 'var(--color-enemy)',
         'success': 'var(--color-success)',
@@ -20,6 +16,12 @@ export default {
         'magic': 'var(--color-magic)',
         'hint': 'var(--color-hint)',
         'border-default': 'var(--color-border-default)',
+      },
+      textColor: {
+        'primary': 'var(--color-text-primary)',
+        'accent': 'var(--color-text-accent)',
+        'muted': 'var(--color-text-muted)',
+        'secondary': 'var(--color-text-secondary)',
       },
       fontFamily: {
         'cinzel': ['var(--font-cinzel)', 'serif'],
