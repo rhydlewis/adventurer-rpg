@@ -123,3 +123,106 @@ body {
 .animate-flicker {
   animation: flicker 3s ease-in-out infinite;
 }
+
+/* Semantic Typography Utilities */
+@layer utilities {
+  /* Headings */
+  .heading-display {
+    @apply font-cinzel font-bold text-display text-text-accent;
+  }
+
+  .heading-primary {
+    @apply font-cinzel font-bold text-h1 text-text-accent;
+  }
+
+  .heading-secondary {
+    @apply font-cinzel font-bold text-h2 text-text-primary;
+  }
+
+  .heading-tertiary {
+    @apply font-cinzel font-semibold text-xl text-text-primary;
+  }
+
+  /* Stats & Numbers */
+  .stat-large {
+    @apply font-cinzel font-bold text-3xl text-text-accent;
+  }
+
+  .stat-medium {
+    @apply font-cinzel font-bold text-2xl text-text-primary;
+  }
+
+  .stat-small {
+    @apply font-cinzel font-semibold text-xl text-text-secondary;
+  }
+
+  .stat-modifier {
+    @apply font-cinzel font-semibold text-lg text-text-secondary;
+  }
+
+  /* Body Text */
+  .body-primary {
+    @apply font-inter text-body text-text-primary;
+  }
+
+  .body-secondary {
+    @apply font-inter text-body text-text-secondary;
+  }
+
+  .body-muted {
+    @apply font-inter text-body text-text-muted;
+  }
+
+  .body-narrative {
+    @apply font-merriweather text-body text-text-primary leading-relaxed;
+  }
+
+  /* UI Elements */
+  .label-primary {
+    @apply font-inter text-caption font-medium text-text-secondary uppercase tracking-wide;
+  }
+
+  .label-secondary {
+    @apply font-inter text-caption text-text-secondary;
+  }
+
+  .button-text {
+    @apply font-inter text-body font-medium;
+  }
+
+  /* Special Purpose */
+  .combat-log {
+    @apply font-inter text-dice text-text-primary;
+  }
+
+  .character-name {
+    @apply font-cinzel font-bold text-2xl text-text-primary;
+  }
+
+  .skill-name {
+    @apply font-inter text-body font-medium text-text-primary;
+  }
+
+  .feat-name {
+    @apply font-cinzel font-semibold text-lg text-text-primary;
+  }
+
+  /* Tab Navigation */
+  .tab-text {
+    @apply font-inter text-body font-medium;
+  }
+
+  /* Form Inputs */
+  .input-text {
+    @apply font-inter text-body text-text-primary;
+  }
+
+  /* Attribute Values */
+  .attribute-value {
+    @apply font-cinzel font-bold text-4xl text-text-accent;
+  }
+
+  .attribute-label {
+    @apply font-inter text-caption font-medium text-text-secondary uppercase;
+  }
+}

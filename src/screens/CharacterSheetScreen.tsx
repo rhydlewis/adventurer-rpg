@@ -61,8 +61,8 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
               <Icon name="User" size={40} className="text-text-muted" />
             </div>
             <div>
-              <h1 className="text-display font-cinzel font-bold text-text-accent">{character.name}</h1>
-              <p className="text-h2 text-text-secondary font-inter">
+              <h1 className="text-display heading-display text-text-accent">{character.name}</h1>
+              <p className="text-h2 text-text-secondary body-secondary">
                 Level {character.level} {character.class}
               </p>
             </div>
@@ -118,7 +118,7 @@ function TabButton({ active, onClick, icon, children }: TabButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-inter font-semibold transition-all min-h-[44px] ${
+      className={`flex items-center space-x-2 px-4 py-2 rounded-lg tab-text transition-all min-h-[44px] ${
         active
           ? 'bg-player text-white shadow-lg'
           : 'bg-surface text-text-secondary hover:bg-surface/80 hover:text-text-primary'
@@ -137,20 +137,20 @@ function OverviewTab({ character }: { character: Character }) {
       {/* HP, AC, BAB Grid */}
       <div className="grid grid-cols-3 gap-3">
         <Card variant="neutral" className="text-center">
-          <div className="font-inter text-xs text-text-muted mb-2">Hit Points</div>
-          <div className="font-cinzel font-bold text-3xl text-text-accent">
+          <div className="label-secondary text-xs text-text-muted mb-2">Hit Points</div>
+          <div className="stat-large text-3xl text-text-accent">
             {character.hp} / {character.maxHp}
           </div>
         </Card>
         <Card variant="neutral" className="text-center">
-          <div className="font-inter text-xs text-text-muted mb-2">Armor Class</div>
-          <div className="font-cinzel font-bold text-3xl text-text-accent">
+          <div className="label-secondary text-xs text-text-muted mb-2">Armor Class</div>
+          <div className="stat-large text-3xl text-text-accent">
             {character.ac}
           </div>
         </Card>
         <Card variant="neutral" className="text-center">
-          <div className="font-inter text-xs text-text-muted mb-2">Attack Bonus</div>
-          <div className="font-cinzel font-bold text-3xl text-text-accent">
+          <div className="label-secondary text-xs text-text-muted mb-2">Attack Bonus</div>
+          <div className="stat-large text-3xl text-text-accent">
             {formatModifier(character.bab)}
           </div>
         </Card>
@@ -158,7 +158,7 @@ function OverviewTab({ character }: { character: Character }) {
 
       {/* Attributes */}
       <Card variant="neutral">
-        <h2 className="text-h2 font-cinzel font-bold mb-4">Attributes</h2>
+        <h2 className="text-h2 heading-secondary mb-4">Attributes</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {(Object.keys(attributeIcons) as AttributeKey[]).map((attr) => {
             const iconName = attributeIcons[attr];
@@ -174,14 +174,14 @@ function OverviewTab({ character }: { character: Character }) {
                   <Icon name={iconName} size={24} className="text-player" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-inter text-xs text-text-muted uppercase">
+                  <div className="attribute-label text-xs text-text-muted">
                     {attributeLabels[attr]}
                   </div>
                   <div className="flex items-baseline space-x-1.5">
-                    <span className="font-cinzel font-bold text-2xl text-text-accent">
+                    <span className="stat-medium text-2xl text-text-accent">
                       {score}
                     </span>
-                    <span className="font-inter text-sm text-text-secondary">
+                    <span className="body-secondary text-sm text-text-secondary">
                       ({formatModifier(modifier)})
                     </span>
                   </div>
@@ -194,29 +194,29 @@ function OverviewTab({ character }: { character: Character }) {
 
       {/* Saving Throws */}
       <Card variant="neutral">
-        <h2 className="text-h2 font-cinzel font-bold mb-4">Saving Throws</h2>
+        <h2 className="text-h2 heading-secondary mb-4">Saving Throws</h2>
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-surface rounded-lg p-4 text-center border border-border-default">
-            <div className="font-inter text-xs text-text-muted mb-2">
+            <div className="label-secondary text-xs text-text-muted mb-2">
               Fortitude
             </div>
-            <div className="font-cinzel font-bold text-2xl text-success">
+            <div className="stat-medium text-2xl text-success">
               {formatModifier(character.saves.fortitude)}
             </div>
           </div>
           <div className="bg-surface rounded-lg p-4 text-center border border-border-default">
-            <div className="font-inter text-xs text-text-muted mb-2">
+            <div className="label-secondary text-xs text-text-muted mb-2">
               Reflex
             </div>
-            <div className="font-cinzel font-bold text-2xl text-warning">
+            <div className="stat-medium text-2xl text-warning">
               {formatModifier(character.saves.reflex)}
             </div>
           </div>
           <div className="bg-surface rounded-lg p-4 text-center border border-border-default">
-            <div className="font-inter text-xs text-text-muted mb-2">
+            <div className="label-secondary text-xs text-text-muted mb-2">
               Will
             </div>
-            <div className="font-cinzel font-bold text-2xl text-magic">
+            <div className="stat-medium text-2xl text-magic">
               {formatModifier(character.saves.will)}
             </div>
           </div>
@@ -230,7 +230,7 @@ function OverviewTab({ character }: { character: Character }) {
 function SkillsTab({ character, skillNames }: { character: Character; skillNames: SkillName[] }) {
   return (
     <Card variant="neutral">
-      <h2 className="text-h2 font-cinzel font-bold mb-4">Skills</h2>
+      <h2 className="text-h2 heading-secondary mb-4">Skills</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {skillNames.map((skillName) => {
           const skillBonus = calculateSkillBonus(character, skillName);
@@ -250,15 +250,15 @@ function SkillsTab({ character, skillNames }: { character: Character; skillNames
                 />
               </div>
               <div className="flex-1">
-                <div className="font-inter text-xs text-text-muted uppercase">
+                <div className="attribute-label text-xs text-text-muted">
                   {skillName}
                 </div>
                 <div className="flex items-baseline space-x-1.5">
-                  <span className="font-cinzel font-bold text-2xl text-text-accent">
+                  <span className="stat-medium text-2xl text-text-accent">
                     {formatModifier(skillBonus.totalBonus)}
                   </span>
                   {hasRanks && (
-                    <span className="font-inter text-sm text-text-secondary">
+                    <span className="body-secondary text-sm text-text-secondary">
                       ({character.skills[skillName]} ranks)
                     </span>
                   )}
@@ -279,14 +279,14 @@ function CombatTab({ character }: { character: Character }) {
       {/* Feats */}
       {character.feats.length > 0 && (
         <Card variant="neutral">
-          <h2 className="text-h2 font-cinzel font-bold mb-4">Feats</h2>
+          <h2 className="text-h2 heading-secondary mb-4">Feats</h2>
           <div className="space-y-3">
             {character.feats.map((feat, idx) => (
               <div key={idx} className="bg-surface rounded-lg p-4">
-                <h3 className="font-bold text-lg mb-1 font-cinzel text-text-accent">
+                <h3 className="font-bold text-lg mb-1 feat-name text-text-accent">
                   {feat.name}
                 </h3>
-                <p className="text-sm text-text-secondary font-inter">
+                <p className="text-sm text-text-secondary body-secondary">
                   {feat.description}
                 </p>
               </div>
@@ -298,7 +298,7 @@ function CombatTab({ character }: { character: Character }) {
       {/* Abilities & Resources */}
       {(character.resources.abilities.length > 0 || character.resources.spellSlots) && (
         <Card variant="neutral">
-          <h2 className="text-h2 font-cinzel font-bold mb-4">Abilities & Resources</h2>
+          <h2 className="text-h2 heading-secondary mb-4">Abilities & Resources</h2>
 
           {/* Abilities */}
           {character.resources.abilities.length > 0 && (
@@ -306,14 +306,14 @@ function CombatTab({ character }: { character: Character }) {
               {character.resources.abilities.map((ability, idx) => (
                 <div key={idx} className="bg-surface rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-lg font-cinzel text-text-accent">
+                    <h3 className="font-bold text-lg feat-name text-text-accent">
                       {ability.name}
                     </h3>
-                    <span className="text-sm bg-primary px-2 py-1 rounded font-inter text-text-secondary">
+                    <span className="text-sm bg-primary px-2 py-1 rounded body-secondary text-text-secondary">
                       {ability.currentUses}/{ability.maxUses} {ability.type}
                     </span>
                   </div>
-                  <p className="text-sm text-text-secondary font-inter">
+                  <p className="text-sm text-text-secondary body-secondary">
                     {ability.description}
                   </p>
                 </div>
@@ -324,8 +324,8 @@ function CombatTab({ character }: { character: Character }) {
           {/* Spell Slots */}
           {character.resources.spellSlots && (
             <div className="bg-surface rounded-lg p-4">
-              <h3 className="font-bold text-lg mb-2 font-cinzel">Spell Slots</h3>
-              <div className="space-y-2 font-inter">
+              <h3 className="font-bold text-lg mb-2 heading-tertiary">Spell Slots</h3>
+              <div className="space-y-2 body-secondary">
                 <div className="flex justify-between">
                   <span>Cantrips (Level 0)</span>
                   <span className="text-text-muted">At-will</span>
@@ -345,7 +345,7 @@ function CombatTab({ character }: { character: Character }) {
 
       {/* Equipment */}
       <Card variant="neutral">
-        <h2 className="text-h2 font-cinzel font-bold mb-4">
+        <h2 className="text-h2 heading-secondary mb-4">
           Equipment
         </h2>
 
@@ -373,7 +373,7 @@ function CombatTab({ character }: { character: Character }) {
         {/* Inventory */}
         {character.equipment.items.length > 0 && (
           <div>
-            <h3 className="font-bold text-lg mb-3 font-cinzel flex items-center">
+            <h3 className="font-bold text-lg mb-3 heading-tertiary flex items-center">
               <Icon name="Backpack" size={20} className="mr-2 text-text-accent" />
               Inventory
             </h3>
@@ -381,7 +381,7 @@ function CombatTab({ character }: { character: Character }) {
               {character.equipment.items.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex justify-between items-center bg-surface rounded p-3 font-inter"
+                  className="flex justify-between items-center bg-surface rounded p-3 body-primary"
                 >
                   <span>{item.name}</span>
                   <span className="text-text-muted">×{item.quantity}</span>
@@ -404,10 +404,10 @@ interface EquipmentItemProps {
 
 function EquipmentItem({ icon, label, value }: EquipmentItemProps) {
   return (
-    <div className="flex justify-between items-center bg-surface rounded p-3 font-inter">
+    <div className="flex justify-between items-center bg-surface rounded p-3 body-primary">
       <div className="flex items-center space-x-2">
         <Icon name={icon} size={20} className="text-text-accent" />
-        <span className="text-text-muted">{label}</span>
+        <span className="text-text-muted body-secondary">{label}</span>
       </div>
       <span className="font-semibold">{value}</span>
     </div>

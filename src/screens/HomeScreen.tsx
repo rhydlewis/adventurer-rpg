@@ -97,17 +97,17 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-md w-full text-center">
         {/* Title Section */}
-        <h1 className="font-cinzel font-black text-[32px] leading-[1.2] mb-2 text-text-accent">
+        <h1 className="heading-display text-[32px] leading-[1.2] mb-2 text-text-accent">
           Adventurer RPG
         </h1>
-        <p className="font-merriweather text-[16px] leading-[1.6] text-text-primary/80 mb-8">
+        <p className="body-narrative text-[16px] text-text-primary/80 mb-8">
           A single-player narrative RPG with streamlined d20 mechanics
         </p>
 
         {/* Phase Info Card */}
         <Card variant="neutral" className="mb-6">
-          <h2 className="font-inter font-semibold text-h1 mb-2">Phase 1.5 Testing</h2>
-          <p className="font-inter text-body text-text-primary/70">
+          <h2 className="heading-secondary text-h1 mb-2">Phase 1.5 Testing</h2>
+          <p className="body-primary text-body text-text-primary/70">
             Test combat with different classes - Choose your adventurer:
           </p>
         </Card>
@@ -151,7 +151,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
 
         {/* Quick Combat Test Section */}
         <Card variant="neutral" padding="compact">
-          <h3 className="font-inter font-semibold text-body mb-3">Quick Combat Test</h3>
+          <h3 className="heading-tertiary text-body mb-3">Quick Combat Test</h3>
           <div className="grid grid-cols-2 gap-3">
             {/* Fighter Button */}
             <button
@@ -159,7 +159,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               className="
                 px-3 py-3
                 bg-enemy text-white
-                font-inter font-semibold text-body
+                button-text text-body
                 rounded-lg
                 hover:bg-red-700 active:bg-red-800
                 transition-all duration-200
@@ -180,7 +180,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               className="
                 px-3 py-3
                 bg-magic text-white
-                font-inter font-semibold text-body
+                button-text text-body
                 rounded-lg
                 hover:bg-purple-700 active:bg-purple-800
                 transition-all duration-200
@@ -201,7 +201,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               className="
                 px-3 py-3
                 bg-player text-white
-                font-inter font-semibold text-body
+                button-text text-body
                 rounded-lg
                 hover:bg-blue-600 active:bg-blue-700
                 transition-all duration-200
@@ -222,7 +222,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               className="
                 px-3 py-3
                 bg-warning text-white
-                font-inter font-semibold text-body
+                button-text text-body
                 rounded-lg
                 hover:bg-yellow-600 active:bg-yellow-700
                 transition-all duration-200

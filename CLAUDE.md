@@ -274,6 +274,64 @@ android/             # Android project (committed to git)
 - **Use descriptive test names** - `"rollAttack should add BAB and ability modifier to d20 result"`
 - **Mock dice rolls when needed** - for deterministic tests of combat logic
 
+### Semantic Typography System
+
+The app uses **semantic typography classes** instead of direct font utilities. This makes it easy to change fonts, sizes, and weights globally without touching component code.
+
+**Defined in:** `src/index.css` under `@layer utilities`
+
+**Usage Pattern:**
+```tsx
+// ❌ OLD (hard to theme)
+<h1 className="font-cinzel font-bold text-display text-text-accent">Title</h1>
+<p className="font-inter text-body text-text-primary">Body text</p>
+
+// ✅ NEW (semantic, themeable)
+<h1 className="heading-display text-text-accent">Title</h1>
+<p className="body-primary">Body text</p>
+```
+
+**Available Classes:**
+
+**Headings:**
+- `.heading-display` - Large page titles (Cinzel, bold, display size)
+- `.heading-primary` - Section headings (Cinzel, bold, h1 size)
+- `.heading-secondary` - Subsection headings (Cinzel, bold, h2 size)
+- `.heading-tertiary` - Minor headings (Cinzel, semibold, xl size)
+
+**Stats & Numbers:**
+- `.stat-large` - Large stat displays (Cinzel, bold, 3xl)
+- `.stat-medium` - Medium stats (Cinzel, bold, 2xl)
+- `.stat-small` - Small stats (Cinzel, semibold, xl)
+- `.stat-modifier` - Stat modifiers (Cinzel, semibold, lg)
+
+**Body Text:**
+- `.body-primary` - Main body text (Inter, body size, primary color)
+- `.body-secondary` - Secondary text (Inter, body size, secondary color)
+- `.body-muted` - Muted text (Inter, body size, muted color)
+- `.body-narrative` - Story/flavor text (Merriweather, relaxed leading)
+
+**UI Elements:**
+- `.button-text` - Button labels (Inter, medium weight)
+- `.label-primary` - Form labels (Inter, caption size, uppercase, tracked)
+- `.label-secondary` - Secondary labels (Inter, caption size)
+- `.combat-log` - Combat log entries (Inter, dice size)
+- `.tab-text` - Tab navigation (Inter, medium weight)
+- `.input-text` - Form inputs (Inter, body size)
+
+**Special Purpose:**
+- `.character-name` - Character names (Cinzel, bold, 2xl)
+- `.skill-name` - Skill labels (Inter, medium weight)
+- `.feat-name` - Feat names (Cinzel, semibold, lg)
+- `.attribute-value` - Attribute scores (Cinzel, bold, 4xl)
+- `.attribute-label` - Attribute labels (Inter, caption, uppercase)
+
+**Benefits:**
+- Change fonts app-wide by modifying one CSS file
+- Consistent typography across all screens
+- Easier to maintain and theme
+- Self-documenting code (`.heading-primary` vs `.font-cinzel font-bold text-h1`)
+
 ### Combat Log Messages
 
 Follow established format for consistency:
