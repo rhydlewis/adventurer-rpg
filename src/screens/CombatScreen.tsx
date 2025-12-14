@@ -416,7 +416,7 @@ function BattleTab({ combat, executeTurn, handleEndCombat }: BattleTabProps) {
 // Log Tab
 interface LogTabProps {
   combat: CombatState;
-  logEndRef: React.RefObject<HTMLDivElement>;
+  logEndRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function LogTab({ combat, logEndRef }: LogTabProps) {

@@ -3,6 +3,8 @@
 // =============================================================================
 
 export type Screen =
+  | { type: 'splash' }
+  | { type: 'mainMenu' }
   | { type: 'home' }
   | { type: 'characterCreation' }
   | { type: 'story' }

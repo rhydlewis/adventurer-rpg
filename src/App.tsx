@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { HomeScreen } from './screens/HomeScreen';
+import { SplashScreen } from './screens/SplashScreen';
+import { MainMenuScreen } from './screens/MainMenuScreen';
 import { CombatScreen } from './screens/CombatScreen';
 import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
 import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
@@ -13,7 +15,7 @@ import { CLASSES } from './data/classes';
 import type { Screen } from './types/navigation';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'home' });
+  const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
   const { character, creationStep, startCreation, setCharacter } = useCharacterStore();
   const { setNavigationCallback } = useNarrativeStore();
 
@@ -72,6 +74,14 @@ function App() {
 
   return (
     <>
+      {currentScreen.type === 'splash' && (
+        <SplashScreen onComplete={() => setCurrentScreen({ type: 'mainMenu' })} />
+      )}
+      {currentScreen.type === 'mainMenu' && (
+        <MainMenuScreen
+          onNewGame={() => setCurrentScreen({ type: 'home' })}
+        />
+      )}
       {currentScreen.type === 'home' && (
         <HomeScreen
           onStartCombat={() => setCurrentScreen({ type: 'combat', enemyId: 'goblin', onVictoryNodeId: '' })}
