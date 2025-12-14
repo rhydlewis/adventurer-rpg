@@ -355,7 +355,7 @@ When implementing phases from the plan, work in **batches of 3 tasks** with comm
 1. **Read the design spec** - understand the vision
 2. **Check Phase 1 plan** - see if it's already designed
 3. **Review existing types** - understand current data structures
-4. **Write tests first** - especially for game mechanics in `/utils`
+4. **Write tests first** - especially for game mechanics in `/utils`, data types in `/data` and storage mechanisms in `/stores`
 5. **Update incrementally** - extend existing files where possible
 
 ### After Making Changes
