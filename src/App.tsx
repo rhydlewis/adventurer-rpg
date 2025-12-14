@@ -4,6 +4,7 @@ import { CombatScreen } from './screens/CombatScreen';
 import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
 import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
 import { StoryScreen } from './screens/StoryScreen';
+import { LockPickingScreen } from './screens/LockPickingScreen';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 import { testCampaign } from './data/campaigns/test-campaign';
@@ -88,7 +89,18 @@ function App() {
         <CharacterSheetScreen character={character} onClose={handleCloseSheet} />
       )}
       {currentScreen.type === 'story' && (
-        <StoryScreen onExit={() => setCurrentScreen({ type: 'home' })} />
+        <StoryScreen
+          onExit={() => setCurrentScreen({ type: 'home' })}
+          onNavigate={setCurrentScreen}
+        />
+      )}
+      {currentScreen.type === 'lockPicking' && (
+        <LockPickingScreen
+          difficulty={currentScreen.difficulty}
+          onSuccess={currentScreen.onSuccess}
+          onFailure={currentScreen.onFailure}
+          onExit={() => setCurrentScreen({ type: 'home' })}
+        />
       )}
     </>
   );
