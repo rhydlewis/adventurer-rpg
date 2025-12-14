@@ -157,8 +157,8 @@ export function LockPickingScreen({
             <div className="flex items-center gap-2">
               <Icon name="Lock" className="text-warning" />
               <div>
-                <h1 className="font-pirata text-h1 text-text-primary">Lock Picking</h1>
-                <p className="text-caption text-text-muted font-inter">
+                <h1 className="heading-primary text-h1 text-text-primary">Lock Picking</h1>
+                <p className="text-caption text-text-muted label-secondary">
                   Difficulty: {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export function LockPickingScreen({
 
         {/* Instructions */}
         <Card variant="neutral" padding="compact">
-          <p className="text-body text-text-primary font-inter text-center">
+          <p className="text-body text-text-primary body-primary text-center">
             Adjust the pick position and apply tension to open the lock. Watch the durability!
           </p>
         </Card>
@@ -240,12 +240,12 @@ export function LockPickingScreen({
             {/* Feedback text */}
             <div className="h-6 mb-2">
               {feedback === 'veryClose' && (
-                <p className="text-success font-inter font-semibold text-body animate-pulse">
+                <p className="text-success button-text text-body animate-pulse">
                   Very close!
                 </p>
               )}
               {feedback === 'close' && (
-                <p className="text-warning font-inter font-semibold text-body">Getting warm...</p>
+                <p className="text-warning button-text text-body">Getting warm...</p>
               )}
             </div>
           </div>
@@ -255,10 +255,10 @@ export function LockPickingScreen({
         <Card variant="enemy" padding="compact">
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="font-inter text-body text-text-primary font-semibold">
+              <span className="button-text text-body text-text-primary">
                 Pick Durability
               </span>
-              <span className="font-inter text-body text-text-primary">{durability}%</span>
+              <span className="body-primary text-body text-text-primary">{durability}%</span>
             </div>
             <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
               <div
@@ -309,7 +309,7 @@ export function LockPickingScreen({
 
           {/* Position display */}
           <Card variant="neutral" padding="compact">
-            <p className="text-center font-inter text-body text-text-primary">
+            <p className="text-center body-primary text-body text-text-primary">
               Position: {pickPosition + 1} / {NUM_POSITIONS}
             </p>
           </Card>

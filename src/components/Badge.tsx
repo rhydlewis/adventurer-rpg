@@ -72,7 +72,7 @@ export function Badge({
         inline-flex items-center gap-1.5
         px-2 py-1
         rounded
-        text-caption font-inter font-medium
+        text-caption label-secondary
         ${colorClasses[type]}
         ${className}
       `.trim()}

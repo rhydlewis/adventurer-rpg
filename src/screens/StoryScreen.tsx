@@ -53,7 +53,7 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
     return (
       <div className="min-h-screen bg-primary flex items-center justify-center p-4">
         <Card variant="neutral" padding="spacious">
-          <p className="text-text-primary font-inter text-center">
+          <p className="text-text-primary body-primary text-center">
             No active story. Please start a campaign.
           </p>
           <Button
@@ -74,7 +74,7 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
     return (
       <div className="min-h-screen bg-primary flex items-center justify-center p-4">
         <Card variant="neutral" padding="spacious">
-          <p className="text-text-primary font-inter text-center">
+          <p className="text-text-primary body-primary text-center">
             Story node not found. This is a bug.
           </p>
           <Button
@@ -131,11 +131,11 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
             <div className="flex items-center gap-2">
               <Icon name="Book" className="text-player" />
               <div>
-                <h1 className="font-pirata text-h1 text-text-primary">
+                <h1 className="heading-primary text-h1 text-text-primary">
                   {currentNode.title || campaign.title}
                 </h1>
                 {currentNode.locationHint && (
-                  <p className="text-xs text-text-muted font-inter">
+                  <p className="text-xs text-text-muted label-secondary">
                     {currentNode.locationHint}
                   </p>
                 )}
@@ -162,25 +162,25 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
         {/* Test Lock Picking Minigame (Prototype) */}
         {onNavigate && (
           <Card variant="neutral" padding="compact" className="mb-2 border-warning">
-            <p className="text-caption text-text-primary font-inter mb-2 text-center font-semibold">
+            <p className="text-caption text-text-primary label-primary mb-2 text-center">
               🔒 Prototype: Lock Picking Minigame
             </p>
             <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => handleTestLockPicking('easy')}
-                className="px-2 py-2 bg-success text-white font-inter font-semibold text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
+                className="px-2 py-2 bg-success text-white button-text text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
               >
                 Easy
               </button>
               <button
                 onClick={() => handleTestLockPicking('medium')}
-                className="px-2 py-2 bg-warning text-white font-inter font-semibold text-caption rounded-lg hover:bg-yellow-600 active:bg-yellow-700 transition-all duration-200 active:scale-[0.98]"
+                className="px-2 py-2 bg-warning text-white button-text text-caption rounded-lg hover:bg-yellow-600 active:bg-yellow-700 transition-all duration-200 active:scale-[0.98]"
               >
                 Medium
               </button>
               <button
                 onClick={() => handleTestLockPicking('hard')}
-                className="px-2 py-2 bg-enemy text-white font-inter font-semibold text-caption rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-[0.98]"
+                className="px-2 py-2 bg-enemy text-white button-text text-caption rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-[0.98]"
               >
                 Hard
               </button>
@@ -214,7 +214,7 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
           ))
         ) : (
           <Card variant="neutral" padding="spacious">
-            <p className="text-text-muted text-center font-inter text-sm italic">
+            <p className="text-text-muted text-center body-secondary text-sm italic">
               No available choices. The story continues...
             </p>
           </Card>

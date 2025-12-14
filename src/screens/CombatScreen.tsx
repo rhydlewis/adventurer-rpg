@@ -43,7 +43,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-primary text-text-primary">
         <div className="text-center">
-          <p className="text-xl font-inter">No combat active</p>
+          <p className="text-xl body-primary">No combat active</p>
           <Button onClick={onEndCombat} variant="secondary" className="mt-4">
             Return Home
           </Button>
@@ -69,13 +69,13 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-amber-600/20 border border-amber-600/50 rounded flex items-center justify-center">
-                <span className="text-amber-500 font-cinzel font-bold text-sm">{combat.turn}</span>
+                <span className="text-amber-500 stat-small text-sm">{combat.turn}</span>
               </div>
-              <h1 className="text-lg font-cinzel font-bold text-amber-500 tracking-wide">BATTLE</h1>
+              <h1 className="text-lg heading-tertiary text-amber-500 tracking-wide">BATTLE</h1>
             </div>
             <button
               onClick={handleEndCombat}
-              className="text-xs text-slate-400 hover:text-slate-200 font-inter px-3 py-1.5 border border-slate-700 rounded hover:border-slate-500 transition-colors"
+              className="text-xs text-slate-400 hover:text-slate-200 body-secondary px-3 py-1.5 border border-slate-700 rounded hover:border-slate-500 transition-colors"
             >
               End
             </button>
@@ -83,7 +83,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
 
           {/* Initiative Strip - Minimal */}
           {combat.initiative && (
-            <div className="mt-2 flex items-center justify-center space-x-2 text-xs font-inter">
+            <div className="mt-2 flex items-center justify-center space-x-2 text-xs body-secondary">
               <div className={`px-2 py-1 rounded ${
                 combat.currentActor === 'player'
                   ? 'bg-emerald-900/50 text-emerald-300 border border-emerald-700/50'
@@ -124,7 +124,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
           {/* Detailed Stats Toggle */}
           <button
             onClick={() => setShowDetailedStats(!showDetailedStats)}
-            className="w-full mt-2 text-xs text-slate-500 hover:text-slate-300 font-inter flex items-center justify-center space-x-1 transition-colors"
+            className="w-full mt-2 text-xs text-slate-500 hover:text-slate-300 body-secondary flex items-center justify-center space-x-1 transition-colors"
           >
             <Icon name="Info" size={12} />
             <span>{showDetailedStats ? 'Hide' : 'Show'} Detailed Stats</span>
@@ -145,7 +145,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
             {/* Chronicle Header */}
             <div className="flex-none px-3 py-1.5 bg-gradient-to-r from-amber-900/20 to-transparent border-b border-amber-800/30 flex items-center space-x-2">
               <Icon name="ScrollText" size={12} className="text-amber-600" />
-              <span className="text-[10px] font-cinzel text-amber-500 tracking-wider uppercase">Battle Chronicle</span>
+              <span className="text-[10px] label-primary text-amber-500 tracking-wider">Battle Chronicle</span>
             </div>
 
             {/* Scrollable Log */}
@@ -154,14 +154,14 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
               className="flex-1 overflow-y-auto px-3 py-1.5 space-y-1 scrollbar-thin scrollbar-thumb-amber-900/50 scrollbar-track-transparent"
             >
               {combat.log.length === 0 ? (
-                <div className="text-center text-slate-600 text-[10px] font-inter italic py-4">
+                <div className="text-center text-slate-600 text-[10px] body-secondary italic py-4">
                   The battle is about to begin...
                 </div>
               ) : (
                 combat.log.map((entry, idx) => (
                   <div
                     key={idx}
-                    className={`text-[10px] font-inter p-1.5 rounded border-l-2 leading-snug ${
+                    className={`text-[10px] combat-log p-1.5 rounded border-l-2 leading-snug ${
                       entry.actor === 'player'
                         ? 'bg-emerald-950/40 border-emerald-700/60 text-emerald-200'
                         : entry.actor === 'enemy'
@@ -196,11 +196,11 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
           ) : (
             <div className="bg-gradient-to-b from-slate-800/80 to-slate-900/80 backdrop-blur-md rounded-xl border border-slate-700/50 p-3">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-cinzel text-amber-500 tracking-wider uppercase flex items-center space-x-2">
+                <h3 className="text-xs label-primary text-amber-500 tracking-wider flex items-center space-x-2">
                   <Icon name="Swords" size={14} />
                   <span>Your Actions</span>
                 </h3>
-                <span className="text-[10px] text-slate-500 font-inter">
+                <span className="text-[10px] text-slate-500 body-secondary">
                   {actions.filter(a => a.available && !a.disabled).length} available
                 </span>
               </div>
@@ -216,7 +216,7 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
                       key={index}
                       onClick={() => !isDisabled && executeTurn(action)}
                       disabled={isDisabled}
-                      className={`min-h-[56px] p-2 rounded-lg transition-all font-inter flex items-center space-x-2 ${
+                      className={`min-h-[56px] p-2 rounded-lg transition-all button-text flex items-center space-x-2 ${
                         isDisabled
                           ? 'bg-slate-900/50 text-slate-600 cursor-not-allowed border border-slate-800'
                           : action.type === 'attack'
@@ -322,12 +322,12 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
     }`}>
       {/* Name & Level */}
       <div className="mb-2">
-        <h2 className={`text-sm font-cinzel font-bold leading-tight ${
+        <h2 className={`text-sm character-name text-sm leading-tight ${
           variant === 'player' ? 'text-emerald-300' : 'text-red-300'
         }`}>
           {character.name.length > 12 ? character.name.split(' ')[0] : character.name}
         </h2>
-        <p className="text-[10px] text-slate-500 font-inter">
+        <p className="text-[10px] text-slate-500 label-secondary">
           Lv{character.level} {character.class}
         </p>
       </div>
@@ -335,8 +335,8 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
       {/* HP Bar */}
       <div className="mb-2">
         <div className="flex justify-between items-center mb-0.5">
-          <span className="text-[9px] font-inter text-slate-500 uppercase tracking-wide">HP</span>
-          <span className={`text-xs font-cinzel font-bold ${
+          <span className="text-[9px] label-secondary text-slate-500 tracking-wide">HP</span>
+          <span className={`text-xs stat-small ${
             isLowHp ? 'text-red-400' : variant === 'player' ? 'text-emerald-300' : 'text-red-300'
           }`}>
             {character.hp}/{character.maxHp}
@@ -361,8 +361,8 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
         <div className={`flex-1 bg-slate-900/50 rounded p-1.5 border ${
           variant === 'player' ? 'border-emerald-900/30' : 'border-red-900/30'
         }`}>
-          <div className="text-[9px] text-slate-500 font-inter">AC</div>
-          <div className={`text-sm font-cinzel font-bold ${
+          <div className="text-[9px] text-slate-500 label-secondary">AC</div>
+          <div className={`text-sm stat-small ${
             variant === 'player' ? 'text-emerald-400' : 'text-red-400'
           }`}>
             {character.ac}
@@ -371,8 +371,8 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
         <div className={`flex-1 bg-slate-900/50 rounded p-1.5 border ${
           variant === 'player' ? 'border-emerald-900/30' : 'border-red-900/30'
         }`}>
-          <div className="text-[9px] text-slate-500 font-inter">BAB</div>
-          <div className={`text-sm font-cinzel font-bold ${
+          <div className="text-[9px] text-slate-500 label-secondary">BAB</div>
+          <div className={`text-sm stat-small ${
             variant === 'player' ? 'text-emerald-400' : 'text-red-400'
           }`}>
             {formatModifier(character.bab)}
@@ -386,7 +386,7 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
           {conditions.map((condition, idx) => (
             <span
               key={idx}
-              className="text-[9px] px-1.5 py-0.5 rounded bg-amber-900/40 text-amber-400 border border-amber-800/40 font-inter"
+              className="text-[9px] px-1.5 py-0.5 rounded bg-amber-900/40 text-amber-400 border border-amber-800/40 label-secondary"
             >
               {condition.type}
             </span>
@@ -413,16 +413,16 @@ function DetailedStatsCompact({ character, variant }: DetailedStatsCompactProps)
       <div className="space-y-1.5">
         {/* Saves */}
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-inter text-[10px]">Fort</span>
-          <span className="text-emerald-400 font-cinzel font-bold">{formatModifier(character.saves.fortitude)}</span>
+          <span className="text-slate-500 label-secondary text-[10px]">Fort</span>
+          <span className="text-emerald-400 stat-modifier">{formatModifier(character.saves.fortitude)}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-inter text-[10px]">Reflex</span>
-          <span className="text-amber-400 font-cinzel font-bold">{formatModifier(character.saves.reflex)}</span>
+          <span className="text-slate-500 label-secondary text-[10px]">Reflex</span>
+          <span className="text-amber-400 stat-modifier">{formatModifier(character.saves.reflex)}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 font-inter text-[10px]">Will</span>
-          <span className="text-violet-400 font-cinzel font-bold">{formatModifier(character.saves.will)}</span>
+          <span className="text-slate-500 label-secondary text-[10px]">Will</span>
+          <span className="text-violet-400 stat-modifier">{formatModifier(character.saves.will)}</span>
         </div>
 
         {/* Equipment */}
@@ -430,7 +430,7 @@ function DetailedStatsCompact({ character, variant }: DetailedStatsCompactProps)
           <>
             <div className="border-t border-slate-800/50 pt-1.5 mt-1.5">
               <div className="flex items-center justify-between">
-                <span className="text-slate-500 font-inter text-[10px]">Weapon</span>
+                <span className="text-slate-500 label-secondary text-[10px]">Weapon</span>
                 <span className="text-slate-300 text-[10px] truncate ml-2">{character.equipment.weapon.name}</span>
               </div>
             </div>
@@ -463,19 +463,19 @@ function VictoryDefeatCard({ winner, playerName, enemyName, handleEndCombat }: V
           <Icon name="Skull" size={48} className="text-red-500 mx-auto" />
         )}
       </div>
-      <h2 className={`text-3xl font-cinzel font-bold mb-2 ${
+      <h2 className={`text-3xl heading-display mb-2 ${
         winner === 'player' ? 'text-amber-400' : 'text-red-400'
       }`}>
         {winner === 'player' ? 'VICTORY!' : 'DEFEAT!'}
       </h2>
-      <p className="text-slate-300 font-inter text-sm mb-4">
+      <p className="text-slate-300 body-primary text-sm mb-4">
         {winner === 'player'
           ? `${enemyName} has been vanquished!`
           : `${playerName} has fallen in battle.`}
       </p>
       <button
         onClick={handleEndCombat}
-        className="w-full px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-inter font-semibold rounded-lg border border-slate-600 transition-all active:scale-95"
+        className="w-full px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white button-text rounded-lg border border-slate-600 transition-all active:scale-95"
       >
         Return to Home
       </button>

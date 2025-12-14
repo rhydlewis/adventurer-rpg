@@ -64,7 +64,7 @@ export function Button({
 }: ButtonProps) {
   // Base styles: typography, transitions, accessibility
   const baseClasses =
-    'font-inter font-semibold rounded-lg transition-all duration-200 ' +
+    'button-text rounded-lg transition-all duration-200 ' +
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-player ' +
     'focus-visible:ring-offset-2 focus-visible:ring-offset-primary ' +
     'disabled:opacity-50 disabled:cursor-not-allowed ' +
