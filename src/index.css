@@ -128,15 +128,27 @@ body {
 @layer utilities {
   /* Headings */
   .heading-display {
-    @apply font-cinzel font-bold text-display text-text-accent;
+    font-family: var(--font-cinzel);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-display);
+    line-height: var(--line-height-display);
+    color: var(--color-text-accent);
   }
 
   .heading-primary {
-    @apply font-cinzel font-bold text-h1 text-text-accent;
+    font-family: var(--font-cinzel);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+    color: var(--color-text-accent);
   }
 
   .heading-secondary {
-    @apply font-cinzel font-bold text-h2 text-text-primary;
+    font-family: var(--font-cinzel);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+    color: var(--color-text-primary);
   }
 
   .heading-tertiary {
@@ -162,37 +174,64 @@ body {
 
   /* Body Text */
   .body-primary {
-    @apply font-inter text-body text-text-primary;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-primary);
   }
 
   .body-secondary {
-    @apply font-inter text-body text-text-secondary;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-secondary);
   }
 
   .body-muted {
-    @apply font-inter text-body text-text-muted;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-muted);
   }
 
   .body-narrative {
-    @apply font-merriweather text-body text-text-primary leading-relaxed;
+    font-family: var(--font-merriweather);
+    font-size: var(--font-size-body);
+    line-height: 1.75;
+    color: var(--color-text-primary);
   }
 
   /* UI Elements */
   .label-primary {
-    @apply font-inter text-caption font-medium text-text-secondary uppercase tracking-wide;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-caption);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .label-secondary {
-    @apply font-inter text-caption text-text-secondary;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-caption);
+    color: var(--color-text-secondary);
   }
 
   .button-text {
-    @apply font-inter text-body font-medium;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-body);
   }
 
   /* Special Purpose */
   .combat-log {
-    @apply font-inter text-dice text-text-primary;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-dice);
+    line-height: 1.4;
+    color: var(--color-text-primary);
   }
 
   .character-name {
@@ -200,7 +239,11 @@ body {
   }
 
   .skill-name {
-    @apply font-inter text-body font-medium text-text-primary;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-body);
+    color: var(--color-text-primary);
   }
 
   .feat-name {
@@ -209,12 +252,18 @@ body {
 
   /* Tab Navigation */
   .tab-text {
-    @apply font-inter text-body font-medium;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-body);
   }
 
   /* Form Inputs */
   .input-text {
-    @apply font-inter text-body text-text-primary;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--color-text-primary);
   }
 
   /* Attribute Values */
@@ -223,6 +272,11 @@ body {
   }
 
   .attribute-label {
-    @apply font-inter text-caption font-medium text-text-secondary uppercase;
+    font-family: var(--font-inter);
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-caption);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
   }
 }
