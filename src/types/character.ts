@@ -3,6 +3,7 @@ import type { SkillRanks } from './skill';
 import type { Feat } from './feat';
 import type { Equipment, InventoryItem } from './equipment';
 import type { Resources } from './resource';
+import type { Background, CharacterTrait } from './background';
 
 export type CharacterClass = 'Fighter' | 'Rogue' | 'Wizard' | 'Cleric';
 
@@ -11,6 +12,8 @@ export interface Character {
   avatarPath: string;
   class: CharacterClass;
   level: number;
+  background?: Background;
+  traits: CharacterTrait[];
   attributes: Attributes;
   hp: number;
   maxHp: number;
