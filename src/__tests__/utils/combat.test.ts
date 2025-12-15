@@ -81,7 +81,7 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
 });
 
 const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
-  name: 'Goblin',
+  name: 'Skeleton',
   avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,

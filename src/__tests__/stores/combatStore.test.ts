@@ -34,7 +34,7 @@ const createMockCharacter = (name: string = 'Player', hp: number = 10, _initiati
   resources: { abilities: [] },
 });
 
-const createMockEnemy = (name: string = 'Goblin', hp: number = 8, _initiative: number = 8): Creature => ({
+const createMockEnemy = (name: string = 'Skeleton', hp: number = 8, _initiative: number = 8): Creature => ({
   name,
   avatarPath: 'human_female_00009.png',
   class: 'Fighter',

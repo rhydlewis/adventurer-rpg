@@ -464,13 +464,13 @@ describe('utils/narrativeLogic', () => {
     it('processes startCombat effect', () => {
       const world = createTestWorldState();
       const effects: NodeEffect[] = [
-        { type: 'startCombat', enemyId: 'goblin', onVictoryNodeId: 'victory' },
+        { type: 'startCombat', enemyId: 'skeleton', onVictoryNodeId: 'victory' },
       ];
 
       const result = processNodeEffects(effects, world);
 
       expect(result.combatTrigger).toEqual({
-        enemyId: 'goblin',
+        enemyId: 'skeleton',
         onVictoryNodeId: 'victory',
       });
     });

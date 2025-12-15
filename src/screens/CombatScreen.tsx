@@ -322,12 +322,16 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
     }`}>
       {/* Name & Level */}
       <div className="mb-2 flex gap-2 items-start">
-        {/* Avatar - only for player */}
-        {variant === 'player' && character.avatarPath && (
+        {/* Avatar - player uses /avatars, enemy uses /creatures */}
+        {character.avatarPath && (
           <img
-            src={`/assets/avatars/${character.avatarPath}`}
+            src={`/assets/${variant === 'player' ? 'avatars' : 'creatures'}/${character.avatarPath}`}
             alt={character.name}
-            className="w-12 h-12 rounded-full ring-2 ring-emerald-500/50 flex-shrink-0"
+            className={`w-12 h-12 rounded-full ring-2 flex-shrink-0 ${
+              variant === 'player'
+                ? 'ring-emerald-500/50'
+                : 'ring-red-500/50'
+            }`}
           />
         )}
         <div className="flex-1">

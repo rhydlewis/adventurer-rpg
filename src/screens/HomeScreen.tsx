@@ -3,7 +3,8 @@ import type { Creature, CharacterClass } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { Button, Card, Icon } from '../components';
-import {DEFAULT_AVATAR} from "../data/avatars.ts";
+import { DEFAULT_AVATAR } from '../data/avatars';
+import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from '../data/creatureAvatars';
 
 interface HomeScreenProps {
   onStartCombat: () => void;
@@ -36,21 +37,21 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
     });
 
     // Create a sample enemy
-    const goblin: Creature = {
-      name: 'Goblin',
-      avatarPath: DEFAULT_AVATAR,
+    const skeleton: Creature = {
+      name: 'Skeleton',
+      avatarPath: CREATURE_AVATARS['Skeleton'] ?? DEFAULT_CREATURE_AVATAR,
       class: 'Fighter',
       level: 1,
       attributes: {
-        STR: 11,
-        DEX: 13,
-        CON: 12,
-        INT: 10,
-        WIS: 9,
-        CHA: 6,
+        STR: 13,
+        DEX: 15,
+        CON: 10,
+        INT: 6,
+        WIS: 8,
+        CHA: 5,
       },
-      hp: 10,
-      maxHp: 10,
+      hp: 12,
+      maxHp: 12,
       ac: 10,
       bab: 1,
       saves: {
@@ -70,16 +71,16 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
       equipment: {
         weapon: {
           name: 'Dagger',
-          damage: '1d4',
-          damageType: 'piercing',
-          finesse: true,
-          description: 'A small dagger',
+          damage: '1d6',
+          damageType: 'slashing',
+          finesse: false,
+          description: 'A corroded blade wielded by the undead',
         },
         armor: {
           name: 'Leather',
-          baseAC: 8,
+          baseAC: 10,
           maxDexBonus: null,
-          description: 'Light leather armor',
+          description: 'Tattered leather armor',
         },
         shield: {
           equipped: false,
@@ -92,7 +93,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
       },
     };
 
-    startCombat(player, goblin);
+    startCombat(player, skeleton);
     onStartCombat();
   };
 
