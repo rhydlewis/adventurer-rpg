@@ -15,12 +15,12 @@ export const enemies: Record<string, Creature> = {
     class: 'Fighter',
     level: 1,
     attributes: {
-      str: 13, // +1
-      dex: 14, // +2
-      con: 12, // +1
-      int: 10, // +0
-      wis: 11, // +0
-      cha: 8, // -1
+      STR: 13, // +1
+      DEX: 14, // +2
+      CON: 12, // +1
+      INT: 10, // +0
+      WIS: 11, // +0
+      CHA: 8, // -1
     },
     hp: 10,
     maxHp: 10,
@@ -61,12 +61,12 @@ export const enemies: Record<string, Creature> = {
     class: 'Fighter',
     level: 1,
     attributes: {
-      str: 13, // +1
-      dex: 15, // +2
-      con: 10, // +0 (undead don't benefit from CON but keep for mechanics)
-      int: 6, // -2
-      wis: 10, // +0
-      cha: 3, // -4
+      STR: 13, // +1
+      DEX: 15, // +2
+      CON: 10, // +0 (undead don't benefit from CON but keep for mechanics)
+      INT: 6, // -2
+      WIS: 10, // +0
+      CHA: 3, // -4
     },
     hp: 12,
     maxHp: 12,
