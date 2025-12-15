@@ -32,26 +32,37 @@ export const enemies: Record<string, Creature> = {
       will: 0, // 0 (Fighter) + 0 WIS
     },
     skills: {
-      Intimidate: 2,
+      Athletics: 0,
       Stealth: 4,
+      Perception: 0,
+      Arcana: 0,
+      Medicine: 0,
+      Intimidate: 2,
     },
     feats: [],
     equipment: {
       weapon: {
-        name: 'Short Sword',
+        name: 'Dagger',
         damage: '1d6',
-        attackStat: 'str',
-        damageStat: 'str',
+        damageType: 'piercing',
+        finesse: true,
+        description: 'A short blade favored by bandits',
       },
       armor: {
-        name: 'Leather Armor',
-        acBonus: 1,
+        name: 'Leather',
+        baseAC: 11,
+        maxDexBonus: null,
+        description: 'Supple leather armor',
       },
-      shield: null,
+      shield: {
+        equipped: false,
+        acBonus: 0,
+      },
+      items: [],
     },
     resources: {
-      classAbilities: {},
-      spells: null,
+      abilities: [],
+      spellSlots: undefined,
     },
   },
 
@@ -77,27 +88,38 @@ export const enemies: Record<string, Creature> = {
       reflex: 4, // 0 (Fighter) + 2 DEX + 2 (undead bonus)
       will: 2, // 0 (Fighter) + 0 WIS + 2 (undead bonus)
     },
-    skills: {},
+    skills: {
+      Athletics: 0,
+      Stealth: 0,
+      Perception: 0,
+      Arcana: 0,
+      Medicine: 0,
+      Intimidate: 0,
+    },
     feats: [],
     equipment: {
       weapon: {
-        name: 'Claw',
+        name: 'Mace',
         damage: '1d6',
-        attackStat: 'str',
-        damageStat: 'str',
+        damageType: 'bludgeoning',
+        finesse: false,
+        description: 'Rusty mace and claw attacks',
       },
       armor: {
-        name: 'Natural Armor',
-        acBonus: 2,
+        name: 'None',
+        baseAC: 10,
+        maxDexBonus: null,
+        description: 'Natural bone armor',
       },
       shield: {
-        name: 'Rusty Shield',
-        acBonus: 1,
+        equipped: true,
+        acBonus: 2,
       },
+      items: [],
     },
     resources: {
-      classAbilities: {},
-      spells: null,
+      abilities: [],
+      spellSlots: undefined,
     },
   },
 };
@@ -117,17 +139,19 @@ export function getEnemy(enemyId: string): Creature | null {
     skills: { ...enemy.skills },
     feats: [...enemy.feats],
     equipment: {
-      weapon: enemy.equipment.weapon ? { ...enemy.equipment.weapon } : null,
-      armor: enemy.equipment.armor ? { ...enemy.equipment.armor } : null,
-      shield: enemy.equipment.shield ? { ...enemy.equipment.shield } : null,
+      weapon: { ...enemy.equipment.weapon },
+      armor: { ...enemy.equipment.armor },
+      shield: { ...enemy.equipment.shield },
+      items: [...enemy.equipment.items],
     },
     resources: {
-      classAbilities: { ...enemy.resources.classAbilities },
-      spells: enemy.resources.spells
+      abilities: [...enemy.resources.abilities],
+      spellSlots: enemy.resources.spellSlots
         ? {
-            slotsRemaining: { ...enemy.resources.spells.slotsRemaining },
+            level0: { ...enemy.resources.spellSlots.level0 },
+            level1: { ...enemy.resources.spellSlots.level1 },
           }
-        : null,
+        : undefined,
     },
   };
 }

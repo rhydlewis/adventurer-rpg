@@ -5,7 +5,7 @@ import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import { getEnemy } from '../data/enemies';
 import type { CombatState } from '../types/combat';
-import { Button, Icon } from '../components';
+import { Icon } from '../components';
 
 // Action icon mapping
 const actionIcons = {
