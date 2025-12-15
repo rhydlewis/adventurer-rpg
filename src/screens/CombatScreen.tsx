@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCombatStore } from '../stores/combatStore';
+import { useCharacterStore } from '../stores/characterStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
+import { getEnemy } from '../data/enemies';
 import type { CombatState } from '../types/combat';
 import { Button, Icon } from '../components';
 
@@ -18,15 +20,38 @@ const formatModifier = (value: number): string => {
 };
 
 interface CombatScreenProps {
-  onEndCombat: () => void;
+  enemyId: string;
+  onVictoryNodeId: string;
+  onVictory: (victoryNodeId: string) => void;
+  onDefeat: () => void;
 }
 
-export function CombatScreen({ onEndCombat }: CombatScreenProps) {
-  const { combat, executeTurn, resetCombat } = useCombatStore();
+export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: CombatScreenProps) {
+  const { combat, startCombat, executeTurn, resetCombat } = useCombatStore();
+  const { character } = useCharacterStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize combat when component mounts
+  useEffect(() => {
+    // Only initialize combat if not already in combat
+    if (!combat && character) {
+      // Load enemy from database
+      const enemy = getEnemy(enemyId);
+
+      if (!enemy) {
+        console.error(`Enemy with ID "${enemyId}" not found in database`);
+        // Fallback: trigger defeat callback
+        onDefeat();
+        return;
+      }
+
+      // Start combat with loaded enemy
+      startCombat(character, enemy);
+    }
+  }, [combat, character, enemyId, startCombat, onDefeat]);
 
   // Auto-scroll to bottom of combat log when new entries are added
   useEffect(() => {
@@ -43,18 +68,20 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-primary text-text-primary">
         <div className="text-center">
-          <p className="text-xl body-primary">No combat active</p>
-          <Button onClick={onEndCombat} variant="secondary" className="mt-4">
-            Return Home
-          </Button>
+          <p className="text-xl body-primary">Loading combat...</p>
         </div>
       </div>
     );
   }
 
-  const handleEndCombat = () => {
+  const handleVictory = () => {
     resetCombat();
-    onEndCombat();
+    onVictory(onVictoryNodeId);
+  };
+
+  const handleDefeat = () => {
+    resetCombat();
+    onDefeat();
   };
 
   const actions = getAvailableActions(combat.playerCharacter);
@@ -191,7 +218,8 @@ export function CombatScreen({ onEndCombat }: CombatScreenProps) {
               winner={combat.winner}
               playerName={combat.playerCharacter.name}
               enemyName={combat.enemy.name}
-              handleEndCombat={handleEndCombat}
+              handleVictory={handleVictory}
+              handleDefeat={handleDefeat}
             />
           ) : (
             <div className="bg-gradient-to-b from-slate-800/80 to-slate-900/80 backdrop-blur-md rounded-xl border border-slate-700/50 p-3">
@@ -460,10 +488,11 @@ interface VictoryDefeatCardProps {
   winner: 'player' | 'enemy';
   playerName: string;
   enemyName: string;
-  handleEndCombat: () => void;
+  handleVictory: () => void;
+  handleDefeat: () => void;
 }
 
-function VictoryDefeatCard({ winner, playerName, enemyName, handleEndCombat }: VictoryDefeatCardProps) {
+function VictoryDefeatCard({ winner, playerName, enemyName, handleVictory, handleDefeat }: VictoryDefeatCardProps) {
   return (
     <div className={`rounded-xl p-6 text-center backdrop-blur-md border-2 ${
       winner === 'player'
@@ -488,10 +517,10 @@ function VictoryDefeatCard({ winner, playerName, enemyName, handleEndCombat }: V
           : `${playerName} has fallen in battle.`}
       </p>
       <button
-        onClick={handleEndCombat}
+        onClick={winner === 'player' ? handleVictory : handleDefeat}
         className="w-full px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white button-text rounded-lg border border-slate-600 transition-all active:scale-95"
       >
-        Return to Home
+        {winner === 'player' ? 'Continue Adventure' : 'Continue'}
       </button>
     </div>
   );

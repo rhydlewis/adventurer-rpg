@@ -11,7 +11,7 @@ import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from './creatureAvatars';
 export const enemies: Record<string, Creature> = {
   bandit: {
     name: 'Bandit',
-    avatarPath: DEFAULT_CREATURE_AVATAR,
+    avatarPath: CREATURE_AVATARS['Bandit'] || DEFAULT_CREATURE_AVATAR,
     class: 'Fighter',
     level: 1,
     attributes: {

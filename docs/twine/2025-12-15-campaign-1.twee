@@ -1,0 +1,588 @@
+:: StoryTitle
+The Spire of the Lich King (Prototype)
+
+:: StoryData [Meta]
+{
+  "ifid": "A1B2C3D4-E5F6-47A8-9B0C-1D2E3F4A5B6C",
+  "format": "SugarCube",
+  "format-version": "2.37.0",
+  "start": "Start"
+}
+
+:: Start [Meta Entry]
+<<set $class to "">>
+<<set $hasWeapon to false>>
+<<set $gold to 0>>
+<<set $elder to false>>
+<<set $letter to false>>
+<<set $tracksFound to false>>
+<<set $injuryInfo to false>>
+<<set $stonesFound to 0>>
+<<set $journalRead to false>>
+<<set $sunShard to false>>
+<<set $sorathShieldDown to false>>
+<<set $sorathTrueDefeated to false>>
+
+You travel towards **Ashford**—and the sky ahead is stained with smoke.
+
+[[Begin Prologue (Act 0)->Act 0 Entry]]
+
+/* Dev convenience: jump points */
+<<comment>>
+[[Jump to Act 1->Act 1 Entry]]
+[[Jump to Act 2->Act 2 Entry]]
+[[Jump to Act 3->Act 3 Entry]]
+[[Jump to Act 4->Act 4 Entry]]
+<</comment>>
+
+:: Act 0 Entry [Act0 Entry]
+**ACT 0 — First Blood (Prologue)**
+
+A village burns. Bandits run. Something older watches.
+
+[[Approach the village gates->Ashford Gates]]
+
+:: Ashford Gates [Act0 Dialogue]
+The **gates of Ashford** stand half-open. A guard, soot on his brow, blocks your path.
+
+''Guard:'' “Hold. State your profession, traveller. If you’ve come to gawk at our misery—keep walking.”
+
+Choose your class:
+* [[“Fighter. I know my way around steel.”->Choose Fighter]]
+* [[“Rogue. I go where others can’t.”->Choose Rogue]]
+* [[“Wizard. I study forces most fear.”->Choose Wizard]]
+* [[“Cleric. I mend what darkness breaks.”->Choose Cleric]]
+
+You can also question the guard:
+* [[“What happened here?”->Guard Report]]
+* [[“Which way did they go?”->Guard Report]]
+
+:: Choose Fighter [Act0 Dialogue]
+<<set $class to "Fighter">>
+The guard eyes your arms, your stance.
+''Guard:'' “Good. We need folk who don’t flinch.”
+[[Continue->Guard Report]]
+
+:: Choose Rogue [Act0 Dialogue]
+<<set $class to "Rogue">>
+The guard’s gaze flicks to your hands.
+''Guard:'' “Quiet feet might catch loud thieves.”
+[[Continue->Guard Report]]
+
+:: Choose Wizard [Act0 Dialogue]
+<<set $class to "Wizard">>
+The guard swallows, uneasy.
+''Guard:'' “If you can turn flame aside… we’ll not refuse you.”
+[[Continue->Guard Report]]
+
+:: Choose Cleric [Act0 Dialogue]
+<<set $class to "Cleric">>
+The guard exhales, relief and doubt.
+''Guard:'' “Then you’ll find no shortage of wounds.”
+[[Continue->Guard Report]]
+
+:: Guard Report [Act0 Dialogue]
+''Guard:'' “Bandits came in the night. Took anything of value and set fire to half the village.”
+
+Ask:
+* [[“How many were there?”->Guard Questions]]
+* [[“Anyone hurt?”->Guard Questions]]
+* [[“Which way did they go?”->Guard Questions]]
+* [[[Intimidate] “Tell me everything. Now.”->Intimidate Guard]]
+
+[[Enter the burning streets->Burning Village]]
+
+:: Guard Questions [Act0 Dialogue]
+<<set $injuryInfo to true>>
+''Guard:'' “Four… maybe five. Fast. Organised. They fled **east**, into **Blackwood Forest**.”
+[[Back->Guard Report]]
+
+:: Intimidate Guard [Act0 Dialogue]
+<<set $tracksFound to true>>
+You step close. Your voice leaves no room for evasion.
+
+''Guard:'' “All right! East—by the old cart road. Look for wheel ruts and broken branches. Their leader has a **scarred face**… cruel laugh.”
+[[Enter the burning streets->Burning Village]]
+
+:: Burning Village [Act0 Exploration]
+Ashford is chaos—smouldering beams, frantic shouts, the stink of wet ash.
+
+You can help (and learn):
+* [[Speak to the Innkeeper->Innkeeper]]
+* [[Speak to the Blacksmith->Blacksmith]]
+* [[Speak to a Wounded Militia member->Militia]]
+* [[Find the Mayor->Mayor]]
+
+Or leave at once:
+* [[Follow the trail into Blackwood->Forest Entrance]]
+
+:: Innkeeper [Act0 Dialogue]
+An innkeeper stands amid cinders, clutching a scorched lockbox.
+
+''Innkeeper:'' “My life savings—gone. Their leader… a scarred face, and that laugh—like a knife.”
+
+* [[“What did they take?”->Innkeeper More]]
+* [[“Did they mention anything?”->Innkeeper More]]
+[[Back to the streets->Burning Village]]
+
+:: Innkeeper More [Act0 Dialogue]
+''Innkeeper:'' “Gold, trinkets… but they seemed to hunt for something specific. Like they had a list.”
+[[Back->Innkeeper]]
+
+:: Blacksmith [Act0 Dialogue]
+The forge is ransacked. The blacksmith wipes soot from his eyes.
+
+''Blacksmith:'' “If you truly mean to hunt them—take this. Better it bites bandit flesh than rusts in ash.”
+
+<<if $hasWeapon is false>>
+* [[Accept the basic weapon->Take Weapon]]
+<</if>>
+* [[Decline politely->Decline Weapon]]
+
+[[Back to the streets->Burning Village]]
+
+:: Take Weapon [Act0 Exploration]
+<<set $hasWeapon to true>>
+You take a serviceable blade—nick-marked, but balanced.
+
+''Blacksmith:'' “Bring back what you can. Or at least bring back justice.”
+[[Back->Blacksmith]]
+
+:: Decline Weapon [Act0 Dialogue]
+''Blacksmith:'' “Hmph. Then may your courage be sharper than steel.”
+[[Back->Blacksmith]]
+
+:: Militia [Act0 Dialogue]
+A wounded militia scout grips your sleeve.
+
+''Militia:'' “They fled east. Four—five at most. Not just rabble… they moved like soldiers.”
+
+* [[“Any sign of where they’re headed?”->Militia More]]
+[[Back->Burning Village]]
+
+:: Militia More [Act0 Dialogue]
+''Militia:'' “Deeper in Blackwood. There’s an old trail where carts used to run.”
+[[Back->Militia]]
+
+:: Mayor [Act0 Dialogue]
+The mayor stands before a half-burned hall, jaw clenched.
+
+''Mayor:'' “Recover what they stole. Bring them to justice. Ashford will pay what little it can.”
+
+* [[Accept the quest->Accept Quest]]
+* [[Decline and leave (end prologue)->Decline Quest]]
+
+:: Accept Quest [Act0 Outcome]
+''Mayor:'' “Then you have Ashford’s gratitude… and what coin we can scrape together.”
+[[Into the forest->Forest Entrance]]
+
+:: Decline Quest [Act0 Outcome]
+You turn away from the smoke and the pleading eyes.
+**END (Prologue declined)**
+
+:: Forest Entrance [Act0 Exploration]
+Blackwood welcomes you with silence. Even the wind seems to hold its breath.
+
+<<if $tracksFound>>
+You already know what to look for: **wheel ruts** and **broken branches**.
+<</if>>
+
+* [[Track the bandits (Perception)->Tracking Check]]
+* [[Push forward quickly (risk trouble)->Long Route]]
+
+:: Tracking Check [Act0 Exploration]
+<<if $tracksFound>>
+You find the trail easily.
+[[Follow the ruts to a clearing->Wounded Bandit Leader]]
+<<else>>
+You pause, squinting in the dim undergrowth.
+<<set $roll to random(1,20)>>
+<<if $roll >= 12>>
+<<set $tracksFound to true>>
+You spot disturbed soil and cart marks.
+[[Follow the trail to a clearing->Wounded Bandit Leader]]
+<<else>>
+Your steps wander. The forest tightens around you.
+[[You lose time… and something finds you->Minor Encounter]]
+<</if>>
+<</if>>
+
+:: Long Route [Act0 Exploration]
+You force your way along the rough path—fast, but careless.
+[[Something stirs in the brush->Minor Encounter]]
+
+:: Minor Encounter [Act0 Combat]
+A shape lunges—eyes too bright, hide too thin. Blackwood’s creatures are **wrong**.
+
+* [[Fight through->After Minor Encounter]]
+* [[Try to slip past (Stealth)->Stealth Past]]
+
+:: Stealth Past [Act0 Exploration]
+<<set $roll to random(1,20)>>
+<<if $roll >= 12>>
+You melt into shadow. The creature sniffs, confused—then fades away.
+[[Continue on the trail->Wounded Bandit Leader]]
+<<else>>
+A twig snaps. The thing turns—hungry.
+[[Fight through->After Minor Encounter]]
+<</if>>
+
+:: After Minor Encounter [Act0 Combat]
+(Combat placeholder)
+You survive and press on.
+[[Continue->Wounded Bandit Leader]]
+
+:: Wounded Bandit Leader [Act0 Dialogue]
+In a small clearing, the **bandit leader** slumps against a tree—badly injured. A scar cuts one cheek like a cruel signature.
+
+He coughs, then grins through blood.
+''Bandit:'' “Too late… hero.”
+
+Ask (choose any order):
+* [[“Where’s the rest of your gang?”->Bandit Q1]]
+* [[“Where are the stolen goods?”->Bandit Q2]]
+* [[[Intimidate] “Talk, or I finish what the forest started.”->Bandit Intimidate]]
+* [[[Heal/Medicine] “Hold still. I can help.”->Bandit Heal]]
+* [[“I’m here for justice.” (Start combat)->Bandit Combat]]
+
+:: Bandit Q1 [Act0 Dialogue]
+''Bandit:'' “They abandoned me. Funny, isn’t it? Loyalty’s just a word when teeth are at your throat.”
+[[Back->Wounded Bandit Leader]]
+
+:: Bandit Q2 [Act0 Dialogue]
+''Bandit:'' “Camp ahead. Hidden. You’ll smell it before you see it.”
+[[Back->Wounded Bandit Leader]]
+
+:: Bandit Intimidate [Act0 Dialogue]
+''Bandit:'' “All right—ALL right. Camp ahead. And… a letter. For **Oakhaven**. ‘The package’. ‘The tower’… that’s all I know!”
+[[Back->Wounded Bandit Leader]]
+
+:: Bandit Heal [Act0 Dialogue]
+You bind the worst of it. He breathes easier—then his eyes harden.
+
+''Bandit:'' “Shouldn’t have done that.”
+[[Combat begins->Bandit Combat]]
+
+:: Bandit Combat [Act0 Combat]
+(Combat placeholder)
+<<if $hasWeapon>>
+Your blade meets his.
+<<else>>
+You fight with whatever you have—fists, desperation, and will.
+<</if>>
+
+[[After victory->After Victory]]
+
+:: After Victory [Act0 Outcome]
+You search the body.
+
+You find:
+* A small pouch of gold.
+<<set $gold += 10>>
+* A letter with an unfamiliar seal. It mentions **Oakhaven**, “**the package**”, and “**the tower**”.
+<<set $letter to true>>
+* A crude map towards Oakhaven.
+
+Near the clearing, half-buried in roots, a strange object hums faintly—cold and old.
+
+[[Touch it->The Elder Awakens]]
+
+:: The Elder Awakens [Act0 Dialogue]
+<<set $elder to true>>
+The artifact flares with muted light.
+
+''The Elder:'' “At last… a hand that is not bone. Oakhaven is no refuge, traveller—only a lantern at the mouth of darkness.”
+
+[[Travel towards Oakhaven (Act 1)->Act 1 Entry]]
+
+:: Act 1 Entry [Act1 Entry]
+**ACT 1 — Oakhaven & The Hook**
+
+Warm lights and warmer lies. The watchtower waits.
+
+[[Enter Oakhaven->Oakhaven Arrival]]
+
+:: Oakhaven Arrival [Act1 Exploration]
+The forest thins. **Oakhaven** appears—lanterns, mud, and wary faces.
+
+A sign swings above a tavern door: **The Splintered Shield**.
+
+[[Enter the tavern->Tavern Hook]]
+
+:: Tavern Hook [Act1 Dialogue]
+Inside, smoke and murmurs. A terrified poacher drinks like he’s drowning.
+
+''Poacher:'' “The old watchtower… it glowed **sickly emerald**. A hum—made my teeth ache.”
+
+A magistrate watches you over a ledger.
+''Magistrate:'' “Investigate the tower. There’s a bounty for answers.”
+
+Choices:
+* [[Accept the bounty->Accept Watchtower Quest]]
+* [[Ask about the “package” and the tower->Ask Package]]
+* [[Rest first (small boon)->Rest]]
+
+:: Accept Watchtower Quest [Act1 Outcome]
+''Magistrate:'' “Good. Bring me proof—journal pages, relics… anything.”
+[[Set out for the watchtower->Approach Watchtower]]
+
+:: Ask Package [Act1 Dialogue]
+<<if $letter>>
+You show the letter seal. The magistrate’s expression tightens.
+
+''Magistrate:'' “That mark… Keep that close. If this is what I fear, you’ll want allies.”
+<<else>>
+''Magistrate:'' “I’ve heard whispers. No details.”
+<</if>>
+
+''The Elder:'' “The tower remembers. It always does.”
+
+[[Set out for the watchtower->Approach Watchtower]]
+
+:: Rest [Act1 Exploration]
+You take an hour. Food. Water. A moment to be mortal.
+[[Set out for the watchtower->Approach Watchtower]]
+
+:: Approach Watchtower [Act1 Exploration]
+The nearer you come, the quieter Blackwood becomes—no birds, no wind. The air tastes like old coins.
+
+A corrupted shape prowls ahead.
+
+* [[Fight through the corruption->Corruption Fight]]
+* [[Try to avoid it (Stealth)->Corruption Stealth]]
+
+:: Corruption Stealth [Act1 Exploration]
+<<set $roll to random(1,20)>>
+<<if $roll >= 12>>
+You circle wide. The corruption passes without scenting you.
+[[Reach the courtyard->Tower Courtyard]]
+<<else>>
+It finds you.
+[[Fight->Corruption Fight]]
+<</if>>
+
+:: Corruption Fight [Act1 Combat]
+(Combat placeholder)
+You survive—barely—and push on.
+[[Reach the courtyard->Tower Courtyard]]
+
+:: Tower Courtyard [Act1 Puzzle]
+The **Old Watchtower** rises, cracked and hungry. Its entrance is sealed by a shimmering barrier.
+
+''The Elder:'' “A harmony lock. Three tones to break the song.”
+
+Find **three Singing Stones** in the rubble.
+
+* [[Search the fallen arch->Find Stone A]]
+* [[Dig through a collapsed shrine->Find Stone B]]
+* [[Check the weed-choked well->Find Stone C]]
+* [[Try the barrier->Try Barrier]]
+
+:: Find Stone A [Act1 Puzzle]
+<<if $stonesFound < 3>>
+<<set $stonesFound += 1>>
+You find a smooth stone that vibrates faintly when held. (Found: $stonesFound/3)
+<</if>>
+[[Back->Tower Courtyard]]
+
+:: Find Stone B [Act1 Puzzle]
+<<if $stonesFound < 3>>
+<<set $stonesFound += 1>>
+You uncover a stone etched with spiral runes—warm to the touch. (Found: $stonesFound/3)
+<</if>>
+[[Back->Tower Courtyard]]
+
+:: Find Stone C [Act1 Puzzle]
+<<if $stonesFound < 3>>
+<<set $stonesFound += 1>>
+From the well’s lip you retrieve a stone that sings when breathed upon. (Found: $stonesFound/3)
+<</if>>
+[[Back->Tower Courtyard]]
+
+:: Try Barrier [Act1 Puzzle]
+<<if $stonesFound >= 3>>
+You press the three stones together. Their tones align—then **shatter** the barrier like glass.
+[[Enter the tower (Act 2)->Act 2 Entry]]
+<<else>>
+You touch the barrier. It repels you with a hum that rattles your teeth.
+''The Elder:'' “Three voices, traveller. Not two. Not one.”
+[[Back->Tower Courtyard]]
+<</if>>
+
+:: Act 2 Entry [Act2 Entry]
+**ACT 2 — The Upper Levels**
+
+Dust, traps, and the first true whispers of Sorath.
+
+[[Step into the foyer->Foyer of Dust]]
+
+:: Foyer of Dust [Act2 Exploration]
+A grand foyer, decayed. Tapestries rot. Dust lies thick as snow.
+
+Skeletons stand like forgotten sentries.
+
+Choices:
+* [[Move quietly (Stealth)->Statue Hall]]
+* [[Strike first->Skeleton Skirmish]]
+
+:: Statue Hall [Act2 Exploration]
+A hallway of statues, mouths open in silent screams.
+
+<<set $roll to random(1,20)>>
+<<if $roll >= 12>>
+You step with care. No darts. No clatter.
+[[Deeper into the tower->Alchemist Lab]]
+<<else>>
+A mechanism clicks—
+[[Poison darts fire!->Dart Trap]]
+<</if>>
+
+:: Dart Trap [Act2 Combat]
+(Trap placeholder)
+You grit your teeth and push onward.
+[[Deeper into the tower->Alchemist Lab]]
+
+:: Skeleton Skirmish [Act2 Combat]
+(Combat placeholder)
+Bones scatter across the floor.
+[[Deeper into the tower->Alchemist Lab]]
+
+:: Alchemist Lab [Act2 Dialogue]
+Glassware, ash, and old stains. A journal lies open—handwriting precise, then frantic.
+
+<<set $journalRead to true>>
+''The Elder:'' “Sorath. Before he was a legend. Before he was a warning.”
+
+A **magic-using skeleton** rises near the shelves—eyes lit with emerald fire.
+
+* [[Fight the mini-boss->Mini Boss]]
+* [[Retreat and barricade (rest)->Sanctuary Room]]
+
+:: Sanctuary Room [Act2 Exploration]
+You find a room with a heavy door. You barricade it and breathe.
+(Rest point placeholder)
+[[Return to face what waits->Mini Boss]]
+
+:: Mini Boss [Act2 Combat]
+(Combat placeholder)
+The foe falls—magic sputtering out.
+
+Loot:
+* A stronger blade (effective against undead).
+<<set $hasWeapon to true>>
+
+[[Descend (Act 3)->Act 3 Entry]]
+
+:: Act 3 Entry [Act3 Entry]
+**ACT 3 — The Catacombs Maze**
+
+Below the tower: traps, wrong turns, and a light that should not exist.
+
+[[Descend into the maze->Catacombs Maze]]
+
+:: Catacombs Maze [Act3 Puzzle]
+Stairs spiral into damp darkness. The emerald hum is louder here.
+
+Choices:
+* [[Take the left passage (faint runes)->Maze Left]]
+* [[Take the right passage (stagnant water)->Maze Right]]
+* [[Listen for the hum (Perception)->Maze Listen]]
+
+:: Maze Left [Act3 Puzzle]
+You follow runes like a breadcrumb trail.
+[[A hidden wall catches your eye->Secret Wall]]
+
+:: Maze Right [Act3 Puzzle]
+A pressure plate sinks—
+[[Trap springs!->Catacomb Trap]]
+
+:: Maze Listen [Act3 Puzzle]
+<<set $roll to random(1,20)>>
+<<if $roll >= 12>>
+You track the hum’s strongest thread.
+[[A hidden wall catches your eye->Secret Wall]]
+<<else>>
+You misjudge. Stone shifts underfoot—
+[[Trap springs!->Catacomb Trap]]
+<</if>>
+
+:: Catacomb Trap [Act3 Combat]
+(Trap/encounter placeholder)
+You survive, shaken, and stagger onward.
+[[A hidden wall catches your eye->Secret Wall]]
+
+:: Secret Wall [Act3 Exploration]
+Behind loose stones lies a chamber that should not exist.
+
+On a plinth rests a shard of pure light: the **Sun-Shard**.
+<<set $sunShard to true>>
+
+''The Elder:'' “Holy light. Not to kill… but to *unmake* what refuses death.”
+
+[[Continue (Act 4)->Act 4 Entry]]
+
+:: Act 4 Entry [Act4 Entry]
+**ACT 4 — The Void Sanctum**
+
+A ritual hangs over a void. Sorath waits behind a shield of emerald force.
+
+[[Enter the sanctum->Void Sanctum]]
+
+:: Void Sanctum [Act4 Dialogue]
+A cavern yawns wide. Floating rocks drift above an infinite void. Emerald light blinds.
+
+At the centre, **Sorath** floats—channeling a ritual. A shield surrounds him.
+
+''Sorath:'' “Ah… a living witness. How rare.”
+
+Phase 1:
+* [[Endure the waves of skeletons->Phase 1 Waves]]
+
+:: Phase 1 Waves [Act4 Combat]
+(Combat waves placeholder)
+
+Time passes. The shield flickers.
+<<set $sorathShieldDown to true>>
+
+[[The shield drops—now!->Phase 2 Sorath]]
+
+:: Phase 2 Sorath [Act4 Combat]
+Sorath moves like a thought. Ice and necrotic power coil from his hands.
+
+(Combat placeholder)
+
+You land what should be the final blow—Sorath collapses into dust… then reforms instantly.
+
+''Sorath:'' “Did you think that was enough?”
+
+* [[Use the Sun-Shard to disrupt the ritual core->Use Sun-Shard]]
+* [[Try to defeat him by force alone->Force Alone]]
+
+:: Use Sun-Shard [Act4 Outcome]
+<<if $sunShard>>
+You raise the Sun-Shard. Light floods the void—pure, intolerant.
+
+Sorath screams—not in pain, but in **fear**.
+The ritual threads snap. His form fractures.
+
+<<set $sorathTrueDefeated to true>>
+[[Epilogue->Epilogue]]
+<<else>>
+[[Force Alone->Force Alone]]
+<</if>>
+
+:: Force Alone [Act4 Outcome]
+Your blows scatter him… but he returns, stronger, laughing.
+
+''The Elder:'' “He is bound to the ritual. Sever it—or he will always return.”
+
+**END (Partial victory / Sorath persists)**
+
+:: Epilogue [Act4 Outcome]
+Sorath crumbles into true dust. The emerald hum dies. Silence returns.
+
+You find a hoard, and **Sorath’s Grimoire** among blackened relics.
+
+''The Elder:'' “From ruin, a beacon. From you… a legend.”
+
+**END (True victory)**

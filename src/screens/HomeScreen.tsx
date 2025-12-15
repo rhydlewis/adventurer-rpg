@@ -109,12 +109,12 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
         </p>
 
         {/* Phase Info Card */}
-        <Card variant="neutral" className="mb-6">
-          <h2 className="heading-secondary text-h1 mb-2">Phase 1.5 Testing</h2>
-          <p className="body-primary text-body text-text-primary/70">
-            Test combat with different classes - Choose your adventurer:
-          </p>
-        </Card>
+        {/*<Card variant="neutral" className="mb-6">*/}
+        {/*  <h2 className="heading-secondary text-h1 mb-2">Phase 2 Testing</h2>*/}
+        {/*  <p className="body-primary text-body text-text-primary/70">*/}
+        {/*    Test combat with different classes - Choose your adventurer:*/}
+        {/*  </p>*/}
+        {/*</Card>*/}
 
         {/* Main Actions */}
         <div className="space-y-3 mb-6">

@@ -13,6 +13,7 @@ import { testCampaign } from './data/campaigns/test-campaign';
 import { createCharacter } from './utils/characterCreation';
 import { CLASSES } from './data/classes';
 import type { Screen } from './types/navigation';
+import {DEFAULT_AVATAR} from "./data/avatars.ts";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
@@ -50,8 +51,8 @@ function App() {
     // Create a default test character if none exists (for testing)
     if (!character) {
       const testChar = createCharacter({
-        name: 'Test Fighter',
-        avatarPath: 'human_female_00009.png',
+        name: 'Theron Stormfist',
+        avatarPath: DEFAULT_AVATAR,
         class: 'Fighter',
         attributes: CLASSES.Fighter.recommendedAttributes,
         skillRanks: {
@@ -93,7 +94,33 @@ function App() {
         />
       )}
       {currentScreen.type === 'combat' && (
-        <CombatScreen onEndCombat={() => setCurrentScreen({ type: 'home' })} />
+        <CombatScreen
+          enemyId={currentScreen.enemyId}
+          onVictoryNodeId={currentScreen.onVictoryNodeId}
+          onVictory={(victoryNodeId: string) => {
+            // Return to narrative at specified node
+            setCurrentScreen({ type: 'story' });
+            // Narrative store will handle entering the victory node
+            const narrativeStore = useNarrativeStore.getState();
+            const characterStore = useCharacterStore.getState();
+            if (characterStore.character) {
+              narrativeStore.enterNode(victoryNodeId, characterStore.character);
+            }
+          }}
+          onDefeat={() => {
+            // Return to narrative at death node
+            setCurrentScreen({ type: 'story' });
+            const narrativeStore = useNarrativeStore.getState();
+            const characterStore = useCharacterStore.getState();
+            const deathNodeId = narrativeStore.campaign?.acts[0]?.deathNodeId;
+            if (deathNodeId && characterStore.character) {
+              narrativeStore.enterNode(deathNodeId, characterStore.character);
+            } else {
+              // Fallback: go home if no death node defined
+              setCurrentScreen({ type: 'home' });
+            }
+          }}
+        />
       )}
       {currentScreen.type === 'characterCreation' && <CharacterCreationScreen />}
       {currentScreen.type === 'characterSheet' && character && (
