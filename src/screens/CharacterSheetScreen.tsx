@@ -51,7 +51,7 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
   const skillNames: SkillName[] = ['Athletics', 'Stealth', 'Perception', 'Arcana', 'Medicine', 'Intimidate'];
 
   return (
-    <div className="min-h-screen bg-primary text-text-primary p-4">
+    <div className="min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -63,8 +63,8 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
               className="w-20 h-20 rounded-lg ring-4 ring-accent object-cover"
             />
             <div>
-              <h1 className="heading-primary text-text-accent">{character.name}</h1>
-              <p className="body-secondary text-text-secondary">
+              <h1 className="heading-primary text-fg-accent">{character.name}</h1>
+              <p className="body-secondary text-fg-secondary">
                 Level {character.level} {character.class}
               </p>
             </div>
@@ -123,7 +123,7 @@ function TabButton({ active, onClick, icon, children }: TabButtonProps) {
       className={`flex items-center space-x-2 px-4 py-2 rounded-lg tab-text transition-all min-h-[44px] ${
         active
           ? 'bg-player text-white shadow-lg'
-          : 'bg-surface text-text-secondary hover:bg-surface/80 hover:text-text-primary'
+          : 'bg-surface text-fg-secondary hover:bg-surface/80 hover:text-fg-primary'
       }`}
     >
       <Icon name={icon} size={20} />
@@ -139,20 +139,20 @@ function OverviewTab({ character }: { character: Character }) {
       {/* HP, AC, BAB Grid */}
       <div className="grid grid-cols-3 gap-3">
         <Card variant="neutral" className="text-center">
-          <div className="label-secondary text-xs text-text-muted mb-2">Hit Points</div>
-          <div className="stat-large text-3xl text-text-accent">
+          <div className="label-secondary text-xs text-fg-muted mb-2">Hit Points</div>
+          <div className="stat-large text-3xl text-fg-accent">
             {character.hp}/{character.maxHp}
           </div>
         </Card>
         <Card variant="neutral" className="text-center">
-          <div className="label-secondary text-xs text-text-muted mb-2">Armor Class</div>
-          <div className="stat-large text-3xl text-text-accent">
+          <div className="label-secondary text-xs text-fg-muted mb-2">Armor Class</div>
+          <div className="stat-large text-3xl text-fg-accent">
             {character.ac}
           </div>
         </Card>
         <Card variant="neutral" className="text-center">
-          <div className="label-secondary text-xs text-text-muted mb-2">Attack Bonus</div>
-          <div className="stat-large text-3xl text-text-accent">
+          <div className="label-secondary text-xs text-fg-muted mb-2">Attack Bonus</div>
+          <div className="stat-large text-3xl text-fg-accent">
             {formatModifier(character.bab)}
           </div>
         </Card>
@@ -176,14 +176,14 @@ function OverviewTab({ character }: { character: Character }) {
                   <Icon name={iconName} size={24} className="text-player" />
                 </div>
                 <div className="flex-1">
-                  <div className="attribute-label text-xs text-text-muted">
+                  <div className="attribute-label text-xs text-fg-muted">
                     {attributeLabels[attr]}
                   </div>
                   <div className="flex items-baseline space-x-1.5">
-                    <span className="stat-medium text-2xl text-text-accent">
+                    <span className="stat-medium text-2xl text-fg-accent">
                       {score}
                     </span>
-                    <span className="body-secondary text-sm text-text-secondary">
+                    <span className="body-secondary text-sm text-fg-secondary">
                       ({formatModifier(modifier)})
                     </span>
                   </div>
@@ -199,7 +199,7 @@ function OverviewTab({ character }: { character: Character }) {
         <h2 className="text-h2 heading-secondary mb-4">Saving Throws</h2>
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-surface rounded-lg p-4 text-center border border-border-default">
-            <div className="label-secondary text-xs text-text-muted mb-2">
+            <div className="label-secondary text-xs text-fg-muted mb-2">
               Fortitude
             </div>
             <div className="stat-medium text-2xl text-success">
@@ -207,7 +207,7 @@ function OverviewTab({ character }: { character: Character }) {
             </div>
           </div>
           <div className="bg-surface rounded-lg p-4 text-center border border-border-default">
-            <div className="label-secondary text-xs text-text-muted mb-2">
+            <div className="label-secondary text-xs text-fg-muted mb-2">
               Reflex
             </div>
             <div className="stat-medium text-2xl text-warning">
@@ -215,7 +215,7 @@ function OverviewTab({ character }: { character: Character }) {
             </div>
           </div>
           <div className="bg-surface rounded-lg p-4 text-center border border-border-default">
-            <div className="label-secondary text-xs text-text-muted mb-2">
+            <div className="label-secondary text-xs text-fg-muted mb-2">
               Will
             </div>
             <div className="stat-medium text-2xl text-magic">
@@ -252,15 +252,15 @@ function SkillsTab({ character, skillNames }: { character: Character; skillNames
                 />
               </div>
               <div className="flex-1">
-                <div className="attribute-label text-xs text-text-muted">
+                <div className="attribute-label text-xs text-fg-muted">
                   {skillName}
                 </div>
                 <div className="flex items-baseline space-x-1.5">
-                  <span className="stat-medium text-2xl text-text-accent">
+                  <span className="stat-medium text-2xl text-fg-accent">
                     {formatModifier(skillBonus.totalBonus)}
                   </span>
                   {hasRanks && (
-                    <span className="body-secondary text-sm text-text-secondary">
+                    <span className="body-secondary text-sm text-fg-secondary">
                       ({character.skills[skillName]} ranks)
                     </span>
                   )}
@@ -285,10 +285,10 @@ function CombatTab({ character }: { character: Character }) {
           <div className="space-y-3">
             {character.feats.map((feat, idx) => (
               <div key={idx} className="bg-surface rounded-lg p-4">
-                <h3 className="font-bold text-lg mb-1 feat-name text-text-accent">
+                <h3 className="font-bold text-lg mb-1 feat-name text-fg-accent">
                   {feat.name}
                 </h3>
-                <p className="text-sm text-text-secondary body-secondary">
+                <p className="text-sm text-fg-secondary body-secondary">
                   {feat.description}
                 </p>
               </div>
@@ -308,14 +308,14 @@ function CombatTab({ character }: { character: Character }) {
               {character.resources.abilities.map((ability, idx) => (
                 <div key={idx} className="bg-surface rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-lg feat-name text-text-accent">
+                    <h3 className="font-bold text-lg feat-name text-fg-accent">
                       {ability.name}
                     </h3>
-                    <span className="text-sm bg-primary px-2 py-1 rounded body-secondary text-text-secondary">
+                    <span className="text-sm bg-primary px-2 py-1 rounded body-secondary text-fg-secondary">
                       {ability.currentUses}/{ability.maxUses} {ability.type}
                     </span>
                   </div>
-                  <p className="text-sm text-text-secondary body-secondary">
+                  <p className="text-sm text-fg-secondary body-secondary">
                     {ability.description}
                   </p>
                 </div>
@@ -330,7 +330,7 @@ function CombatTab({ character }: { character: Character }) {
               <div className="space-y-2 body-secondary">
                 <div className="flex justify-between">
                   <span>Cantrips (Level 0)</span>
-                  <span className="text-text-muted">At-will</span>
+                  <span className="text-fg-muted">At-will</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Level 1</span>
@@ -376,7 +376,7 @@ function CombatTab({ character }: { character: Character }) {
         {character.equipment.items.length > 0 && (
           <div>
             <h3 className="font-bold text-lg mb-3 heading-tertiary flex items-center">
-              <Icon name="Backpack" size={20} className="mr-2 text-text-accent" />
+              <Icon name="Backpack" size={20} className="mr-2 text-fg-accent" />
               Inventory
             </h3>
             <div className="space-y-2">
@@ -386,7 +386,7 @@ function CombatTab({ character }: { character: Character }) {
                   className="flex justify-between items-center bg-surface rounded p-3 body-primary"
                 >
                   <span>{item.name}</span>
-                  <span className="text-text-muted">×{item.quantity}</span>
+                  <span className="text-fg-muted">×{item.quantity}</span>
                 </div>
               ))}
             </div>
@@ -408,8 +408,8 @@ function EquipmentItem({ icon, label, value }: EquipmentItemProps) {
   return (
     <div className="flex justify-between items-center bg-surface rounded p-3 body-primary">
       <div className="flex items-center space-x-2">
-        <Icon name={icon} size={20} className="text-text-accent" />
-        <span className="text-text-muted body-secondary">{label}</span>
+        <Icon name={icon} size={20} className="text-fg-accent" />
+        <span className="text-fg-muted body-secondary">{label}</span>
       </div>
       <span className="font-semibold">{value}</span>
     </div>

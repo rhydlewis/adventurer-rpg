@@ -66,7 +66,7 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
 
   if (!combat) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-primary text-text-primary">
+      <div className="flex items-center justify-center min-h-screen bg-primary text-fg-primary">
         <div className="text-center">
           <p className="text-xl body-primary">Loading combat...</p>
         </div>
@@ -93,7 +93,7 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
   const actions = getAvailableActions(combat.playerCharacter);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-text-primary">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-fg-primary">
       {/* Fixed Container - No page scroll */}
       <div className="h-screen flex flex-col max-w-2xl mx-auto">
 

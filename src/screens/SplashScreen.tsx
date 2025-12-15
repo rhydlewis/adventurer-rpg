@@ -38,17 +38,17 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
 
         {/* Title */}
         <div className="text-center">
-          <h1 className="text-h1 heading-secondary text-text-primary mb-2">
+          <h1 className="text-h1 heading-secondary text-fg-primary mb-2">
             Adventurer
           </h1>
-          <h2 className="text-display heading-display text-text-accent text-6xl">
+          <h2 className="text-display heading-display text-fg-accent text-6xl">
             RPG
           </h2>
         </div>
       </div>
 
       {/* Tap to continue hint */}
-      <p className="absolute bottom-8 text-text-muted text-caption label-secondary animate-pulse">
+      <p className="absolute bottom-8 text-fg-muted text-caption label-secondary animate-pulse">
         Tap to continue
       </p>
     </div>

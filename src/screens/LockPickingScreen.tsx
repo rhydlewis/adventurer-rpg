@@ -157,8 +157,8 @@ export function LockPickingScreen({
             <div className="flex items-center gap-2">
               <Icon name="Lock" className="text-warning" />
               <div>
-                <h1 className="heading-primary text-h1 text-text-primary">Lock Picking</h1>
-                <p className="text-caption text-text-muted label-secondary">
+                <h1 className="heading-primary text-h1 text-fg-primary">Lock Picking</h1>
+                <p className="text-caption text-fg-muted label-secondary">
                   Difficulty: {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
                 </p>
               </div>
@@ -173,7 +173,7 @@ export function LockPickingScreen({
 
         {/* Instructions */}
         <Card variant="neutral" padding="compact">
-          <p className="text-body text-text-primary body-primary text-center">
+          <p className="text-body text-fg-primary body-primary text-center">
             Adjust the pick position and apply tension to open the lock. Watch the durability!
           </p>
         </Card>
@@ -255,10 +255,10 @@ export function LockPickingScreen({
         <Card variant="enemy" padding="compact">
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="button-text text-body text-text-primary">
+              <span className="button-text text-body text-fg-primary">
                 Pick Durability
               </span>
-              <span className="body-primary text-body text-text-primary">{durability}%</span>
+              <span className="body-primary text-body text-fg-primary">{durability}%</span>
             </div>
             <div className="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
               <div
@@ -309,7 +309,7 @@ export function LockPickingScreen({
 
           {/* Position display */}
           <Card variant="neutral" padding="compact">
-            <p className="text-center body-primary text-body text-text-primary">
+            <p className="text-center body-primary text-body text-fg-primary">
               Position: {pickPosition + 1} / {NUM_POSITIONS}
             </p>
           </Card>

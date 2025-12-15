@@ -36,7 +36,7 @@ export function MainMenuScreen({
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md z-10">
         {/* Title */}
         <div className="text-center mb-12">
-          <h1 className="text-display heading-display text-text-accent mb-2">
+          <h1 className="text-display heading-display text-fg-accent mb-2">
             ADVENTURER RPG
           </h1>
           <div className="h-0.5 bg-gradient-to-r from-transparent via-text-accent to-transparent mx-auto w-full max-w-xs" />
@@ -104,7 +104,7 @@ export function MainMenuScreen({
       </div>
 
       {/* Version Number */}
-      <div className="z-10 text-text-muted text-caption label-secondary">
+      <div className="z-10 text-fg-muted text-caption label-secondary">
         v{__APP_VERSION__}
       </div>
     </div>

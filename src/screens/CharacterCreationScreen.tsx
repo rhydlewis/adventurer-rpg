@@ -132,10 +132,10 @@ function ClassSelectionStep({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-2xl w-full">
-        <h1 className="text-display heading-display mb-2 text-text-accent">Choose Your Class</h1>
-        <p className="text-text-secondary mb-8 body-secondary">Select the class that fits your playstyle</p>
+        <h1 className="text-display heading-display mb-2 text-fg-accent">Choose Your Class</h1>
+        <p className="text-fg-secondary mb-8 body-secondary">Select the class that fits your playstyle</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {classes.map((className) => {
@@ -153,11 +153,11 @@ function ClassSelectionStep({
                 }`}
               >
                 <div className="flex items-center space-x-3 mb-3">
-                  <Icon name={iconName} size={32} className={isSelected ? 'text-player' : 'text-text-accent'} />
-                  <h2 className="text-2xl character-name text-text-accent">{className}</h2>
+                  <Icon name={iconName} size={32} className={isSelected ? 'text-player' : 'text-fg-accent'} />
+                  <h2 className="text-2xl character-name text-fg-accent">{className}</h2>
                 </div>
-                <p className="text-sm text-text-secondary mb-4 body-secondary">{classDef.description}</p>
-                <div className="text-xs text-text-muted body-secondary">
+                <p className="text-sm text-fg-secondary mb-4 body-secondary">{classDef.description}</p>
+                <div className="text-xs text-fg-muted body-secondary">
                   <div>HP: {classDef.baseHP} | BAB: +{classDef.baseBab}</div>
                 </div>
               </button>
@@ -204,13 +204,13 @@ function AttributeAllocationStep({
   const attributeNames: (keyof Attributes)[] = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-display heading-display mb-2 text-text-accent">Allocate Attributes</h1>
-        <p className="text-text-secondary mb-4 body-secondary">You have 27 points to spend</p>
+        <h1 className="text-display heading-display mb-2 text-fg-accent">Allocate Attributes</h1>
+        <p className="text-fg-secondary mb-4 body-secondary">You have 27 points to spend</p>
         <div className="mb-6 text-h1 body-primary">
           Points Remaining:{' '}
-          <span className={`font-bold ${remaining < 0 ? 'text-enemy' : remaining === 0 ? 'text-success' : 'text-text-accent'}`}>
+          <span className={`font-bold ${remaining < 0 ? 'text-enemy' : remaining === 0 ? 'text-success' : 'text-fg-accent'}`}>
             {remaining}
           </span>
         </div>
@@ -226,7 +226,7 @@ function AttributeAllocationStep({
                     <div className="bg-primary p-2 rounded-lg">
                       <Icon name={iconName} size={24} className="text-player" />
                     </div>
-                    <span className="skill-name text-lg text-text-primary w-32">{label}</span>
+                    <span className="skill-name text-lg text-fg-primary w-32">{label}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
@@ -235,7 +235,7 @@ function AttributeAllocationStep({
                     >
                       -
                     </button>
-                    <span className="text-3xl attribute-value w-12 text-center text-text-accent">
+                    <span className="text-3xl attribute-value w-12 text-center text-fg-accent">
                       {attributes[attr]}
                     </span>
                     <button
@@ -290,13 +290,13 @@ function SkillAllocationStep({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-display heading-display mb-2 text-text-accent">Allocate Skill Ranks</h1>
-        <p className="text-text-secondary mb-4 body-secondary">Distribute ranks (max 4 per skill, 8 total)</p>
+        <h1 className="text-display heading-display mb-2 text-fg-accent">Allocate Skill Ranks</h1>
+        <p className="text-fg-secondary mb-4 body-secondary">Distribute ranks (max 4 per skill, 8 total)</p>
         <div className="mb-6 text-h1 body-primary">
           Ranks Used:{' '}
-          <span className={`font-bold ${totalRanks > maxRanks ? 'text-enemy' : totalRanks === maxRanks ? 'text-success' : 'text-text-accent'}`}>
+          <span className={`font-bold ${totalRanks > maxRanks ? 'text-enemy' : totalRanks === maxRanks ? 'text-success' : 'text-fg-accent'}`}>
             {totalRanks}/{maxRanks}
           </span>
         </div>
@@ -311,7 +311,7 @@ function SkillAllocationStep({
                     <div className="bg-primary p-2 rounded-lg">
                       <Icon name={iconName} size={24} className="text-player" />
                     </div>
-                    <span className="skill-name text-lg text-text-primary flex-1">{skill}</span>
+                    <span className="skill-name text-lg text-fg-primary flex-1">{skill}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
@@ -320,7 +320,7 @@ function SkillAllocationStep({
                     >
                       -
                     </button>
-                    <span className="text-3xl attribute-value w-12 text-center text-text-accent">
+                    <span className="text-3xl attribute-value w-12 text-center text-fg-accent">
                       {skills[skill]}
                     </span>
                     <button
@@ -362,10 +362,10 @@ function FeatSelectionStep({
   onBack: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-display heading-display mb-2 text-text-accent">Choose a Combat Feat</h1>
-        <p className="text-text-secondary mb-8 body-secondary">Fighters get a bonus feat at level 1</p>
+        <h1 className="text-display heading-display mb-2 text-fg-accent">Choose a Combat Feat</h1>
+        <p className="text-fg-secondary mb-8 body-secondary">Fighters get a bonus feat at level 1</p>
 
         <div className="space-y-3 mb-8">
           {FIGHTER_STARTING_FEATS.map((featName) => {
@@ -381,8 +381,8 @@ function FeatSelectionStep({
                     : 'border-border-default bg-surface hover:border-player/50'
                 }`}
               >
-                <h3 className="feat-name text-lg mb-1 text-text-accent">{feat.name}</h3>
-                <p className="text-sm text-text-secondary body-secondary">{feat.description}</p>
+                <h3 className="feat-name text-lg mb-1 text-fg-accent">{feat.name}</h3>
+                <p className="text-sm text-fg-secondary body-secondary">{feat.description}</p>
               </button>
             );
           })}
@@ -418,14 +418,14 @@ function NameEntryStep({
   onBack: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-xl w-full">
-        <h1 className="text-display heading-display mb-2 text-text-accent">Name Your Hero</h1>
-        <p className="text-text-secondary mb-8 body-secondary">Choose an avatar and name for your adventurer</p>
+        <h1 className="text-display heading-display mb-2 text-fg-accent">Name Your Hero</h1>
+        <p className="text-fg-secondary mb-8 body-secondary">Choose an avatar and name for your adventurer</p>
 
         {/* Avatar Selection Grid */}
         <div className="mb-6">
-          <h2 className="text-lg heading-tertiary mb-3 text-text-primary">Choose Avatar</h2>
+          <h2 className="text-lg heading-tertiary mb-3 text-fg-primary">Choose Avatar</h2>
           <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto mb-6">
             {AVAILABLE_AVATARS.map((avatar) => (
               <button
@@ -449,13 +449,13 @@ function NameEntryStep({
 
         {/* Name Input */}
         <div className="mb-8">
-          <h2 className="text-lg heading-tertiary mb-3 text-text-primary">Enter Name</h2>
+          <h2 className="text-lg heading-tertiary mb-3 text-fg-primary">Enter Name</h2>
           <input
             type="text"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="Enter character name..."
-            className="w-full px-4 py-3 bg-surface border-2 border-border-default rounded-lg text-text-primary text-lg input-text focus:border-player focus:outline-none transition-colors"
+            className="w-full px-4 py-3 bg-surface border-2 border-border-default rounded-lg text-fg-primary text-lg input-text focus:border-player focus:outline-none transition-colors"
             autoFocus
           />
         </div>

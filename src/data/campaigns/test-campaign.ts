@@ -65,7 +65,7 @@ const testNodes: StoryNode[] = [
       },
       {
         id: 'choice-intimidate-guard',
-        text: '[Intimidate DC 10] "Let me through. Now."',
+        text: '"Let me through. Now."',
         outcome: {
           type: 'check',
           skill: 'Intimidate',

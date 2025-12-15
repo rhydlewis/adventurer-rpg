@@ -16,6 +16,12 @@
   --color-hint: #CA8A04;
   --color-border-default: #374151;
 
+  /* Color Utilities (for Tailwind utilities like text-fg-primary) */
+  --color-fg-primary: var(--color-text-primary);
+  --color-fg-accent: var(--color-text-accent);
+  --color-fg-muted: var(--color-text-muted);
+  --color-fg-secondary: var(--color-text-secondary);
+
   /* Typography - Font Families */
   --font-cinzel: "Cinzel", serif;
   --font-inter: "Inter", sans-serif;
@@ -152,24 +158,24 @@ body {
   }
 
   .heading-tertiary {
-    @apply font-cinzel font-semibold text-xl text-text-primary;
+    @apply font-cinzel font-semibold text-xl text-fg-primary;
   }
 
   /* Stats & Numbers */
   .stat-large {
-    @apply font-cinzel font-bold text-3xl text-text-accent;
+    @apply font-cinzel font-bold text-3xl text-fg-accent;
   }
 
   .stat-medium {
-    @apply font-cinzel font-bold text-2xl text-text-primary;
+    @apply font-cinzel font-bold text-2xl text-fg-primary;
   }
 
   .stat-small {
-    @apply font-cinzel font-semibold text-xl text-text-secondary;
+    @apply font-cinzel font-semibold text-xl text-fg-secondary;
   }
 
   .stat-modifier {
-    @apply font-cinzel font-semibold text-lg text-text-secondary;
+    @apply font-cinzel font-semibold text-lg text-fg-secondary;
   }
 
   /* Body Text */
@@ -235,7 +241,7 @@ body {
   }
 
   .character-name {
-    @apply font-cinzel font-bold text-2xl text-text-primary;
+    @apply font-cinzel font-bold text-2xl text-fg-primary;
   }
 
   .skill-name {
@@ -247,7 +253,7 @@ body {
   }
 
   .feat-name {
-    @apply font-cinzel font-semibold text-lg text-text-primary;
+    @apply font-cinzel font-semibold text-lg text-fg-primary;
   }
 
   /* Tab Navigation */
@@ -268,7 +274,7 @@ body {
 
   /* Attribute Values */
   .attribute-value {
-    @apply font-cinzel font-bold text-4xl text-text-accent;
+    @apply font-cinzel font-bold text-4xl text-fg-accent;
   }
 
   .attribute-label {

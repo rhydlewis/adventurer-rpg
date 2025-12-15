@@ -68,7 +68,7 @@ export function StatusBar({
    * Get text color for numeric display (matches bar color)
    */
   const getTextColor = (): string => {
-    if (percentage >= 75) return 'text-text-primary';
+    if (percentage >= 75) return 'text-fg-primary';
     if (percentage >= 50) return 'text-warning';
     return 'text-enemy';
   };
@@ -78,7 +78,7 @@ export function StatusBar({
       {/* Label and numbers row */}
       {(label || showNumbers) && (
         <div className="flex justify-between items-baseline text-caption font-inter font-medium">
-          {label && <span className="text-text-primary">{label}:</span>}
+          {label && <span className="text-fg-primary">{label}:</span>}
           {showNumbers && (
             <span className={getTextColor()}>
               {current} / {max}

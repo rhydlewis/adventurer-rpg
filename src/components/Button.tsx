@@ -75,7 +75,7 @@ export function Button({
     primary: 'bg-player text-white hover:bg-blue-600 active:bg-blue-700',
     danger: 'bg-enemy text-white hover:bg-red-700 active:bg-red-800',
     secondary:
-      'bg-secondary text-text-primary border-2 border-border-default ' +
+      'bg-secondary text-fg-primary border-2 border-border-default ' +
       'hover:border-player active:border-blue-600',
   };
 
