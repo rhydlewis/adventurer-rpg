@@ -5,11 +5,13 @@ import type { SkillRanks } from '../types/skill';
 import type { FeatName } from '../types/feat';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
+import { DEFAULT_AVATAR } from '../data/avatars';
 
 export type CreationStep = 'class' | 'attributes' | 'skills' | 'feat' | 'name' | 'complete';
 
 interface CharacterCreationData {
   name: string;
+  avatarPath: string;
   class: CharacterClass | null;
   attributes: Attributes;
   skillRanks: SkillRanks;
@@ -31,6 +33,7 @@ interface CharacterStore {
   setSkillRanks: (skills: SkillRanks) => void;
   setFeat: (feat: FeatName) => void;
   setName: (name: string) => void;
+  setAvatarPath: (path: string) => void;
   nextStep: () => void;
   previousStep: () => void;
   finalizeCharacter: () => void;
@@ -61,6 +64,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
   creationStep: 'class',
   creationData: {
     name: '',
+    avatarPath: DEFAULT_AVATAR,
     class: null,
     attributes: defaultAttributes,
     skillRanks: defaultSkillRanks,
@@ -72,6 +76,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
       creationStep: 'class',
       creationData: {
         name: '',
+        avatarPath: DEFAULT_AVATAR,
         class: null,
         attributes: defaultAttributes,
         skillRanks: defaultSkillRanks,
@@ -128,6 +133,15 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     }));
   },
 
+  setAvatarPath: (path) => {
+    set((state) => ({
+      creationData: {
+        ...state.creationData,
+        avatarPath: path,
+      },
+    }));
+  },
+
   nextStep: () => {
     const { creationStep, creationData } = get();
 
@@ -180,6 +194,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     // Create the character using the utility
     const character = createCharacter({
       name: creationData.name || 'Adventurer',
+      avatarPath: creationData.avatarPath,
       class: creationData.class,
       attributes: creationData.attributes,
       skillRanks: creationData.skillRanks,
@@ -198,6 +213,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
       creationStep: 'class',
       creationData: {
         name: '',
+        avatarPath: DEFAULT_AVATAR,
         class: null,
         attributes: defaultAttributes,
         skillRanks: defaultSkillRanks,

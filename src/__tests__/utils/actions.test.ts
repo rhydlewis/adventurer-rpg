@@ -8,6 +8,7 @@ import { WEAPONS, ARMORS } from '../../data/equipment';
 // Test characters
 const createFighter = (): Character => ({
   name: 'Test Fighter',
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: { STR: 16, DEX: 14, CON: 14, INT: 10, WIS: 10, CHA: 8 },
@@ -28,6 +29,7 @@ const createFighter = (): Character => ({
 
 const createRogue = (): Character => ({
   name: 'Test Rogue',
+  avatarPath: 'human_female_00009.png',
   class: 'Rogue',
   level: 1,
   attributes: { STR: 10, DEX: 18, CON: 12, INT: 14, WIS: 10, CHA: 10 },
@@ -46,6 +48,7 @@ const createRogue = (): Character => ({
 
 const createWizard = (): Character => ({
   name: 'Test Wizard',
+  avatarPath: 'human_female_00009.png',
   class: 'Wizard',
   level: 1,
   attributes: { STR: 8, DEX: 14, CON: 12, INT: 16, WIS: 10, CHA: 10 },
@@ -65,6 +68,7 @@ const createWizard = (): Character => ({
 
 const createCleric = (): Character => ({
   name: 'Test Cleric',
+  avatarPath: 'human_female_00009.png',
   class: 'Cleric',
   level: 1,
   attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: 16, CHA: 12 },

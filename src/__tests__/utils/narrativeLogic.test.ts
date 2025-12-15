@@ -25,6 +25,7 @@ const createTestCharacter = (
   overrides: Partial<Character> = {}
 ): Character => ({
   name: 'Test Hero',
+  avatarPath: 'human_female_00009.png',
   class: className,
   level: 1,
   attributes: { STR: 14, DEX: 12, CON: 14, INT: 10, WIS: 10, CHA: 12 },

@@ -14,6 +14,7 @@ vi.mock('../../utils/combat', () => ({
 
 const createMockCharacter = (name: string = 'Player', hp: number = 10, _initiative: number = 10): Character => ({
   name,
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: { STR: 10, DEX: 10, CON: 10, INT: 10, WIS: 10, CHA: 10 },
@@ -35,6 +36,7 @@ const createMockCharacter = (name: string = 'Player', hp: number = 10, _initiati
 
 const createMockEnemy = (name: string = 'Goblin', hp: number = 8, _initiative: number = 8): Creature => ({
   name,
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: { STR: 10, DEX: 10, CON: 10, INT: 10, WIS: 10, CHA: 10 },

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCharacterStore } from '../stores/characterStore';
 import { CLASSES } from '../data/classes';
 import { FIGHTER_STARTING_FEATS, FEATS } from '../data/feats';
+import { AVAILABLE_AVATARS } from '../data/avatars';
 import { getRemainingPoints, isValidAllocation } from '../utils/pointBuy';
 import type { CharacterClass } from '../types/character';
 import type { Attributes } from '../types/attributes';
@@ -47,6 +48,7 @@ export function CharacterCreationScreen() {
     setSkillRanks,
     setFeat,
     setName,
+    setAvatarPath,
     nextStep,
     previousStep,
     finalizeCharacter,
@@ -94,7 +96,9 @@ export function CharacterCreationScreen() {
     return (
       <NameEntryStep
         name={creationData.name}
-        onChange={setName}
+        avatarPath={creationData.avatarPath}
+        onNameChange={setName}
+        onAvatarChange={setAvatarPath}
         onFinalize={finalizeCharacter}
         onBack={previousStep}
       />
@@ -400,12 +404,16 @@ function FeatSelectionStep({
 // Name Entry Step
 function NameEntryStep({
   name,
-  onChange,
+  avatarPath,
+  onNameChange,
+  onAvatarChange,
   onFinalize,
   onBack,
 }: {
   name: string;
-  onChange: (name: string) => void;
+  avatarPath: string;
+  onNameChange: (name: string) => void;
+  onAvatarChange: (path: string) => void;
   onFinalize: () => void;
   onBack: () => void;
 }) {
@@ -413,16 +421,44 @@ function NameEntryStep({
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-text-primary p-4">
       <div className="max-w-xl w-full">
         <h1 className="text-display heading-display mb-2 text-text-accent">Name Your Hero</h1>
-        <p className="text-text-secondary mb-8 body-secondary">Choose a name for your adventurer</p>
+        <p className="text-text-secondary mb-8 body-secondary">Choose an avatar and name for your adventurer</p>
 
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Enter character name..."
-          className="w-full px-4 py-3 mb-8 bg-surface border-2 border-border-default rounded-lg text-text-primary text-lg input-text focus:border-player focus:outline-none transition-colors"
-          autoFocus
-        />
+        {/* Avatar Selection Grid */}
+        <div className="mb-6">
+          <h2 className="text-lg heading-tertiary mb-3 text-text-primary">Choose Avatar</h2>
+          <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto mb-6">
+            {AVAILABLE_AVATARS.map((avatar) => (
+              <button
+                key={avatar}
+                onClick={() => onAvatarChange(avatar)}
+                className={`rounded-lg overflow-hidden transition-all ${
+                  avatarPath === avatar
+                    ? 'ring-4 ring-accent'
+                    : 'ring-2 ring-border-primary hover:ring-accent'
+                }`}
+              >
+                <img
+                  src={`/assets/avatars/${avatar}`}
+                  alt="Character avatar"
+                  className="w-20 h-20 object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Name Input */}
+        <div className="mb-8">
+          <h2 className="text-lg heading-tertiary mb-3 text-text-primary">Enter Name</h2>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => onNameChange(e.target.value)}
+            placeholder="Enter character name..."
+            className="w-full px-4 py-3 bg-surface border-2 border-border-default rounded-lg text-text-primary text-lg input-text focus:border-player focus:outline-none transition-colors"
+            autoFocus
+          />
+        </div>
 
         <div className="flex gap-4">
           <Button onClick={onBack} variant="secondary" fullWidth>

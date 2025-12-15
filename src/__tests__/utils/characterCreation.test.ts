@@ -172,6 +172,7 @@ describe('utils/characterCreation', () => {
 
       const fighter = createCharacter({
         name: 'Test Fighter',
+        avatarPath: 'human_female_00009.png',
         class: 'Fighter',
         attributes: testAttributes,
         skillRanks: skills,
@@ -206,6 +207,7 @@ describe('utils/characterCreation', () => {
 
       const rogue = createCharacter({
         name: 'Test Rogue',
+        avatarPath: 'human_female_00009.png',
         class: 'Rogue',
         attributes: {
           STR: 10,
@@ -241,6 +243,7 @@ describe('utils/characterCreation', () => {
 
       const wizard = createCharacter({
         name: 'Test Wizard',
+        avatarPath: 'human_female_00009.png',
         class: 'Wizard',
         attributes: {
           STR: 8,
@@ -275,6 +278,7 @@ describe('utils/characterCreation', () => {
 
       const cleric = createCharacter({
         name: 'Test Cleric',
+        avatarPath: 'human_female_00009.png',
         class: 'Cleric',
         attributes: {
           STR: 14,

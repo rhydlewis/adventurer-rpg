@@ -3,6 +3,7 @@ import type { Creature, CharacterClass } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { Button, Card, Icon } from '../components';
+import {DEFAULT_AVATAR} from "../data/avatars.ts";
 
 interface HomeScreenProps {
   onStartCombat: () => void;
@@ -20,6 +21,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
     const classDef = CLASSES[className];
     const player = createCharacter({
       name: `Test ${className}`,
+      avatarPath: DEFAULT_AVATAR,
       class: className,
       attributes: classDef.recommendedAttributes,
       skillRanks: {
@@ -36,6 +38,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
     // Create a sample enemy
     const goblin: Creature = {
       name: 'Goblin',
+      avatarPath: DEFAULT_AVATAR,
       class: 'Fighter',
       level: 1,
       attributes: {

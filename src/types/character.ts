@@ -8,6 +8,7 @@ export type CharacterClass = 'Fighter' | 'Rogue' | 'Wizard' | 'Cleric';
 
 export interface Character {
   name: string;
+  avatarPath: string;
   class: CharacterClass;
   level: number;
   attributes: Attributes;

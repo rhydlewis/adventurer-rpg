@@ -321,15 +321,25 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
         : 'bg-gradient-to-br from-red-950/40 to-red-900/20 border-red-800/50'
     }`}>
       {/* Name & Level */}
-      <div className="mb-2">
-        <h2 className={`text-sm character-name text-sm leading-tight ${
-          variant === 'player' ? 'text-emerald-300' : 'text-red-300'
-        }`}>
-          {character.name.length > 12 ? character.name.split(' ')[0] : character.name}
-        </h2>
-        <p className="text-[10px] text-slate-500 label-secondary">
-          Lv{character.level} {character.class}
-        </p>
+      <div className="mb-2 flex gap-2 items-start">
+        {/* Avatar - only for player */}
+        {variant === 'player' && character.avatarPath && (
+          <img
+            src={`/assets/avatars/${character.avatarPath}`}
+            alt={character.name}
+            className="w-12 h-12 rounded-full ring-2 ring-emerald-500/50 flex-shrink-0"
+          />
+        )}
+        <div className="flex-1">
+          <h2 className={`text-sm character-name text-sm leading-tight ${
+            variant === 'player' ? 'text-emerald-300' : 'text-red-300'
+          }`}>
+            {character.name.length > 12 ? character.name.split(' ')[0] : character.name}
+          </h2>
+          <p className="text-[10px] text-slate-500 label-secondary">
+            Lv{character.level} {character.class}
+          </p>
+        </div>
       </div>
 
       {/* HP Bar */}

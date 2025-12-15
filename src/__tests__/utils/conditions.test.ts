@@ -27,6 +27,7 @@ vi.mock('../../utils/dice', () => ({
 function createMockCharacter(): Character {
   return {
     name: 'Test',
+    avatarPath: 'human_female_00009.png',
     class: 'Fighter',
     level: 1,
     hp: 10,

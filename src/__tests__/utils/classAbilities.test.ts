@@ -17,6 +17,7 @@ import { WEAPONS, ARMORS } from '../../data/equipment';
 // Test characters
 const createFighter = (con: number = 14, featNames: string[] = []): Character => ({
   name: 'Test Fighter',
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: { STR: 16, DEX: 14, CON: con, INT: 10, WIS: 10, CHA: 8 },
@@ -37,6 +38,7 @@ const createFighter = (con: number = 14, featNames: string[] = []): Character =>
 
 const createRogue = (): Character => ({
   name: 'Test Rogue',
+  avatarPath: 'human_female_00009.png',
   class: 'Rogue',
   level: 1,
   attributes: { STR: 10, DEX: 18, CON: 12, INT: 14, WIS: 10, CHA: 10 },
@@ -90,6 +92,7 @@ describe('Fighter Abilities - Second Wind', () => {
 describe('Cleric Abilities - Channel Energy', () => {
   const createCleric = (wis: number = 14): Character => ({
     name: 'Test Cleric',
+    avatarPath: 'human_female_00009.png',
     class: 'Cleric',
     level: 1,
     attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: wis, CHA: 12 },

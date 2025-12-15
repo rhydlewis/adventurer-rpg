@@ -9,6 +9,7 @@ import { FEATS } from '../data/feats';
 
 export interface CreateCharacterParams {
   name: string;
+  avatarPath: string;
   class: CharacterClass;
   attributes: Attributes;
   skillRanks: SkillRanks;
@@ -84,7 +85,7 @@ export function calculateSaves(
  * @returns Fully initialized Character
  */
 export function createCharacter(params: CreateCharacterParams): Character {
-  const { name, class: className, attributes, skillRanks, selectedFeat } = params;
+  const { name, avatarPath, class: className, attributes, skillRanks, selectedFeat } = params;
   const classDef = CLASSES[className];
 
   // Calculate derived stats
@@ -175,6 +176,7 @@ export function createCharacter(params: CreateCharacterParams): Character {
 
   return {
     name,
+    avatarPath,
     class: className,
     level: 1,
     attributes,

@@ -172,6 +172,7 @@ describe('stores/characterStore', () => {
       // Check that the utility was called correctly
       expect(createCharacter).toHaveBeenCalledWith({
         name: creationData.name,
+        avatarPath: creationData.avatarPath,
         class: creationData.class,
         attributes: creationData.attributes,
         skillRanks: creationData.skillRanks,

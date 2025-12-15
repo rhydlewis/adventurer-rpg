@@ -17,6 +17,7 @@ import { WEAPONS, ARMORS } from '../../data/equipment';
 // Test characters
 const createWizard = (int: number = 16): Character => ({
   name: 'Test Wizard',
+  avatarPath: 'human_female_00009.png',
   class: 'Wizard',
   level: 1,
   attributes: { STR: 8, DEX: 14, CON: 12, INT: int, WIS: 10, CHA: 10 },
@@ -33,6 +34,7 @@ const createWizard = (int: number = 16): Character => ({
 
 const createCleric = (wis: number = 16): Character => ({
   name: 'Test Cleric',
+  avatarPath: 'human_female_00009.png',
   class: 'Cleric',
   level: 1,
   attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: wis, CHA: 12 },
@@ -49,6 +51,7 @@ const createCleric = (wis: number = 16): Character => ({
 
 const createEnemy = (ac: number = 14, hp: number = 10): Creature => ({
   name: 'Goblin',
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: { STR: 12, DEX: 14, CON: 12, INT: 10, WIS: 10, CHA: 8 },

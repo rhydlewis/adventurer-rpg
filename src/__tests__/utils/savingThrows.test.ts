@@ -9,6 +9,7 @@ import type { Character } from '../../types';
 
 const createTestCharacter = (overrides?: Partial<Character>): Character => ({
   name: 'Test Hero',
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: {

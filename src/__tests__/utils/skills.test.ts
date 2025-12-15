@@ -9,6 +9,7 @@ describe('utils/skills', () => {
     skillRanks: Character['skills']
   ): Character => ({
     name: 'Test',
+    avatarPath: 'human_female_00009.png',
     class: className,
     level: 1,
     attributes,

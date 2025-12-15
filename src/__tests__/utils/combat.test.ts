@@ -25,6 +25,7 @@ import { isCriticalHit, isCriticalFumble, rollFumbleEffect } from '../../utils/c
 // Test fixtures
 const createTestCharacter = (overrides?: Partial<Character>): Character => ({
   name: 'Test Hero',
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: {
@@ -81,6 +82,7 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
 
 const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
   name: 'Goblin',
+  avatarPath: 'human_female_00009.png',
   class: 'Fighter',
   level: 1,
   attributes: {

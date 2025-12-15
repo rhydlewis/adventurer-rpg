@@ -51,6 +51,7 @@ function App() {
     if (!character) {
       const testChar = createCharacter({
         name: 'Test Fighter',
+        avatarPath: 'human_female_00009.png',
         class: 'Fighter',
         attributes: CLASSES.Fighter.recommendedAttributes,
         skillRanks: {

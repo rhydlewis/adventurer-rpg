@@ -9,6 +9,7 @@ describe('utils/equipment', () => {
     attributes: Character['attributes']
   ): Character => ({
     name: 'Test',
+    avatarPath: 'human_female_00009.png',
     class: 'Fighter',
     level: 1,
     attributes,
