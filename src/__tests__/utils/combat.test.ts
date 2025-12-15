@@ -18,7 +18,7 @@ vi.mock('../../utils/criticals', () => ({
   rollFumbleEffect: vi.fn(),
 }));
 
-import { performAttack, resolveCombatRound } from '../../utils/combat';
+import { performAttack, resolveCombatRound, handleRetreat } from '../../utils/combat';
 import { rollAttack, rollDamage, calculateModifier } from '../../utils/dice';
 import { isCriticalHit, isCriticalFumble, rollFumbleEffect } from '../../utils/criticals';
 
@@ -919,6 +919,51 @@ describe('utils/combat', () => {
         // Enemy should take damage
         expect(result.enemy.hp).toBeLessThan(state.enemy.hp);
       });
+    });
+  });
+
+  describe('Retreat Mechanics', () => {
+    const mockPlayer: Partial<Character> = {
+      name: 'Test Fighter',
+      hp: 20,
+      maxHp: 30,
+      gold: 100,
+    };
+
+    const mockCombat: Partial<CombatState> = {
+      playerCharacter: mockPlayer as Character,
+      canRetreat: true,
+      retreatPenalty: {
+        goldLost: 20,
+        damageOnFlee: 5,
+        narrativeFlag: 'fled_from_skeleton',
+        safeNodeId: 'safe-area',
+      },
+    };
+
+    it('should apply retreat penalties (gold and damage)', () => {
+      const result = handleRetreat(mockCombat as CombatState);
+
+      expect(result.playerCharacter.gold).toBe(80); // 100 - 20
+      expect(result.playerCharacter.hp).toBe(15); // 20 - 5
+      expect(result.retreatFlag).toBe('fled_from_skeleton');
+      expect(result.safeNodeId).toBe('safe-area');
+    });
+
+    it('should not allow retreat if canRetreat is false', () => {
+      const noRetreatCombat = { ...mockCombat, canRetreat: false };
+
+      expect(() => handleRetreat(noRetreatCombat as CombatState))
+        .toThrow('Retreat not allowed');
+    });
+
+    it('should not reduce HP below 1 on retreat damage', () => {
+      const lowHpPlayer = { ...mockPlayer, hp: 3 };
+      const lowHpCombat = { ...mockCombat, playerCharacter: lowHpPlayer as Character };
+
+      const result = handleRetreat(lowHpCombat as CombatState);
+
+      expect(result.playerCharacter.hp).toBe(1); // Not 0 or negative
     });
   });
 });

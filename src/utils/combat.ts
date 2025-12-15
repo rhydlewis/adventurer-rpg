@@ -552,3 +552,35 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     activeConditions: { player: playerConditions, enemy: enemyConditions },
   };
 }
+
+/**
+ * Handle player retreat from combat
+ * Applies penalties: gold lost, damage taken, narrative flag
+ */
+export function handleRetreat(combat: CombatState): {
+  playerCharacter: Character;
+  retreatFlag?: string;
+  safeNodeId: string;
+} {
+  if (!combat.canRetreat) {
+    throw new Error('Retreat not allowed');
+  }
+
+  if (!combat.retreatPenalty) {
+    throw new Error('Retreat penalty not defined');
+  }
+
+  const { goldLost, damageOnFlee, narrativeFlag, safeNodeId } = combat.retreatPenalty;
+
+  const updatedPlayer: Character = {
+    ...combat.playerCharacter,
+    gold: Math.max(0, combat.playerCharacter.gold - goldLost),
+    hp: Math.max(1, combat.playerCharacter.hp - damageOnFlee), // Never go below 1
+  };
+
+  return {
+    playerCharacter: updatedPlayer,
+    retreatFlag: narrativeFlag,
+    safeNodeId,
+  };
+}
