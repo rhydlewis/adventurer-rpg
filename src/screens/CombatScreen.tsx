@@ -84,6 +84,12 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
     onDefeat();
   };
 
+  const handleEndCombat = () => {
+    // Early exit from combat (treated as retreat/defeat)
+    resetCombat();
+    onDefeat();
+  };
+
   const actions = getAvailableActions(combat.playerCharacter);
 
   return (
