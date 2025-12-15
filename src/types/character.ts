@@ -1,7 +1,7 @@
 import type { Attributes } from './attributes';
 import type { SkillRanks } from './skill';
 import type { Feat } from './feat';
-import type { Equipment } from './equipment';
+import type { Equipment, InventoryItem } from './equipment';
 import type { Resources } from './resource';
 
 export type CharacterClass = 'Fighter' | 'Rogue' | 'Wizard' | 'Cleric';
@@ -25,4 +25,9 @@ export interface Character {
   feats: Feat[];
   equipment: Equipment;
   resources: Resources;
+
+  // Validation campaign: Inventory & Gold
+  gold: number;
+  inventory: InventoryItem[];
+  maxInventorySlots: number;
 }

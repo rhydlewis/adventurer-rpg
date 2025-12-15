@@ -22,17 +22,28 @@ export interface Shield {
   acBonus: number; // Usually +2
 }
 
-export interface Item {
-  name: ItemType;
+// Enhanced for validation campaign
+export interface InventoryItem {
+  id: string;
+  name: string;
   description: string;
-  effect: ItemEffect;
-  quantity: number;
+  type: 'consumable' | 'equipment' | 'quest';
+  usableInCombat: boolean;
+  effect?: ItemEffect;
+  value: number; // Sell price (typically 50% of buy price)
+  quantity?: number; // For stackable items
 }
+
+// Backward compatibility
+export type Item = InventoryItem;
 
 export type ItemEffect =
   | { type: 'heal'; amount: string } // e.g., '2d8+2'
-  | { type: 'escape' } // Smoke bomb
-  | { type: 'spell'; spellName: string }; // Arcane scroll
+  | { type: 'buff'; stat: string; bonus: number; duration: number }
+  | { type: 'damage'; amount: string } // throwable items
+  | { type: 'escape' } // Smoke bomb (keep for backward compat)
+  | { type: 'spell'; spellName: string } // Arcane scroll (keep for backward compat)
+  | { type: 'remove-condition'; condition: string }; // NEW: Antidote
 
 export interface Equipment {
   weapon: Weapon;
