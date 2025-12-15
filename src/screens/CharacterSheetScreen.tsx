@@ -57,12 +57,14 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
             {/* Character Avatar */}
-            <div className="w-20 h-20 rounded-lg bg-surface flex items-center justify-center border-2 border-border-default">
-              <Icon name="User" size={40} className="text-text-muted" />
-            </div>
+            <img
+              src={`/assets/avatars/${character.avatarPath}`}
+              alt={character.name}
+              className="w-20 h-20 rounded-lg ring-4 ring-accent object-cover"
+            />
             <div>
-              <h1 className="text-display heading-display text-text-accent">{character.name}</h1>
-              <p className="text-h2 text-text-secondary body-secondary">
+              <h1 className="heading-primary text-text-accent">{character.name}</h1>
+              <p className="body-secondary text-text-secondary">
                 Level {character.level} {character.class}
               </p>
             </div>
@@ -134,25 +136,12 @@ function TabButton({ active, onClick, icon, children }: TabButtonProps) {
 function OverviewTab({ character }: { character: Character }) {
   return (
     <div className="space-y-6">
-      {/* Hero Section */}
-      <div className="flex flex-col items-center mb-6 pb-6 border-b border-border-primary">
-        <img
-          src={`/assets/avatars/${character.avatarPath}`}
-          alt={character.name}
-          className="w-24 h-24 rounded-full ring-4 ring-accent mb-3"
-        />
-        <h2 className="character-name">{character.name}</h2>
-        <p className="body-secondary">
-          Level {character.level} {character.class}
-        </p>
-      </div>
-
       {/* HP, AC, BAB Grid */}
       <div className="grid grid-cols-3 gap-3">
         <Card variant="neutral" className="text-center">
           <div className="label-secondary text-xs text-text-muted mb-2">Hit Points</div>
           <div className="stat-large text-3xl text-text-accent">
-            {character.hp} / {character.maxHp}
+            {character.hp}/{character.maxHp}
           </div>
         </Card>
         <Card variant="neutral" className="text-center">

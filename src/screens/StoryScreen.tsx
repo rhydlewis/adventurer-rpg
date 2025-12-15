@@ -145,7 +145,7 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
 
   return (
     <div
-      className="min-h-screen bg-primary flex flex-col p-4"
+      className="h-screen bg-primary flex flex-col p-4"
       style={backgroundStyle}
     >
       {/* Header */}
@@ -173,13 +173,16 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
       </div>
 
       {/* Scrollable Log Area */}
-      <div className="flex-1 overflow-y-auto mb-4">
-        <Card variant="neutral" className="min-h-full">
+      <div className="max-h-80 overflow-y-auto mb-4">
+        <Card variant="neutral">
           <NarrativeLog entries={conversation.log} />
           {/* Scroll anchor */}
           <div ref={logEndRef} />
         </Card>
       </div>
+
+      {/* Spacer - pushes choices to bottom, shows background */}
+      <div className="flex-1" />
 
       {/* Choices Section */}
       <div className="space-y-2">

@@ -22,6 +22,20 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'Ancient trees loom overhead, their branches filtering the sunlight',
     description: 'A winding trail through dense woodland',
   },
+  'crossroads': {
+    id: 'crossroads',
+    name: 'The Crossroads',
+    image: 'card_location_signpost.png',
+    ambience: 'The Crossroads - Where your journey begins',
+    description: 'A weathered signpost marks the intersection of three paths',
+  },
+  'bandit-camp': {
+    id: 'bandit-camp',
+    name: 'The Bandit Camp',
+    image: 'card_location_camp.jpg',
+    ambience: 'A crude camp in a forest clearing, abandoned and eerily quiet',
+    description: 'Makeshift tents and dying embers mark this temporary refuge',
+  },
 } as const;
 
 export const LOCATION_IDS = Object.keys(LOCATIONS) as Array<keyof typeof LOCATIONS>;

@@ -268,12 +268,39 @@ const testNodes: StoryNode[] = [
     ],
   },
 
-  // === NODE 11: Bandit camp (combat trigger) ===
+  // === NODE 11: Bandit camp (decision point) ===
   {
     id: 'test-bandit-camp',
     title: 'The Bandit Camp',
     description:
-      'You find a crude camp in a forest clearing. A skeletal warrior sits motionless by a dying fire. As you approach, its empty eye sockets flare with unholy light and it rises to attack!',
+      'You find a crude camp in a forest clearing. A skeletal warrior sits motionless by a dying fire, its empty eye sockets glowing faintly with unholy light.',
+    locationId: 'bandit-camp', // Override: specific camp scene
+    companionHint: 'That creature is undead. Be careful - they feel no pain and know no fear.',
+    choices: [
+      {
+        id: 'choice-attack-skeleton',
+        text: 'Attack the skeleton',
+        outcome: { type: 'goto', nodeId: 'test-bandit-camp-fight' },
+      },
+      {
+        id: 'choice-sneak-away',
+        text: 'Quietly back away',
+        outcome: { type: 'goto', nodeId: 'test-forest' },
+      },
+      {
+        id: 'choice-search-camp',
+        text: 'Search the camp while avoiding the skeleton',
+        outcome: { type: 'goto', nodeId: 'test-camp-search' },
+      },
+    ],
+  },
+
+  // === NODE 11b: Actually trigger combat ===
+  {
+    id: 'test-bandit-camp-fight',
+    description:
+      'You charge forward! The skeleton\'s eyes flare bright as it rises to meet your attack.',
+    locationId: 'bandit-camp',
     onEnter: [
       {
         type: 'startCombat',
@@ -281,7 +308,27 @@ const testNodes: StoryNode[] = [
         onVictoryNodeId: 'test-victory',
       },
     ],
-    choices: [], // No choices - combat starts immediately
+    choices: [], // Combat starts immediately
+  },
+
+  // === NODE 11c: Search camp without fighting ===
+  {
+    id: 'test-camp-search',
+    description:
+      'You carefully search the camp while keeping your distance from the undead guardian. You find nothing of value - the bandits must have taken everything with them.',
+    locationId: 'bandit-camp',
+    choices: [
+      {
+        id: 'choice-fight-anyway',
+        text: 'Attack the skeleton',
+        outcome: { type: 'goto', nodeId: 'test-bandit-camp-fight' },
+      },
+      {
+        id: 'choice-leave-camp',
+        text: 'Leave the camp',
+        outcome: { type: 'goto', nodeId: 'test-forest' },
+      },
+    ],
   },
 
   // === NODE 12: Victory after combat ===
@@ -405,7 +452,7 @@ const testAct: Act = {
   id: 'test-act-1',
   title: 'Test Act: The Crossroads',
   description: 'A test adventure to validate the narrative system.',
-  locationId: 'forest-path', // Default: outdoor/wilderness scenes
+  locationId: 'crossroads', // Default: starts at the crossroads
   startingNodeId: 'test-start',
   deathNodeId: 'test-death',
   nodes: testNodes,
