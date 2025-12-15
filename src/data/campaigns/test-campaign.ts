@@ -39,6 +39,11 @@ const testNodes: StoryNode[] = [
         text: 'Examine the signpost more closely',
         outcome: { type: 'loop' },
       },
+      {
+        id: 'choice-touch-signpost',
+        text: 'Touch the signpost',
+        outcome: { type: 'goto', nodeId: 'test-wraith' },
+      },
     ],
   },
 
@@ -375,6 +380,22 @@ const testNodes: StoryNode[] = [
     description:
       'Your vision fades as you collapse. The forest claims another victim, and your story ends here in the darkness of the Darkwood.',
     choices: [],
+  },
+
+  // === NODE TEST: Wraith fight ===
+  {
+    id: 'test-wraith',
+    title: 'Fight a Wraith',
+    description:
+        'You touch the rune on the signpost. A flash and then... a wraith appears',
+    onEnter: [
+      {
+        type: 'startCombat',
+        enemyId: 'wraith',
+        onVictoryNodeId: 'test-start',
+      },
+    ],
+    choices: [], // No choices - combat starts immediately
   },
 ];
 

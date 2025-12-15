@@ -13,7 +13,7 @@ export const CREATURE_AVATARS: Partial<Record<CreatureName, string>> = {
   // Wolf: 'monster_wolf_00001.png',
   // Cultist: 'monster_cultist_00001.png',
   // Spider: 'monster_spider_00001.png',
-  // Wraith: 'monster_wraith_00001.png',
+  Wraith: 'monster_spirit_00014.png',
 } as const;
 
 export const DEFAULT_CREATURE_AVATAR = 'monster_generic.png';

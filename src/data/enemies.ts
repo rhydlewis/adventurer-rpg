@@ -122,6 +122,70 @@ export const enemies: Record<string, Creature> = {
       spellSlots: undefined,
     },
   },
+
+  wraith: {
+    name: 'Wraith',
+    avatarPath: CREATURE_AVATARS['Wraith'] || DEFAULT_CREATURE_AVATAR,
+    class: 'Wizard',
+    level: 1,
+
+    attributes: {
+      STR: 6,   // -2 (incorporeal/undead - very weak physically)
+      DEX: 16,  // +3 (ghostly, hard to hit)
+      CON: 10,  // +0 (undead don't need CON but keep for mechanics)
+      INT: 16,  // +3 (intelligent undead, spellcaster)
+      WIS: 14,  // +2 (perceptive, experienced in death)
+      CHA: 8,   // -1 (terrifying but not charismatic)
+    },
+
+    hp: 6,      // Low HP (d4 hit die for Wizard + 0 CON)
+    maxHp: 6,
+    ac: 13,     // 10 + 3 DEX (incorporeal nature makes it hard to hit)
+    bab: 0,     // Wizard at level 1
+
+    saves: {
+      fortitude: 0,  // 0 (Wizard base) + 0 CON
+      reflex: 3,     // 0 (Wizard base) + 3 DEX
+      will: 4,       // 2 (Wizard base) + 2 WIS (strong vs mental effects)
+    },
+
+    skills: {
+      Athletics: 0,      // Terrible at physical tasks
+      Stealth: 5,        // 2 ranks + 3 DEX (ghostly, sneaky)
+      Perception: 4,     // 2 ranks + 2 WIS (sees through deception)
+      Arcana: 6,         // 3 ranks + 3 INT (magical knowledge!)
+      Medicine: 0,       // Undead don't heal
+      Intimidate: 2,     // 3 ranks + (-1) CHA (terrifying presence)
+    },
+
+    feats: [],
+
+    equipment: {
+      weapon: {
+        name: 'Dagger',
+        damage: '1d4',
+        damageType: 'piercing',
+        finesse: true,
+        description: 'Life-draining touch', // Flavor it as magical
+      },
+      armor: {
+        name: 'None',
+        baseAC: 10,
+        maxDexBonus: null,
+        description: 'Incorporeal form',
+      },
+      shield: { equipped: false, acBonus: 0 },
+      items: [],
+    },
+
+    resources: {
+      abilities: [],
+      spellSlots: {
+        level0: { max: 3, current: 3 },  // 3 cantrips at will
+        level1: { max: 2, current: 2 },  // 2 first-level spells per day
+      },
+    },
+  },
 };
 
 /**
