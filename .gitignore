@@ -27,3 +27,6 @@ android/app/src/main/res/values/strings.xml
 *.njsproj
 *.sln
 *.sw?
+
+# Git worktrees
+.worktrees/
