@@ -3,18 +3,12 @@ import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
 import { NarrativeLog, ChoiceButton, Card, Button, Icon } from '../components';
 import { resolveLocation } from '../utils/locationResolver';
-import type { Screen } from '../types/navigation';
 
 interface StoryScreenProps {
   /**
    * Callback to exit story mode (return to home/world map)
    */
   onExit: () => void;
-
-  /**
-   * Optional callback for navigation to other screens (e.g., minigames)
-   */
-  onNavigate?: (screen: Screen) => void;
 }
 
 /**
@@ -30,7 +24,7 @@ interface StoryScreenProps {
  * @example
  * <StoryScreen onExit={() => setScreen('home')} />
  */
-export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
+export function StoryScreen({ onExit }: StoryScreenProps) {
   const {
     conversation,
     campaign,
@@ -125,22 +119,6 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
   const handleExit = () => {
     exitConversation();
     onExit();
-  };
-
-  const handleTestLockPicking = (difficulty: 'easy' | 'medium' | 'hard') => {
-    if (!onNavigate) return;
-    onNavigate({
-      type: 'lockPicking',
-      difficulty,
-      onSuccess: () => {
-        console.log('Lock picked successfully!');
-        onNavigate({ type: 'story' });
-      },
-      onFailure: () => {
-        console.log('Lock picking failed!');
-        onNavigate({ type: 'story' });
-      },
-    });
   };
 
   return (

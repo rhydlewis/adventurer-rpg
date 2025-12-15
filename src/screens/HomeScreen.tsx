@@ -2,19 +2,21 @@ import { useCombatStore } from '../stores/combatStore';
 import type { Creature, CharacterClass } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
-import {Button, Card, ChoiceButton, Icon} from '../components';
+import { Button, Card, Icon } from '../components';
 import { DEFAULT_AVATAR } from '../data/avatars';
 import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from '../data/creatureAvatars';
+import type { Screen } from '../types/navigation';
 
 interface HomeScreenProps {
   onStartCombat: () => void;
   onCreateCharacter: () => void;
   onViewCharacter?: () => void;
   onStartStory?: () => void;
+  onNavigate?: (screen: Screen) => void;
   hasCharacter: boolean;
 }
 
-export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, onStartStory, hasCharacter }: HomeScreenProps) {
+export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, onStartStory, onNavigate, hasCharacter }: HomeScreenProps) {
   const { startCombat } = useCombatStore();
 
   const handleStartCombat = (className: CharacterClass) => {
@@ -95,6 +97,22 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
 
     startCombat(player, skeleton);
     onStartCombat();
+  };
+
+  const handleTestLockPicking = (difficulty: 'easy' | 'medium' | 'hard') => {
+    if (!onNavigate) return;
+    onNavigate({
+      type: 'lockPicking',
+      difficulty,
+      onSuccess: () => {
+        console.log('Lock picked successfully!');
+        onNavigate({ type: 'home' });
+      },
+      onFailure: () => {
+        console.log('Lock picking failed!');
+        onNavigate({ type: 'home' });
+      },
+    });
   };
 
   return (
@@ -244,29 +262,33 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
         </Card>
 
         {/* Test Lock Picking Minigame (Prototype) */}
-        <Card variant="neutral" padding="compact" className="mb-2">
-          <h3 className="heading-tertiary text-body mb-3">🔒 Lock Picking Minigame</h3>
-          <div className="grid grid-cols-3 gap-2">
-            <button
+        {onNavigate && (
+          <Card variant="neutral" padding="compact" className="mt-3 border-warning">
+            <p className="text-caption text-fg-primary label-primary mb-2 text-center">
+              🔒 Prototype: Lock Picking Minigame
+            </p>
+            <div className="grid grid-cols-3 gap-2">
+              <button
                 onClick={() => handleTestLockPicking('easy')}
                 className="px-2 py-2 bg-success text-white button-text text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
-            >
-              Easy
-            </button>
-            <button
+              >
+                Easy
+              </button>
+              <button
                 onClick={() => handleTestLockPicking('medium')}
                 className="px-2 py-2 bg-warning text-white button-text text-caption rounded-lg hover:bg-yellow-600 active:bg-yellow-700 transition-all duration-200 active:scale-[0.98]"
-            >
-              Medium
-            </button>
-            <button
+              >
+                Medium
+              </button>
+              <button
                 onClick={() => handleTestLockPicking('hard')}
                 className="px-2 py-2 bg-enemy text-white button-text text-caption rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-[0.98]"
-            >
-              Hard
-            </button>
-          </div>
-        </Card>
+              >
+                Hard
+              </button>
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

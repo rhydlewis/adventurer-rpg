@@ -6,7 +6,6 @@ import { CombatScreen } from './screens/CombatScreen';
 import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
 import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
 import { StoryScreen } from './screens/StoryScreen';
-import { LockPickingScreen } from './screens/LockPickingScreen';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 import { testCampaign } from './data/campaigns/test-campaign';
@@ -14,6 +13,7 @@ import { createCharacter } from './utils/characterCreation';
 import { CLASSES } from './data/classes';
 import type { Screen } from './types/navigation';
 import {DEFAULT_AVATAR} from "./data/avatars.ts";
+import { LockPickingScreen } from './screens/LockPickingScreen';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
@@ -91,6 +91,7 @@ function App() {
           onViewCharacter={character ? handleViewSheet : undefined}
           hasCharacter={character !== null}
           onStartStory={handleStartStory}
+          onNavigate={setCurrentScreen}
         />
       )}
       {currentScreen.type === 'combat' && (
@@ -129,7 +130,6 @@ function App() {
       {currentScreen.type === 'story' && (
         <StoryScreen
           onExit={() => setCurrentScreen({ type: 'home' })}
-          onNavigate={setCurrentScreen}
         />
       )}
       {currentScreen.type === 'lockPicking' && (
