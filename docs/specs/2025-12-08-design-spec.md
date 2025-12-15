@@ -6,7 +6,7 @@
 
 **Status:** ✅ FINALIZED - Ready for Implementation
 
-**Last Updated:** 2025-12-08
+**Last Updated:** 2025-12-15
 
 ---
 
@@ -38,7 +38,7 @@ Transform from a simple combat simulator into a narrative-driven single-player R
 
 ## 🗺️ Major System Changes
 
-### 1. Combat System Migration (Fighting Fantasy → d20/Pathfinder)
+### 1. DONE Combat System Migration (Fighting Fantasy → d20/Pathfinder)
 
 #### Current State
 - 2d6 + SKILL vs 2d6 + SKILL
@@ -59,28 +59,28 @@ Transform from a simple combat simulator into a narrative-driven single-player R
 
 #### Solo Play Balance Adjustments
 ```
-[ ] One-on-one battles (no multi-enemy encounters)
-[ ] Buff player character by 20-30% (more HP, better stats than standard)
-[ ] Give hybrid abilities (every class gets some healing/defense)
-[ ] Generous rest system (heal frequently between fights)
+[x] One-on-one battles (no multi-enemy encounters)
+[x] Buff player character by 20-30% (more HP, better stats than standard)
+[x] Give hybrid abilities (every class gets some healing/defense)
+[x] Generous rest system (heal frequently between fights)
 ```
 
 #### Key Changes
 ```
-[ ] Replace attribute system (SKILL/STAMINA/LUCK → STR/DEX/CON/INT/WIS/CHA)
-[ ] Implement d20 attack roll vs AC
-[ ] Add variable weapon damage dice
-[ ] Create saving throw system (Fort/Reflex/Will)
-[ ] Implement critical hit mechanics
-[ ] Add class-based progression (Fighter, Rogue, Wizard, Cleric)
-[ ] Calculate derived stats (HP, AC, BAB, saves)
-[ ] Implement simplified action economy (standard action only)
-[ ] Create basic condition system (4 conditions)
+[x] Replace attribute system (SKILL/STAMINA/LUCK → STR/DEX/CON/INT/WIS/CHA)
+[x] Implement d20 attack roll vs AC
+[x] Add variable weapon damage dice
+[x] Create saving throw system (Fort/Reflex/Will)
+[x] Implement critical hit mechanics
+[x] Add class-based progression (Fighter, Rogue, Wizard, Cleric)
+[x] Calculate derived stats (HP, AC, BAB, saves)
+[x] Implement simplified action economy (standard action only)
+[x] Create basic condition system (4 conditions)
 ```
 
 ---
 
-### 2. Narrative System
+### 2. IN PROGRESS Narrative System
 
 #### Core Concept
 Story node-based narrative with **linear main story and optional side paths**, limited branching to avoid exponential complexity
