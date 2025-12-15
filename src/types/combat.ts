@@ -1,9 +1,13 @@
 import type { Character } from './character';
 import type { Condition } from './condition';
 
-// For now, Creature uses the same structure as Character
-// We can differentiate them later (e.g., add AI behavior, loot, etc.)
-export type Creature = Character;
+// Validation campaign: Combat actions
+export type CombatAction = 'attack' | 'retreat' | 'use-item';
+
+// Creature extends Character with enemy-specific features
+export interface Creature extends Character {
+  taunt?: string; // Enemy-specific taunt message (validation campaign)
+}
 
 export interface CombatLogEntry {
   turn: number;
