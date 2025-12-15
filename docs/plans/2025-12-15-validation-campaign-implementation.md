@@ -1,6 +1,6 @@
 # Validation Campaign Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Do not use Subagent-Driven approach or worktrees. Work sequentially. 
 
 **Goal:** Build a 15-20 minute validation campaign to test exploration, progression, combat polish, and character creation systems before writing the full campaign.
 
@@ -16,14 +16,12 @@
 
 ## Implementation Overview
 
-**Estimated Time:** 2-3 weeks (60-80 hours)
-
 **Phases:**
-1. **Type Extensions** (4 hours) - Extend Character, CombatState, narrative types
-2. **Core Systems** (20 hours) - Exploration, merchant, retreat, level-up, quirks
-3. **Data Content** (12 hours) - Items, enemies with taunts, backgrounds, traits
-4. **Validation Campaign** (8 hours) - 8-node campaign wire-up
-5. **UI Integration** (16 hours) - Combat items, retreat button, merchant screen, level-up screen
+1. **Type Extensions** - Extend Character, CombatState, narrative types
+2. **Core Systems**  - Exploration, merchant, retreat, level-up, quirks
+3. **Data Content** - Items, enemies with taunts, backgrounds, traits
+4. **Validation Campaign** - 8-node campaign wire-up
+5. **UI Integration**  - Combat items, retreat button, merchant screen, level-up screen
 
 **Testing Strategy:** TDD throughout - write failing test, implement, verify, commit
 
@@ -2412,12 +2410,6 @@ git commit -m "feat: complete validation campaign with 8 nodes (retreat, level-u
 - ✅ Data content (items, enemies with taunts, backgrounds, traits, exploration tables)
 - ✅ 8-node validation campaign structure
 - 🔲 UI integration (requires additional work)
-
-**Estimated Completion:**
-- Phase 1-4: ~40 hours (types, systems, data, campaign)
-- Phase 5 (UI): ~16 hours (requires React/Zustand knowledge)
-
-**Total:** ~56 hours (2-3 weeks with testing)
 
 **To Continue:**
 1. Run all tests: `npm test`
