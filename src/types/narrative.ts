@@ -15,6 +15,16 @@ export type Requirement =
   | { type: 'nodeVisited'; nodeId: string };
 
 // =============================================================================
+// Exploration Outcomes - Results from exploring (validation campaign)
+// =============================================================================
+
+export type ExplorationOutcome =
+  | { type: 'combat'; enemyId: string }
+  | { type: 'treasure'; loot: { gold?: number; items?: string[] } }
+  | { type: 'vignette'; text: string }
+  | { type: 'nothing'; text: string };
+
+// =============================================================================
 // Choice Outcomes - Unified recursive pattern for all choice routing
 // =============================================================================
 
@@ -36,6 +46,7 @@ export interface Choice {
   displayText?: string; // Optional different text for skill checks: "[Intimidate DC 10] Lie"
   requirements?: Requirement[]; // Must pass ALL to see this choice
   outcome: ChoiceOutcome;
+  explorationOutcome?: ExplorationOutcome; // Validation campaign: random exploration
 }
 
 // =============================================================================
