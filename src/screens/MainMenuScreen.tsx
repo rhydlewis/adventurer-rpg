@@ -105,7 +105,7 @@ export function MainMenuScreen({
 
       {/* Version Number */}
       <div className="z-10 text-text-muted text-caption label-secondary">
-        v0.0.0
+        v{__APP_VERSION__}
       </div>
     </div>
   );
