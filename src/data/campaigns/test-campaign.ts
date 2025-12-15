@@ -53,6 +53,7 @@ const testNodes: StoryNode[] = [
     title: 'The Burning Village',
     description:
       'The village is in chaos. Buildings smolder, and villagers run about trying to save what they can. A guard blocks your path, looking exhausted and suspicious.',
+    locationId: 'town-square', // Override: village scene
     speakerName: 'Village Guard',
     speakerPortrait: 'portraits/guard.png',
     onEnter: [{ type: 'setFlag', flag: 'visited_village', value: true }],
@@ -309,6 +310,7 @@ const testNodes: StoryNode[] = [
     title: 'Quest Complete',
     description:
       'You return to the village as a hero. The mayor rewards you generously, and the villagers cheer your name. But the mysterious letter hints at a larger conspiracy...',
+    locationId: 'rusty-tavern', // Override: celebration scene
     onEnter: [
       { type: 'setFlag', flag: 'completed_test_campaign', value: true },
       { type: 'giveItem', itemId: 'hero-medal' },
@@ -403,7 +405,7 @@ const testAct: Act = {
   id: 'test-act-1',
   title: 'Test Act: The Crossroads',
   description: 'A test adventure to validate the narrative system.',
-  locationId: 'crossroads',
+  locationId: 'forest-path', // Default: outdoor/wilderness scenes
   startingNodeId: 'test-start',
   deathNodeId: 'test-death',
   nodes: testNodes,

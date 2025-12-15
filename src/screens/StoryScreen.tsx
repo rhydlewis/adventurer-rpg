@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
 import { NarrativeLog, ChoiceButton, Card, Button, Icon } from '../components';
+import { resolveLocation } from '../utils/locationResolver';
 import type { Screen } from '../types/navigation';
 
 interface StoryScreenProps {
@@ -34,6 +35,7 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
     conversation,
     campaign,
     getCurrentNode,
+    getCurrentAct,
     getAvailableChoices,
     getChoiceDisplayText,
     selectChoice,
@@ -70,6 +72,8 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
   }
 
   const currentNode = getCurrentNode();
+  const currentAct = getCurrentAct();
+
   if (!currentNode) {
     return (
       <div className="min-h-screen bg-primary flex items-center justify-center p-4">
@@ -89,6 +93,23 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
       </div>
     );
   }
+
+  // Resolve location for background image
+  const location = currentNode && currentAct
+    ? resolveLocation(currentNode, currentAct)
+    : null;
+
+  const backgroundStyle = location ? {
+    backgroundImage: `
+      linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.3) 0%,
+        rgba(0, 0, 0, 0.7) 100%
+      ),
+      url(/assets/locations/${location.image})
+    `,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  } : {};
 
   const availableChoices = getAvailableChoices(character);
   const hasCompanionHint = !!currentNode.companionHint;
@@ -123,7 +144,10 @@ export function StoryScreen({ onExit, onNavigate }: StoryScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-primary flex flex-col p-4">
+    <div
+      className="min-h-screen bg-primary flex flex-col p-4"
+      style={backgroundStyle}
+    >
       {/* Header */}
       <div className="mb-4">
         <Card variant="neutral" padding="compact">

@@ -62,6 +62,7 @@ export interface StoryNode {
   speakerName?: string; // If dialogue, who is speaking
   speakerPortrait?: string; // Portrait image path
   locationHint?: string; // For atmosphere: "The tavern is warm and noisy"
+  locationId?: string; // Override Act's default location for this node
 
   choices: Choice[];
 
@@ -70,6 +71,18 @@ export interface StoryNode {
 
   // Companion hint available for this node (player must request it)
   companionHint?: string;
+}
+
+// =============================================================================
+// Locations - Physical settings for narrative scenes
+// =============================================================================
+
+export interface Location {
+  id: string;
+  name: string;
+  image: string;
+  ambience?: string;
+  description?: string;
 }
 
 // =============================================================================
