@@ -267,11 +267,11 @@ const testNodes: StoryNode[] = [
     id: 'test-bandit-camp',
     title: 'The Bandit Camp',
     description:
-      'You find a crude camp in a forest clearing. A single bandit sits by a dying fire, sharpening his blade. He spots you and leaps to his feet!',
+      'You find a crude camp in a forest clearing. A skeletal warrior sits motionless by a dying fire. As you approach, its empty eye sockets flare with unholy light and it rises to attack!',
     onEnter: [
       {
         type: 'startCombat',
-        enemyId: 'bandit',
+        enemyId: 'skeleton',
         onVictoryNodeId: 'test-victory',
       },
     ],
@@ -283,7 +283,7 @@ const testNodes: StoryNode[] = [
     id: 'test-victory',
     title: 'Victory!',
     description:
-      'The bandit falls. Searching the camp, you find the stolen goods from the village, along with a mysterious letter bearing an unfamiliar seal.',
+      'The skeleton crumbles to dust. Searching the camp, you find the stolen goods from the village, along with a mysterious letter bearing an unfamiliar seal.',
     onEnter: [
       { type: 'setFlag', flag: 'defeated_bandit', value: true },
       { type: 'giveItem', itemId: 'mysterious-letter' },
