@@ -332,7 +332,7 @@ export function getChoiceDisplayText(choice: Choice): string {
 
   // Auto-generate display text for skill checks
   if (choice.outcome.type === 'check') {
-    return `[${choice.outcome.skill} DC ${choice.outcome.dc}] ${choice.text}`;
+    return `🎲 ${choice.outcome.skill} DC ${choice.outcome.dc} ${choice.text}`;
   }
 
   return choice.text;

@@ -205,7 +205,7 @@ const testNodes: StoryNode[] = [
     choices: [
       {
         id: 'choice-perception-tracks',
-        text: '[Perception DC 12] Study the tracks carefully',
+        text: 'Study the tracks carefully',
         outcome: {
           type: 'check',
           skill: 'Perception',

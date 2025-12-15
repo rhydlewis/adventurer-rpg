@@ -24,8 +24,23 @@ interface ChoiceButtonProps {
 }
 
 /**
+ * Parses choice text to extract requirement (e.g., "🎲 Perception DC 12") and main text
+ */
+function parseChoiceText(text: string): { mainText: string; requirement?: string } {
+  // Match format: "🎲 SkillName DC Number Main text"
+  const match = text.match(/^🎲\s+(\w+\s+DC\s+\d+)\s+(.+)$/);
+  if (match) {
+    return {
+      requirement: `🎲 ${match[1]}`,
+      mainText: match[2],
+    };
+  }
+  return { mainText: text };
+}
+
+/**
  * Smart choice button that handles:
- * - Skill check prefixes ([Skill DC X])
+ * - Skill check requirements displayed below main text
  * - Previously selected choices (grayed but still clickable for loops)
  * - Click handling
  *
@@ -47,6 +62,8 @@ export function ChoiceButton({
     onSelect(choice.id);
   };
 
+  const { mainText, requirement } = parseChoiceText(displayText || choice.text);
+
   return (
     <Button
       variant={wasSelected ? 'secondary' : 'primary'}
@@ -54,7 +71,12 @@ export function ChoiceButton({
       onClick={handleClick}
       className={wasSelected ? 'opacity-60' : ''}
     >
-      {displayText || choice.text}
+      <div className="flex flex-col items-center w-full">
+        <span className="text-center">{mainText}</span>
+        {requirement && (
+          <span className="text-xs mt-1 text-center">{requirement}</span>
+        )}
+      </div>
     </Button>
   );
 }

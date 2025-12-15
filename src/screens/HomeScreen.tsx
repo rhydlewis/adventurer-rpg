@@ -2,7 +2,7 @@ import { useCombatStore } from '../stores/combatStore';
 import type { Creature, CharacterClass } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
-import { Button, Card, Icon } from '../components';
+import {Button, Card, ChoiceButton, Icon} from '../components';
 import { DEFAULT_AVATAR } from '../data/avatars';
 import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from '../data/creatureAvatars';
 
@@ -239,6 +239,31 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
               <Icon name="Cross" className="inline-block mr-1" size={18} aria-hidden="true" />
               <span>Cleric</span>
               <div className="text-caption opacity-75 mt-1">Healing, Turn Undead</div>
+            </button>
+          </div>
+        </Card>
+
+        {/* Test Lock Picking Minigame (Prototype) */}
+        <Card variant="neutral" padding="compact" className="mb-2">
+          <h3 className="heading-tertiary text-body mb-3">🔒 Lock Picking Minigame</h3>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+                onClick={() => handleTestLockPicking('easy')}
+                className="px-2 py-2 bg-success text-white button-text text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
+            >
+              Easy
+            </button>
+            <button
+                onClick={() => handleTestLockPicking('medium')}
+                className="px-2 py-2 bg-warning text-white button-text text-caption rounded-lg hover:bg-yellow-600 active:bg-yellow-700 transition-all duration-200 active:scale-[0.98]"
+            >
+              Medium
+            </button>
+            <button
+                onClick={() => handleTestLockPicking('hard')}
+                className="px-2 py-2 bg-enemy text-white button-text text-caption rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-[0.98]"
+            >
+              Hard
             </button>
           </div>
         </Card>
