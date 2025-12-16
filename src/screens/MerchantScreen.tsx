@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCharacterStore } from '../stores/characterStore';
 import { getItem } from '../data/items';
 import { buyItem, sellItem, canAfford, hasInventorySpace } from '../utils/merchant';
+import { Icon } from '../components';
 
 interface MerchantScreenProps {
   shopInventory: string[]; // Item IDs
@@ -15,7 +16,12 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
   const [error, setError] = useState<string | null>(null);
 
   if (!character) {
-    return <div className="body-primary">No character loaded</div>;
+    return <div className="min-h-screen bg-primary text-fg-primary flex items-center justify-center">
+      <div className="text-center">
+        <Icon name="Info" size={48} className="text-enemy mx-auto mb-4" />
+        <p className="body-primary">No character loaded</p>
+      </div>
+    </div>;
   }
 
   const handleBuy = (itemId: string) => {
@@ -40,106 +46,204 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
     }
   };
 
+  const inventoryCount = character.inventory?.length || 0;
+  const maxSlots = character.maxInventorySlots || 0;
+  const inventoryFull = inventoryCount >= maxSlots;
+
   return (
-    <div className="min-h-screen bg-primary text-fg-primary p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-fg-primary p-6">
       {/* Header */}
       <div className="max-w-4xl mx-auto">
-        <h1 className="heading-primary text-text-accent mb-2">Merchant's Wares</h1>
-        <p className="body-secondary mb-6">
-          Gold: <span className="stat-medium text-gold">{character.gold || 0}</span>
-        </p>
+        <div className="mb-6">
+          <h1 className="heading-display text-fg-accent mb-3 flex items-center gap-3">
+            <Icon name="ShoppingBag" size={36} />
+            Merchant's Wares
+          </h1>
+
+          {/* Status Bar */}
+          <div className="flex items-center gap-6 bg-secondary/50 backdrop-blur-sm p-4 rounded-lg border border-warning/30">
+            <div className="flex items-center gap-2">
+              <Icon name="Coins" size={20} className="text-warning" />
+              <span className="body-secondary">Gold:</span>
+              <span className="stat-medium text-warning">{character.gold || 0}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Icon name="Package" size={20} className="text-fg-accent" />
+              <span className="body-secondary">Inventory:</span>
+              <span className={`stat-medium ${inventoryFull ? 'text-enemy' : 'text-success'}`}>
+                {inventoryCount}/{maxSlots}
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-4 mb-6 border-b border-border">
+        <div className="flex gap-2 mb-6 bg-secondary/30 p-1 rounded-lg">
           <button
-            className={`tab-text pb-2 px-4 ${
+            className={`tab-text flex-1 py-3 px-6 rounded-md transition-all flex items-center justify-center gap-2 ${
               selectedTab === 'buy'
-                ? 'border-b-2 border-text-accent text-text-accent'
-                : 'text-text-secondary'
+                ? 'bg-success/20 text-success border border-success/50'
+                : 'text-fg-secondary hover:bg-secondary/50'
             }`}
             onClick={() => setSelectedTab('buy')}
           >
-            Buy
+            <Icon name="ShoppingCart" size={18} />
+            <span>Buy Items</span>
           </button>
           <button
-            className={`tab-text pb-2 px-4 ${
+            className={`tab-text flex-1 py-3 px-6 rounded-md transition-all flex items-center justify-center gap-2 ${
               selectedTab === 'sell'
-                ? 'border-b-2 border-text-accent text-text-accent'
-                : 'text-text-secondary'
+                ? 'bg-warning/20 text-warning border border-warning/50'
+                : 'text-fg-secondary hover:bg-secondary/50'
             }`}
             onClick={() => setSelectedTab('sell')}
           >
-            Sell
+            <Icon name="DollarSign" size={18} />
+            <span>Sell Items</span>
           </button>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-error/20 border border-error text-error p-4 rounded mb-4">
-            {error}
+          <div className="bg-enemy/20 border-2 border-enemy text-fg-primary p-4 rounded-lg mb-6 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-200">
+            <Icon name="Info" size={20} className="text-enemy flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold text-enemy mb-1">Transaction Failed</p>
+              <p className="body-secondary text-sm">{error}</p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="ml-auto text-fg-muted hover:text-fg-primary transition-colors"
+            >
+              <Icon name="X" size={18} />
+            </button>
           </div>
         )}
 
         {/* Buy Tab */}
         {selectedTab === 'buy' && (
-          <div className="space-y-4">
-            {shopInventory.map((itemId) => {
-              const item = getItem(itemId);
-              const price = buyPrices[itemId];
-              const affordable = canAfford(character, price);
-              const hasSpace = hasInventorySpace(character);
+          <div className="space-y-3">
+            {shopInventory.length === 0 ? (
+              <div className="text-center py-12 bg-secondary/30 rounded-lg border border-border-default">
+                <Icon name="Package" size={48} className="text-fg-muted mx-auto mb-3" />
+                <p className="body-secondary">The merchant has no items for sale.</p>
+              </div>
+            ) : (
+              shopInventory.map((itemId) => {
+                const item = getItem(itemId);
+                const price = buyPrices[itemId];
+                const affordable = canAfford(character, price);
+                const hasSpace = hasInventorySpace(character);
+                const canBuy = affordable && hasSpace;
 
-              return (
-                <div
-                  key={itemId}
-                  className="bg-secondary p-4 rounded-lg border border-border flex justify-between items-center"
-                >
-                  <div>
-                    <h3 className="heading-tertiary">{item.name}</h3>
-                    <p className="body-secondary text-sm">{item.description}</p>
-                    <p className="stat-small text-gold mt-2">{price} gold</p>
-                  </div>
-                  <button
-                    className={`button-text px-6 py-2 rounded ${
-                      affordable && hasSpace
-                        ? 'bg-accent text-fg-inverted hover:bg-accent-hover'
-                        : 'bg-muted text-text-muted cursor-not-allowed'
+                return (
+                  <div
+                    key={itemId}
+                    className={`bg-gradient-to-br from-secondary to-secondary/50 p-5 rounded-xl border-2 transition-all ${
+                      canBuy
+                        ? 'border-success/30 hover:border-success/60 hover:shadow-lg hover:shadow-success/10'
+                        : 'border-border-default/50 opacity-75'
                     }`}
-                    onClick={() => handleBuy(itemId)}
-                    disabled={!affordable || !hasSpace}
                   >
-                    Buy
-                  </button>
-                </div>
-              );
-            })}
+                    <div className="flex items-start gap-4">
+                      {/* Item Icon */}
+                      <div className={`w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                        canBuy ? 'bg-success/20 border border-success/30' : 'bg-secondary border border-border-default'
+                      }`}>
+                        <Icon name="Gem" size={28} className={canBuy ? 'text-success' : 'text-fg-muted'} />
+                      </div>
+
+                      {/* Item Details */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="heading-tertiary text-fg-accent mb-1">{item.name}</h3>
+                        <p className="body-secondary text-sm text-fg-muted mb-3">{item.description}</p>
+
+                        {/* Price and Status */}
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1.5">
+                            <Icon name="Coins" size={16} className="text-warning" />
+                            <span className="stat-small text-warning">{price}</span>
+                            <span className="body-secondary text-xs text-fg-muted">gold</span>
+                          </div>
+
+                          {!canBuy && (
+                            <div className="flex items-center gap-1.5 text-enemy">
+                              <Icon name="Info" size={14} />
+                              <span className="text-xs">
+                                {!affordable ? 'Not enough gold' : 'Inventory full'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Buy Button */}
+                      <button
+                        className={`button-text px-6 py-3 rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                          canBuy
+                            ? 'bg-gradient-to-br from-success to-success/80 text-white hover:from-success/90 hover:to-success/70 active:scale-95 shadow-lg'
+                            : 'bg-secondary border border-border-default text-fg-muted cursor-not-allowed'
+                        }`}
+                        onClick={() => handleBuy(itemId)}
+                        disabled={!canBuy}
+                      >
+                        <Icon name="ShoppingCart" size={18} />
+                        <span>Buy</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         )}
 
         {/* Sell Tab */}
         {selectedTab === 'sell' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {(character.inventory || []).length === 0 ? (
-              <p className="body-secondary text-center py-8">
-                You have no items to sell.
-              </p>
+              <div className="text-center py-12 bg-secondary/30 rounded-lg border border-border-default">
+                <Icon name="PackageOpen" size={48} className="text-fg-muted mx-auto mb-3" />
+                <p className="body-secondary">Your inventory is empty.</p>
+                <p className="body-secondary text-sm text-fg-muted mt-2">
+                  Buy some items to sell them later.
+                </p>
+              </div>
             ) : (
               (character.inventory || []).map((item) => (
                 <div
                   key={item.id}
-                  className="bg-secondary p-4 rounded-lg border border-border flex justify-between items-center"
+                  className="bg-gradient-to-br from-secondary to-secondary/50 p-5 rounded-xl border-2 border-warning/30 hover:border-warning/60 transition-all hover:shadow-lg hover:shadow-warning/10"
                 >
-                  <div>
-                    <h3 className="heading-tertiary">{item.name}</h3>
-                    <p className="body-secondary text-sm">{item.description}</p>
-                    <p className="stat-small text-gold mt-2">Sell for {item.value} gold</p>
+                  <div className="flex items-start gap-4">
+                    {/* Item Icon */}
+                    <div className="w-14 h-14 rounded-lg bg-warning/20 border border-warning/30 flex items-center justify-center flex-shrink-0">
+                      <Icon name="Package" size={28} className="text-warning" />
+                    </div>
+
+                    {/* Item Details */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="heading-tertiary text-fg-accent mb-1">{item.name}</h3>
+                      <p className="body-secondary text-sm text-fg-muted mb-3">{item.description}</p>
+
+                      {/* Sell Price */}
+                      <div className="flex items-center gap-1.5">
+                        <span className="body-secondary text-xs text-fg-muted">Sell for</span>
+                        <Icon name="Coins" size={16} className="text-warning" />
+                        <span className="stat-small text-warning">{item.value}</span>
+                        <span className="body-secondary text-xs text-fg-muted">gold</span>
+                      </div>
+                    </div>
+
+                    {/* Sell Button */}
+                    <button
+                      className="button-text px-6 py-3 rounded-lg font-semibold bg-gradient-to-br from-warning to-warning/80 text-white hover:from-warning/90 hover:to-warning/70 transition-all active:scale-95 shadow-lg flex items-center gap-2"
+                      onClick={() => handleSell(item.id)}
+                    >
+                      <Icon name="DollarSign" size={18} />
+                      <span>Sell</span>
+                    </button>
                   </div>
-                  <button
-                    className="button-text px-6 py-2 rounded bg-accent text-fg-inverted hover:bg-accent-hover"
-                    onClick={() => handleSell(item.id)}
-                  >
-                    Sell
-                  </button>
                 </div>
               ))
             )}
@@ -148,10 +252,11 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
 
         {/* Close Button */}
         <button
-          className="button-text mt-8 px-8 py-3 rounded bg-border text-text-primary hover:bg-border-hover w-full"
+          className="button-text mt-8 px-8 py-4 rounded-lg w-full bg-gradient-to-br from-slate-700 to-slate-800 border-2 border-slate-600 text-fg-primary hover:from-slate-600 hover:to-slate-700 hover:border-slate-500 transition-all active:scale-[0.98] flex items-center justify-center gap-3"
           onClick={onClose}
         >
-          Leave Merchant
+          <Icon name="X" size={20} />
+          <span>Leave Merchant</span>
         </button>
       </div>
     </div>
