@@ -164,6 +164,7 @@ function App() {
               tableId={currentScreen.tableId}
               onceOnly={currentScreen.onceOnly}
               onComplete={currentScreen.onComplete}
+              onNavigate={setCurrentScreen}
           />
       )}
     </>

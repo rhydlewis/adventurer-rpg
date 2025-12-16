@@ -5,14 +5,16 @@ import {getExplorationTable} from '../data/explorationTables';
 import {rollExplorationTable} from '../utils/exploration';
 import {getItem} from '../data/items';
 import type {ExplorationOutcome} from '../types/narrative';
+import type {Screen} from '../types/navigation';
 
 interface ExplorationScreenProps {
     tableId: string;
     onceOnly: boolean;
     onComplete: () => void;
+    onNavigate?: (screen: Screen) => void;
 }
 
-export function ExplorationScreen({tableId, onComplete}: ExplorationScreenProps) {
+export function ExplorationScreen({tableId, onComplete, onNavigate}: ExplorationScreenProps) {
     const {character, setCharacter} = useCharacterStore();
     const world = useNarrativeStore((state) => state.world);
     const [outcome, setOutcome] = useState<ExplorationOutcome | null>(null);
@@ -61,22 +63,26 @@ export function ExplorationScreen({tableId, onComplete}: ExplorationScreenProps)
                 ],
             };
             setCharacter(updatedCharacter);
+            onComplete();
+            return;
         }
 
-        // Combat outcome will trigger combat screen via navigation
+        // Combat outcome - navigate to combat screen
         if (outcome.type === 'combat') {
-            // TODO: Trigger combat via onNavigate
-            // For now, just give rewards
-            const updatedCharacter = {
-                ...character,
-                gold: (character.gold || 0) + outcome.goldReward,
-                inventory: outcome.itemReward
-                    ? [...(character.inventory || []), getItem(outcome.itemReward)]
-                    : (character.inventory || []),
-            };
-            setCharacter(updatedCharacter);
+            if (onNavigate) {
+                onNavigate({
+                    type: 'combat',
+                    enemyId: outcome.enemyId,
+                    onVictoryNodeId: 'exploration-combat-victory', // Temporary, will return to story
+                });
+            } else {
+                console.error('ExplorationScreen: onNavigate not provided, cannot start combat');
+                onComplete();
+            }
+            return;
         }
 
+        // Vignette and nothing outcomes - just complete
         onComplete();
     };
 

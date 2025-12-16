@@ -101,6 +101,24 @@ const validationNodes: StoryNode[] = [
         ],
     },
 
+    // === NODE 3b: Exploration Combat Victory (temporary node) ===
+    {
+        id: 'exploration-combat-victory',
+        description: 'You catch your breath after the fight. The creature defeated, you search the remains and find some valuables. Time to continue toward the village.',
+        onEnter: [
+            // Rewards from exploration combat are applied here
+            // These would ideally come from the exploration outcome, but for now hardcoded
+            {type: 'giveGold', amount: 30},
+        ],
+        choices: [
+            {
+                id: 'continue-after-exploration',
+                text: 'Continue to the village',
+                outcome: {type: 'goto', nodeId: 'validation-merchant'},
+            },
+        ],
+    },
+
     // === NODE 4: Merchant ===
     {
         id: 'validation-merchant',
