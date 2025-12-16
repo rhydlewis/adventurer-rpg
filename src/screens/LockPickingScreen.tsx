@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Button, Card, Icon } from '../components';
 
 interface LockPickingScreenProps {
@@ -79,7 +79,6 @@ export function LockPickingScreen({
   const [pickPosition, setPickPosition] = useState(0);
   const [durability, setDurability] = useState(params.startingDurability);
   const [tension, setTension] = useState(0);
-  const [feedback, setFeedback] = useState<'none' | 'close' | 'veryClose'>('none');
   const [isAnimating, setIsAnimating] = useState(false);
 
   // Calculate how close the pick is to the sweet spot
@@ -92,15 +91,15 @@ export function LockPickingScreen({
     [params.sweetSpotPosition]
   );
 
-  // Update visual feedback based on proximity
-  useEffect(() => {
+  // Calculate visual feedback based on proximity (derived state)
+  const feedback = useMemo((): 'none' | 'close' | 'veryClose' => {
     const distance = getDistance(pickPosition);
     if (distance === 0) {
-      setFeedback('veryClose');
+      return 'veryClose';
     } else if (distance <= 1) {
-      setFeedback('close');
+      return 'close';
     } else {
-      setFeedback('none');
+      return 'none';
     }
   }, [pickPosition, getDistance]);
 

@@ -1,11 +1,10 @@
 import { useCombatStore } from '../stores/combatStore';
 import type { CharacterClass } from '../types';
-import type { Creature } from '../types/creature';
 import { createCharacter } from '../utils/characterCreation';
+import { generateEnemy } from '../utils/enemyGeneration';
 import { CLASSES } from '../data/classes';
 import { Button, Card, Icon } from '../components';
 import { DEFAULT_AVATAR } from '../data/avatars';
-import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from '../data/creatureAvatars';
 import type { Screen } from '../types';
 
 interface HomeScreenProps {
@@ -39,63 +38,12 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
       selectedFeat: className === 'Fighter' ? 'Weapon Focus' : undefined,
     });
 
-    // Create a sample enemy
-    const skeleton: Creature = {
-      name: 'Skeleton',
-      avatarPath: CREATURE_AVATARS['Skeleton'] ?? DEFAULT_CREATURE_AVATAR,
-      creatureClass: 'Undead',
-      level: 1,
-      attributes: {
-        STR: 13,
-        DEX: 15,
-        CON: 10,
-        INT: 6,
-        WIS: 8,
-        CHA: 5,
-      },
-      hp: 12,
-      maxHp: 12,
-      ac: 10,
-      bab: 1,
-      saves: {
-        fortitude: 1,
-        reflex: 1,
-        will: -1,
-      },
-      skills: {
-        Athletics: 0,
-        Stealth: 0,
-        Perception: 0,
-        Arcana: 0,
-        Medicine: 0,
-        Intimidate: 0,
-      },
-      feats: [],
-      equipment: {
-        weapon: {
-          name: 'Dagger',
-          damage: '1d6',
-          damageType: 'slashing',
-          finesse: false,
-          description: 'A corroded blade wielded by the undead',
-        },
-        armor: {
-          name: 'Leather',
-          baseAC: 10,
-          maxDexBonus: null,
-          description: 'Tattered leather armor',
-        },
-        shield: {
-          equipped: false,
-          acBonus: 0,
-        },
-        items: [],
-      },
-      resources: {
-        abilities: [],
-      },
-      lootTableId: "skeleton_loot"
-    };
+    // Generate a random skeleton enemy
+    const skeleton = generateEnemy('skeleton');
+    if (!skeleton) {
+      console.error('Failed to generate skeleton enemy');
+      return;
+    }
 
     startCombat(player, skeleton);
     onStartCombat();

@@ -175,7 +175,7 @@ export function generateEnemy(
             : undefined,
     };
 
-    return {
+    const creature = {
         name: template.baseName,
         avatarPath,
         level,
@@ -198,4 +198,15 @@ export function generateEnemy(
         taunts: template.taunts,
         lootTableId: template.lootTableId,
     };
+
+    // Debug logging to verify randomization
+    console.log(`Generated ${creature.name} (Level ${creature.level}):`, {
+        STR: creature.attributes.STR,
+        DEX: creature.attributes.DEX,
+        CON: creature.attributes.CON,
+        HP: creature.maxHp,
+        AC: creature.ac,
+    });
+
+    return creature;
 }

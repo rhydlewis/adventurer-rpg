@@ -369,9 +369,11 @@ describe('utils/combat', () => {
 
       expect(result.enemy.hp).toBeLessThanOrEqual(0);
       expect(result.winner).toBe('player');
-      expect(result.log).toHaveLength(2); // Player attack + defeat message
+      expect(result.log).toHaveLength(3); // Player attack + defeat message + loot message
       expect(result.log[1].actor).toBe('system');
       expect(result.log[1].message).toContain('defeated');
+      expect(result.log[2].actor).toBe('system');
+      expect(result.log[2].message).toMatch(/Obtained:|No loot/);
     });
 
     it('sets winner to enemy when player HP <= 0', () => {
@@ -612,11 +614,14 @@ describe('utils/combat', () => {
 
       const result = resolveCombatRound(state, attackAction);
 
-      // Only 2 log entries: player attack + defeat message
+      // Only 3 log entries: player attack + defeat message + loot message
       // No enemy attack
-      expect(result.log).toHaveLength(2);
+      expect(result.log).toHaveLength(3);
       expect(result.log[0].actor).toBe('player');
       expect(result.log[1].actor).toBe('system');
+      expect(result.log[1].message).toContain('defeated');
+      expect(result.log[2].actor).toBe('system');
+      expect(result.log[2].message).toMatch(/Obtained:|No loot/);
       expect(result.winner).toBe('player');
     });
   });

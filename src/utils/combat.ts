@@ -17,6 +17,7 @@ import {
 import { castSpell } from './spellcasting';
 import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
 import { calculateConditionModifiers, decrementConditions, applyConditionDamage, applyCondition } from './conditions';
+import { rollLoot, formatLootMessage } from './loot';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -400,6 +401,16 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
+
+    // Roll loot from defeated enemy
+    const loot = rollLoot(enemy.lootTableId);
+    const lootMessage = formatLootMessage(loot);
+    log.push({
+      turn: state.turn,
+      actor: 'system',
+      message: lootMessage,
+    });
+
     return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
   }
 
@@ -539,6 +550,16 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${enemy.name} has been defeated!`,
     });
+
+    // Roll loot from defeated enemy
+    const loot = rollLoot(enemy.lootTableId);
+    const lootMessage = formatLootMessage(loot);
+    log.push({
+      turn: state.turn,
+      actor: 'system',
+      message: lootMessage,
+    });
+
     return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
   }
 

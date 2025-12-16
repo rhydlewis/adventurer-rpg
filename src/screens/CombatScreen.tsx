@@ -3,7 +3,7 @@ import { useCombatStore } from '../stores/combatStore';
 import { useCharacterStore } from '../stores/characterStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
-import { getEnemy } from '../data/enemies';
+import { generateEnemy } from '../utils/enemyGeneration';
 import type { CombatState } from '../types';
 import { Icon } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
@@ -39,8 +39,8 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
   useEffect(() => {
     // Only initialize combat if not already in combat
     if (!combat && character) {
-      // Load enemy from database
-      const enemy = getEnemy(enemyId);
+      // Generate enemy from template
+      const enemy = generateEnemy(enemyId);
 
       if (!enemy) {
         console.error(`Enemy with ID "${enemyId}" not found in database`);
