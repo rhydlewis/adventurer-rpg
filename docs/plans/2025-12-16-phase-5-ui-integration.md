@@ -956,7 +956,487 @@ git commit -m "feat: wire up merchant, levelUp, and exploration screens to route
 
 ---
 
-## Task 9: Testing & Integration
+## Task 9: Two-Phase Character Creation Integration
+
+**Context:** The validation campaign uses a two-phase character creation approach:
+- **Phase 1 (Quick Start)**: Pick class → auto-assign background → apply defaults → lock mechanics
+- **Phase 2 (Full Customization)**: Unlocked mid-campaign → point-buy, skills, feats → unlock mechanics
+
+**Files:**
+- Create: `src/screens/QuickCharacterCreationScreen.tsx`
+- Modify: `src/types/narrative.ts` (add characterCreation to ChoiceOutcome)
+- Modify: `src/stores/narrativeStore.ts` (handle characterCreation trigger)
+- Modify: `src/stores/characterStore.ts` (add quick creation method)
+- Modify: `src/types/navigation.ts` (add quickCharacterCreation screen type)
+
+---
+
+### Step 1: Add characterCreation trigger to ChoiceOutcome
+
+In `src/types/narrative.ts`, extend the `ChoiceOutcome` union:
+
+```typescript
+export type ChoiceOutcome =
+  | { type: 'goto'; nodeId: string }
+  | { type: 'loop' }
+  | { type: 'exit' }
+  | {
+      type: 'check';
+      skill: SkillName;
+      dc: number;
+      success: ChoiceOutcome;
+      failure: ChoiceOutcome;
+    }
+  | { type: 'explore'; tableId: string; onceOnly: boolean }
+  | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> }
+  | { type: 'characterCreation'; phase: 1 | 2; nextNodeId: string }; // NEW
+```
+
+**Step 2: Add navigation screen type**
+
+In `src/types/navigation.ts`:
+
+```typescript
+export type Screen =
+  // ... existing types ...
+  | { type: 'characterCreation' }
+  | { type: 'quickCharacterCreation'; onComplete: (characterClass: CharacterClass) => void }; // NEW
+```
+
+---
+
+### Step 3: Create Quick Character Creation Screen
+
+Create `src/screens/QuickCharacterCreationScreen.tsx`:
+
+```typescript
+import { useState } from 'react';
+import { CLASSES } from '../data/classes';
+import { getBackgroundByClass } from '../data/backgrounds';
+import type { CharacterClass } from '../types/character';
+import { Button, Card, Icon } from '../components';
+
+interface QuickCharacterCreationScreenProps {
+  onComplete: (characterClass: CharacterClass) => void;
+}
+
+const classIcons = {
+  Fighter: 'Sword' as const,
+  Rogue: 'Eye' as const,
+  Wizard: 'Sparkles' as const,
+  Cleric: 'Heart' as const,
+};
+
+const classDescriptions = {
+  Fighter: 'Master of weapons and armor. High HP and strong in melee combat.',
+  Rogue: 'Sneaky and skillful. Deals extra damage with sneak attacks.',
+  Wizard: 'Arcane spellcaster. Wields powerful magic but fragile in combat.',
+  Cleric: 'Divine spellcaster. Heals allies and smites enemies with holy power.',
+};
+
+export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreationScreenProps) {
+  const [selectedClass, setSelectedClass] = useState<CharacterClass | null>(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleClassSelect = (className: CharacterClass) => {
+    setSelectedClass(className);
+    setShowConfirm(true);
+  };
+
+  const handleConfirm = () => {
+    if (!selectedClass) return;
+    onComplete(selectedClass);
+  };
+
+  const handleBack = () => {
+    setShowConfirm(false);
+    setSelectedClass(null);
+  };
+
+  if (showConfirm && selectedClass) {
+    const background = getBackgroundByClass(selectedClass);
+
+    return (
+      <div className="min-h-screen bg-primary text-fg-primary p-6">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="heading-display text-text-accent mb-4 text-center">
+            Confirm Your Choice
+          </h1>
+
+          <Card variant="neutral" padding="spacious" className="mb-6">
+            <div className="text-center mb-6">
+              <Icon name={classIcons[selectedClass]} className="w-16 h-16 mx-auto mb-4 text-text-accent" />
+              <h2 className="heading-primary mb-2">{selectedClass}</h2>
+              <p className="body-secondary mb-4">{classDescriptions[selectedClass]}</p>
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <h3 className="heading-secondary mb-3">Background: {background.name}</h3>
+              <p className="body-secondary mb-4 italic">"{background.description}"</p>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Icon name="Zap" className="w-4 h-4 text-text-accent" />
+                  <span className="body-primary text-sm">
+                    Starting Quirk: <span className="text-text-accent">{background.startingQuirk}</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Icon name="Book" className="w-4 h-4 text-text-accent" />
+                  <span className="body-primary text-sm">
+                    Tagged Skills: {background.taggedSkills.join(', ')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-primary/50 rounded">
+              <p className="body-secondary text-sm">
+                ℹ️ <strong>Phase 1:</strong> Your character will use recommended stats based on your background.
+                You can customize later in the campaign.
+              </p>
+            </div>
+          </Card>
+
+          <div className="flex gap-4">
+            <Button variant="secondary" onClick={handleBack} fullWidth>
+              Back
+            </Button>
+            <Button variant="primary" onClick={handleConfirm} fullWidth>
+              Begin Adventure
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-primary text-fg-primary p-6">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="heading-display text-text-accent mb-4 text-center">
+          Choose Your Path
+        </h1>
+        <p className="body-secondary text-center mb-8">
+          Select your character class to begin your adventure
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {Object.keys(CLASSES).map((className) => {
+            const classKey = className as CharacterClass;
+            const background = getBackgroundByClass(classKey);
+
+            return (
+              <button
+                key={className}
+                onClick={() => handleClassSelect(classKey)}
+                className="text-left p-6 rounded-lg border-2 border-border hover:border-accent bg-secondary hover:bg-secondary-hover transition-all"
+              >
+                <div className="flex items-start gap-4">
+                  <Icon name={classIcons[classKey]} className="w-12 h-12 text-text-accent flex-shrink-0" />
+                  <div className="flex-1">
+                    <h2 className="heading-secondary mb-2">{className}</h2>
+                    <p className="body-secondary text-sm mb-3">{classDescriptions[classKey]}</p>
+                    <div className="text-xs text-text-muted">
+                      <p>Background: <span className="text-text-accent">{background.name}</span></p>
+                      <p>Quirk: {background.startingQuirk}</p>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+**Step 4: Export from screens**
+
+```typescript
+export { QuickCharacterCreationScreen } from './QuickCharacterCreationScreen';
+```
+
+---
+
+### Step 5: Add Quick Creation Method to Character Store
+
+In `src/stores/characterStore.ts`, add:
+
+```typescript
+import { getBackgroundByClass } from '../data/backgrounds';
+import type { Background } from '../types/background';
+
+export interface CharacterStore {
+  // ... existing methods ...
+
+  // NEW: Quick character creation (Phase 1)
+  createQuickCharacter: (characterClass: CharacterClass) => void;
+}
+```
+
+Implement:
+
+```typescript
+createQuickCharacter: (characterClass) => {
+  const background = getBackgroundByClass(characterClass);
+
+  // Use background attribute bias as starting attributes
+  const attributes: Attributes = {
+    STR: background.attributeBias.STR || 10,
+    DEX: background.attributeBias.DEX || 10,
+    CON: background.attributeBias.CON || 10,
+    INT: background.attributeBias.INT || 10,
+    WIS: background.attributeBias.WIS || 10,
+    CHA: background.attributeBias.CHA || 10,
+  };
+
+  // Calculate derived stats
+  const classData = CLASSES[characterClass];
+  const hp = classData.baseHP + getAttributeModifier(attributes.CON);
+  const ac = 10 + getAttributeModifier(attributes.DEX); // Base AC, no armor yet
+
+  // Initialize skill ranks - tagged skills get 1 rank
+  const skillRanks: Record<SkillName, number> = {
+    Athletics: 0,
+    Stealth: 0,
+    Perception: 0,
+    Arcana: 0,
+    Medicine: 0,
+    Intimidate: 0,
+  };
+
+  background.taggedSkills.forEach((skill) => {
+    skillRanks[skill as SkillName] = 1;
+  });
+
+  const character: Character = {
+    name: `${characterClass} Adventurer`, // Default name
+    avatarPath: '/assets/avatars/default.png',
+    class: characterClass,
+    level: 1,
+    attributes,
+    hp,
+    maxHp: hp,
+    ac,
+    bab: characterClass === 'Fighter' ? 1 : 0, // Simplified
+    saves: {
+      fortitude: getAttributeModifier(attributes.CON),
+      reflex: getAttributeModifier(attributes.DEX),
+      will: getAttributeModifier(attributes.WIS),
+    },
+    skills: skillRanks,
+    feats: [], // No feat in Phase 1
+    equipment: {
+      weapon: classData.startingWeapon,
+      armor: classData.startingArmor,
+      shield: { equipped: false, acBonus: 0 },
+      items: [],
+    },
+    resources: {
+      abilities: [],
+      spellSlots: characterClass === 'Wizard' || characterClass === 'Cleric'
+        ? { 0: 3, 1: 1 } // Basic spell slots
+        : undefined,
+    },
+    gold: 100, // Starting gold
+    inventory: [],
+    maxInventorySlots: 10,
+    background,
+    trait: undefined, // Set in Phase 2
+    startingQuirk: background.startingQuirk,
+    mechanicsLocked: true, // Phase 1 locks mechanics
+  };
+
+  set({ character, creationStep: null, creationData: {} as any });
+},
+```
+
+Add imports:
+
+```typescript
+import { getAttributeModifier } from '../utils/attributes';
+import { CLASSES } from '../data/classes';
+import type { SkillName } from '../types/skill';
+```
+
+---
+
+### Step 6: Handle characterCreation Trigger in Narrative Store
+
+In `src/stores/narrativeStore.ts`, add to `selectChoice` method after merchant trigger:
+
+```typescript
+// Handle character creation trigger
+if (resolution.characterCreationTrigger) {
+  const { onNavigate } = get();
+  if (onNavigate) {
+    if (resolution.characterCreationTrigger.phase === 1) {
+      // Phase 1: Quick creation
+      onNavigate({
+        type: 'quickCharacterCreation',
+        onComplete: (characterClass: CharacterClass) => {
+          // Create character using background defaults
+          useCharacterStore.getState().createQuickCharacter(characterClass);
+
+          // Navigate to next node
+          enterNode(resolution.characterCreationTrigger.nextNodeId, useCharacterStore.getState().character!);
+
+          // Return to story
+          if (onNavigate) {
+            onNavigate({ type: 'story' });
+          }
+        },
+      });
+    } else {
+      // Phase 2: Full customization (existing CharacterCreationScreen)
+      onNavigate({
+        type: 'characterCreation',
+        // TODO: Add onComplete callback to unlock mechanics
+      });
+    }
+  }
+  return;
+}
+```
+
+Add to `OutcomeResolution` type extension:
+
+```typescript
+export interface OutcomeResolution {
+  nextNodeId: string | null;
+  logEntries: LogEntry[];
+  worldUpdates: Partial<WorldState>;
+  exploreTrigger?: {
+    tableId: string;
+    onceOnly: boolean;
+  };
+  merchantTrigger?: {
+    shopInventory: string[];
+    buyPrices: Record<string, number>;
+  };
+  characterCreationTrigger?: {
+    phase: 1 | 2;
+    nextNodeId: string;
+  };
+}
+```
+
+Update `resolveOutcome` in `src/utils/narrativeLogic.ts`:
+
+```typescript
+case 'characterCreation':
+  return {
+    nextNodeId: null, // Don't navigate yet
+    logEntries: [],
+    worldUpdates: {},
+    characterCreationTrigger: {
+      phase: outcome.phase,
+      nextNodeId: outcome.nextNodeId,
+    },
+  };
+```
+
+---
+
+### Step 7: Update Validation Campaign to Use Trigger
+
+In `src/data/campaigns/validation-campaign.ts`, update the first choice:
+
+```typescript
+{
+  id: 'validation-start',
+  title: 'Welcome to the Validation Campaign',
+  description: 'This campaign tests all core game mechanics...',
+  choices: [
+    {
+      id: 'start-char-creation',
+      text: 'Create Character',
+      outcome: {
+        type: 'characterCreation',
+        phase: 1,
+        nextNodeId: 'validation-first-combat',
+      },
+    },
+  ],
+},
+```
+
+---
+
+### Step 8: Wire Up Screen in App Router
+
+In `src/App.tsx`, add:
+
+```typescript
+import { QuickCharacterCreationScreen } from './screens';
+
+// In screen routing switch:
+case 'quickCharacterCreation':
+  return (
+    <QuickCharacterCreationScreen
+      onComplete={currentScreen.onComplete}
+    />
+  );
+```
+
+---
+
+### Step 9: Test Quick Character Creation
+
+**Manual test:**
+
+1. Start validation campaign
+2. See "Choose Your Path" screen with 4 classes
+3. Select Fighter → see confirmation with Border Guard background
+4. Confirm → character created with:
+   - Fighter class
+   - Background attributes (STR 14, CON 13, etc.)
+   - Tagged skills (Intimidate, Perception) = 1 rank
+   - Starting quirk: auto-block-first-attack
+   - mechanicsLocked: true
+5. Navigate to first combat node
+
+**Verify:**
+```javascript
+// In console:
+useCharacterStore.getState().character
+// Should show Fighter with background, quirk, locked mechanics
+```
+
+---
+
+### Step 10: Commit
+
+```bash
+git add src/screens/QuickCharacterCreationScreen.tsx \
+        src/types/narrative.ts \
+        src/types/navigation.ts \
+        src/stores/characterStore.ts \
+        src/stores/narrativeStore.ts \
+        src/utils/narrativeLogic.ts \
+        src/data/campaigns/validation-campaign.ts \
+        src/App.tsx \
+        src/screens/index.ts
+
+git commit -m "feat: add Phase 1 quick character creation with background integration
+
+- Add QuickCharacterCreationScreen for class selection
+- Auto-assign background based on class
+- Apply background attribute bias, tagged skills, and quirk
+- Add characterCreation trigger to ChoiceOutcome
+- Handle trigger in narrative store (Phase 1 and Phase 2 paths)
+- Update validation campaign to use characterCreation trigger
+- Lock mechanics until Phase 2 unlock (mechanicsLocked: true)
+
+Phase 1 character creation now functional - picks class, applies defaults"
+```
+
+---
+
+## Task 10: Testing & Integration
 
 **Step 1: Manual testing checklist**
 
