@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { CombatState, Character, Creature } from '../types';
 import type { Action } from '../types/action';
-import { resolveCombatRound } from '../utils/combat';
+import { resolveCombatRound, handleRetreat } from '../utils/combat';
 import { rollInitiative } from '../utils/initiative';
 
 interface CombatStore {
@@ -9,9 +9,14 @@ interface CombatStore {
   startCombat: (player: Character, enemy: Creature) => void;
   executeTurn: (playerAction: Action) => void;
   resetCombat: () => void;
+  retreat: () => {
+    player: Character;
+    retreatFlag?: string;
+    safeNodeId: string;
+  } | null;
 }
 
-export const useCombatStore = create<CombatStore>((set) => ({
+export const useCombatStore = create<CombatStore>((set, get) => ({
   combat: null,
 
   startCombat: (player, enemy) => {
@@ -83,4 +88,30 @@ export const useCombatStore = create<CombatStore>((set) => ({
   },
 
   resetCombat: () => set({ combat: null }),
+
+  retreat: () => {
+    const { combat } = get();
+    if (!combat) return null;
+
+    if (!combat.canRetreat) {
+      console.warn('Retreat not allowed in this combat');
+      return null;
+    }
+
+    const result = handleRetreat(combat);
+
+    // Reset combat state
+    set({ combat: null });
+
+    if (!result) {
+      return null;
+    }
+
+    // Remap result to match the interface
+    return {
+      player: result.playerCharacter,
+      retreatFlag: result.retreatFlag,
+      safeNodeId: result.safeNodeId,
+    };
+  },
 }));

@@ -12,9 +12,12 @@ import { useNarrativeStore } from './stores/narrativeStore';
 import { validationCampaign } from './data/campaigns/validation-campaign.ts';
 import { createCharacter } from './utils/characterCreation';
 import { CLASSES } from './data/classes';
-import type { Screen } from './types/navigation';
+import type { Screen } from './types';
 import {DEFAULT_AVATAR} from "./data/avatars.ts";
 import { LockPickingScreen } from './screens/LockPickingScreen';
+import { MerchantScreen } from './screens/MerchantScreen.tsx';
+import { ExplorationScreen } from './screens/ExplorationScreen.tsx';
+import { LevelUpScreen } from './screens/LevelUpScreen.tsx';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
@@ -66,6 +69,7 @@ function App() {
         },
         selectedFeat: 'Weapon Focus',
       });
+      testChar.gold = 100;
       setCharacter(testChar);
     }
 
@@ -140,6 +144,27 @@ function App() {
           onFailure={currentScreen.onFailure}
           onExit={() => setCurrentScreen({ type: 'home' })}
         />
+      )}
+      {currentScreen.type === 'merchant' && (
+          <MerchantScreen
+              shopInventory={currentScreen.shopInventory}
+              buyPrices={currentScreen.buyPrices}
+              onClose={currentScreen.onClose}
+          />
+      )}
+      {currentScreen.type === 'levelUp' && (
+          <LevelUpScreen
+              newLevel={currentScreen.newLevel}
+              featChoices={currentScreen.featChoices}
+              onComplete={currentScreen.onComplete}
+          />
+      )}
+      {currentScreen.type === 'exploration' && (
+          <ExplorationScreen
+              tableId={currentScreen.tableId}
+              onceOnly={currentScreen.onceOnly}
+              onComplete={currentScreen.onComplete}
+          />
       )}
     </>
   );

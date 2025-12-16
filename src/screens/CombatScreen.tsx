@@ -27,8 +27,8 @@ interface CombatScreenProps {
 }
 
 export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: CombatScreenProps) {
-  const { combat, startCombat, executeTurn, resetCombat } = useCombatStore();
-  const { character } = useCharacterStore();
+  const { combat, startCombat, executeTurn, resetCombat, retreat } = useCombatStore();
+  const { character, setCharacter } = useCharacterStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
@@ -287,6 +287,25 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
                   );
                 })}
               </div>
+
+              {combat.canRetreat && (
+                  <button
+                      className="button-text px-6 py-3 rounded bg-error/20 border border-error text-error hover:bg-error/30"
+                      onClick={() => {
+                        const retreatResult = retreat();
+                        if (retreatResult) {
+                          // Update character with retreat damage/gold loss
+                          setCharacter(retreatResult.player);
+
+                          // Navigate to safe node
+                          // TODO: Wire this up with narrative store
+                          onDefeat(); // For now, treat as defeat
+                        }
+                      }}
+                  >
+                    Retreat
+                  </button>
+              )}
             </div>
           )}
         </div>
