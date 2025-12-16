@@ -197,8 +197,11 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
           newLevel: levelUpTrigger.newLevel,
           featChoices: levelUpTrigger.featChoices,
           onComplete: () => {
-            // Level-up screen will handle calling enterNode again if needed
-            // or navigation back to story
+            // Return to story after level-up completes
+            const nav = get().onNavigate;
+            if (nav) {
+              nav({ type: 'story' });
+            }
           },
         });
       }
