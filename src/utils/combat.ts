@@ -574,7 +574,7 @@ export function handleRetreat(combat: CombatState): {
 
   const updatedPlayer: Character = {
     ...combat.playerCharacter,
-    gold: Math.max(0, combat.playerCharacter.gold - goldLost),
+    gold: Math.max(0, (combat.playerCharacter.gold ?? 0) - goldLost),
     hp: Math.max(1, combat.playerCharacter.hp - damageOnFlee), // Never go below 1
   };
 

@@ -6,21 +6,24 @@ describe('Narrative Type with Exploration', () => {
     const combatOutcome: ExplorationOutcome = {
       type: 'combat',
       enemyId: 'goblin-1',
+      goldReward: 30,
     };
 
     const treasureOutcome: ExplorationOutcome = {
       type: 'treasure',
-      loot: { gold: 50, items: ['healing-potion'] },
+      gold: 50,
+      items: ['healing-potion'],
     };
 
     const vignetteOutcome: ExplorationOutcome = {
       type: 'vignette',
-      text: 'You find ancient runes carved into the wall.',
+      description: 'You find ancient runes carved into the wall.',
+      flavorOnly: true,
     };
 
     const nothingOutcome: ExplorationOutcome = {
       type: 'nothing',
-      text: 'You search thoroughly but find nothing of interest.',
+      message: 'You search thoroughly but find nothing of interest.',
     };
 
     const choice: Choice = {
@@ -32,8 +35,9 @@ describe('Narrative Type with Exploration', () => {
 
     expect(choice.explorationOutcome?.type).toBe('combat');
     expect(combatOutcome.enemyId).toBe('goblin-1');
-    expect(treasureOutcome.loot.gold).toBe(50);
-    expect(vignetteOutcome.text).toContain('ancient runes');
+    expect(combatOutcome.goldReward).toBe(30);
+    expect(treasureOutcome.gold).toBe(50);
+    expect(vignetteOutcome.description).toContain('ancient runes');
     expect(nothingOutcome.type).toBe('nothing');
   });
 });

@@ -15,14 +15,23 @@ export type Requirement =
   | { type: 'nodeVisited'; nodeId: string };
 
 // =============================================================================
-// Exploration Outcomes - Results from exploring (validation campaign)
+// Exploration System - Multi-outcome encounters
 // =============================================================================
 
 export type ExplorationOutcome =
-  | { type: 'combat'; enemyId: string }
-  | { type: 'treasure'; loot: { gold?: number; items?: string[] } }
-  | { type: 'vignette'; text: string }
-  | { type: 'nothing'; text: string };
+  | { type: 'combat'; enemyId: string; goldReward: number; itemReward?: string }
+  | { type: 'treasure'; gold: number; items: string[] }
+  | { type: 'vignette'; description: string; flavorOnly: true }
+  | { type: 'nothing'; message: string };
+
+export interface ExplorationTable {
+  id: string;
+  locationId: string;
+  encounters: {
+    weight: number; // 60 for combat, 20 for treasure, etc.
+    outcome: ExplorationOutcome;
+  }[];
+}
 
 // =============================================================================
 // Choice Outcomes - Unified recursive pattern for all choice routing

@@ -56,25 +56,37 @@ export const ARMORS: Record<ArmorType, Armor> = {
 export const STARTING_ITEMS: Record<string, Item[]> = {
   all: [
     {
+      id: 'healing-potion',
       name: 'Healing Potion',
       description: 'Restores 2d8+2 hit points',
+      type: 'consumable',
+      usableInCombat: true,
       effect: { type: 'heal', amount: '2d8+2' },
+      value: 25,
       quantity: 2,
     },
   ],
   Rogue: [
     {
+      id: 'smoke-bomb',
       name: 'Smoke Bomb',
       description: 'Automatically escape from combat (one use)',
+      type: 'consumable',
+      usableInCombat: true,
       effect: { type: 'escape' },
+      value: 30,
       quantity: 1,
     },
   ],
   Wizard: [
     {
+      id: 'arcane-scroll',
       name: 'Arcane Scroll',
       description: 'Cast an extra spell (one use per scroll)',
+      type: 'consumable',
+      usableInCombat: true,
       effect: { type: 'spell', spellName: 'any' },
+      value: 50,
       quantity: 2,
     },
   ],

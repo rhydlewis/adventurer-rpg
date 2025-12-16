@@ -1,8 +1,26 @@
+import type { Attributes } from './attributes';
+import type { CharacterClass } from './character';
+
+export type StartingQuirk =
+  | 'auto-block-first-attack' // Fighter: Border Guard
+  | 'start-hidden' // Rogue: Street Urchin
+  | 'bonus-cantrip-turn-1' // Wizard: Academy Dropout
+  | 'healing-aura'; // Cleric: Temple Acolyte
+
 export interface Background {
   name: string;
   description: string;
-  skillBonuses: { [skillName: string]: number }; // e.g., { Stealth: 2 }
-  startingGold: number; // e.g., 150
+  // Legacy fields (keep for backward compatibility)
+  skillBonuses?: { [skillName: string]: number }; // e.g., { Stealth: 2 }
+  startingGold?: number; // e.g., 150
+  // Validation campaign fields
+  id?: string;
+  class?: CharacterClass;
+  dialogueTags?: string[]; // ['authority', 'law', 'military']
+  attributeBias?: Partial<Attributes>; // { str: 14, con: 13, wis: 12 }
+  taggedSkills?: string[]; // ['Intimidate', 'Perception']
+  startingQuirk?: StartingQuirk;
+  puzzleAbility?: string; // 'physical-shortcut', 'lock-hints', etc.
 }
 
 export interface CharacterTrait {

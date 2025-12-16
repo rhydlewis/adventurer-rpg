@@ -164,9 +164,13 @@ describe('utils/equipment', () => {
       });
       character.equipment.items = [
         {
+          id: 'healing-potion',
           name: 'Healing Potion',
           description: '',
+          type: 'consumable',
+          usableInCombat: true,
           effect: { type: 'heal', amount: '2d8+2' },
+          value: 25,
           quantity: 2,
         },
       ];
@@ -198,9 +202,13 @@ describe('utils/equipment', () => {
       });
       character.equipment.items = [
         {
+          id: 'healing-potion',
           name: 'Healing Potion',
           description: '',
+          type: 'consumable',
+          usableInCombat: true,
           effect: { type: 'heal', amount: '2d8+2' },
+          value: 25,
           quantity: 0,
         },
       ];

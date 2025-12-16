@@ -12,7 +12,7 @@ describe('Combat Type Extensions', () => {
     expect(useItemAction).toBe('use-item');
   });
 
-  it('should allow Creature with taunt field', () => {
+  it('should allow Creature with taunts field', () => {
     const goblin: Creature = {
       name: 'Goblin Raider',
       avatarPath: '/enemies/goblin.jpg',
@@ -25,7 +25,7 @@ describe('Combat Type Extensions', () => {
       ac: 14,
       bab: 1,
       saves: { fortitude: 1, reflex: 2, will: -1 },
-      skills: {},
+      skills: { Athletics: 0, Stealth: 0, Perception: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
       feats: [],
       equipment: {
         weapon: { name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: 'A crude blade' },
@@ -33,13 +33,15 @@ describe('Combat Type Extensions', () => {
         shield: { equipped: false, acBonus: 0 },
         items: [],
       },
-      resources: { actionPoints: 0, spellSlots: [] },
+      resources: { abilities: [], spellSlots: { level0: { max: 0, current: 0 }, level1: { max: 0, current: 0 } } },
       gold: 10,
       inventory: [],
       maxInventorySlots: 5,
-      taunt: 'Me smash you good!',
+      taunts: {
+        onCombatStart: ['Me smash you good!'],
+      },
     };
 
-    expect(goblin.taunt).toBe('Me smash you good!');
+    expect(goblin.taunts?.onCombatStart).toContain('Me smash you good!');
   });
 });

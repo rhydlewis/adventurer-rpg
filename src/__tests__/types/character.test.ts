@@ -25,7 +25,7 @@ describe('Character Type with Inventory & Gold', () => {
       ac: 16,
       bab: 1,
       saves: { fortitude: 2, reflex: 0, will: 0 },
-      skills: {},
+      skills: { Athletics: 0, Stealth: 0, Perception: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
       feats: [],
       equipment: {
         weapon: {
@@ -39,7 +39,7 @@ describe('Character Type with Inventory & Gold', () => {
         shield: { equipped: false, acBonus: 0 },
         items: [],
       },
-      resources: { actionPoints: 0, spellSlots: [] },
+      resources: { abilities: [], spellSlots: { level0: { max: 0, current: 0 }, level1: { max: 0, current: 0 } } },
       gold: 100,
       inventory: [healingPotion],
       maxInventorySlots: 10,
@@ -47,7 +47,7 @@ describe('Character Type with Inventory & Gold', () => {
 
     expect(character.gold).toBe(100);
     expect(character.inventory).toHaveLength(1);
-    expect(character.inventory[0].name).toBe('Healing Potion');
+    expect(character.inventory?.[0].name).toBe('Healing Potion');
     expect(character.maxInventorySlots).toBe(10);
   });
 });

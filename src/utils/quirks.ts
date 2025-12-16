@@ -1,5 +1,4 @@
 import type { Character, CombatState, CombatLogEntry } from '../types';
-import type { StartingQuirk } from '../types/background';
 
 export interface QuirkResult {
   log: CombatLogEntry[];
@@ -20,7 +19,7 @@ export function applyStartingQuirk(
   trigger: 'combat-start' | 'turn-1' | 'first-attack'
 ): QuirkResult {
   // Only trigger once per combat
-  if ((combat as any).quirkTriggered) {
+  if ((combat as CombatState & { quirkTriggered?: boolean }).quirkTriggered) {
     return { log: [] };
   }
 

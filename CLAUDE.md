@@ -387,7 +387,7 @@ The Phase 1 plan (`/docs/plans/2025-12-09-phase-1.md`) breaks work into sequenti
 When implementing phases from the plan, work in **batches of 3 tasks** with commits after each batch:
 
 1. **Execute batch** - Complete 3 tasks (or remaining tasks if <3 left)
-2. **Verify batch** - Run all tests for the batch, ensure they pass
+2. **Verify batch** - Run all tests for the batch, ensure they pass. **Important:** Always run and fix issues reported by `npm run build` & `npm run lint` before the next stage to ensure there are no build errors.
 3. **Report for review** - Show what was implemented and test results
 4. **Commit batch** - After user approval, commit with descriptive message
 5. **Repeat** - Continue with next batch

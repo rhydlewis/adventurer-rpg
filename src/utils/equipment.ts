@@ -57,7 +57,7 @@ export function getWeaponAttackBonus(character: Character): number {
  */
 export function canUseItem(character: Character, itemName: ItemType): boolean {
   const item = character.equipment.items.find((i) => i.name === itemName);
-  return item !== undefined && item.quantity > 0;
+  return item !== undefined && (item.quantity ?? 0) > 0;
 }
 
 /**
@@ -77,6 +77,10 @@ export function getItemEffect(itemName: ItemType): ItemEffect {
   const item = allItems.find((i) => i.name === itemName);
   if (!item) {
     throw new Error(`Item not found: ${itemName}`);
+  }
+
+  if (!item.effect) {
+    throw new Error(`Item has no effect: ${itemName}`);
   }
 
   return item.effect;

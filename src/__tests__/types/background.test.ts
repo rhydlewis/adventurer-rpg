@@ -20,7 +20,7 @@ describe('Character Type with Background & Traits', () => {
       ac: 15,
       bab: 0,
       saves: { fortitude: 0, reflex: 2, will: 0 },
-      skills: {},
+      skills: { Athletics: 0, Stealth: 0, Perception: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
       feats: [],
       equipment: {
         weapon: { name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: 'A small blade' },
@@ -28,7 +28,7 @@ describe('Character Type with Background & Traits', () => {
         shield: { equipped: false, acBonus: 0 },
         items: [],
       },
-      resources: { actionPoints: 0, spellSlots: [] },
+      resources: { abilities: [], spellSlots: { level0: { max: 0, current: 0 }, level1: { max: 0, current: 0 } } },
       gold: 50,
       inventory: [],
       maxInventorySlots: 10,
@@ -37,6 +37,6 @@ describe('Character Type with Background & Traits', () => {
     expect(character.background?.name).toBe('Street Urchin');
     expect(character.background?.startingGold).toBe(50);
     expect(character.traits).toHaveLength(2);
-    expect(character.traits[0].name).toBe('Brave');
+    expect(character.traits?.[0].name).toBe('Brave');
   });
 });

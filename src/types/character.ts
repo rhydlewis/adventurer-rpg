@@ -3,7 +3,7 @@ import type { SkillRanks } from './skill';
 import type { Feat } from './feat';
 import type { Equipment, InventoryItem } from './equipment';
 import type { Resources } from './resource';
-import type { Background, CharacterTrait } from './background';
+import type { Background, CharacterTrait, StartingQuirk } from './background';
 
 export type CharacterClass = 'Fighter' | 'Rogue' | 'Wizard' | 'Cleric';
 
@@ -13,7 +13,7 @@ export interface Character {
   class: CharacterClass;
   level: number;
   background?: Background;
-  traits: CharacterTrait[];
+  traits?: CharacterTrait[];
   attributes: Attributes;
   hp: number;
   maxHp: number;
@@ -29,8 +29,12 @@ export interface Character {
   equipment: Equipment;
   resources: Resources;
 
-  // Validation campaign: Inventory & Gold
-  gold: number;
-  inventory: InventoryItem[];
-  maxInventorySlots: number;
+  // Validation campaign: Inventory & Gold (optional for backward compatibility)
+  gold?: number;
+  inventory?: InventoryItem[];
+  maxInventorySlots?: number;
+
+  // Validation campaign: Character creation
+  startingQuirk?: StartingQuirk;
+  mechanicsLocked?: boolean; // false until Phase 2 complete
 }

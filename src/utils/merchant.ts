@@ -5,14 +5,16 @@ import type { InventoryItem } from '../types/equipment';
  * Check if character can afford a purchase
  */
 export function canAfford(character: Character, price: number): boolean {
-  return character.gold >= price;
+  return (character.gold ?? 0) >= price;
 }
 
 /**
  * Check if character has inventory space
  */
 export function hasInventorySpace(character: Character): boolean {
-  return character.inventory.length < character.maxInventorySlots;
+  const inventory = character.inventory ?? [];
+  const maxSlots = character.maxInventorySlots ?? 0;
+  return inventory.length < maxSlots;
 }
 
 /**
@@ -34,8 +36,8 @@ export function buyItem(
 
   return {
     ...character,
-    gold: character.gold - price,
-    inventory: [...character.inventory, item],
+    gold: (character.gold ?? 0) - price,
+    inventory: [...(character.inventory ?? []), item],
   };
 }
 
@@ -44,18 +46,19 @@ export function buyItem(
  * @throws Error if item not found in inventory
  */
 export function sellItem(character: Character, itemId: string): Character {
-  const itemIndex = character.inventory.findIndex(i => i.id === itemId);
+  const inventory = character.inventory ?? [];
+  const itemIndex = inventory.findIndex(i => i.id === itemId);
 
   if (itemIndex === -1) {
     throw new Error('Item not found in inventory');
   }
 
-  const item = character.inventory[itemIndex];
-  const newInventory = character.inventory.filter((_, i) => i !== itemIndex);
+  const item = inventory[itemIndex];
+  const newInventory = inventory.filter((_, i) => i !== itemIndex);
 
   return {
     ...character,
-    gold: character.gold + item.value,
+    gold: (character.gold ?? 0) + item.value,
     inventory: newInventory,
   };
 }

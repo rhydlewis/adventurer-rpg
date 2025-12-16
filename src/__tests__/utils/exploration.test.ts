@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { resolveExploration, rollExplorationTable } from '../../utils/exploration';
+import { rollExplorationTable } from '../../utils/exploration';
 import type { ExplorationTable } from '../../types/narrative';
 
 describe('Exploration System', () => {

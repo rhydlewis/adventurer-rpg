@@ -23,11 +23,9 @@ describe('Level-Up System', () => {
   };
 
   const mockFeat: Feat = {
-    id: 'power-attack',
     name: 'Power Attack',
     description: 'Trade attack for damage',
-    prerequisites: [],
-    benefit: 'You can take a penalty on attack rolls to gain bonus damage',
+    effect: { type: 'toggle', name: 'powerAttack' },
   };
 
   it('should increase level from 1 to 2', () => {

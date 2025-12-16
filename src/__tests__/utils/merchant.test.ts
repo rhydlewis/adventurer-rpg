@@ -25,7 +25,7 @@ describe('Merchant System', () => {
 
     expect(result.gold).toBe(50); // 100 - 50
     expect(result.inventory).toHaveLength(1);
-    expect(result.inventory[0].id).toBe('healing-potion');
+    expect(result.inventory?.[0].id).toBe('healing-potion');
   });
 
   it('should fail to buy if not enough gold', () => {

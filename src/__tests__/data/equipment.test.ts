@@ -84,7 +84,7 @@ describe('data/equipment', () => {
 
         // Check effect properties
         expect(item.effect).toHaveProperty('type');
-        expect(typeof item.effect.type).toBe('string');
+        expect(typeof item.effect?.type).toBe('string');
       });
     });
 

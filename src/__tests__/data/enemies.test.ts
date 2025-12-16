@@ -50,3 +50,25 @@ describe('Enemy Database', () => {
     expect(skeleton1?.attributes).not.toBe(skeleton2?.attributes);
   });
 });
+
+describe('Enemies with Taunts', () => {
+  it('should have taunts for all validation campaign enemies', () => {
+    expect(enemies.skeleton.taunts).toBeDefined();
+    expect(enemies.wraith).toBeDefined();
+    expect(enemies.wraith.taunts).toBeDefined();
+  });
+
+  it('should have taunts for all trigger types', () => {
+    const wraith = enemies.wraith;
+
+    expect(wraith.taunts?.onCombatStart).toBeDefined();
+    expect(wraith.taunts?.onPlayerMiss).toBeDefined();
+    expect(wraith.taunts?.onEnemyHit).toBeDefined();
+    expect(wraith.taunts?.onLowHealth).toBeDefined();
+  });
+
+  it('should have wraith as level 1 with high AC', () => {
+    expect(enemies.wraith.level).toBe(1);
+    expect(enemies.wraith.ac).toBeGreaterThanOrEqual(13); // Harder than basic enemies
+  });
+});

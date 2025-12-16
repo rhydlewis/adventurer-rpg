@@ -6,7 +6,12 @@ export type CombatAction = 'attack' | 'retreat' | 'use-item';
 
 // Creature extends Character with enemy-specific features
 export interface Creature extends Character {
-  taunt?: string; // Enemy-specific taunt message (validation campaign)
+  taunts?: {
+    onCombatStart?: string[];
+    onPlayerMiss?: string[];
+    onEnemyHit?: string[];
+    onLowHealth?: string[];
+  };
 }
 
 export interface CombatLogEntry {
@@ -60,5 +65,13 @@ export interface CombatState {
   activeConditions?: {
     player: Condition[];
     enemy: Condition[];
+  };
+  // Validation campaign: Retreat mechanics
+  canRetreat?: boolean; // tutorial fights disable this
+  retreatPenalty?: {
+    goldLost: number;
+    damageOnFlee: number;
+    narrativeFlag?: string; // "fled_from_skeleton"
+    safeNodeId: string; // Where to return after retreat
   };
 }

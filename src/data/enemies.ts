@@ -64,6 +64,12 @@ export const enemies: Record<string, Creature> = {
       abilities: [],
       spellSlots: undefined,
     },
+    taunts: {
+      onCombatStart: ["You'll regret crossing me!", "Fresh meat!", "Your gold or your life!"],
+      onPlayerMiss: ["Too slow!", "Hah! Missed!", "You fight like a farmer!"],
+      onEnemyHit: ["How'd you like that?", "You're finished!", "Take that!"],
+      onLowHealth: ["I'll... get you...", "This isn't over!", "You got lucky!"],
+    },
   },
 
   skeleton: {
@@ -120,6 +126,12 @@ export const enemies: Record<string, Creature> = {
     resources: {
       abilities: [],
       spellSlots: undefined,
+    },
+    taunts: {
+      onCombatStart: ["*rattles bones menacingly*", "*hollow laughter*"],
+      onPlayerMiss: ["*dodges with unnatural speed*"],
+      onEnemyHit: ["*bones crack against you*", "*relentless assault*"],
+      onLowHealth: ["*bones begin to crumble*"],
     },
   },
 
@@ -184,6 +196,12 @@ export const enemies: Record<string, Creature> = {
         level0: { max: 3, current: 3 },  // 3 cantrips at will
         level1: { max: 2, current: 2 },  // 2 first-level spells per day
       },
+    },
+    taunts: {
+      onCombatStart: ["*ethereal wailing*", "Your soul will be mine...", "*appears from shadows*"],
+      onPlayerMiss: ["*phases through attack*", "You cannot touch the dead..."],
+      onEnemyHit: ["*life-draining touch*", "Feel the cold of the grave!"],
+      onLowHealth: ["*fading into mist*", "I shall return...", "*dissipating*"],
     },
   },
 };
