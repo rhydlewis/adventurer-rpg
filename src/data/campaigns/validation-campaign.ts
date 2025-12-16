@@ -51,7 +51,44 @@ const validationNodes: StoryNode[] = [
     {
         id: 'validation-first-combat',
         title: 'Ambush!',
-        description: 'As you step onto the forest path, a massive spider drops from the canopy above, its eight eyes gleaming hungrily and mandibles clicking!',
+        description: 'As you step onto the forest path, a massive spider drops from the canopy above, its eight eyes gleaming hungrily and mandibles clicking! The creature blocks your path, but perhaps you could slip past it unnoticed...',
+        locationId: 'darkwood-forest',
+        companionHint: 'A stealthy approach might avoid bloodshed... but if you fail, you\'ll have to fight.',
+        choices: [
+            {
+                id: 'attack-spider',
+                text: 'Draw your weapon and attack!',
+                outcome: {
+                    type: 'goto',
+                    nodeId: 'validation-spider-combat',
+                },
+            },
+            {
+                id: 'sneak-past-spider',
+                text: '🎲 Try to sneak past the spider',
+                displayText: '🎲 Stealth DC 12: Try to sneak past the spider',
+                outcome: {
+                    type: 'check',
+                    skill: 'Stealth',
+                    dc: 12,
+                    success: {
+                        type: 'goto',
+                        nodeId: 'validation-spider-avoided',
+                    },
+                    failure: {
+                        type: 'goto',
+                        nodeId: 'validation-spider-combat',
+                    },
+                },
+            },
+        ],
+    },
+
+    // === NODE 2a: Spider Combat (triggered by attacking or failing stealth) ===
+    {
+        id: 'validation-spider-combat',
+        title: 'Battle!',
+        description: 'The spider lunges at you with venomous fangs! You must fight for your life!',
         locationId: 'darkwood-forest',
         onEnter: [
             {
@@ -63,7 +100,21 @@ const validationNodes: StoryNode[] = [
         choices: [], // Combat starts immediately
     },
 
-    // === NODE 2b: Post First Combat ===
+    // === NODE 2b: Spider Avoided (stealth success) ===
+    {
+        id: 'validation-spider-avoided',
+        description: 'You move with practiced silence, slipping past the spider as it searches the canopy above. You escape unharmed and continue down the path.',
+        locationId: 'darkwood-forest',
+        choices: [
+            {
+                id: 'continue-after-stealth',
+                text: 'Continue down the path',
+                outcome: {type: 'goto', nodeId: 'validation-exploration-choice'},
+            },
+        ],
+    },
+
+    // === NODE 2c: Post First Combat ===
     {
         id: 'validation-post-combat-1',
         description: 'The giant spider collapses, its legs curling inward. You catch your breath and search the area, finding a small pouch of coins and a healing potion in an old web-covered pack.',
