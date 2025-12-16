@@ -73,6 +73,12 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
         winner: null,
         initiative,
         currentActor: order[0],
+        canRetreat: true, // Allow retreat by default (narrative can disable for boss fights)
+        retreatPenalty: {
+          goldLost: 20,
+          damageOnFlee: 5,
+          safeNodeId: 'home', // Default to home screen for test combats
+        },
       },
     });
   },

@@ -194,5 +194,9 @@ export function createCharacter(params: CreateCharacterParams): Character {
       items,
     },
     resources,
+    // Validation campaign fields
+    gold: 100,
+    inventory: [],
+    maxInventorySlots: 10,
   };
 }

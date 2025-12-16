@@ -288,23 +288,26 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
                 })}
               </div>
 
+              {/* Retreat Button - Full Width Below Actions */}
               {combat.canRetreat && (
-                  <button
-                      className="button-text px-6 py-3 rounded bg-error/20 border border-error text-error hover:bg-error/30"
-                      onClick={() => {
-                        const retreatResult = retreat();
-                        if (retreatResult) {
-                          // Update character with retreat damage/gold loss
-                          setCharacter(retreatResult.player);
+                <button
+                  className="w-full mt-3 px-4 py-3 rounded-lg button-text text-sm bg-gradient-to-br from-orange-700/30 to-orange-800/30 border-2 border-orange-600/50 text-orange-300 hover:from-orange-600/40 hover:to-orange-700/40 hover:border-orange-500/60 transition-all active:scale-[0.98] flex items-center justify-center space-x-2"
+                  onClick={() => {
+                    const retreatResult = retreat();
+                    if (retreatResult) {
+                      // Update character with retreat damage/gold loss
+                      setCharacter(retreatResult.player);
 
-                          // Navigate to safe node
-                          // TODO: Wire this up with narrative store
-                          onDefeat(); // For now, treat as defeat
-                        }
-                      }}
-                  >
-                    Retreat
-                  </button>
+                      // Navigate to safe node
+                      // TODO: Wire this up with narrative store
+                      onDefeat(); // For now, treat as defeat
+                    }
+                  }}
+                >
+                  <Icon name="LogOut" size={18} />
+                  <span>Retreat from Combat</span>
+                  <span className="text-[10px] opacity-75">(Penalty: -20 gold, 5 damage)</span>
+                </button>
               )}
             </div>
           )}
