@@ -1,33 +1,13 @@
-import type { Attributes } from './attributes';
-import type { SkillRanks } from './skill';
-import type { Feat } from './feat';
-import type { Equipment, InventoryItem } from './equipment';
-import type { Resources } from './resource';
+import type { InventoryItem } from './equipment';
 import type { Background, CharacterTrait, StartingQuirk } from './background';
+import type { Entity } from "./entity";
 
 export type CharacterClass = 'Fighter' | 'Rogue' | 'Wizard' | 'Cleric';
 
-export interface Character {
-  name: string;
-  avatarPath: string;
+export interface Character extends Entity {
   class: CharacterClass;
-  level: number;
   background?: Background;
   traits?: CharacterTrait[];
-  attributes: Attributes;
-  hp: number;
-  maxHp: number;
-  ac: number;
-  bab: number;
-  saves: {
-    fortitude: number;
-    reflex: number;
-    will: number;
-  };
-  skills: SkillRanks;
-  feats: Feat[];
-  equipment: Equipment;
-  resources: Resources;
 
   // Validation campaign: Inventory & Gold (optional for backward compatibility)
   gold?: number;

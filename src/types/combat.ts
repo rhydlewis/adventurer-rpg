@@ -1,18 +1,9 @@
 import type { Character } from './character';
 import type { Condition } from './condition';
+import type { Creature } from './creature';
 
 // Validation campaign: Combat actions
 export type CombatAction = 'attack' | 'retreat' | 'use-item';
-
-// Creature extends Character with enemy-specific features
-export interface Creature extends Character {
-  taunts?: {
-    onCombatStart?: string[];
-    onPlayerMiss?: string[];
-    onEnemyHit?: string[];
-    onLowHealth?: string[];
-  };
-}
 
 export interface CombatLogEntry {
   turn: number;
