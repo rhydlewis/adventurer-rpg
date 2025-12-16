@@ -1,4 +1,4 @@
-import type { Background } from '../types/background';
+import type { Background } from '../types';
 
 /**
  * Background Database

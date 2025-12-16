@@ -1,6 +1,6 @@
 import { DiceRoller, DiceRoll } from '@dice-roller/rpg-dice-roller';
-import type { Character } from '../types/character';
-import type { SkillName } from '../types/skill';
+import type { Character } from '../types';
+import type { SkillName } from '../types';
 import type {
   Requirement,
   Choice,
@@ -11,7 +11,7 @@ import type {
   SkillCheckResult,
   OutcomeResolution,
   EffectResult,
-} from '../types/narrative';
+} from '../types';
 import { getTotalSkillBonus } from './skills';
 
 const roller = new DiceRoller();

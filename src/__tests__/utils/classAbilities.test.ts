@@ -10,7 +10,7 @@ import {
   canUseAbility,
   consumeAbilityUse,
 } from '../../utils/classAbilities';
-import type { Character } from '../../types/character';
+import type { Character } from '../../types';
 import { FEATS } from '../../data/feats';
 import { WEAPONS, ARMORS } from '../../data/equipment';
 

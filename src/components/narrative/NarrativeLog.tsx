@@ -1,4 +1,4 @@
-import type { LogEntry } from '../../types/narrative';
+import type { LogEntry } from '../../types';
 
 interface NarrativeLogProps {
   /**

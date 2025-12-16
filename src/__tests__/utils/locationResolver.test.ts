@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { resolveLocation, getLocationAmbience } from '../../utils/locationResolver';
-import type { StoryNode, Act } from '../../types/narrative';
+import type { StoryNode, Act } from '../../types';
 
 describe('locationResolver', () => {
   describe('resolveLocation', () => {

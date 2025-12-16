@@ -4,10 +4,10 @@ import { CLASSES } from '../data/classes';
 import { FIGHTER_STARTING_FEATS, FEATS } from '../data/feats';
 import { AVAILABLE_AVATARS } from '../data/avatars';
 import { getRemainingPoints, isValidAllocation } from '../utils/pointBuy';
-import type { CharacterClass } from '../types/character';
-import type { Attributes } from '../types/attributes';
-import type { SkillName } from '../types/skill';
-import type { FeatName } from '../types/feat';
+import type { CharacterClass } from '../types';
+import type { Attributes } from '../types';
+import type { SkillName } from '../types';
+import type { FeatName } from '../types';
 import { Button, Card, Icon } from '../components';
 
 // Attribute icon mapping (reused from CharacterSheet)

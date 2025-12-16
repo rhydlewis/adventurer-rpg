@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { buyItem, sellItem, canAfford, hasInventorySpace } from '../../utils/merchant';
-import type { Character } from '../../types/character';
-import type { InventoryItem } from '../../types/equipment';
+import type { Character } from '../../types';
+import type { InventoryItem } from '../../types';
 
 describe('Merchant System', () => {
   const mockCharacter: Partial<Character> = {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { Character } from '../../types/character';
-import { BACKGROUNDS } from '../../types/background';
+import type { Character } from '../../types';
+import { BACKGROUNDS } from '../../types';
 
 describe('Character Type with Background & Traits', () => {
   it('should allow Character with background and traits', () => {

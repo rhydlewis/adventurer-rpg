@@ -1,6 +1,6 @@
-import type { Character } from '../types/character';
+import type { Character } from '../types';
 import type { Entity } from '../types/entity';
-import type { SkillName, SkillBonus } from '../types/skill';
+import type { SkillName, SkillBonus } from '../types';
 import { SKILLS, CLASS_SKILLS } from '../data/skills';
 import { calculateModifier } from './dice';
 import { isCharacter } from './entityHelpers';

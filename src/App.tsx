@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { HomeScreen } from './screens/HomeScreen';
-import { SplashScreen } from './screens/SplashScreen';
-import { MainMenuScreen } from './screens/MainMenuScreen';
-import { CombatScreen } from './screens/CombatScreen';
-import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
-import { QuickCharacterCreationScreen } from './screens/QuickCharacterCreationScreen';
-import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
-import { StoryScreen } from './screens/StoryScreen';
+import { HomeScreen } from './screens';
+import { SplashScreen } from './screens';
+import { MainMenuScreen } from './screens';
+import { CombatScreen } from './screens';
+import { CharacterCreationScreen } from './screens';
+import { QuickCharacterCreationScreen } from './screens';
+import { CharacterSheetScreen } from './screens';
+import { StoryScreen } from './screens';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 // import { testCampaign } from './data/campaigns/test-campaign';
@@ -15,10 +15,10 @@ import { createCharacter } from './utils/characterCreation';
 import { CLASSES } from './data/classes';
 import type { Screen } from './types';
 import {DEFAULT_AVATAR} from "./data/avatars.ts";
-import { LockPickingScreen } from './screens/LockPickingScreen';
-import { MerchantScreen } from './screens/MerchantScreen.tsx';
-import { ExplorationScreen } from './screens/ExplorationScreen.tsx';
-import { LevelUpScreen } from './screens/LevelUpScreen.tsx';
+import { LockPickingScreen } from './screens';
+import { MerchantScreen } from './screens';
+import { ExplorationScreen } from './screens';
+import { LevelUpScreen } from './screens';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });

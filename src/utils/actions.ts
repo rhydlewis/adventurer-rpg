@@ -1,4 +1,4 @@
-import type { Character } from '../types/character';
+import type { Character } from '../types';
 import type { Action, AttackAction, UseAbilityAction, CastSpellAction } from '../types/action';
 import { getCantripsForClass } from '../data/spells';
 

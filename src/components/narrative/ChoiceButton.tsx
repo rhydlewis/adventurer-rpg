@@ -1,5 +1,5 @@
 import { Button } from '../Button';
-import type { Choice } from '../../types/narrative';
+import type { Choice } from '../../types';
 
 interface ChoiceButtonProps {
   /**

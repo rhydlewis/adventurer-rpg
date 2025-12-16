@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { Character } from '../../types/character';
-import type { InventoryItem } from '../../types/equipment';
+import type { Character } from '../../types';
+import type { InventoryItem } from '../../types';
 
 describe('Character Type with Inventory & Gold', () => {
   it('should allow Character with gold and inventory fields', () => {

@@ -1,5 +1,5 @@
-import type { DefiningTrait } from '../types/trait';
-import type { Character } from '../types/character';
+import type { DefiningTrait } from '../types';
+import type { Character } from '../types';
 
 /**
  * Defining Traits - Universal character traits

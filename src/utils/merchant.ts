@@ -1,5 +1,5 @@
-import type { Character } from '../types/character';
-import type { InventoryItem } from '../types/equipment';
+import type { Character } from '../types';
+import type { InventoryItem } from '../types';
 
 /**
  * Check if character can afford a purchase

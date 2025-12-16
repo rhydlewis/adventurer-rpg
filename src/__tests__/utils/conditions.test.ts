@@ -9,8 +9,8 @@ import {
   applyConditionDamage,
   getConditionsByCategory,
 } from '../../utils/conditions';
-import type { Condition } from '../../types/condition';
-import type { Character } from '../../types/character';
+import type { Condition } from '../../types';
+import type { Character } from '../../types';
 import { makeSavingThrow } from '../../utils/savingThrows';
 import { roll } from '../../utils/dice';
 

@@ -1,5 +1,5 @@
-import type { Character, CharacterClass } from '../types/character';
-import type { Feat } from '../types/feat';
+import type { Character, CharacterClass } from '../types';
+import type { Feat } from '../types';
 import { calculateModifier } from './dice';
 
 /**

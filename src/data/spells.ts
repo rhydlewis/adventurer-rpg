@@ -1,4 +1,4 @@
-import type { Spell } from '../types/spell';
+import type { Spell } from '../types';
 
 /**
  * Wizard Cantrips (Level 0, at-will)

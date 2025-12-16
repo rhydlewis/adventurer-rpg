@@ -1,4 +1,4 @@
-import type { Attributes } from '../types/attributes';
+import type { Attributes } from '../types';
 
 // Point buy cost table (27-point buy)
 // Based on standard d20 point buy system

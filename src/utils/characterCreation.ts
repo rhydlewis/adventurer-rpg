@@ -1,7 +1,7 @@
-import type { Character, CharacterClass } from '../types/character';
-import type { Attributes } from '../types/attributes';
-import type { SkillRanks } from '../types/skill';
-import type { FeatName } from '../types/feat';
+import type { Character, CharacterClass } from '../types';
+import type { Attributes } from '../types';
+import type { SkillRanks } from '../types';
+import type { FeatName } from '../types';
 import { calculateModifier } from './dice';
 import { CLASSES } from '../data/classes';
 import { WEAPONS, ARMORS, STARTING_ITEMS } from '../data/equipment';

@@ -1,4 +1,4 @@
-import type { ExplorationTable } from '../types/narrative';
+import type { ExplorationTable } from '../types';
 
 /**
  * Exploration Tables for Validation Campaign

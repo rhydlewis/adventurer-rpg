@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getAvailableActions, canPerformAction } from '../../utils/actions';
-import type { Character } from '../../types/character';
+import type { Character } from '../../types';
 import type { AttackAction, UseAbilityAction, CastSpellAction } from '../../types/action';
 import { FEATS } from '../../data/feats';
 import { WEAPONS, ARMORS } from '../../data/equipment';

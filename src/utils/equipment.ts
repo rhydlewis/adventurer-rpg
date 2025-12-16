@@ -1,5 +1,5 @@
-import type { Character } from '../types/character';
-import type { ItemType, ItemEffect } from '../types/equipment';
+import type { Character } from '../types';
+import type { ItemType, ItemEffect } from '../types';
 import { calculateModifier } from './dice';
 import { STARTING_ITEMS } from '../data/equipment';
 

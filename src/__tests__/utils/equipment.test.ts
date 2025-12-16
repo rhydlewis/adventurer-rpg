@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { getWeaponDamage, getWeaponAttackBonus, canUseItem, getItemEffect } from '../../utils/equipment';
 import type { Character } from '../../types';
-import type { ItemType } from '../../types/equipment';
+import type { ItemType } from '../../types';
 
 describe('utils/equipment', () => {
   const createCharacterWithWeapon = (

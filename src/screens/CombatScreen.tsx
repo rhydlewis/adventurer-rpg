@@ -4,7 +4,7 @@ import { useCharacterStore } from '../stores/characterStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import { getEnemy } from '../data/enemies';
-import type { CombatState } from '../types/combat';
+import type { CombatState } from '../types';
 import { Icon } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
 

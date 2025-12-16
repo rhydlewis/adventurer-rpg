@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { applyStartingQuirk } from '../../utils/quirks';
-import type { Character } from '../../types/character';
-import type { CombatState } from '../../types/combat';
+import type { Character } from '../../types';
+import type { CombatState } from '../../types';
 
 describe('Starting Quirks System', () => {
   const mockPlayer: Partial<Character> = {

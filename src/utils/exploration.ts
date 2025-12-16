@@ -1,4 +1,4 @@
-import type { ExplorationTable, ExplorationOutcome } from '../types/narrative';
+import type { ExplorationTable, ExplorationOutcome } from '../types';
 
 /**
  * Roll on an exploration table to determine outcome

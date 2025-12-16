@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { Character } from '../types/character';
+import type { Character } from '../types';
 import { calculateModifier } from '../utils/dice';
 import { calculateSkillBonus } from '../utils/skills';
-import type { SkillName } from '../types/skill';
+import type { SkillName } from '../types';
 import { Button, Card, Icon } from '../components';
 
 interface CharacterSheetScreenProps {

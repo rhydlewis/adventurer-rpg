@@ -1,4 +1,4 @@
-import type { Weapon, Armor, WeaponType, ArmorType, Item } from '../types/equipment';
+import type { Weapon, Armor, WeaponType, ArmorType, Item } from '../types';
 
 export const WEAPONS: Record<WeaponType, Weapon> = {
   Longsword: {

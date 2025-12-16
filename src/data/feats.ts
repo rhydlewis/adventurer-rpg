@@ -1,4 +1,4 @@
-import type { Feat, FeatName } from '../types/feat';
+import type { Feat, FeatName } from '../types';
 
 export const FEATS: Record<FeatName, Feat> = {
   'Power Attack': {

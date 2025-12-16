@@ -1,4 +1,4 @@
-import type { SkillDefinition, SkillName } from '../types/skill';
+import type { SkillDefinition, SkillName } from '../types';
 
 export const SKILLS: Record<SkillName, SkillDefinition> = {
   Athletics: {

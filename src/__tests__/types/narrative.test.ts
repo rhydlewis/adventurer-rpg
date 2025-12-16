@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { Choice, ExplorationOutcome } from '../../types/narrative';
+import type { Choice, ExplorationOutcome } from '../../types';
 
 describe('Narrative Type with Exploration', () => {
   it('should allow Choice with exploration outcomes', () => {

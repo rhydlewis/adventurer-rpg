@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getEntityDisplayClass, isCharacter, isCreature } from '../../utils/entityHelpers';
-import type { Character } from '../../types/character';
+import type { Character } from '../../types';
 import type { Creature } from '../../types/creature';
 import type { Entity } from '../../types/entity';
 

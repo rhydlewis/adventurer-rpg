@@ -11,7 +11,7 @@
  * - Loop and exit outcomes
  */
 
-import type { Campaign, Act, StoryNode } from '../../types/narrative';
+import type { Campaign, Act, StoryNode } from '../../types';
 
 const testNodes: StoryNode[] = [
   // === NODE 1: Opening scene ===

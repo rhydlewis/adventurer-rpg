@@ -11,7 +11,7 @@
  * Total playtime: 15-20 minutes
  */
 
-import type { Campaign, Act, StoryNode } from '../../types/narrative';
+import type { Campaign, Act, StoryNode } from '../../types';
 
 const validationNodes: StoryNode[] = [
     // === NODE 1: Character Creation Entry Point ===

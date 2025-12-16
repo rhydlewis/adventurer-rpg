@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CLASSES } from '../data/classes';
 import { getBackgroundByClass } from '../data/backgrounds';
-import type { CharacterClass } from '../types/character';
+import type { CharacterClass } from '../types';
 import { Button, Card, Icon } from '../components';
 
 interface QuickCharacterCreationScreenProps {

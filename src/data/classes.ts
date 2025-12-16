@@ -1,7 +1,7 @@
-import type { CharacterClass } from '../types/character';
-import type { Attributes } from '../types/attributes';
-import type { WeaponType, ArmorType } from '../types/equipment';
-import type { FeatName } from '../types/feat';
+import type { CharacterClass } from '../types';
+import type { Attributes } from '../types';
+import type { WeaponType, ArmorType } from '../types';
+import type { FeatName } from '../types';
 
 export interface ClassDefinition {
   name: CharacterClass;

@@ -1,5 +1,5 @@
 import type { Entity } from '../types/entity';
-import type { Character } from '../types/character';
+import type { Character } from '../types';
 import type { Creature } from '../types/creature';
 
 /**

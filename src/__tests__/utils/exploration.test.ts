@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { rollExplorationTable } from '../../utils/exploration';
-import type { ExplorationTable } from '../../types/narrative';
+import type { ExplorationTable } from '../../types';
 
 describe('Exploration System', () => {
   const mockTable: ExplorationTable = {

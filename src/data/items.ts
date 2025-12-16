@@ -1,4 +1,4 @@
-import type { InventoryItem } from '../types/equipment';
+import type { InventoryItem } from '../types';
 
 /**
  * Item Database for Validation Campaign

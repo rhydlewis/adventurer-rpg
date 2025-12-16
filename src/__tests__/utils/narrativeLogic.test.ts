@@ -10,14 +10,14 @@ import {
   choiceHasSkillCheck,
   formatSkillCheckResult,
 } from '../../utils/narrativeLogic';
-import type { Character } from '../../types/character';
+import type { Character } from '../../types';
 import type {
   Requirement,
   Choice,
   ChoiceOutcome,
   NodeEffect,
   WorldState,
-} from '../../types/narrative';
+} from '../../types';
 
 // Helper to create a test character
 const createTestCharacter = (

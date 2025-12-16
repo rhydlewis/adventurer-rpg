@@ -3,7 +3,7 @@
  * Includes 8 new conditions + 4 migrated from existing systems.
  */
 
-import type { ConditionType, ConditionModifiers } from '../types/condition';
+import type { ConditionType, ConditionModifiers } from '../types';
 
 export interface ConditionDefinition {
   type: ConditionType;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { applyLevelUp, calculateHPIncrease, calculateBABIncrease } from '../../utils/levelUp';
-import type { Character } from '../../types/character';
-import type { Feat } from '../../types/feat';
+import type { Character } from '../../types';
+import type { Feat } from '../../types';
 
 describe('Level-Up System', () => {
   const mockCharacter: Partial<Character> = {

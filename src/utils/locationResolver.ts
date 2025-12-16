@@ -1,4 +1,4 @@
-import type { Location, StoryNode, Act } from '../types/narrative';
+import type { Location, StoryNode, Act } from '../types';
 import { LOCATIONS } from '../data/locations';
 
 /**

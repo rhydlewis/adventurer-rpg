@@ -1,4 +1,4 @@
-import type { Location } from '../types/narrative';
+import type { Location } from '../types';
 
 export const LOCATIONS: Record<string, Location> = {
   'rusty-tavern': {
