@@ -4,6 +4,7 @@ import {useNarrativeStore} from '../stores/narrativeStore';
 import {getExplorationTable} from '../data/explorationTables';
 import {rollExplorationTable} from '../utils/exploration';
 import {getItem} from '../data/items';
+import {Button} from '../components';
 import type {ExplorationOutcome} from '../types';
 import type {Screen} from '../types';
 
@@ -146,12 +147,14 @@ export function ExplorationScreen({tableId, onComplete, onNavigate}: Exploration
                 )}
 
                 {/* Continue Button */}
-                <button
-                    className="button-text w-full py-4 rounded bg-accent text-fg-inverted hover:bg-accent-hover"
+                <Button
+                    variant="primary"
+                    size="large"
+                    fullWidth
                     onClick={handleContinue}
                 >
                     Continue
-                </button>
+                </Button>
             </div>
         </div>
     );
