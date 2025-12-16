@@ -2352,9 +2352,13 @@ git commit -m "feat: complete validation campaign with 8 nodes (retreat, level-u
 
 ---
 
-## Phase 5: UI Integration (Placeholder)
+## Phase 5: UI Integration
 
-**Note:** UI integration is beyond the scope of this initial implementation plan. The following tasks outline what needs to be built, but detailed step-by-step instructions would require knowledge of the existing UI architecture.
+**Note:** UI integration details moved to dedicated plan.
+
+**See:** `docs/plans/2025-12-16-phase-5-ui-integration.md` for comprehensive step-by-step implementation.
+
+**Overview:** Integrate merchant screen, level-up screen, exploration results, retreat button, and character effect processing into UI layer following existing store/navigation patterns.
 
 ### Task 17: Combat UI - Item Use Button
 
