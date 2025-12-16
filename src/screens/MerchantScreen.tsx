@@ -50,8 +50,24 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
   const maxSlots = character.maxInventorySlots || 0;
   const inventoryFull = inventoryCount >= maxSlots;
 
+  // Background image with gradient overlay
+  const backgroundStyle = {
+    backgroundImage: `
+      linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.8) 100%
+      ),
+      url(/assets/locations/card_location_merchant.png)
+    `,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-fg-primary p-6">
+    <div
+      className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-fg-primary p-6"
+      style={backgroundStyle}
+    >
       {/* Header */}
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
