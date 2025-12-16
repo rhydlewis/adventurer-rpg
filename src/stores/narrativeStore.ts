@@ -289,13 +289,23 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
               const nextNodeId = resolution.characterCreationTrigger!.nextNodeId;
               const char = useCharacterStore.getState().character;
               if (char) {
-                get().enterNode(nextNodeId, char);
-              }
+                // Check if the next node has combat/level-up triggers
+                const { campaign } = get();
+                const nextNode = campaign ? findNode(campaign, nextNodeId) : null;
+                const hasCombatOrLevelUp = nextNode?.onEnter?.some(
+                  (e) => e.type === 'startCombat' || e.type === 'levelUp'
+                );
 
-              // Return to story
-              const nav = get().onNavigate;
-              if (nav) {
-                nav({ type: 'story' });
+                get().enterNode(nextNodeId, char);
+
+                // Only navigate to story if the node doesn't trigger combat/level-up
+                // (combat/level-up will handle their own navigation)
+                if (!hasCombatOrLevelUp) {
+                  const nav = get().onNavigate;
+                  if (nav) {
+                    nav({ type: 'story' });
+                  }
+                }
               }
             },
           });
