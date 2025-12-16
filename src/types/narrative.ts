@@ -47,7 +47,9 @@ export type ChoiceOutcome =
       dc: number;
       success: ChoiceOutcome;
       failure: ChoiceOutcome;
-    };
+    }
+  | { type: 'explore'; tableId: string; onceOnly: boolean }
+  | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> };
 
 export interface Choice {
   id: string;
@@ -66,10 +68,12 @@ export type NodeEffect =
   | { type: 'setFlag'; flag: string; value: boolean }
   | { type: 'giveItem'; itemId: string }
   | { type: 'removeItem'; itemId: string }
+  | { type: 'giveGold'; amount: number }
   | { type: 'startCombat'; enemyId: string; onVictoryNodeId: string }
   | { type: 'heal'; amount: number | 'full' }
   | { type: 'damage'; amount: number }
-  | { type: 'showCompanionHint'; hint: string };
+  | { type: 'showCompanionHint'; hint: string }
+  | { type: 'levelUp'; newLevel: number; featChoices: string[] };
 
 // =============================================================================
 // Story Nodes - The building blocks of narrative
@@ -190,6 +194,14 @@ export interface OutcomeResolution {
   nextNodeId: string | null; // null = exit conversation
   logEntries: LogEntry[];
   worldUpdates: Partial<WorldState>;
+  exploreTrigger?: {
+    tableId: string;
+    onceOnly: boolean;
+  };
+  merchantTrigger?: {
+    shopInventory: string[];
+    buyPrices: Record<string, number>;
+  };
 }
 
 // =============================================================================
@@ -202,5 +214,9 @@ export interface EffectResult {
   combatTrigger?: {
     enemyId: string;
     onVictoryNodeId: string;
+  };
+  levelUpTrigger?: {
+    newLevel: number;
+    featChoices: string[];
   };
 }

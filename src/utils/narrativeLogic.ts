@@ -209,6 +209,30 @@ export function resolveOutcome(
       };
     }
 
+    case 'explore':
+      // Trigger exploration UI - store will handle the exploration table lookup
+      return {
+        nextNodeId: currentNodeId, // Stay on current node until exploration resolves
+        logEntries: [],
+        worldUpdates: {},
+        exploreTrigger: {
+          tableId: outcome.tableId,
+          onceOnly: outcome.onceOnly,
+        },
+      };
+
+    case 'merchant':
+      // Trigger merchant UI
+      return {
+        nextNodeId: currentNodeId, // Stay on current node until merchant closes
+        logEntries: [],
+        worldUpdates: {},
+        merchantTrigger: {
+          shopInventory: outcome.shopInventory,
+          buyPrices: outcome.buyPrices,
+        },
+      };
+
     default:
       return {
         nextNodeId: null,
@@ -232,6 +256,7 @@ export function processNodeEffects(
   const logEntries: LogEntry[] = [];
   const worldUpdates: Partial<WorldState> = {};
   let combatTrigger: EffectResult['combatTrigger'] = undefined;
+  let levelUpTrigger: EffectResult['levelUpTrigger'] = undefined;
 
   // Clone arrays to avoid mutating original
   const newFlags = { ...world.flags };
@@ -265,6 +290,14 @@ export function processNodeEffects(
         break;
       }
 
+      case 'giveGold':
+        // Will be handled by character store
+        logEntries.push({
+          type: 'effect',
+          message: `Received ${effect.amount} gold`,
+        });
+        break;
+
       case 'startCombat':
         combatTrigger = {
           enemyId: effect.enemyId,
@@ -297,6 +330,17 @@ export function processNodeEffects(
           hint: effect.hint,
         });
         break;
+
+      case 'levelUp':
+        levelUpTrigger = {
+          newLevel: effect.newLevel,
+          featChoices: effect.featChoices,
+        };
+        logEntries.push({
+          type: 'effect',
+          message: `You've reached level ${effect.newLevel}!`,
+        });
+        break;
     }
   }
 
@@ -315,6 +359,7 @@ export function processNodeEffects(
     logEntries,
     worldUpdates,
     combatTrigger,
+    levelUpTrigger,
   };
 }
 

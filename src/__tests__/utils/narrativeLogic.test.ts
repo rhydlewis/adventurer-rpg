@@ -556,7 +556,7 @@ describe('utils/narrativeLogic', () => {
         };
 
         expect(getChoiceDisplayText(choice)).toBe(
-          '[Intimidate DC 12] Threaten the guard'
+          '🎲 Intimidate DC 12 Threaten the guard'
         );
       });
 
