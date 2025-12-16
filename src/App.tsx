@@ -8,7 +8,8 @@ import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
 import { StoryScreen } from './screens/StoryScreen';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
-import { testCampaign } from './data/campaigns/test-campaign';
+// import { testCampaign } from './data/campaigns/test-campaign';
+import { validationCampaign } from './data/campaigns/validation-campaign.ts';
 import { createCharacter } from './utils/characterCreation';
 import { CLASSES } from './data/classes';
 import type { Screen } from './types/navigation';
@@ -69,7 +70,7 @@ function App() {
     }
 
     const { loadCampaign, startCampaign } = useNarrativeStore.getState();
-    loadCampaign(testCampaign);
+    loadCampaign(validationCampaign);
     startCampaign();
     setCurrentScreen({ type: 'story' });
   };
