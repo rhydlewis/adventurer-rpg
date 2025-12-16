@@ -27,8 +27,18 @@ const validationNodes: StoryNode[] = [
             },
             {
                 id: 'continue-to-merchant',
-                text: 'Stay on the main path to the village',
+                text: 'Go to Merchant (test)',
                 outcome: {type: 'goto', nodeId: 'validation-merchant'},
+            },
+            {
+                id: 'test-exploration',
+                text: '[TEST] Jump to Exploration',
+                outcome: {type: 'goto', nodeId: 'validation-exploration-choice'},
+            },
+            {
+                id: 'test-levelup',
+                text: '[TEST] Jump to Level-Up',
+                outcome: {type: 'goto', nodeId: 'validation-levelup'},
             },
         ],
     },
