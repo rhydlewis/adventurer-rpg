@@ -301,7 +301,7 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     const { character } = get();
     if (!character) return;
 
-    let updatedCharacter = { ...character };
+    const updatedCharacter = { ...character };
 
     for (const effect of effects) {
       switch (effect.type) {

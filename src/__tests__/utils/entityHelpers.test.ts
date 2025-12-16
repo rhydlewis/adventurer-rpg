@@ -83,7 +83,7 @@ describe('Entity Helpers', () => {
 
     it('should return Unknown for malformed entity', () => {
       const malformed = { ...mockCharacter } as Entity;
-      delete (malformed as any).class;
+      delete (malformed as Partial<Character>).class;
       const result = getEntityDisplayClass(malformed);
       expect(result).toBe('Unknown');
     });
