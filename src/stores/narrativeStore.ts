@@ -7,7 +7,7 @@ import type {
   Choice,
   WorldState,
   ConversationState,
-  LogEntry,
+  LogEntry
 } from '../types/narrative';
 import type { Screen } from '../types/navigation';
 import {
@@ -142,12 +142,14 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     // Process onEnter effects
     let worldUpdates: Partial<WorldState> = {};
     let combatTrigger: { enemyId: string; onVictoryNodeId: string } | undefined;
+    let levelUpTrigger = undefined;
 
     if (node.onEnter && node.onEnter.length > 0) {
       const effectResult = processNodeEffects(node.onEnter, world);
       newLogEntries.push(...effectResult.logEntries);
       worldUpdates = effectResult.worldUpdates;
       combatTrigger = effectResult.combatTrigger;
+      levelUpTrigger = effectResult.levelUpTrigger;
     }
 
     // Update world state
@@ -181,6 +183,22 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
         });
       }
     }
+
+    // Handle level-up trigger
+    if (levelUpTrigger) {
+      const { onNavigate } = get();
+      if (onNavigate) {
+        onNavigate({
+          type: 'levelUp',
+          newLevel: levelUpTrigger.newLevel,
+          featChoices: levelUpTrigger.featChoices,
+          onComplete: () => {
+            // Level-up screen will handle calling enterNode again if needed
+            // or navigation back to story
+          },
+        });
+      }
+    }
   },
 
   selectChoice: (choiceId, player) => {
@@ -207,11 +225,46 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     };
 
     // Resolve the outcome
-    const resolution = resolveOutcome(
-      choice.outcome,
-      player,
-      conversation.currentNodeId
-    );
+    const resolution = resolveOutcome(choice.outcome, player, conversation.currentNodeId);
+
+    // Handle exploration trigger
+    if (resolution.exploreTrigger) {
+      const { onNavigate } = get();
+      if (onNavigate) {
+        onNavigate({
+          type: 'exploration',
+          tableId: resolution.exploreTrigger.tableId,
+          onceOnly: resolution.exploreTrigger.onceOnly,
+          onComplete: () => {
+            // Exploration screen will trigger combat/treasure/etc, then return to node
+            // For now, just go back to story
+            if (onNavigate) {
+              onNavigate({ type: 'story' });
+            }
+          },
+        });
+      }
+      return; // Don't process navigation yet, wait for exploration to complete
+    }
+
+    // Handle merchant trigger
+    if (resolution.merchantTrigger) {
+      const { onNavigate } = get();
+      if (onNavigate) {
+        onNavigate({
+          type: 'merchant',
+          shopInventory: resolution.merchantTrigger.shopInventory,
+          buyPrices: resolution.merchantTrigger.buyPrices,
+          onClose: () => {
+            // Return to story after merchant closes
+            if (onNavigate) {
+              onNavigate({ type: 'story' });
+            }
+          },
+        });
+      }
+      return; // Don't process navigation yet
+    }
 
     // Update conversation state with visited choice
     const newVisitedChoiceIds = conversation.visitedChoiceIds.includes(choiceId)
