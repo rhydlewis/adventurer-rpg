@@ -14,4 +14,8 @@ export type Screen =
   | { type: 'characterSheet' }
   | { type: 'worldMap' } // Phase 3
   | { type: 'rest' } // Phase 4
-  | { type: 'lockPicking'; difficulty: 'easy' | 'medium' | 'hard'; onSuccess: () => void; onFailure: () => void };
+  | { type: 'lockPicking'; difficulty: 'easy' | 'medium' | 'hard'; onSuccess: () => void; onFailure: () => void }
+  // Validation campaign screens
+  | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number>; onClose: () => void }
+  | { type: 'levelUp'; newLevel: number; featChoices: string[]; onComplete: () => void }
+  | { type: 'exploration'; tableId: string; onceOnly: boolean; onComplete: () => void };
