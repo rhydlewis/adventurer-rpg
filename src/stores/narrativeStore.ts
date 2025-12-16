@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Character } from '../types/character';
+import type { Character } from '../types';
 import type {
   Campaign,
   Act,
@@ -8,14 +8,15 @@ import type {
   WorldState,
   ConversationState,
   LogEntry
-} from '../types/narrative';
-import type { Screen } from '../types/navigation';
+} from '../types';
+import type { Screen } from '../types';
 import {
   getAvailableChoices,
   resolveOutcome,
   processNodeEffects,
   getChoiceDisplayText,
 } from '../utils/narrativeLogic';
+import { useCharacterStore } from './characterStore';
 
 interface NarrativeStore {
   // Persistent state
@@ -150,6 +151,9 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       worldUpdates = effectResult.worldUpdates;
       combatTrigger = effectResult.combatTrigger;
       levelUpTrigger = effectResult.levelUpTrigger;
+
+      // NEW: Process character effects
+      useCharacterStore.getState().processNarrativeEffects(node.onEnter);
     }
 
     // Update world state

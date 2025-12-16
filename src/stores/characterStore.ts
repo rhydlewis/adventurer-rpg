@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import type { Character, CharacterClass } from '../types/character';
-import type { Attributes } from '../types/attributes';
-import type { SkillRanks } from '../types/skill';
-import type { FeatName } from '../types/feat';
+import type { Character, CharacterClass } from '../types';
+import type { Attributes } from '../types';
+import type { SkillRanks } from '../types';
+import type { FeatName } from '../types';
+import type { NodeEffect } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { DEFAULT_AVATAR } from '../data/avatars';
@@ -39,6 +40,9 @@ interface CharacterStore {
   finalizeCharacter: () => void;
   resetCreation: () => void;
   setCharacter: (character: Character) => void; // For testing
+
+  // NEW: Process narrative effects that modify character
+  processNarrativeEffects: (effects: NodeEffect[]) => void;
 }
 
 const defaultAttributes: Attributes = {
@@ -225,4 +229,41 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
   setCharacter: (character) => {
     set({ character, creationStep: 'complete' });
   },
+
+  processNarrativeEffects: (effects) => {
+    const { character } = get();
+    if (!character) return;
+
+    let updatedCharacter = { ...character };
+
+    for (const effect of effects) {
+      switch (effect.type) {
+        case 'giveGold':
+          updatedCharacter.gold = (updatedCharacter.gold || 0) + effect.amount;
+          break;
+
+        case 'heal':
+          if (effect.amount === 'full') {
+            updatedCharacter.hp = updatedCharacter.maxHp;
+          } else {
+            const healAmount = effect.amount;
+            updatedCharacter.hp = Math.min(
+                updatedCharacter.hp + healAmount,
+                updatedCharacter.maxHp
+            );
+          }
+          break;
+
+        case 'damage':
+          updatedCharacter.hp = Math.max(0, updatedCharacter.hp - effect.amount);
+          break;
+
+          // Other effects handled by their respective systems
+        default:
+          break;
+      }
+    }
+
+    set({ character: updatedCharacter });
+  }
 }));
