@@ -15,9 +15,9 @@ export const EXPLORATION_TABLES: Record<string, ExplorationTable> = {
         weight: 60,
         outcome: {
           type: 'combat',
-          enemyId: 'wolf', // TODO: Add wolf enemy
+          enemyId: 'bandit', // Using bandit since wolf doesn't exist yet
           goldReward: 30,
-          itemReward: 'wolf-pelt',
+          itemReward: 'healing-potion',
         },
       },
 
