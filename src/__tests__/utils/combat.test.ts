@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Character, Creature, CombatState } from '../../types';
+import type { CombatState } from '../../types';
+import type { Character } from '../../types';
+import type { Creature } from "../../types/creature";
 import type { AttackAction } from '../../types/action';
 
 // Mock dice utilities
@@ -83,7 +85,7 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
 const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
   name: 'Skeleton',
   avatarPath: 'human_female_00009.png',
-  class: 'Fighter',
+  creatureClass: 'Undead',
   level: 1,
   attributes: {
     STR: 12,
@@ -134,6 +136,7 @@ const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
   resources: {
     abilities: [],
   },
+  lootTableId: 'test_loot',
   ...overrides,
 });
 

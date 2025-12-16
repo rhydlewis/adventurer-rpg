@@ -6,6 +6,7 @@ import { getAvailableActions } from '../utils/actions';
 import { getEnemy } from '../data/enemies';
 import type { CombatState } from '../types/combat';
 import { Icon } from '../components';
+import { getEntityDisplayClass } from '../utils/entityHelpers';
 
 // Action icon mapping
 const actionIcons = {
@@ -397,7 +398,7 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
             {character.name.length > 12 ? character.name.split(' ')[0] : character.name}
           </h2>
           <p className="text-[10px] text-slate-500 label-secondary">
-            Lv{character.level} {character.class}
+            Lv{character.level} {getEntityDisplayClass(character)}
           </p>
         </div>
       </div>

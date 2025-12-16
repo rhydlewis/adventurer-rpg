@@ -1,4 +1,4 @@
-import type { Character } from '../types/character';
+import type { Entity } from '../types/entity';
 import { calculateModifier } from './dice';
 import { getTotalSkillBonus } from './skills';
 
@@ -12,7 +12,7 @@ export interface InitiativeResult {
 }
 
 /**
- * Calculate initiative bonus for a character
+ * Calculate initiative bonus for an entity
  * Initiative = DEX mod + feat bonuses + skill bonuses
  *
  * Bonuses:
@@ -20,16 +20,16 @@ export interface InitiativeResult {
  * - Perception ≥3 ranks: +2
  * - Stealth total bonus ≥5: +2
  *
- * @param character Character to calculate initiative for
+ * @param entity Entity to calculate initiative for (Character or Creature)
  * @returns Initiative result with bonus and breakdown
  */
-export function calculateInitiativeBonus(character: Character): InitiativeResult {
+export function calculateInitiativeBonus(entity: Entity): InitiativeResult {
   // Base: DEX modifier
-  const dexMod = calculateModifier(character.attributes.DEX);
+  const dexMod = calculateModifier(entity.attributes.DEX);
 
   // Feat bonuses (Improved Initiative)
   let featBonus = 0;
-  for (const feat of character.feats) {
+  for (const feat of entity.feats) {
     const effect = feat.effect;
     if (effect.type === 'passive' && effect.stat === 'initiative') {
       featBonus += effect.bonus;
@@ -40,12 +40,12 @@ export function calculateInitiativeBonus(character: Character): InitiativeResult
   let skillBonus = 0;
 
   // Perception ≥3 ranks: +2
-  if (character.skills.Perception >= 3) {
+  if (entity.skills.Perception >= 3) {
     skillBonus += 2;
   }
 
   // Stealth total bonus ≥5: +2
-  const stealthTotal = getTotalSkillBonus(character, 'Stealth');
+  const stealthTotal = getTotalSkillBonus(entity, 'Stealth');
   if (stealthTotal >= 5) {
     skillBonus += 2;
   }
@@ -63,12 +63,12 @@ export function calculateInitiativeBonus(character: Character): InitiativeResult
 }
 
 /**
- * Roll initiative for a character
- * @param character Character rolling initiative
+ * Roll initiative for an entity
+ * @param entity Entity rolling initiative (Character or Creature)
  * @returns Initiative roll result (1d20 + bonus)
  */
-export function rollInitiative(character: Character): number {
-  const { bonus } = calculateInitiativeBonus(character);
+export function rollInitiative(entity: Entity): number {
+  const { bonus } = calculateInitiativeBonus(entity);
   const roll = Math.floor(Math.random() * 20) + 1; // 1d20
   return roll + bonus;
 }

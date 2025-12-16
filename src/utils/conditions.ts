@@ -2,9 +2,8 @@
  * Condition system utilities for applying, managing, and calculating effects.
  */
 
-import type { Condition, ConditionType, ConditionModifiers } from '../types/condition';
-import type { Character } from '../types/character';
-import type { Creature } from '../types/combat';
+import type { Condition, ConditionType, ConditionModifiers } from '../types';
+import type { Entity } from '../types/entity';
 import { CONDITION_DEFINITIONS, DEFAULT_DURATIONS } from '../data/conditions';
 import { makeSavingThrow } from './savingThrows';
 import { roll } from './dice';
@@ -59,7 +58,7 @@ export function applyCondition(
 /**
  * Apply a condition with a saving throw to resist.
  *
- * @param target - Character or creature to apply condition to
+ * @param target - Entity to apply condition to (Character or Creature)
  * @param type - Type of condition to apply
  * @param dc - Difficulty class for the save
  * @param saveType - Type of save ('fortitude', 'reflex', or 'will')
@@ -68,7 +67,7 @@ export function applyCondition(
  * @returns Object with save result and whether condition was applied
  */
 export function applyConditionWithSave(
-  target: Character | Creature,
+  target: Entity,
   _type: ConditionType,
   dc: number,
   saveType: 'fortitude' | 'reflex' | 'will',

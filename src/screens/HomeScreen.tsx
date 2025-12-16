@@ -1,11 +1,12 @@
 import { useCombatStore } from '../stores/combatStore';
-import type { Creature, CharacterClass } from '../types';
+import type { CharacterClass } from '../types';
+import type { Creature } from '../types/creature';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { Button, Card, Icon } from '../components';
 import { DEFAULT_AVATAR } from '../data/avatars';
 import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from '../data/creatureAvatars';
-import type { Screen } from '../types/navigation';
+import type { Screen } from '../types';
 
 interface HomeScreenProps {
   onStartCombat: () => void;
@@ -42,7 +43,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
     const skeleton: Creature = {
       name: 'Skeleton',
       avatarPath: CREATURE_AVATARS['Skeleton'] ?? DEFAULT_CREATURE_AVATAR,
-      class: 'Fighter',
+      creatureClass: 'Undead',
       level: 1,
       attributes: {
         STR: 13,
@@ -93,6 +94,7 @@ export function HomeScreen({ onStartCombat, onCreateCharacter, onViewCharacter, 
       resources: {
         abilities: [],
       },
+      lootTableId: "skeleton_loot"
     };
 
     startCombat(player, skeleton);

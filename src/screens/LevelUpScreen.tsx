@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useCharacterStore } from '../stores/characterStore';
 import { applyLevelUp, calculateHPIncrease, calculateBABIncrease } from '../utils/levelUp';
-import type { Feat } from '../types/feat';
+import type { Feat } from '../types';
 import { Icon } from '../components';
 
 // TODO: Import from data/feats when implemented

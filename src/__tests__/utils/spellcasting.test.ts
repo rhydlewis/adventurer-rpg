@@ -9,8 +9,8 @@ import {
   castSpell,
 } from '../../utils/spellcasting';
 import { RAY_OF_FROST, ACID_SPLASH, DAZE, DIVINE_FAVOR, SACRED_FLAME } from '../../data/spells';
-import type { Character } from '../../types/character';
-import type { Creature } from '../../types/combat';
+import type { Character } from '../../types';
+import type { Creature } from '../../types/creature';
 import { setForcedD20Roll, clearForcedD20Roll } from '../../utils/dice';
 import { WEAPONS, ARMORS } from '../../data/equipment';
 
@@ -52,7 +52,7 @@ const createCleric = (wis: number = 16): Character => ({
 const createEnemy = (ac: number = 14, hp: number = 10): Creature => ({
   name: 'Skeleton',
   avatarPath: 'human_female_00009.png',
-  class: 'Fighter',
+  creatureClass: 'Undead',
   level: 1,
   attributes: { STR: 12, DEX: 14, CON: 12, INT: 10, WIS: 10, CHA: 8 },
   hp,
@@ -64,6 +64,7 @@ const createEnemy = (ac: number = 14, hp: number = 10): Creature => ({
   feats: [],
   equipment: { weapon: WEAPONS.Dagger, armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: { abilities: [] },
+  lootTableId: 'test_loot'
 });
 
 describe('Spellcasting - Ability Modifiers', () => {

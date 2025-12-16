@@ -1,4 +1,4 @@
-import type { Character } from '../types/character';
+import type { Entity } from '../types/entity';
 
 export type SaveType = 'negates' | 'half' | 'partial';
 export type SaveCategory = 'fortitude' | 'reflex' | 'will';
@@ -32,23 +32,23 @@ export function calculateSaveDC(level: number, abilityModifier: number): number 
 }
 
 /**
- * Make a saving throw for a character
+ * Make a saving throw for an entity
  * Roll 1d20 + save bonus vs DC
  *
- * @param character Character making the save
+ * @param entity Entity making the save (Character or Creature)
  * @param saveType Type of save (fortitude, reflex, will)
  * @param dc Difficulty class to beat
  * @param naturalRoll Natural d20 roll (for testing, if not provided will roll)
  * @returns Save result with success/failure and details
  */
 export function makeSavingThrow(
-  character: Character,
+  entity: Entity,
   saveType: SaveCategory,
   dc: number,
   naturalRoll?: number
 ): SaveResult {
   const roll = naturalRoll ?? Math.floor(Math.random() * 20) + 1; // 1d20
-  const bonus = character.saves[saveType];
+  const bonus = entity.saves[saveType];
   const total = roll + bonus;
   const success = total >= dc;
 

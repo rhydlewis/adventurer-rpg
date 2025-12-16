@@ -4,8 +4,8 @@ import {useNarrativeStore} from '../stores/narrativeStore';
 import {getExplorationTable} from '../data/explorationTables';
 import {rollExplorationTable} from '../utils/exploration';
 import {getItem} from '../data/items';
-import type {ExplorationOutcome} from '../types/narrative';
-import type {Screen} from '../types/navigation';
+import type {ExplorationOutcome} from '../types';
+import type {Screen} from '../types';
 
 interface ExplorationScreenProps {
     tableId: string;

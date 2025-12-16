@@ -1,5 +1,7 @@
 import { create } from 'zustand';
-import type { CombatState, Character, Creature } from '../types';
+import type { CombatState } from '../types';
+import type { Character } from '../types';
+import type { Creature } from "../types/creature";
 import type { Action } from '../types/action';
 import { resolveCombatRound, handleRetreat } from '../utils/combat';
 import { rollInitiative } from '../utils/initiative';

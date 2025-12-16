@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { CombatAction, Creature } from '../../types/combat';
+import type { CombatAction } from '../../types';
+import type { Creature} from "../../types/creature";
 
 describe('Combat Type Extensions', () => {
   it('should support all combat action types', () => {
@@ -16,9 +17,8 @@ describe('Combat Type Extensions', () => {
     const goblin: Creature = {
       name: 'Goblin Raider',
       avatarPath: '/enemies/goblin.jpg',
-      class: 'Fighter',
+      creatureClass: 'Beast',
       level: 1,
-      traits: [],
       attributes: { STR: 10, DEX: 14, CON: 12, INT: 8, WIS: 8, CHA: 6 },
       hp: 8,
       maxHp: 8,
@@ -34,12 +34,10 @@ describe('Combat Type Extensions', () => {
         items: [],
       },
       resources: { abilities: [], spellSlots: { level0: { max: 0, current: 0 }, level1: { max: 0, current: 0 } } },
-      gold: 10,
-      inventory: [],
-      maxInventorySlots: 5,
       taunts: {
         onCombatStart: ['Me smash you good!'],
       },
+      lootTableId: "test_loot"
     };
 
     expect(goblin.taunts?.onCombatStart).toContain('Me smash you good!');

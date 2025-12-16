@@ -1,7 +1,9 @@
 import { rollAttack, rollDamage, calculateModifier } from './dice';
-import type { Character, Creature, CombatState } from '../types';
+import type { CombatState } from '../types';
+import type { Character } from '../types';
+import type { Creature } from "../types/creature";
 import type { Action, CastSpellAction } from '../types/action';
-import type { Condition } from '../types/condition';
+import type { Condition } from '../types';
 import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 import {
   activateSecondWind,

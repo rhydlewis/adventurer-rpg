@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCombatStore } from '../../stores/combatStore';
 import { rollInitiative } from '../../utils/initiative';
 import { resolveCombatRound } from '../../utils/combat';
-import type { Character, Creature, CombatState } from '../../types';
+import type { CombatState } from '../../types';
+import type { Character } from '../../types';
+import type { Creature } from "../../types/creature";
+
 
 // Mock dependencies
 vi.mock('../../utils/initiative', () => ({
@@ -37,7 +40,7 @@ const createMockCharacter = (name: string = 'Player', hp: number = 10, _initiati
 const createMockEnemy = (name: string = 'Skeleton', hp: number = 8, _initiative: number = 8): Creature => ({
   name,
   avatarPath: 'human_female_00009.png',
-  class: 'Fighter',
+  creatureClass: 'Undead',
   level: 1,
   attributes: { STR: 10, DEX: 10, CON: 10, INT: 10, WIS: 10, CHA: 10 },
   hp,
@@ -54,6 +57,7 @@ const createMockEnemy = (name: string = 'Skeleton', hp: number = 8, _initiative:
     items: [],
   },
   resources: { abilities: [] },
+  lootTableId: 'test_loot'
 });
 
 describe('stores/combatStore', () => {
@@ -74,8 +78,8 @@ describe('stores/combatStore', () => {
 
   describe('startCombat', () => {
     it('should initialize combat state with player going first if player wins initiative', () => {
-      vi.mocked(rollInitiative).mockImplementation((char: Character) => {
-        if (char.name === player.name) return 12; // Player initiative
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === player.name) return 12; // Player initiative
         return 10; // Enemy initiative
       });
 
@@ -95,8 +99,8 @@ describe('stores/combatStore', () => {
     });
 
     it('should initialize combat state with enemy going first if enemy wins initiative', () => {
-      vi.mocked(rollInitiative).mockImplementation((char: Character) => {
-        if (char.name === player.name) return 8; // Player initiative
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === player.name) return 8; // Player initiative
         return 15; // Enemy initiative
       });
 
@@ -110,7 +114,7 @@ describe('stores/combatStore', () => {
     });
 
     it('should initialize combat state with player going first if initiative is tied', () => {
-      vi.mocked(rollInitiative).mockImplementation((_char: Character) => {
+      vi.mocked(rollInitiative).mockImplementation(() => {
         return 10; // Tied initiative
       });
 

@@ -1,4 +1,4 @@
-import type {Creature} from '../types/combat';
+import type {Creature} from '../types/creature';
 import {CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR} from './creatureAvatars';
 
 /**
@@ -12,7 +12,7 @@ export const enemies: Record<string, Creature> = {
     bandit: {
         name: 'Bandit',
         avatarPath: CREATURE_AVATARS['Bandit'] || DEFAULT_CREATURE_AVATAR,
-        class: 'Fighter',
+        creatureClass: 'Humanoid',
         level: 1,
         attributes: {
             STR: 13, // +1
@@ -70,12 +70,13 @@ export const enemies: Record<string, Creature> = {
             onEnemyHit: ["How'd you like that?", "You're finished!", "Take that!"],
             onLowHealth: ["I'll... get you...", "This isn't over!", "You got lucky!"],
         },
+        lootTableId: "bandit_loot"
     },
 
     skeleton: {
         name: 'Skeleton',
         avatarPath: CREATURE_AVATARS['Skeleton'] || DEFAULT_CREATURE_AVATAR,
-        class: 'Fighter',
+        creatureClass: 'Undead',
         level: 1,
         attributes: {
             STR: 13, // +1
@@ -133,12 +134,13 @@ export const enemies: Record<string, Creature> = {
             onEnemyHit: ["*bones crack against you*", "*relentless assault*"],
             onLowHealth: ["*bones begin to crumble*"],
         },
+        lootTableId: "skeleton_loot"
     },
 
     wraith: {
         name: 'Wraith',
         avatarPath: CREATURE_AVATARS['Wraith'] || DEFAULT_CREATURE_AVATAR,
-        class: 'Wizard',
+        creatureClass: 'Undead',
         level: 1,
 
         attributes: {
@@ -203,12 +205,13 @@ export const enemies: Record<string, Creature> = {
             onEnemyHit: ["*life-draining touch*", "Feel the cold of the grave!"],
             onLowHealth: ["*fading into mist*", "I shall return...", "*dissipating*"],
         },
+        lootTableId: "wraith_loot"
     },
 
     giantSpider: {
         name: "Giant Spider",
         avatarPath: CREATURE_AVATARS['Spider'] || DEFAULT_CREATURE_AVATAR,
-        class: "Fighter",
+        creatureClass: "Beast",
         level: 1,
         attributes: {
             STR: 11,   // +0  (moderate strength)
@@ -264,7 +267,8 @@ export const enemies: Record<string, Creature> = {
                 "*retreats into the shadows, wounded*",
                 "*eight legs tremble as it prepares a final strike*"
             ]
-        }
+        },
+        lootTableId: "spider_loot"
     }
 };
 

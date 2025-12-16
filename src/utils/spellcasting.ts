@@ -1,6 +1,5 @@
-import type { Character } from '../types/character';
-import type { Creature } from '../types/combat';
-import type { Spell, SpellCastResult } from '../types/spell';
+import type { Entity } from '../types/entity';
+import type { Spell, SpellCastResult } from '../types';
 import { roll, rollAttack } from './dice';
 import { makeSavingThrow } from './savingThrows';
 
@@ -13,32 +12,43 @@ function getAttributeModifier(score: number): number {
 }
 
 /**
- * Get the casting ability modifier for a character class
+ * Get the casting ability modifier for an entity
+ * For Characters: uses class-specific casting stat (INT for Wizard, WIS for Cleric)
+ * For Creatures: uses highest mental stat (INT, WIS, or CHA)
  */
-export function getCastingAbilityModifier(character: Character): number {
-  switch (character.class) {
-    case 'Wizard':
-      return getAttributeModifier(character.attributes.INT);
-    case 'Cleric':
-      return getAttributeModifier(character.attributes.WIS);
-    default:
-      return 0;
+export function getCastingAbilityModifier(entity: Entity): number {
+  // Type guard: check if entity is a Character
+  if ('class' in entity) {
+    switch (entity.class) {
+      case 'Wizard':
+        return getAttributeModifier(entity.attributes.INT);
+      case 'Cleric':
+        return getAttributeModifier(entity.attributes.WIS);
+      default:
+        return 0;
+    }
   }
+
+  // For Creatures: use highest mental stat
+  const intMod = getAttributeModifier(entity.attributes.INT);
+  const wisMod = getAttributeModifier(entity.attributes.WIS);
+  const chaMod = getAttributeModifier(entity.attributes.CHA);
+  return Math.max(intMod, wisMod, chaMod);
 }
 
 /**
  * Calculate spell attack bonus
  * Formula: BAB + casting ability modifier
  */
-export function getSpellAttackBonus(character: Character): number {
-  return character.bab + getCastingAbilityModifier(character);
+export function getSpellAttackBonus(entity: Entity): number {
+  return entity.bab + getCastingAbilityModifier(entity);
 }
 
 /**
  * Calculate spell save DC
  * Formula: 10 + spell level + casting ability modifier
  */
-export function getSpellSaveDC(caster: Character, spellLevel: number): number {
+export function getSpellSaveDC(caster: Entity, spellLevel: number): number {
   return 10 + spellLevel + getCastingAbilityModifier(caster);
 }
 
@@ -47,8 +57,8 @@ export function getSpellSaveDC(caster: Character, spellLevel: number): number {
  * Rolls attack: 1d20 + spell attack bonus vs target AC
  */
 export function castDamageSpell(
-  caster: Character,
-  target: Creature,
+  caster: Entity,
+  target: Entity,
   spell: Spell
 ): SpellCastResult {
   if (!spell.effect.damageDice) {
@@ -96,8 +106,8 @@ ${damageDice}: ${damage} ${spell.effect.damageType} damage`;
  * Target rolls save vs caster's spell DC
  */
 export function castSpellWithSave(
-  caster: Character,
-  target: Creature,
+  caster: Entity,
+  target: Entity,
   spell: Spell
 ): SpellCastResult {
   if (!spell.savingThrow) {
@@ -174,7 +184,7 @@ ${spell.effect.damageDice}: ${damage} ${spell.effect.damageType} damage`,
  * Cast a buff spell (self-target)
  * Applies temporary bonus to next attack, save, etc.
  */
-export function castBuffSpell(caster: Character, spell: Spell): SpellCastResult {
+export function castBuffSpell(caster: Entity, spell: Spell): SpellCastResult {
   if (spell.effect.type !== 'buff') {
     return {
       success: false,
@@ -196,8 +206,8 @@ export function castBuffSpell(caster: Character, spell: Spell): SpellCastResult 
  * Routes to appropriate handler based on spell type
  */
 export function castSpell(
-  caster: Character,
-  target: Creature | Character,
+  caster: Entity,
+  target: Entity,
   spell: Spell
 ): SpellCastResult {
   // Buff spells (self-target)
