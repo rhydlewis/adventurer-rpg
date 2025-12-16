@@ -4,6 +4,7 @@ import { SplashScreen } from './screens/SplashScreen';
 import { MainMenuScreen } from './screens/MainMenuScreen';
 import { CombatScreen } from './screens/CombatScreen';
 import { CharacterCreationScreen } from './screens/CharacterCreationScreen';
+import { QuickCharacterCreationScreen } from './screens/QuickCharacterCreationScreen';
 import { CharacterSheetScreen } from './screens/CharacterSheetScreen';
 import { StoryScreen } from './screens/StoryScreen';
 import { useCharacterStore } from './stores/characterStore';
@@ -129,6 +130,9 @@ function App() {
         />
       )}
       {currentScreen.type === 'characterCreation' && <CharacterCreationScreen />}
+      {currentScreen.type === 'quickCharacterCreation' && (
+        <QuickCharacterCreationScreen onComplete={currentScreen.onComplete} />
+      )}
       {currentScreen.type === 'characterSheet' && character && (
         <CharacterSheetScreen character={character} onClose={handleCloseSheet} />
       )}

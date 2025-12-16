@@ -233,6 +233,18 @@ export function resolveOutcome(
         },
       };
 
+    case 'characterCreation':
+      // Trigger character creation UI
+      return {
+        nextNodeId: null, // Don't navigate yet
+        logEntries: [],
+        worldUpdates: {},
+        characterCreationTrigger: {
+          phase: outcome.phase,
+          nextNodeId: outcome.nextNodeId,
+        },
+      };
+
     default:
       return {
         nextNodeId: null,

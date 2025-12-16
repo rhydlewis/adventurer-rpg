@@ -49,7 +49,8 @@ export type ChoiceOutcome =
       failure: ChoiceOutcome;
     }
   | { type: 'explore'; tableId: string; onceOnly: boolean }
-  | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> };
+  | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> }
+  | { type: 'characterCreation'; phase: 1 | 2; nextNodeId: string };
 
 export interface Choice {
   id: string;
@@ -201,6 +202,10 @@ export interface OutcomeResolution {
   merchantTrigger?: {
     shopInventory: string[];
     buyPrices: Record<string, number>;
+  };
+  characterCreationTrigger?: {
+    phase: 1 | 2;
+    nextNodeId: string;
   };
 }
 

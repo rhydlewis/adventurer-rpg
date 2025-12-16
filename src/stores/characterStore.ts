@@ -7,6 +7,7 @@ import type { NodeEffect } from '../types';
 import { createCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { DEFAULT_AVATAR } from '../data/avatars';
+import { getBackgroundByClass } from '../data/backgrounds';
 
 export type CreationStep = 'class' | 'attributes' | 'skills' | 'feat' | 'name' | 'complete';
 
@@ -40,6 +41,9 @@ interface CharacterStore {
   finalizeCharacter: () => void;
   resetCreation: () => void;
   setCharacter: (character: Character) => void; // For testing
+
+  // NEW: Quick character creation (Phase 1)
+  createQuickCharacter: (characterClass: CharacterClass) => void;
 
   // NEW: Process narrative effects that modify character
   processNarrativeEffects: (effects: NodeEffect[]) => void;
@@ -228,6 +232,69 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
 
   setCharacter: (character) => {
     set({ character, creationStep: 'complete' });
+  },
+
+  createQuickCharacter: (characterClass) => {
+    const background = getBackgroundByClass(characterClass);
+
+    // Use background attribute bias as starting attributes, with defaults
+    const attributes: Attributes = {
+      STR: background.attributeBias?.STR || 10,
+      DEX: background.attributeBias?.DEX || 10,
+      CON: background.attributeBias?.CON || 10,
+      INT: background.attributeBias?.INT || 10,
+      WIS: background.attributeBias?.WIS || 10,
+      CHA: background.attributeBias?.CHA || 10,
+    };
+
+    // Initialize skill ranks - tagged skills get 1 rank
+    const skillRanks: SkillRanks = {
+      Athletics: 0,
+      Stealth: 0,
+      Perception: 0,
+      Arcana: 0,
+      Medicine: 0,
+      Intimidate: 0,
+    };
+
+    // Apply tagged skills if they exist
+    if (background.taggedSkills) {
+      background.taggedSkills.forEach((skill) => {
+        if (skill in skillRanks) {
+          skillRanks[skill as keyof SkillRanks] = 1;
+        }
+      });
+    }
+
+    // Create character using existing utility with default values
+    const character = createCharacter({
+      name: `${characterClass} Adventurer`,
+      avatarPath: DEFAULT_AVATAR,
+      class: characterClass,
+      attributes,
+      skillRanks,
+      selectedFeat: undefined,
+    });
+
+    // Add background and quirk information
+    const characterWithBackground: Character = {
+      ...character,
+      background,
+      startingQuirk: background.startingQuirk,
+    };
+
+    set({
+      character: characterWithBackground,
+      creationStep: 'complete',
+      creationData: {
+        name: characterWithBackground.name,
+        avatarPath: characterWithBackground.avatarPath,
+        class: characterClass,
+        attributes,
+        skillRanks,
+        selectedFeat: null,
+      },
+    });
   },
 
   processNarrativeEffects: (effects) => {

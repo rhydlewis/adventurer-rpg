@@ -23,7 +23,11 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'start-char-creation',
                 text: 'Create Character',
-                outcome: {type: 'goto', nodeId: 'validation-first-combat'}, // Will trigger char creation UI
+                outcome: {
+                    type: 'characterCreation',
+                    phase: 1,
+                    nextNodeId: 'validation-first-combat',
+                },
             },
             {
                 id: 'continue-to-merchant',

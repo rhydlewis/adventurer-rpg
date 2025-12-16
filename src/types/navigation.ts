@@ -2,11 +2,14 @@
 // Screen Navigation Types
 // =============================================================================
 
+import type { CharacterClass } from './character';
+
 export type Screen =
   | { type: 'splash' }
   | { type: 'mainMenu' }
   | { type: 'home' }
   | { type: 'characterCreation' }
+  | { type: 'quickCharacterCreation'; onComplete: (characterClass: CharacterClass) => void }
   | { type: 'story' }
   | { type: 'combat'; enemyId: string; onVictoryNodeId: string }
   | { type: 'gameOver'; deathNodeId?: string }

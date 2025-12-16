@@ -273,6 +273,42 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       return; // Don't process navigation yet
     }
 
+    // Handle character creation trigger
+    if (resolution.characterCreationTrigger) {
+      const { onNavigate } = get();
+      if (onNavigate) {
+        if (resolution.characterCreationTrigger.phase === 1) {
+          // Phase 1: Quick creation
+          onNavigate({
+            type: 'quickCharacterCreation',
+            onComplete: (characterClass) => {
+              // Create character using background defaults
+              useCharacterStore.getState().createQuickCharacter(characterClass);
+
+              // Navigate to next node
+              const nextNodeId = resolution.characterCreationTrigger!.nextNodeId;
+              const char = useCharacterStore.getState().character;
+              if (char) {
+                get().enterNode(nextNodeId, char);
+              }
+
+              // Return to story
+              const nav = get().onNavigate;
+              if (nav) {
+                nav({ type: 'story' });
+              }
+            },
+          });
+        } else {
+          // Phase 2: Full customization (existing CharacterCreationScreen)
+          onNavigate({
+            type: 'characterCreation',
+          });
+        }
+      }
+      return; // Don't process navigation yet
+    }
+
     // Update conversation state with visited choice
     const newVisitedChoiceIds = conversation.visitedChoiceIds.includes(choiceId)
       ? conversation.visitedChoiceIds
