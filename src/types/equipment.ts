@@ -46,8 +46,8 @@ export type ItemEffect =
   | { type: 'remove-condition'; condition: string }; // NEW: Antidote
 
 export interface Equipment {
-  weapon: Weapon;
-  armor: Armor;
-  shield: Shield;
+  weapon: Weapon | null;
+  armor: Armor | null;
+  shield: Shield | null;
   items: Item[];
 }

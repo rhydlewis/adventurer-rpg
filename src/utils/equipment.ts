@@ -19,6 +19,17 @@ export function getWeaponDamage(character: Character): WeaponDamageInfo {
   const strMod = calculateModifier(character.attributes.STR);
   const dexMod = calculateModifier(character.attributes.DEX);
 
+  // If no weapon, use unarmed strike (1d3 + STR)
+  if (!weapon) {
+    const totalNotation =
+      strMod >= 0 ? `1d3+${strMod}` : `1d3${strMod}`;
+    return {
+      damageDice: '1d3',
+      modifier: strMod,
+      totalNotation,
+    };
+  }
+
   // Finesse weapons can use DEX or STR (whichever is higher)
   const modifier = weapon.finesse ? Math.max(strMod, dexMod) : strMod;
 
@@ -42,6 +53,11 @@ export function getWeaponAttackBonus(character: Character): number {
   const weapon = character.equipment.weapon;
   const strMod = calculateModifier(character.attributes.STR);
   const dexMod = calculateModifier(character.attributes.DEX);
+
+  // If no weapon, use unarmed strike (uses STR)
+  if (!weapon) {
+    return character.bab + strMod;
+  }
 
   // Finesse weapons can use DEX or STR (whichever is higher)
   const abilityMod = weapon.finesse ? Math.max(strMod, dexMod) : strMod;

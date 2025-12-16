@@ -356,14 +356,14 @@ function CombatTab({ character }: { character: Character }) {
           <EquipmentItem
             icon="Sword"
             label="Weapon"
-            value={character.equipment.weapon.name}
+            value={character.equipment.weapon?.name || 'Unarmed Strike'}
           />
           <EquipmentItem
             icon="Shield"
             label="Armor"
-            value={character.equipment.armor.name}
+            value={character.equipment.armor?.name || 'None'}
           />
-          {character.equipment.shield.equipped && (
+          {character.equipment.shield?.equipped && (
             <EquipmentItem
               icon="ShieldAlert"
               label="Shield"

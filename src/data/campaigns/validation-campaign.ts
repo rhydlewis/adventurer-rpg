@@ -47,16 +47,16 @@ const validationNodes: StoryNode[] = [
         ],
     },
 
-    // === NODE 2: First Combat (Goblin) ===
+    // === NODE 2: First Combat (Giant Spider) ===
     {
         id: 'validation-first-combat',
         title: 'Ambush!',
-        description: 'As you step onto the forest path, a goblin leaps from the underbrush, brandishing a rusty dagger!',
+        description: 'As you step onto the forest path, a massive spider drops from the canopy above, its eight eyes gleaming hungrily and mandibles clicking!',
         locationId: 'darkwood-forest',
         onEnter: [
             {
                 type: 'startCombat',
-                enemyId: 'goblin', // TODO: Need goblin enemy
+                enemyId: 'giantSpider',
                 onVictoryNodeId: 'validation-post-combat-1',
             },
         ],
@@ -66,7 +66,7 @@ const validationNodes: StoryNode[] = [
     // === NODE 2b: Post First Combat ===
     {
         id: 'validation-post-combat-1',
-        description: 'The goblin falls with a final screech. You catch your breath and search the area, finding a small pouch of coins and a healing potion.',
+        description: 'The giant spider collapses, its legs curling inward. You catch your breath and search the area, finding a small pouch of coins and a healing potion in an old web-covered pack.',
         onEnter: [
             {type: 'giveGold', amount: 50},
             {type: 'giveItem', itemId: 'healing-potion'},
@@ -157,6 +157,7 @@ const validationNodes: StoryNode[] = [
     {
         id: 'validation-phase2-unlock',
         description: 'You\'ve proven yourself in battle and trade. You feel more confident in your abilities. Perhaps it\'s time to refine your skills and choose how you\'ve grown.',
+        locationId: 'character-reflection',
         onEnter: [
             // This would trigger Phase 2 UI (point-buy, skill allocation, feat selection)
             // For now, just a placeholder node effect
@@ -235,6 +236,7 @@ const validationNodes: StoryNode[] = [
         id: 'validation-levelup',
         title: 'Growth',
         description: 'Your trials have made you stronger. You feel the surge of experience as your skills sharpen and your body becomes more resilient. Choose how you\'ve grown.',
+        locationId: 'character-reflection',
         onEnter: [
             {
                 type: 'levelUp',
@@ -273,6 +275,7 @@ const validationNodes: StoryNode[] = [
         id: 'validation-end',
         title: 'Victory!',
         description: 'The wraith dissipates with an otherworldly scream. You stand victorious, battle-tested and proven. The validation campaign is complete.',
+        locationId: 'victory-hall',
         onEnter: [
             { type: 'giveGold', amount: 100 },
             { type: 'setFlag', flag: 'validation_complete', value: true },
@@ -289,6 +292,7 @@ const validationNodes: StoryNode[] = [
         id: 'validation-death',
         title: 'Fallen',
         description: 'You have fallen in battle. Your journey ends here in the darkness of the crypt.',
+        locationId: 'shadowed-end',
         choices: [],
     },
 ];

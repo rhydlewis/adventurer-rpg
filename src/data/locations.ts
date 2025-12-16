@@ -36,6 +36,56 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'A crude camp in a forest clearing, abandoned and eerily quiet',
     description: 'Makeshift tents and dying embers mark this temporary refuge',
   },
+  // Validation Campaign Locations
+  'darkwood-forest': {
+    id: 'darkwood-forest',
+    name: 'Darkwood Forest',
+    image: 'card_location_exterior_00015.png',
+    ambience: 'Ancient trees loom overhead, their branches filtering the dappled sunlight',
+    description: 'A dense woodland with winding game trails and shadowed paths',
+  },
+  'village-market': {
+    id: 'village-market',
+    name: 'Village Market',
+    image: 'card_location_merchant.png',
+    ambience: 'The smell of fresh bread and leather mingles with the chatter of merchants',
+    description: 'A bustling market square with wooden carts and weathered traders',
+  },
+  'crypt': {
+    id: 'crypt',
+    name: 'Ancient Crypt',
+    image: 'card_location_exterior_00014.png',
+    ambience: 'Cold stone walls echo with whispers of the long dead',
+    description: 'A forgotten tomb beneath the earth, its air thick with dust and decay',
+  },
+  'void-sanctum': {
+    id: 'void-sanctum',
+    name: 'Void Sanctum',
+    image: 'card_location_exterior_00031.png',
+    ambience: 'Reality itself seems to flicker and warp in this ethereal chamber',
+    description: 'A place between worlds, where shadows dance with otherworldly light',
+  },
+  'character-reflection': {
+    id: 'character-reflection',
+    name: 'Moment of Clarity',
+    image: 'card_location_exterior_00036.png',
+    ambience: 'Time seems to slow as you contemplate your journey and growth',
+    description: 'A space of inner reflection where potential becomes power',
+  },
+  'victory-hall': {
+    id: 'victory-hall',
+    name: 'Hall of Triumph',
+    image: 'card_location_exterior_00049.png',
+    ambience: 'Golden light cascades through ancient windows, celebrating your victory',
+    description: 'A sacred place where heroes are forged and legends are born',
+  },
+  'shadowed-end': {
+    id: 'shadowed-end',
+    name: 'The Final Darkness',
+    image: 'card_location_exterior_00046.png',
+    ambience: 'All light fades as consciousness slips away into endless shadow',
+    description: 'The cold embrace of defeat, where all journeys end',
+  },
 } as const;
 
 export const LOCATION_IDS = Object.keys(LOCATIONS) as Array<keyof typeof LOCATIONS>;

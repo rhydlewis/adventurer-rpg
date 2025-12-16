@@ -190,9 +190,12 @@ describe('utils/characterCreation', () => {
       expect(fighter.skills).toEqual(skills);
       expect(fighter.feats).toHaveLength(1);
       expect(fighter.feats[0].name).toBe('Weapon Focus');
-      expect(fighter.equipment.weapon.name).toBe('Longsword');
-      expect(fighter.equipment.armor.name).toBe('Chainmail');
-      expect(fighter.equipment.shield.equipped).toBe(true);
+      expect(fighter.equipment.weapon).toBeTruthy();
+      expect(fighter.equipment.weapon!.name).toBe('Longsword');
+      expect(fighter.equipment.armor).toBeTruthy();
+      expect(fighter.equipment.armor!.name).toBe('Chainmail');
+      expect(fighter.equipment.shield).toBeTruthy();
+      expect(fighter.equipment.shield!.equipped).toBe(true);
     });
 
     it('creates a Rogue with correct equipment and no feats', () => {
@@ -222,10 +225,13 @@ describe('utils/characterCreation', () => {
 
       expect(rogue.class).toBe('Rogue');
       expect(rogue.feats).toHaveLength(0); // Rogue doesn't get feat at level 1
-      expect(rogue.equipment.weapon.name).toBe('Rapier');
-      expect(rogue.equipment.weapon.finesse).toBe(true);
-      expect(rogue.equipment.armor.name).toBe('Leather');
-      expect(rogue.equipment.shield.equipped).toBe(false);
+      expect(rogue.equipment.weapon).toBeTruthy();
+      expect(rogue.equipment.weapon!.name).toBe('Rapier');
+      expect(rogue.equipment.weapon!.finesse).toBe(true);
+      expect(rogue.equipment.armor).toBeTruthy();
+      expect(rogue.equipment.armor!.name).toBe('Leather');
+      expect(rogue.equipment.shield).toBeTruthy();
+      expect(rogue.equipment.shield!.equipped).toBe(false);
       expect(rogue.equipment.items).toHaveLength(2); // 1 potion item (qty 2) + 1 smoke bomb
       expect(rogue.equipment.items[0].quantity).toBe(2); // Healing potions
       expect(rogue.equipment.items[1].name).toBe('Smoke Bomb');

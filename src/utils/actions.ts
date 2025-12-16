@@ -10,10 +10,11 @@ export function getAvailableActions(character: Character): Action[] {
   const actions: Action[] = [];
 
   // 1. Basic Attack - always available
+  const weaponName = character.equipment.weapon?.name || 'Unarmed Strike';
   actions.push({
     type: 'attack',
     name: 'Attack',
-    description: `Attack with ${character.equipment.weapon.name}`,
+    description: `Attack with ${weaponName}`,
     available: true,
   } as AttackAction);
 

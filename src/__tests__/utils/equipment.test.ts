@@ -5,7 +5,7 @@ import type { ItemType } from '../../types/equipment';
 
 describe('utils/equipment', () => {
   const createCharacterWithWeapon = (
-    weaponName: Character['equipment']['weapon']['name'],
+    weaponName: 'Longsword' | 'Rapier' | 'Dagger',
     attributes: Character['attributes']
   ): Character => ({
     name: 'Test',
