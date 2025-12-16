@@ -32,6 +32,7 @@ interface LevelUpScreenProps {
 export function LevelUpScreen({newLevel, featChoices, onComplete}: LevelUpScreenProps) {
     const {character, setCharacter} = useCharacterStore();
     const [selectedFeatId, setSelectedFeatId] = useState<string | null>(null);
+    const [isConfirming, setIsConfirming] = useState(false);
 
     if (!character) {
         return <div className="min-h-screen bg-primary text-fg-primary flex items-center justify-center">
@@ -46,12 +47,19 @@ export function LevelUpScreen({newLevel, featChoices, onComplete}: LevelUpScreen
     const babIncrease = calculateBABIncrease(character.class, character.level, newLevel);
 
     const handleConfirm = () => {
-        if (!selectedFeatId) return;
+        if (!selectedFeatId || isConfirming) return;
+
+        // Prevent multiple clicks
+        setIsConfirming(true);
 
         const chosenFeat = MOCK_FEATS[selectedFeatId];
         const updatedCharacter = applyLevelUp(character, newLevel, chosenFeat);
         setCharacter(updatedCharacter);
-        onComplete();
+
+        // Small delay to ensure state is updated before navigation
+        setTimeout(() => {
+            onComplete();
+        }, 100);
     };
 
     return (
@@ -146,14 +154,19 @@ export function LevelUpScreen({newLevel, featChoices, onComplete}: LevelUpScreen
                 {/* Confirm Button */}
                 <button
                     className={`button-text w-full py-4 rounded-lg text-lg font-bold transition-all flex items-center justify-center gap-3 ${
-                        selectedFeatId
+                        selectedFeatId && !isConfirming
                             ? 'bg-gradient-to-br from-success to-success/80 text-white hover:from-success/90 hover:to-success/70 shadow-lg shadow-success/20 active:scale-[0.98]'
                             : 'bg-secondary border-2 border-border-default text-fg-muted cursor-not-allowed opacity-50'
                     }`}
                     onClick={handleConfirm}
-                    disabled={!selectedFeatId}
+                    disabled={!selectedFeatId || isConfirming}
                 >
-                    {selectedFeatId ? (
+                    {isConfirming ? (
+                        <>
+                            <Icon name="Loader" size={24} className="animate-spin" />
+                            <span>Leveling Up...</span>
+                        </>
+                    ) : selectedFeatId ? (
                         <>
                             <Icon name="Check" size={24} />
                             <span>Confirm Level Up</span>

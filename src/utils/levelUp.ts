@@ -63,6 +63,12 @@ export function applyLevelUp(
   newLevel: number,
   chosenFeat: Feat
 ): Character {
+  // Safety check: prevent duplicate level-ups
+  if (character.level >= newLevel) {
+    console.warn(`Character is already level ${character.level}, cannot level up to ${newLevel}`);
+    return character;
+  }
+
   const hpIncrease = calculateHPIncrease(character.class, character.attributes.CON);
   const babIncrease = calculateBABIncrease(character.class, character.level, newLevel);
 
