@@ -18,6 +18,7 @@ import { castSpell } from './spellcasting';
 import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
 import { calculateConditionModifiers, decrementConditions, applyConditionDamage, applyCondition } from './conditions';
 import { rollLoot, formatLootMessage } from './loot';
+import { selectTaunt, isLowHealth } from './taunts';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -34,6 +35,7 @@ export function performAttack(
   isCrit?: boolean;
   isFumble?: boolean;
   fumbleEffect?: ReturnType<typeof rollFumbleEffect>;
+  taunt?: string;
 } {
   // Calculate condition modifiers for both combatants
   const attackerMods = calculateConditionModifiers(attackerConditions);
@@ -69,6 +71,10 @@ export function performAttack(
     const dmg = rollDamage(critResult.formula, 0); // Modifier already in formula
 
     const label = modifiers?.label ? ` (${modifiers.label})` : '';
+
+    // Determine taunt: if attacker is a Creature and hit, use onEnemyHit taunt
+    const taunt = 'taunts' in attacker ? selectTaunt(attacker, 'onEnemyHit') : undefined;
+
     return {
       hit: true,
       attackRoll: naturalRoll,
@@ -76,6 +82,7 @@ export function performAttack(
       damage: dmg.total,
       isCrit: true,
       output: `${attack.output} vs AC ${effectiveDefenderAC}${label} - ${critResult.description} ${dmg.output} damage`,
+      taunt,
     };
   }
 
@@ -83,6 +90,10 @@ export function performAttack(
   if (isCriticalFumble(naturalRoll)) {
     // Fumbles always miss
     const fumble = rollFumbleEffect();
+
+    // Determine taunt: if defender is a Creature and attacker missed, use onPlayerMiss taunt
+    const taunt = 'taunts' in defender ? selectTaunt(defender, 'onPlayerMiss') : undefined;
+
     return {
       hit: false,
       attackRoll: naturalRoll,
@@ -90,6 +101,7 @@ export function performAttack(
       isFumble: true,
       fumbleEffect: fumble,
       output: `${attack.output} vs AC ${effectiveDefenderAC} - FUMBLE! ${fumble.description}`,
+      taunt,
     };
   }
 
@@ -102,20 +114,28 @@ export function performAttack(
     // For walking skeleton, assume 1d8 weapon
     const dmg = rollDamage('1d8', abilityMod + totalDamageBonus);
 
+    // Determine taunt: if attacker is a Creature and hit, use onEnemyHit taunt
+    const taunt = 'taunts' in attacker ? selectTaunt(attacker, 'onEnemyHit') : undefined;
+
     return {
       hit: true,
       attackRoll: naturalRoll,
       attackTotal: attack.total,
       damage: dmg.total,
       output: `${attack.output} vs AC ${effectiveDefenderAC}${label} - HIT! ${dmg.output} damage`,
+      taunt,
     };
   }
+
+  // Determine taunt: if defender is a Creature and attacker missed, use onPlayerMiss taunt
+  const taunt = 'taunts' in defender ? selectTaunt(defender, 'onPlayerMiss') : undefined;
 
   return {
     hit: false,
     attackRoll: naturalRoll,
     attackTotal: attack.total,
     output: `${attack.output} vs AC ${effectiveDefenderAC}${label} - MISS!`,
+    taunt,
   };
 }
 
@@ -131,6 +151,19 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
 
   let playerCharacter = state.playerCharacter;
   let enemy = state.enemy;
+
+  // Combat start taunt (only on turn 1)
+  if (state.turn === 1) {
+    const startTaunt = selectTaunt(enemy, 'onCombatStart');
+    if (startTaunt) {
+      log.push({
+        turn: state.turn,
+        actor: 'enemy',
+        message: '', // Empty message, taunt carries the content
+        taunt: startTaunt,
+      });
+    }
+  }
 
   // Clear player's Dodge at start of their turn (it lasted until their next turn)
   if (dodgeActive.player) {
@@ -335,18 +368,33 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           turn: state.turn,
           actor: 'player',
           message: `${playerAttack.output} + ${sneak.description}`,
+          taunt: playerAttack.taunt,
         });
       } else {
         log.push({
           turn: state.turn,
           actor: 'player',
           message: playerAttack.output,
+          taunt: playerAttack.taunt,
         });
       }
 
       if (playerAttack.hit && playerAttack.damage) {
         const totalDamage = playerAttack.damage + sneakAttackDamage;
         enemy = { ...enemy, hp: enemy.hp - totalDamage };
+
+        // Check for low health taunt after damage
+        if (isLowHealth(enemy)) {
+          const lowHealthTaunt = selectTaunt(enemy, 'onLowHealth');
+          if (lowHealthTaunt) {
+            log.push({
+              turn: state.turn,
+              actor: 'enemy',
+              message: '',
+              taunt: lowHealthTaunt,
+            });
+          }
+        }
       }
 
       // Handle fumble effects
@@ -375,6 +423,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           turn: state.turn,
           actor: 'enemy',
           message: `FREE ATTACK! ${freeAttack.output}`,
+          taunt: freeAttack.taunt,
         });
         if (freeAttack.hit && freeAttack.damage) {
           playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - freeAttack.damage };
@@ -483,6 +532,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       turn: state.turn,
       actor: 'enemy',
       message: enemyAttack.output,
+      taunt: enemyAttack.taunt,
     });
 
     if (enemyAttack.hit && enemyAttack.damage) {
@@ -515,6 +565,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           turn: state.turn,
           actor: 'player',
           message: `FREE ATTACK! ${freeAttack.output}`,
+          taunt: freeAttack.taunt,
         });
         if (freeAttack.hit && freeAttack.damage) {
           enemy = { ...enemy, hp: enemy.hp - freeAttack.damage };

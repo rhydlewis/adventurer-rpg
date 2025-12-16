@@ -203,13 +203,21 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
                         : 'bg-amber-950/40 border-amber-700/60 text-amber-200'
                     }`}
                   >
-                    <span className="text-[9px] text-slate-500 mr-1">[T{entry.turn}]</span>
-                    <span className="font-semibold">
-                      {entry.actor === 'player' ? combat.playerCharacter.name.split(' ')[0] :
-                       entry.actor === 'enemy' ? combat.enemy.name.split(' ')[0] :
-                       'System'}:
-                    </span>{' '}
-                    <span className="opacity-90">{entry.message}</span>
+                    <div>
+                      <span className="text-[9px] text-slate-500 mr-1">[T{entry.turn}]</span>
+                      <span className="font-semibold">
+                        {entry.actor === 'player' ? combat.playerCharacter.name.split(' ')[0] :
+                         entry.actor === 'enemy' ? combat.enemy.name.split(' ')[0] :
+                         'System'}:
+                      </span>{' '}
+                      <span className="opacity-90">{entry.message}</span>
+                    </div>
+                    {/* Display taunt if present */}
+                    {entry.taunt && (
+                      <div className="mt-1 pl-2 text-[9px] border-l border-gray-600">
+                        🌀 {entry.taunt}
+                      </div>
+                    )}
                   </div>
                 ))
               )}

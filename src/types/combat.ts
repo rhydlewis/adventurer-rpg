@@ -9,6 +9,9 @@ export interface CombatLogEntry {
   turn: number;
   actor: 'player' | 'enemy' | 'system';
   message: string;
+  // Validation campaign: Combat polish
+  taunt?: string; // Enemy taunt text (e.g., "The goblin sneers: 'Is that all you've got?'")
+  visualEffect?: 'strike-flash' | 'critical-hit' | 'heal-glow' | 'miss-fade';
 }
 
 export interface InitiativeResult {
