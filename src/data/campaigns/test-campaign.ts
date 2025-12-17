@@ -138,6 +138,7 @@ const testNodes: StoryNode[] = [
     speakerPortrait: 'portraits/guard.png',
     description:
       'The guard narrows his eyes. "I\'ve dealt with worse than you today. Try that again and you\'ll regret it."',
+    flavor: { tone: 'tense', icon: 'warning' },
     choices: [
       {
         id: 'choice-back-down',
@@ -201,6 +202,8 @@ const testNodes: StoryNode[] = [
     description:
       'The forest is unnaturally quiet. Twisted trees block out most of the sunlight, and the air feels heavy. You notice disturbed undergrowth - someone passed through here recently.',
     locationHint: 'Darkwood Forest - A place of shadows',
+    type: 'explore',
+    flavor: { tone: 'mysterious', icon: 'compass' },
     companionHint: 'There are tracks here. A skilled eye might be able to read them.',
     choices: [
       {
@@ -301,6 +304,8 @@ const testNodes: StoryNode[] = [
     description:
       'You charge forward! The skeleton\'s eyes flare bright as it rises to meet your attack.',
     locationId: 'bandit-camp',
+    type: 'combat',
+    flavor: { tone: 'danger', icon: 'skull' },
     onEnter: [
       {
         type: 'startCombat',
@@ -337,6 +342,8 @@ const testNodes: StoryNode[] = [
     title: 'Victory!',
     description:
       'The skeleton crumbles to dust. Searching the camp, you find the stolen goods from the village, along with a mysterious letter bearing an unfamiliar seal.',
+    type: 'event',
+    flavor: { tone: 'triumphant', icon: 'victory' },
     onEnter: [
       { type: 'setFlag', flag: 'defeated_bandit', value: true },
       { type: 'giveItem', itemId: 'mysterious-letter' },
