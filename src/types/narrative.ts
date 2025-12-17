@@ -15,6 +15,46 @@ export type Requirement =
   | { type: 'nodeVisited'; nodeId: string };
 
 // =============================================================================
+// Node Presentation - Optional semantic type and flavor
+// =============================================================================
+
+export type NodeType = 'explore' | 'dialogue' | 'event' | 'combat';
+
+export type NodeTone = 'calm' | 'tense' | 'mysterious' | 'danger' | 'triumphant' | 'urgent';
+
+export type NodeIcon =
+  // Combat
+  | 'sword'
+  | 'shield'
+  | 'skull'
+  | 'danger'
+  // Social
+  | 'dialogue'
+  | 'speech'
+  | 'question'
+  | 'exclamation'
+  // Exploration
+  | 'map'
+  | 'compass'
+  | 'search'
+  | 'location'
+  // Outcomes
+  | 'treasure'
+  | 'victory'
+  | 'defeat'
+  | 'reward'
+  // Atmosphere
+  | 'mystery'
+  | 'warning'
+  | 'magic'
+  | 'crown';
+
+export interface NodeFlavor {
+  tone?: NodeTone;
+  icon?: NodeIcon;
+}
+
+// =============================================================================
 // Exploration System - Multi-outcome encounters
 // =============================================================================
 
@@ -102,6 +142,10 @@ export interface StoryNode {
   speakerPortrait?: string; // Portrait image path
   locationHint?: string; // For atmosphere: "The tavern is warm and noisy"
   locationId?: string; // Override Act's default location for this node
+
+  // Optional semantic type and presentation flavor
+  type?: NodeType;
+  flavor?: NodeFlavor;
 
   choices: Choice[];
 
