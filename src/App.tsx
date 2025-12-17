@@ -11,10 +11,7 @@ import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 // import { testCampaign } from './data/campaigns/test-campaign';
 import { validationCampaign } from './data/campaigns/validation-campaign.ts';
-import { createCharacter } from './utils/characterCreation';
-import { CLASSES } from './data/classes';
-import type { Screen } from './types';
-import {DEFAULT_AVATAR} from "./data/avatars.ts";
+import type { Screen, Character } from './types';
 import { LockPickingScreen } from './screens';
 import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
@@ -24,21 +21,104 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
   const [previousScreen, setPreviousScreen] = useState<Screen | null>(null);
   const { character, creationStep, startCreation, setCharacter } = useCharacterStore();
-  const { setNavigationCallback } = useNarrativeStore();
+  const { setNavigationCallback, phase2CustomizationPending, enterNode } = useNarrativeStore();
+
+  // Debug: Log screen changes
+  useEffect(() => {
+    console.log('[DEBUG] Screen changed to:', currentScreen.type);
+  }, [currentScreen]);
 
   // Register navigation callback with narrative store
   useEffect(() => {
-    setNavigationCallback(setCurrentScreen);
+    const wrappedCallback = (screen: Screen) => {
+      console.log('[DEBUG] Navigation callback called with screen:', screen.type);
+      setCurrentScreen(screen);
+    };
+    setNavigationCallback(wrappedCallback);
   }, [setNavigationCallback]);
 
-  // When character creation is complete, show character sheet
-  if (
-    creationStep === 'complete' &&
-    character &&
-    currentScreen.type === 'characterCreation'
-  ) {
-    setCurrentScreen({ type: 'characterSheet' });
-  }
+  // When Phase 2 customization starts, reset creation flow
+  useEffect(() => {
+    // Read fresh state from store to avoid object reference issues
+    const freshCreationStep = useCharacterStore.getState().creationStep;
+    const freshCharacter = useCharacterStore.getState().character;
+
+    console.log('[DEBUG] Phase 2 reset effect fired:', {
+      screenType: currentScreen.type,
+      phase2Pending: !!phase2CustomizationPending,
+      hasCharacter: !!freshCharacter,
+      freshCreationStep,
+    });
+
+    // Only run reset once: when we're on characterCreation screen, phase2 is pending,
+    // we have a character, AND creationStep is still "complete" (meaning we haven't reset yet)
+    if (
+      currentScreen.type === 'characterCreation' &&
+      phase2CustomizationPending &&
+      freshCharacter &&
+      freshCreationStep === 'complete'
+    ) {
+      console.log('[DEBUG] Resetting character creation for Phase 2 with existing character data');
+      // Reset creation step and prepare for Phase 2 customization
+      // Pre-fill with current character data
+      startCreation();
+      const characterStore = useCharacterStore.getState();
+      characterStore.setClass(freshCharacter.class);
+      characterStore.setAttributes(freshCharacter.attributes);
+      characterStore.setSkillRanks(freshCharacter.skills);
+      characterStore.setName(freshCharacter.name);
+      characterStore.setAvatarPath(freshCharacter.avatarPath);
+      console.log('[DEBUG] Phase 2 reset complete, new creationStep:', useCharacterStore.getState().creationStep);
+    }
+  }, [currentScreen.type, phase2CustomizationPending, startCreation]);
+
+  // When character creation is complete, handle navigation
+  useEffect(() => {
+    // Get fresh state from store to avoid stale closure issues
+    const freshCreationStep = useCharacterStore.getState().creationStep;
+    console.log('[DEBUG] Completion effect fired:', {
+      creationStepFromClosure: creationStep,
+      freshCreationStep,
+      hasCharacter: !!character,
+      screenType: currentScreen.type,
+      phase2Pending: !!phase2CustomizationPending,
+    });
+
+    // Use fresh state from store, not closure
+    if (
+      freshCreationStep === 'complete' &&
+      character &&
+      currentScreen.type === 'characterCreation'
+    ) {
+      console.log('[DEBUG] Character creation is complete, handling navigation');
+      // Check if this was Phase 2 customization from narrative
+      if (phase2CustomizationPending) {
+        console.log('[DEBUG] Phase 2 completion detected, marking character as fully customized');
+
+        // IMPORTANT: Clear pending state FIRST, before setCharacter
+        // Otherwise setCharacter triggers the reset effect while phase2Pending is still true
+        const nextNodeId = phase2CustomizationPending.nextNodeId;
+        useNarrativeStore.setState({ phase2CustomizationPending: null });
+
+        // Mark character as fully customized (mechanicsLocked = true)
+        const fullyCustomizedCharacter: Character = {
+          ...character,
+          mechanicsLocked: true,
+        };
+        setCharacter(fullyCustomizedCharacter);
+
+        // Navigate to the next story node
+        enterNode(nextNodeId, fullyCustomizedCharacter);
+
+        // Navigate to story screen
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setCurrentScreen({ type: 'story' });
+      } else {
+        // Regular character creation from home - show character sheet
+        setCurrentScreen({ type: 'characterSheet' });
+      }
+    }
+  }, [creationStep, character, currentScreen.type, phase2CustomizationPending, setCharacter, enterNode]);
 
   const handleCreateCharacter = () => {
     startCreation();
@@ -61,27 +141,8 @@ function App() {
   };
 
   const handleStartStory = () => {
-    // Create a default test character if none exists (for testing)
-    if (!character) {
-      const testChar = createCharacter({
-        name: 'Theron Stormfist',
-        avatarPath: DEFAULT_AVATAR,
-        class: 'Fighter',
-        attributes: CLASSES.Fighter.recommendedAttributes,
-        skillRanks: {
-          Athletics: 1,
-          Stealth: 0,
-          Perception: 1,
-          Arcana: 0,
-          Medicine: 0,
-          Intimidate: 1,
-        },
-        selectedFeat: 'Weapon Focus',
-      });
-      testChar.gold = 100;
-      setCharacter(testChar);
-    }
-
+    // Load and start the validation campaign
+    // Character creation will be handled by the campaign itself
     const { loadCampaign, startCampaign } = useNarrativeStore.getState();
     loadCampaign(validationCampaign);
     startCampaign();
@@ -142,7 +203,7 @@ function App() {
       {currentScreen.type === 'quickCharacterCreation' && (
         <QuickCharacterCreationScreen onComplete={currentScreen.onComplete} />
       )}
-      {currentScreen.type === 'characterSheet' && character && (
+      {currentScreen.type === 'characterSheet' && (
         <CharacterSheetScreen character={character} onClose={handleCloseSheet} />
       )}
       {currentScreen.type === 'story' && (

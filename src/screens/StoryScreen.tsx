@@ -51,7 +51,8 @@ export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) 
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation?.log]);
 
-  if (!conversation || !character || !campaign) {
+  // Allow story to start without character - campaign may create it
+  if (!conversation || !campaign) {
     return (
       <div className="min-h-screen bg-primary flex items-center justify-center p-4">
         <Card variant="neutral" padding="spacious">
@@ -111,11 +112,17 @@ export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) 
     backgroundPosition: 'center',
   } : {};
 
-  const availableChoices = getAvailableChoices(character);
+  // If no character exists yet (campaign start), show all choices
+  // Character creation choices don't require a character
+  const availableChoices = character
+    ? getAvailableChoices(character)
+    : currentNode.choices; // Show all choices when no character exists
   const hasCompanionHint = !!currentNode.companionHint;
 
   const handleChoice = (choiceId: string) => {
-    selectChoice(choiceId, character);
+    // For character creation choices, character may be null
+    // The narrative store will handle character creation specially
+    selectChoice(choiceId, character || null);
   };
 
   const handleCompanionHint = () => {

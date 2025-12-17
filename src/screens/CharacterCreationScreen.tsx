@@ -55,7 +55,7 @@ export function CharacterCreationScreen() {
   } = useCharacterStore();
 
   if (creationStep === 'class') {
-    return <ClassSelectionStep onSelect={setClass} onNext={nextStep} />;
+    return <ClassSelectionStep currentClass={creationData.class} onSelect={setClass} onNext={nextStep} />;
   }
 
   if (creationStep === 'attributes') {
@@ -110,14 +110,16 @@ export function CharacterCreationScreen() {
 
 // Class Selection Step
 function ClassSelectionStep({
+  currentClass,
   onSelect,
   onNext,
 }: {
+  currentClass: CharacterClass | null;
   onSelect: (c: CharacterClass) => void;
   onNext: () => void;
 }) {
   const classes: CharacterClass[] = ['Fighter', 'Rogue', 'Wizard', 'Cleric'];
-  const [selected, setSelected] = useState<CharacterClass | null>(null);
+  const [selected, setSelected] = useState<CharacterClass | null>(currentClass);
 
   const handleSelect = (className: CharacterClass) => {
     setSelected(className);

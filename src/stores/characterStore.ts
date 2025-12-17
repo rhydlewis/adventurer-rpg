@@ -281,10 +281,12 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
     });
 
     // Add background and quirk information
+    // Mark as Phase 1 (Identity-First) character with mechanicsLocked = false
     const characterWithBackground: Character = {
       ...character,
       background,
       startingQuirk: background.startingQuirk,
+      mechanicsLocked: false, // Phase 1: Identity established, mechanics not customized yet
     };
 
     set({

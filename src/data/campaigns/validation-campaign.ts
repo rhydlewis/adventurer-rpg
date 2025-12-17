@@ -232,8 +232,11 @@ const validationNodes: StoryNode[] = [
                 id: 'customize-character',
                 text: 'Refine your abilities (Phase 2 customization)',
                 category: 'special',
-                outcome: { type: 'goto', nodeId: 'validation-second-combat' },
-                // In full implementation, this would open customization UI first
+                outcome: {
+                    type: 'characterCreation',
+                    phase: 2,
+                    nextNodeId: 'validation-second-combat',
+                },
             },
             {
                 id: 'skip-customization',

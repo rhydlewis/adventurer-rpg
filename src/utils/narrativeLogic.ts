@@ -166,7 +166,7 @@ export function createSkillCheckLogEntry(result: SkillCheckResult): LogEntry {
  */
 export function resolveOutcome(
   outcome: ChoiceOutcome,
-  player: Character,
+  player: Character | null,
   currentNodeId: string
 ): OutcomeResolution {
   switch (outcome.type) {
@@ -192,6 +192,10 @@ export function resolveOutcome(
       };
 
     case 'check': {
+      // Skill checks require a character
+      if (!player) {
+        throw new Error('Cannot perform skill check without a character');
+      }
       // Perform the skill check
       const checkResult = resolveSkillCheck(player, outcome.skill, outcome.dc);
       const logEntry = createSkillCheckLogEntry(checkResult);

@@ -6,7 +6,7 @@ import type { SkillName } from '../types';
 import { Button, Card, Icon } from '../components';
 
 interface CharacterSheetScreenProps {
-  character: Character;
+  character: Character | null;
   onClose: () => void;
 }
 
@@ -50,6 +50,33 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const skillNames: SkillName[] = ['Athletics', 'Stealth', 'Perception', 'Arcana', 'Medicine', 'Intimidate'];
 
+  // Detect character state: none, phase1 (identity-only), phase2 (full)
+  const characterState = !character
+    ? 'none'
+    : character.mechanicsLocked === false
+      ? 'phase1'
+      : 'phase2';
+
+  // Handle "No Character" state
+  if (characterState === 'none') {
+    return (
+      <div className="min-h-screen bg-primary text-fg-primary p-4 flex items-center justify-center">
+        <Card variant="neutral" padding="spacious">
+          <div className="text-center space-y-4">
+            <Icon name="User" size={64} className="mx-auto text-fg-muted" />
+            <h1 className="heading-primary text-fg-accent">No Character Created</h1>
+            <p className="body-primary text-fg-secondary">
+              You haven't created a character yet. Start a story or create a character to view your character sheet.
+            </p>
+            <Button onClick={onClose} variant="primary" fullWidth>
+              Close
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-4xl mx-auto">
@@ -58,15 +85,20 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
           <div className="flex items-center space-x-4">
             {/* Character Avatar */}
             <img
-              src={`/assets/avatars/${character.avatarPath}`}
-              alt={character.name}
+              src={`/assets/avatars/${character!.avatarPath}`}
+              alt={character!.name}
               className="w-20 h-20 rounded-lg ring-4 ring-accent object-cover"
             />
             <div>
-              <h1 className="heading-primary text-fg-accent">{character.name}</h1>
+              <h1 className="heading-primary text-fg-accent">{character!.name}</h1>
               <p className="body-secondary text-fg-secondary">
-                Level {character.level} {character.class}
+                Level {character!.level} {character!.class}
               </p>
+              {characterState === 'phase1' && (
+                <p className="text-xs text-warning mt-1">
+                  ⚠️ Identity-First Character - Complete training to unlock full customization
+                </p>
+              )}
             </div>
           </div>
           <Button onClick={onClose} variant="secondary">
@@ -74,35 +106,42 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
           </Button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex space-x-2 mb-6 overflow-x-auto">
-          <TabButton
-            active={activeTab === 'overview'}
-            onClick={() => setActiveTab('overview')}
-            icon="User"
-          >
-            Overview
-          </TabButton>
-          <TabButton
-            active={activeTab === 'skills'}
-            onClick={() => setActiveTab('skills')}
-            icon="Target"
-          >
-            Skills
-          </TabButton>
-          <TabButton
-            active={activeTab === 'combat'}
-            onClick={() => setActiveTab('combat')}
-            icon="Swords"
-          >
-            Combat
-          </TabButton>
-        </div>
+        {/* Tab Navigation - Only show all tabs for phase2 characters */}
+        {characterState === 'phase2' && (
+          <div className="flex space-x-2 mb-6 overflow-x-auto">
+            <TabButton
+              active={activeTab === 'overview'}
+              onClick={() => setActiveTab('overview')}
+              icon="User"
+            >
+              Overview
+            </TabButton>
+            <TabButton
+              active={activeTab === 'skills'}
+              onClick={() => setActiveTab('skills')}
+              icon="Target"
+            >
+              Skills
+            </TabButton>
+            <TabButton
+              active={activeTab === 'combat'}
+              onClick={() => setActiveTab('combat')}
+              icon="Swords"
+            >
+              Combat
+            </TabButton>
+          </div>
+        )}
 
         {/* Tab Content */}
-        {activeTab === 'overview' && <OverviewTab character={character} />}
-        {activeTab === 'skills' && <SkillsTab character={character} skillNames={skillNames} />}
-        {activeTab === 'combat' && <CombatTab character={character} />}
+        {characterState === 'phase1' && <Phase1OverviewTab character={character!} />}
+        {characterState === 'phase2' && (
+          <>
+            {activeTab === 'overview' && <OverviewTab character={character!} />}
+            {activeTab === 'skills' && <SkillsTab character={character!} skillNames={skillNames} />}
+            {activeTab === 'combat' && <CombatTab character={character!} />}
+          </>
+        )}
       </div>
     </div>
   );
@@ -132,7 +171,68 @@ function TabButton({ active, onClick, icon, children }: TabButtonProps) {
   );
 }
 
-// Overview Tab
+// Phase 1 Overview Tab - Simplified identity-only view
+function Phase1OverviewTab({ character }: { character: Character }) {
+  return (
+    <div className="space-y-6">
+      {/* Identity-First Message */}
+      <Card variant="neutral" padding="spacious">
+        <div className="text-center space-y-2">
+          <Icon name="Sparkles" size={32} className="mx-auto text-warning" />
+          <h2 className="text-h2 heading-secondary text-fg-accent">Identity-First Character</h2>
+          <p className="body-primary text-fg-secondary">
+            Your character's identity has been established. Continue your training to unlock full mechanical customization and see detailed statistics.
+          </p>
+        </div>
+      </Card>
+
+      {/* HP */}
+      <Card variant="neutral" className="text-center">
+        <div className="label-secondary text-xs text-fg-muted mb-2">Hit Points</div>
+        <div className="stat-large text-3xl text-fg-accent">
+          {character.hp}/{character.maxHp}
+        </div>
+      </Card>
+
+      {/* Basic Attributes */}
+      <Card variant="neutral">
+        <h2 className="text-h2 heading-secondary mb-4">Basic Attributes</h2>
+        <p className="body-secondary text-fg-muted text-sm mb-4">
+          Your base capabilities. Complete training to see modifiers and unlock customization.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {(Object.keys(attributeIcons) as AttributeKey[]).map((attr) => {
+            const iconName = attributeIcons[attr];
+            const score = character.attributes[attr];
+
+            return (
+              <div
+                key={attr}
+                className="bg-surface rounded-lg p-3 flex items-center space-x-3 border border-border-default"
+              >
+                <div className="bg-primary p-2 rounded-lg">
+                  <Icon name={iconName} size={24} className="text-player" />
+                </div>
+                <div className="flex-1">
+                  <div className="attribute-label text-xs text-fg-muted">
+                    {attributeLabels[attr]}
+                  </div>
+                  <div className="flex items-baseline space-x-1.5">
+                    <span className="stat-medium text-2xl text-fg-accent">
+                      {score}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// Overview Tab - Full view for phase2 characters
 function OverviewTab({ character }: { character: Character }) {
   return (
     <div className="space-y-6">

@@ -31,13 +31,16 @@ interface NarrativeStore {
   // Navigation callback (set by App to handle screen transitions)
   onNavigate: ((screen: Screen) => void) | null;
 
+  // Phase 2 character customization tracking
+  phase2CustomizationPending: { nextNodeId: string } | null;
+
   // Actions
   loadCampaign: (campaign: Campaign) => void;
   startCampaign: () => void;
   setNavigationCallback: (callback: (screen: Screen) => void) => void;
 
   enterNode: (nodeId: string, player: Character) => void;
-  selectChoice: (choiceId: string, player: Character) => void;
+  selectChoice: (choiceId: string, player: Character | null) => void;
   requestCompanionHint: () => void;
 
   exitConversation: () => void;
@@ -82,6 +85,7 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
   conversation: null,
   campaign: null,
   onNavigate: null,
+  phase2CustomizationPending: null,
 
   loadCampaign: (campaign) => {
     set({ campaign });
@@ -279,6 +283,7 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
 
     // Handle character creation trigger
     if (resolution.characterCreationTrigger) {
+      console.log('[DEBUG] Character creation trigger detected:', resolution.characterCreationTrigger);
       const { onNavigate } = get();
       if (onNavigate) {
         if (resolution.characterCreationTrigger.phase === 1) {
@@ -315,6 +320,14 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
           });
         } else {
           // Phase 2: Full customization (existing CharacterCreationScreen)
+          console.log('[DEBUG] Phase 2 customization triggered, nextNodeId:', resolution.characterCreationTrigger.nextNodeId);
+          // Store the next node ID so we can navigate there after customization
+          set({
+            phase2CustomizationPending: {
+              nextNodeId: resolution.characterCreationTrigger.nextNodeId,
+            },
+          });
+          console.log('[DEBUG] Navigating to characterCreation screen');
           onNavigate({
             type: 'characterCreation',
           });
@@ -361,6 +374,10 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     });
 
     // Enter the next node
+    // Player should exist at this point (character creation is handled above)
+    if (!player) {
+      throw new Error('Cannot navigate to next node without a character');
+    }
     get().enterNode(resolution.nextNodeId, player);
   },
 
