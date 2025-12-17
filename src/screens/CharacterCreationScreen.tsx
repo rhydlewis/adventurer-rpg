@@ -157,11 +157,19 @@ function ClassSelectionStep({
                 <div className="flex items-center space-x-3 mb-3">
                   <Icon name={iconName} size={32} className={isSelected ? 'text-player' : 'text-fg-accent'} />
                   <h2 className="text-2xl character-name text-fg-accent">{className}</h2>
+                  <div className="grow"></div>
+                  <div className="grid grid-cols-4 gap-1 mb-2">
+                    <div>
+                      <Icon name="Heart" size={24} className={isSelected ? 'text-fg-accent' : 'text-fg-muted' }/>
+                    </div>
+                    <div className="text-xs text-fg-primary body-primary">{classDef.baseHP}</div>
+                    <div>
+                      <Icon name="TrendingUp" size={24} className={isSelected ? 'text-fg-accent' : 'text-fg-muted' }/>
+                    </div>
+                    <div className="text-xs text-fg-primary body-primary">+{classDef.baseBab}</div>
+                  </div>
                 </div>
-                <p className="text-sm text-fg-secondary mb-4 body-secondary">{classDef.description}</p>
-                <div className="text-xs text-fg-muted body-secondary">
-                  <div>HP: {classDef.baseHP} | BAB: +{classDef.baseBab}</div>
-                </div>
+                <p className="text-xs text-fg-secondary mb-2">{classDef.description}</p>
               </button>
             );
           })}
