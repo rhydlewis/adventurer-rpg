@@ -57,6 +57,8 @@ const validationNodes: StoryNode[] = [
         title: 'Ambush!',
         description: 'As you step onto the forest path, a massive spider drops from the canopy above, its eight eyes gleaming hungrily and mandibles clicking! The creature blocks your path, but perhaps you could slip past it unnoticed...',
         locationId: 'darkwood-forest',
+        type: 'event',
+        flavor: { tone: 'danger', icon: 'warning' },
         companionHint: 'A stealthy approach might avoid bloodshed... but if you fail, you\'ll have to fight.',
         choices: [
             {
@@ -96,6 +98,8 @@ const validationNodes: StoryNode[] = [
         title: 'Battle!',
         description: 'The spider lunges at you with venomous fangs! You must fight for your life!',
         locationId: 'darkwood-forest',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'sword' },
         onEnter: [
             {
                 type: 'startCombat',
@@ -111,6 +115,7 @@ const validationNodes: StoryNode[] = [
         id: 'validation-spider-avoided',
         description: 'You move with practiced silence, slipping past the spider as it searches the canopy above. You escape unharmed and continue down the path.',
         locationId: 'darkwood-forest',
+        flavor: { tone: 'calm' },
         choices: [
             {
                 id: 'continue-after-stealth',
@@ -125,6 +130,8 @@ const validationNodes: StoryNode[] = [
     {
         id: 'validation-post-combat-1',
         description: 'The giant spider collapses, its legs curling inward. You catch your breath and search the area, finding a small pouch of coins and a healing potion in an old web-covered pack.',
+        type: 'event',
+        flavor: { tone: 'triumphant', icon: 'reward' },
         onEnter: [
             {type: 'giveGold', amount: 50},
             {type: 'giveItem', itemId: 'healing-potion'},
@@ -145,6 +152,8 @@ const validationNodes: StoryNode[] = [
         title: 'A Forest Crossroads',
         description: 'The path continues ahead toward a distant village. To your left, you notice game trails leading deeper into the forest. You could explore the wilderness... or stay on the safe path.',
         locationHint: 'Darkwood Forest - A dense woodland',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'search' },
         companionHint: 'Exploration is risky, but fortune favors the bold. Or does it?',
         choices: [
             {
@@ -193,6 +202,7 @@ const validationNodes: StoryNode[] = [
         speakerName: 'Merchant',
         speakerPortrait: 'portraits/merchant.png',
         locationId: 'village-market',
+        flavor: { tone: 'calm', icon: 'dialogue' },
         choices: [
             {
                 id: 'browse-wares',
@@ -253,6 +263,8 @@ const validationNodes: StoryNode[] = [
         title: 'The Crypt Guardian',
         description: 'You descend into an ancient crypt. A skeletal warrior rises from its resting place, eye sockets glowing with unholy light!',
         locationId: 'crypt',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
         companionHint: 'This foe is formidable. If the battle turns against you, retreat is an option.',
         onEnter: [
             {
@@ -269,6 +281,7 @@ const validationNodes: StoryNode[] = [
     {
         id: 'validation-post-combat-2',
         description: 'The skeleton crumbles to dust. Among the bones, you find a heavy coin purse and a mysterious amulet.',
+        flavor: { tone: 'triumphant', icon: 'treasure' },
         onEnter: [
             { type: 'giveGold', amount: 80 },
             { type: 'giveItem', itemId: 'mysterious-amulet' },
@@ -287,6 +300,7 @@ const validationNodes: StoryNode[] = [
     {
         id: 'validation-retreat-safe',
         description: 'You flee back up the crypt stairs, breathing heavily. You\'ve lost some gold in the chaos, and your wounds sting. But you\'re alive. You can try again when you\'re ready.',
+        flavor: { tone: 'tense', icon: 'warning' },
         choices: [
             {
                 id: 'return-to-combat',
@@ -309,6 +323,8 @@ const validationNodes: StoryNode[] = [
         title: 'Growth',
         description: 'Your trials have made you stronger. You feel the surge of experience as your skills sharpen and your body becomes more resilient. Choose how you\'ve grown.',
         locationId: 'character-reflection',
+        type: 'event',
+        flavor: { tone: 'triumphant', icon: 'crown' },
         onEnter: [
             {
                 type: 'levelUp',
@@ -332,6 +348,8 @@ const validationNodes: StoryNode[] = [
         title: 'The Wraith',
         description: 'At the deepest chamber, a wraith materializes from the shadows. Its ethereal form flickers between this world and the next. This is the ultimate test of your abilities!',
         locationId: 'void-sanctum',
+        type: 'combat',
+        flavor: { tone: 'urgent', icon: 'danger' },
         companionHint: 'Use everything you\'ve learned. Items, abilities, tactics—this is your moment.',
         onEnter: [
             {
@@ -349,6 +367,8 @@ const validationNodes: StoryNode[] = [
         title: 'Victory!',
         description: 'The wraith dissipates with an otherworldly scream. You stand victorious, battle-tested and proven. The validation campaign is complete.',
         locationId: 'victory-hall',
+        type: 'event',
+        flavor: { tone: 'triumphant', icon: 'victory' },
         onEnter: [
             { type: 'giveGold', amount: 100 },
             { type: 'setFlag', flag: 'validation_complete', value: true },
