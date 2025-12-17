@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Icon from './Icon';
 
-interface HamburgerMenuProps {
+interface OptionsMenuProps {
   /**
    * Callback when "View Character Sheet" is clicked
    */
@@ -31,7 +31,7 @@ interface HamburgerMenuProps {
 }
 
 /**
- * Hamburger menu component for in-game navigation.
+ * Options menu component for in-game navigation.
  *
  * Features:
  * - Dropdown menu with character sheet, save, and exit options
@@ -40,19 +40,19 @@ interface HamburgerMenuProps {
  * - Mobile-optimized touch targets (44x44px minimum)
  *
  * @example
- * <HamburgerMenu
+ * <OptionsMenu
  *   onViewCharacterSheet={() => navigate('characterSheet')}
  *   onSaveGame={() => saveGameState()}
  *   onExit={() => navigate('mainMenu')}
  * />
  */
-export function HamburgerMenu({
+export function OptionsMenu({
   onViewCharacterSheet,
   onSaveGame,
   onExit,
   showCharacterSheet = true,
   showSaveGame = true,
-}: HamburgerMenuProps) {
+}: OptionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -81,7 +81,7 @@ export function HamburgerMenu({
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Hamburger Button */}
+      {/* Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-surface hover:bg-surface/80 transition-colors border border-border-default focus:outline-none focus:ring-2 focus:ring-player focus:ring-offset-2 focus:ring-offset-primary"
@@ -94,12 +94,12 @@ export function HamburgerMenu({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-surface rounded-lg shadow-lg border border-border-default overflow-hidden z-50">
+        <div className="absolute right-0 mt-2 w-56 bg-secondary rounded-lg shadow-lg border border-border-default overflow-hidden z-50">
           {/* Character Sheet Option */}
           {showCharacterSheet && onViewCharacterSheet && (
             <button
               onClick={() => handleMenuItemClick(onViewCharacterSheet)}
-              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary hover:bg-primary transition-colors border-b border-border-default"
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
             >
               <Icon name="User" size={20} className="text-player" />
               <span>View Character Sheet</span>
@@ -110,7 +110,7 @@ export function HamburgerMenu({
           {showSaveGame && onSaveGame && (
             <button
               onClick={() => handleMenuItemClick(onSaveGame)}
-              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary hover:bg-primary transition-colors border-b border-border-default"
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
             >
               <Icon name="Save" size={20} className="text-success" />
               <span>Save Game</span>
@@ -120,7 +120,7 @@ export function HamburgerMenu({
           {/* Exit Option */}
           <button
             onClick={() => handleMenuItemClick(onExit)}
-            className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary hover:bg-primary transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors"
           >
             <Icon name="LogOut" size={20} className="text-enemy" />
             <span>Exit to Main Menu</span>

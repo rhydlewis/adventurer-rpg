@@ -12,4 +12,4 @@ export { StatusBar } from './StatusBar';
 export { default as Icon } from './Icon';
 export { NarrativeLog } from './narrative/NarrativeLog';
 export { ChoiceButton } from './narrative/ChoiceButton';
-export { HamburgerMenu } from './HamburgerMenu';
+export { OptionsMenu } from './OptionsMenu';

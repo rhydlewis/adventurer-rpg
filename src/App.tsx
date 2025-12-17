@@ -22,6 +22,7 @@ import { LevelUpScreen } from './screens';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
+  const [previousScreen, setPreviousScreen] = useState<Screen | null>(null);
   const { character, creationStep, startCreation, setCharacter } = useCharacterStore();
   const { setNavigationCallback } = useNarrativeStore();
 
@@ -45,11 +46,18 @@ function App() {
   };
 
   const handleViewSheet = () => {
+    setPreviousScreen(currentScreen);
     setCurrentScreen({ type: 'characterSheet' });
   };
 
   const handleCloseSheet = () => {
-    setCurrentScreen({ type: 'home' });
+    // Return to previous screen, or home if no previous screen exists
+    if (previousScreen) {
+      setCurrentScreen(previousScreen);
+      setPreviousScreen(null);
+    } else {
+      setCurrentScreen({ type: 'home' });
+    }
   };
 
   const handleStartStory = () => {

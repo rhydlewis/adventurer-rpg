@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
-import { NarrativeLog, ChoiceButton, Card, Icon, HamburgerMenu } from '../components';
+import { NarrativeLog, ChoiceButton, Card, Icon, OptionsMenu, Button } from '../components';
 import { resolveLocation } from '../utils/locationResolver';
 
 interface StoryScreenProps {
@@ -155,7 +155,7 @@ export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) 
                 )}
               </div>
             </div>
-            <HamburgerMenu
+            <OptionsMenu
               onViewCharacterSheet={onViewCharacterSheet}
               onSaveGame={handleSaveGame}
               onExit={handleExit}

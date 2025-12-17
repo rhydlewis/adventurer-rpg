@@ -6,7 +6,7 @@ import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import { generateEnemy } from '../utils/enemyGeneration';
 import type { CombatState } from '../types';
-import { Icon, HamburgerMenu } from '../components';
+import { Icon, OptionsMenu } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
 
 // Action icon mapping
@@ -115,7 +115,7 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
               </div>
               <h1 className="text-lg heading-tertiary text-amber-500 tracking-wide">BATTLE</h1>
             </div>
-            <HamburgerMenu
+            <OptionsMenu
               onViewCharacterSheet={onViewCharacterSheet}
               onSaveGame={handleSaveGame}
               onExit={handleEndCombat}
