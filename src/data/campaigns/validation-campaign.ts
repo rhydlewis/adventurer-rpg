@@ -58,7 +58,7 @@ const validationNodes: StoryNode[] = [
         description: 'As you step onto the forest path, a massive spider drops from the canopy above, its eight eyes gleaming hungrily and mandibles clicking! The creature blocks your path, but perhaps you could slip past it unnoticed...',
         locationId: 'darkwood-forest',
         type: 'event',
-        flavor: { tone: 'danger', icon: 'warning' },
+        flavor: { tone: 'danger', icon: 'sword' },
         companionHint: 'A stealthy approach might avoid bloodshed... but if you fail, you\'ll have to fight.',
         choices: [
             {
@@ -263,9 +263,31 @@ const validationNodes: StoryNode[] = [
         title: 'The Crypt Guardian',
         description: 'You descend into an ancient crypt. A skeletal warrior rises from its resting place, eye sockets glowing with unholy light!',
         locationId: 'crypt',
-        type: 'combat',
+        type: 'event',
         flavor: { tone: 'danger', icon: 'skull' },
         companionHint: 'This foe is formidable. If the battle turns against you, retreat is an option.',
+        choices: [
+            {
+                id: 'attack-skeleton-choice',
+                text: 'Draw your weapon and attack!',
+                category: 'combat',
+                outcome: {
+                    type: 'goto',
+                    nodeId: 'attack-skeleton',
+                },
+            },
+        ],
+        // Combat state will include: canRetreat: true, retreatPenalty: { goldLost: 20, damageOnFlee: 5, safeNodeId: 'validation-retreat-safe' }
+    },
+
+    // === NODE 5a: Skeleton Combat (triggered by attacking) ===
+    {
+        id: 'attack-skeleton',
+        title: 'Battle!',
+        description: 'The skeletal warrior lifts its sword and walks towards you',
+        locationId: 'crypt',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'sword' },
         onEnter: [
             {
                 type: 'startCombat',
@@ -273,8 +295,7 @@ const validationNodes: StoryNode[] = [
                 onVictoryNodeId: 'validation-post-combat-2',
             },
         ],
-        choices: [],
-        // Combat state will include: canRetreat: true, retreatPenalty: { goldLost: 20, damageOnFlee: 5, safeNodeId: 'validation-retreat-safe' }
+        choices: [], // Combat starts immediately
     },
 
     // === NODE 5b: Post Second Combat ===
