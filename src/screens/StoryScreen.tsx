@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
-import { NarrativeLog, ChoiceButton, Card, Button, Icon } from '../components';
+import { NarrativeLog, ChoiceButton, Card, Icon, HamburgerMenu } from '../components';
 import { resolveLocation } from '../utils/locationResolver';
 
 interface StoryScreenProps {
@@ -9,6 +9,11 @@ interface StoryScreenProps {
    * Callback to exit story mode (return to home/world map)
    */
   onExit: () => void;
+
+  /**
+   * Optional callback to view character sheet
+   */
+  onViewCharacterSheet?: () => void;
 }
 
 /**
@@ -24,7 +29,7 @@ interface StoryScreenProps {
  * @example
  * <StoryScreen onExit={() => setScreen('home')} />
  */
-export function StoryScreen({ onExit }: StoryScreenProps) {
+export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) {
   const {
     conversation,
     campaign,
@@ -35,9 +40,10 @@ export function StoryScreen({ onExit }: StoryScreenProps) {
     selectChoice,
     requestCompanionHint,
     exitConversation,
+    saveNarrativeState,
   } = useNarrativeStore();
 
-  const { character } = useCharacterStore();
+  const { character, saveCharacter } = useCharacterStore();
   const logEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when log updates
@@ -121,6 +127,12 @@ export function StoryScreen({ onExit }: StoryScreenProps) {
     onExit();
   };
 
+  const handleSaveGame = () => {
+    saveCharacter();
+    saveNarrativeState();
+    // You could show a toast notification here in the future
+  };
+
   return (
     <div
       className="h-screen bg-primary flex flex-col p-4"
@@ -143,9 +155,11 @@ export function StoryScreen({ onExit }: StoryScreenProps) {
                 )}
               </div>
             </div>
-            <Button variant="secondary" onClick={handleExit} className="text-sm">
-              Exit
-            </Button>
+            <HamburgerMenu
+              onViewCharacterSheet={onViewCharacterSheet}
+              onSaveGame={handleSaveGame}
+              onExit={handleExit}
+            />
           </div>
         </Card>
       </div>

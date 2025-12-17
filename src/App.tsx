@@ -127,6 +127,7 @@ function App() {
               setCurrentScreen({ type: 'home' });
             }
           }}
+          onViewCharacterSheet={character ? handleViewSheet : undefined}
         />
       )}
       {currentScreen.type === 'characterCreation' && <CharacterCreationScreen />}
@@ -139,6 +140,7 @@ function App() {
       {currentScreen.type === 'story' && (
         <StoryScreen
           onExit={() => setCurrentScreen({ type: 'home' })}
+          onViewCharacterSheet={character ? handleViewSheet : undefined}
         />
       )}
       {currentScreen.type === 'lockPicking' && (
