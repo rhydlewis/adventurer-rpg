@@ -3,6 +3,8 @@ import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
 import { NarrativeLog, ChoiceButton, Card, Icon, OptionsMenu, Button } from '../components';
 import { resolveLocation } from '../utils/locationResolver';
+import { getNodeIconComponent } from '../utils/nodeIcons';
+import { getToneStyles } from '../utils/nodeStyles';
 
 interface StoryScreenProps {
   /**
@@ -119,6 +121,11 @@ export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) 
     : currentNode.choices; // Show all choices when no character exists
   const hasCompanionHint = !!currentNode.companionHint;
 
+  // Get node flavor for presentation
+  const tone = currentNode.flavor?.tone;
+  const NodeIconComponent = getNodeIconComponent(currentNode.flavor?.icon);
+  const toneClasses = getToneStyles(tone);
+
   const handleChoice = (choiceId: string) => {
     // For character creation choices, character may be null
     // The narrative store will handle character creation specially
@@ -147,10 +154,14 @@ export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) 
     >
       {/* Header */}
       <div className="mb-4">
-        <Card variant="neutral" padding="compact">
+        <Card variant="neutral" padding="compact" className={toneClasses}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Icon name="Book" className="text-player" />
+              {NodeIconComponent ? (
+                <NodeIconComponent className="w-6 h-6 text-player" />
+              ) : (
+                <Icon name="Book" className="text-player" />
+              )}
               <div>
                 <h1 className="heading-primary text-h1 text-fg-primary">
                   {currentNode.title || campaign.title}
