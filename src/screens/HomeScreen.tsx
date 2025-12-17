@@ -2,10 +2,9 @@ import { Button, Icon } from '../components';
 
 interface HomeScreenProps {
   onStartStory?: () => void;
-  hasCharacter: boolean;
 }
 
-export function HomeScreen({ onStartStory, hasCharacter }: HomeScreenProps) {
+export function HomeScreen({ onStartStory }: HomeScreenProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-md w-full text-center">
@@ -26,7 +25,7 @@ export function HomeScreen({ onStartStory, hasCharacter }: HomeScreenProps) {
               onClick={onStartStory}
               icon={<Icon name="Book" />}
             >
-              Start Story {!hasCharacter && '(Test)'}
+              Load Campaign
             </Button>
           )}
         </div>

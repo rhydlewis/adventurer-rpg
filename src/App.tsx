@@ -7,10 +7,10 @@ import { CharacterCreationScreen } from './screens';
 import { QuickCharacterCreationScreen } from './screens';
 import { CharacterSheetScreen } from './screens';
 import { StoryScreen } from './screens';
+import { ChooseCampaignScreen } from './screens';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
-// import { testCampaign } from './data/campaigns/test-campaign';
-import { validationCampaign } from './data/campaigns/validation-campaign.ts';
+import { availableCampaigns } from './data/campaigns';
 import type { Screen, Character } from './types';
 import { LockPickingScreen } from './screens';
 import { MerchantScreen } from './screens';
@@ -142,10 +142,14 @@ function App() {
   };
 
   const handleStartStory = () => {
-    // Load and start the validation campaign
-    // Character creation will be handled by the campaign itself
+    // Navigate to campaign selection screen
+    setCurrentScreen({ type: 'chooseCampaign' });
+  };
+
+  const handleSelectCampaign = (campaign: any) => {
+    // Load and start the selected campaign
     const { loadCampaign, startCampaign } = useNarrativeStore.getState();
-    loadCampaign(validationCampaign);
+    loadCampaign(campaign);
     startCampaign();
     setCurrentScreen({ type: 'story' });
   };
@@ -163,8 +167,14 @@ function App() {
       )}
       {currentScreen.type === 'home' && (
         <HomeScreen
-          hasCharacter={character !== null}
           onStartStory={handleStartStory}
+        />
+      )}
+      {currentScreen.type === 'chooseCampaign' && (
+        <ChooseCampaignScreen
+          campaigns={availableCampaigns}
+          onSelectCampaign={handleSelectCampaign}
+          onBack={() => setCurrentScreen({ type: 'home' })}
         />
       )}
       {currentScreen.type === 'combat' && (
