@@ -81,7 +81,7 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
             {/* Merchant Avatar */}
             <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-warning/50 shadow-lg flex-shrink-0">
               <img
-                src={`/assets/avatars/${merchantAvatar}`}
+                src={`/assets/merchants/${merchantAvatar}`}
                 alt="Merchant"
                 className="w-full h-full object-cover"
               />
