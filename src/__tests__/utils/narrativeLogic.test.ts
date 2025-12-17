@@ -9,6 +9,8 @@ import {
   getChoiceDisplayText,
   choiceHasSkillCheck,
   formatSkillCheckResult,
+  inferNodeType,
+  getNodeType,
 } from '../../utils/narrativeLogic';
 import type { Character } from '../../types';
 import type {
@@ -17,6 +19,7 @@ import type {
   ChoiceOutcome,
   NodeEffect,
   WorldState,
+  StoryNode,
 } from '../../types';
 
 // Helper to create a test character
@@ -639,5 +642,90 @@ describe('utils/narrativeLogic', () => {
         expect(result).toBe('Arcana: 10-1 = 9 vs DC 10 - Failed');
       });
     });
+  });
+});
+
+describe('Node type inference', () => {
+  it('infers combat from startCombat effect', () => {
+    const node: StoryNode = {
+      id: 'fight',
+      description: 'Battle!',
+      onEnter: [{ type: 'startCombat', enemyId: 'goblin', onVictoryNodeId: 'win' }],
+      choices: [],
+    };
+    expect(inferNodeType(node)).toBe('combat');
+  });
+
+  it('infers dialogue from speakerName', () => {
+    const node: StoryNode = {
+      id: 'talk',
+      description: 'Conversation',
+      speakerName: 'Guard',
+      choices: [],
+    };
+    expect(inferNodeType(node)).toBe('dialogue');
+  });
+
+  it('infers explore from title', () => {
+    const node: StoryNode = {
+      id: 'location',
+      title: 'The Darkwood',
+      description: 'A mysterious forest',
+      choices: [],
+    };
+    expect(inferNodeType(node)).toBe('explore');
+  });
+
+  it('infers explore from locationHint', () => {
+    const node: StoryNode = {
+      id: 'location',
+      description: 'You arrive',
+      locationHint: 'The tavern is warm and noisy',
+      choices: [],
+    };
+    expect(inferNodeType(node)).toBe('explore');
+  });
+
+  it('defaults to event when no indicators present', () => {
+    const node: StoryNode = {
+      id: 'moment',
+      description: 'Something happens',
+      choices: [],
+    };
+    expect(inferNodeType(node)).toBe('event');
+  });
+
+  it('prioritizes combat over dialogue when both present', () => {
+    const node: StoryNode = {
+      id: 'ambush',
+      description: 'The bandit attacks!',
+      speakerName: 'Bandit',
+      onEnter: [{ type: 'startCombat', enemyId: 'bandit', onVictoryNodeId: 'win' }],
+      choices: [],
+    };
+    expect(inferNodeType(node)).toBe('combat');
+  });
+});
+
+describe('getNodeType', () => {
+  it('returns explicit type when provided', () => {
+    const node: StoryNode = {
+      id: 'test',
+      description: 'Test',
+      speakerName: 'NPC',
+      type: 'event', // Explicit override
+      choices: [],
+    };
+    expect(getNodeType(node)).toBe('event');
+  });
+
+  it('infers type when not provided', () => {
+    const node: StoryNode = {
+      id: 'test',
+      description: 'Test',
+      speakerName: 'NPC',
+      choices: [],
+    };
+    expect(getNodeType(node)).toBe('dialogue');
   });
 });

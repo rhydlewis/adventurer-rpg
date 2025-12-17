@@ -11,6 +11,8 @@ import type {
   SkillCheckResult,
   OutcomeResolution,
   EffectResult,
+  NodeType,
+  StoryNode,
 } from '../types';
 import { getTotalSkillBonus } from './skills';
 
@@ -413,4 +415,43 @@ export function formatSkillCheckResult(result: SkillCheckResult): string {
   const modSign = result.modifier >= 0 ? '+' : '';
   const successText = result.success ? 'Success!' : 'Failed';
   return `${result.skill}: ${result.roll}${modSign}${result.modifier} = ${result.total} vs DC ${result.dc} - ${successText}`;
+}
+
+// =============================================================================
+// Node Type Inference
+// =============================================================================
+
+/**
+ * Infer node type from structure (when type not explicitly set)
+ * Priority order:
+ * 1. Combat if startCombat effect present
+ * 2. Dialogue if speaker present
+ * 3. Explore if title or locationHint present
+ * 4. Event otherwise
+ */
+export function inferNodeType(node: StoryNode): NodeType {
+  // 1. Combat if startCombat effect present
+  if (node.onEnter?.some((e) => e.type === 'startCombat')) {
+    return 'combat';
+  }
+
+  // 2. Dialogue if speaker present
+  if (node.speakerName) {
+    return 'dialogue';
+  }
+
+  // 3. Explore if location/title hints
+  if (node.title || node.locationHint) {
+    return 'explore';
+  }
+
+  // 4. Default to event
+  return 'event';
+}
+
+/**
+ * Get effective node type (explicit or inferred)
+ */
+export function getNodeType(node: StoryNode): NodeType {
+  return node.type ?? inferNodeType(node);
 }
