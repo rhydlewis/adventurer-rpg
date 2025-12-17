@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCombatStore } from '../stores/combatStore';
 import { useCharacterStore } from '../stores/characterStore';
+import { useNarrativeStore } from '../stores/narrativeStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import { generateEnemy } from '../utils/enemyGeneration';
 import type { CombatState } from '../types';
-import { Icon } from '../components';
+import { Icon, HamburgerMenu } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
 
 // Action icon mapping
@@ -25,11 +26,13 @@ interface CombatScreenProps {
   onVictoryNodeId: string;
   onVictory: (victoryNodeId: string) => void;
   onDefeat: () => void;
+  onViewCharacterSheet?: () => void;
 }
 
-export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: CombatScreenProps) {
+export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, onViewCharacterSheet }: CombatScreenProps) {
   const { combat, startCombat, executeTurn, resetCombat, retreat } = useCombatStore();
-  const { character, setCharacter } = useCharacterStore();
+  const { character, setCharacter, saveCharacter } = useCharacterStore();
+  const { saveNarrativeState } = useNarrativeStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
@@ -91,6 +94,11 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
     onDefeat();
   };
 
+  const handleSaveGame = () => {
+    saveCharacter();
+    saveNarrativeState();
+  };
+
   const actions = getAvailableActions(combat.playerCharacter);
 
   return (
@@ -107,12 +115,11 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat }: 
               </div>
               <h1 className="text-lg heading-tertiary text-amber-500 tracking-wide">BATTLE</h1>
             </div>
-            <button
-              onClick={handleEndCombat}
-              className="text-xs text-slate-400 hover:text-slate-200 body-secondary px-3 py-1.5 border border-slate-700 rounded hover:border-slate-500 transition-colors"
-            >
-              End
-            </button>
+            <HamburgerMenu
+              onViewCharacterSheet={onViewCharacterSheet}
+              onSaveGame={handleSaveGame}
+              onExit={handleEndCombat}
+            />
           </div>
 
           {/* Initiative Strip - Minimal */}

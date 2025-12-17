@@ -48,6 +48,10 @@ interface NarrativeStore {
   getCurrentNode: () => StoryNode | null;
   getAvailableChoices: (player: Character) => Choice[];
   getChoiceDisplayText: (choice: Choice) => string;
+
+  // Save/Load
+  saveNarrativeState: () => void;
+  loadNarrativeState: () => boolean;
 }
 
 /**
@@ -430,5 +434,54 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
 
   getChoiceDisplayText: (choice) => {
     return getChoiceDisplayText(choice);
+  },
+
+  saveNarrativeState: () => {
+    const { world, conversation, campaign } = get();
+
+    if (!world || !conversation || !campaign) {
+      console.warn('No narrative state to save');
+      return;
+    }
+
+    try {
+      const saveData = {
+        world,
+        conversation,
+        campaignId: campaign.id, // Save campaign ID for reference
+      };
+      localStorage.setItem('adventurer-rpg:narrative', JSON.stringify(saveData));
+      console.log('Narrative state saved successfully');
+    } catch (error) {
+      console.error('Failed to save narrative state:', error);
+    }
+  },
+
+  loadNarrativeState: () => {
+    try {
+      const saved = localStorage.getItem('adventurer-rpg:narrative');
+      if (saved) {
+        const saveData = JSON.parse(saved);
+
+        // Note: Campaign data is not saved to localStorage (it's static data)
+        // The campaign must be loaded separately before loading narrative state
+        const { campaign } = get();
+        if (!campaign || campaign.id !== saveData.campaignId) {
+          console.warn('Cannot load narrative state: campaign not loaded or mismatch');
+          return false;
+        }
+
+        set({
+          world: saveData.world,
+          conversation: saveData.conversation,
+        });
+        console.log('Narrative state loaded successfully');
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to load narrative state:', error);
+      return false;
+    }
   },
 }));
