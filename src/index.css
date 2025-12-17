@@ -285,4 +285,33 @@ body {
     color: var(--color-text-secondary);
     text-transform: uppercase;
   }
+
+  /* Choice Categories - Visual styling for different action types */
+  .choice-movement {
+    @apply border-player/40 hover:border-player/70 bg-player/5 hover:bg-player/10;
+  }
+
+  .choice-combat {
+    @apply border-enemy/40 hover:border-enemy/70 bg-enemy/5 hover:bg-enemy/10;
+  }
+
+  .choice-exploration {
+    @apply border-warning/40 hover:border-warning/70 bg-warning/5 hover:bg-warning/10;
+  }
+
+  .choice-skillCheck {
+    @apply border-magic/40 hover:border-magic/70 bg-magic/5 hover:bg-magic/10;
+  }
+
+  .choice-dialogue {
+    @apply border-fg-muted/30 hover:border-fg-primary/50 bg-secondary/30 hover:bg-secondary/50;
+  }
+
+  .choice-merchant {
+    @apply border-fg-accent/40 hover:border-fg-accent/70 bg-fg-accent/5 hover:bg-fg-accent/10;
+  }
+
+  .choice-special {
+    @apply border-success/40 hover:border-success/70 bg-success/5 hover:bg-success/10;
+  }
 }

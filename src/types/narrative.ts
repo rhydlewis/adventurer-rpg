@@ -52,6 +52,19 @@ export type ChoiceOutcome =
   | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> }
   | { type: 'characterCreation'; phase: 1 | 2; nextNodeId: string };
 
+// =============================================================================
+// Choice Categories - Visual styling for different action types
+// =============================================================================
+
+export type ChoiceCategory =
+  | 'movement' // Moving to a new location (goto)
+  | 'combat' // Entering combat or aggressive action
+  | 'exploration' // Exploring/searching area
+  | 'skillCheck' // Attempting action with DC check
+  | 'dialogue' // Conversation or social interaction
+  | 'merchant' // Trading/shopping
+  | 'special'; // Unique/quest actions
+
 export interface Choice {
   id: string;
   text: string; // Display text, e.g., "Lie to the guard"
@@ -59,6 +72,7 @@ export interface Choice {
   requirements?: Requirement[]; // Must pass ALL to see this choice
   outcome: ChoiceOutcome;
   explorationOutcome?: ExplorationOutcome; // Validation campaign: random exploration
+  category?: ChoiceCategory; // Optional visual styling hint
 }
 
 // =============================================================================

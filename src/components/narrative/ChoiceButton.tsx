@@ -1,5 +1,6 @@
 import { Button } from '../Button';
-import type { Choice } from '../../types';
+import Icon from '../Icon';
+import type { Choice, ChoiceCategory } from '../../types';
 
 interface ChoiceButtonProps {
   /**
@@ -39,6 +40,34 @@ function parseChoiceText(text: string): { mainText: string; requirement?: string
 }
 
 /**
+ * Gets the icon name for a choice category
+ */
+function getCategoryIcon(category?: ChoiceCategory): keyof typeof import('lucide-react').icons | null {
+  if (!category) return null;
+
+  const iconMap: Record<ChoiceCategory, keyof typeof import('lucide-react').icons> = {
+    movement: 'MoveRight',
+    combat: 'Swords',
+    exploration: 'Compass',
+    skillCheck: 'Sparkles',
+    dialogue: 'MessageCircle',
+    merchant: 'ShoppingBag',
+    special: 'Star',
+  };
+
+  return iconMap[category];
+}
+
+/**
+ * Gets the CSS class for a choice category
+ */
+function getCategoryClass(category?: ChoiceCategory): string {
+  if (!category) return '';
+
+  return `choice-${category}`;
+}
+
+/**
  * Smart choice button that handles:
  * - Skill check requirements displayed below main text
  * - Previously selected choices (grayed but still clickable for loops)
@@ -63,19 +92,26 @@ export function ChoiceButton({
   };
 
   const { mainText, requirement } = parseChoiceText(displayText || choice.text);
+  const categoryIcon = getCategoryIcon(choice.category);
+  const categoryClass = getCategoryClass(choice.category);
 
   return (
     <Button
       variant={wasSelected ? 'secondary' : 'primary'}
       fullWidth
       onClick={handleClick}
-      className={wasSelected ? 'opacity-60' : ''}
+      className={`${wasSelected ? 'opacity-60' : ''} ${categoryClass} transition-all`}
     >
-      <div className="flex flex-col items-center w-full">
-        <span className="text-center">{mainText}</span>
-        {requirement && (
-          <span className="text-xs mt-1 text-center">{requirement}</span>
+      <div className="flex items-center gap-3 w-full">
+        {categoryIcon && (
+          <Icon name={categoryIcon} size={20} className="flex-shrink-0" />
         )}
+        <div className="flex flex-col items-start flex-1">
+          <span className={categoryIcon ? 'text-left' : 'text-center w-full'}>{mainText}</span>
+          {requirement && (
+            <span className="text-xs mt-1 text-left">{requirement}</span>
+          )}
+        </div>
       </div>
     </Button>
   );

@@ -23,6 +23,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'start-char-creation',
                 text: 'Create Character',
+                category: 'special',
                 outcome: {
                     type: 'characterCreation',
                     phase: 1,
@@ -32,16 +33,19 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-to-merchant',
                 text: 'Go to Merchant (test)',
+                category: 'movement',
                 outcome: {type: 'goto', nodeId: 'validation-merchant'},
             },
             {
                 id: 'test-exploration',
                 text: '[TEST] Jump to Exploration',
+                category: 'exploration',
                 outcome: {type: 'goto', nodeId: 'validation-exploration-choice'},
             },
             {
                 id: 'test-levelup',
                 text: '[TEST] Jump to Level-Up',
+                category: 'special',
                 outcome: {type: 'goto', nodeId: 'validation-levelup'},
             },
         ],
@@ -58,6 +62,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'attack-spider',
                 text: 'Draw your weapon and attack!',
+                category: 'combat',
                 outcome: {
                     type: 'goto',
                     nodeId: 'validation-spider-combat',
@@ -67,6 +72,7 @@ const validationNodes: StoryNode[] = [
                 id: 'sneak-past-spider',
                 text: '🎲 Try to sneak past the spider',
                 displayText: '🎲 Stealth DC 12: Try to sneak past the spider',
+                category: 'skillCheck',
                 outcome: {
                     type: 'check',
                     skill: 'Stealth',
@@ -109,6 +115,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-after-stealth',
                 text: 'Continue down the path',
+                category: 'movement',
                 outcome: {type: 'goto', nodeId: 'validation-exploration-choice'},
             },
         ],
@@ -126,6 +133,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-to-exploration',
                 text: 'Continue down the path',
+                category: 'movement',
                 outcome: {type: 'goto', nodeId: 'validation-exploration-choice'},
             },
         ],
@@ -142,6 +150,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'explore-forest',
                 text: 'Explore the game trails (risk/reward)',
+                category: 'exploration',
                 outcome: {
                     type: 'explore',
                     tableId: 'forest-exploration',
@@ -151,6 +160,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-to-merchant',
                 text: 'Stay on the main path to the village',
+                category: 'movement',
                 outcome: {type: 'goto', nodeId: 'validation-merchant'},
             },
         ],
@@ -169,6 +179,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-after-exploration',
                 text: 'Continue to the village',
+                category: 'movement',
                 outcome: {type: 'goto', nodeId: 'validation-merchant'},
             },
         ],
@@ -186,6 +197,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'browse-wares',
                 text: '"Show me your wares."',
+                category: 'merchant',
                 outcome: {
                     type: 'merchant',
                     shopInventory: ['healing-potion', 'sword-plus-1', 'antidote'],
@@ -199,6 +211,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'leave-merchant',
                 text: '"Not interested right now."',
+                category: 'dialogue',
                 outcome: {type: 'goto', nodeId: 'validation-phase2-unlock'},
             },
         ],
@@ -218,12 +231,14 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'customize-character',
                 text: 'Refine your abilities (Phase 2 customization)',
+                category: 'special',
                 outcome: { type: 'goto', nodeId: 'validation-second-combat' },
                 // In full implementation, this would open customization UI first
             },
             {
                 id: 'skip-customization',
                 text: 'Use your current build',
+                category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'validation-second-combat' },
             },
         ],
@@ -259,6 +274,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-to-levelup',
                 text: 'Press onward',
+                category: 'movement',
                 outcome: { type: 'goto', nodeId: 'validation-levelup' },
             },
         ],
@@ -272,11 +288,13 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'return-to-combat',
                 text: 'Steel yourself and return to the crypt',
+                category: 'combat',
                 outcome: { type: 'goto', nodeId: 'validation-second-combat' },
             },
             {
                 id: 'skip-to-levelup',
                 text: 'Avoid the crypt and continue your journey (skip combat)',
+                category: 'movement',
                 outcome: { type: 'goto', nodeId: 'validation-levelup' },
             },
         ],
@@ -299,6 +317,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'continue-to-final',
                 text: 'Face the final challenge',
+                category: 'movement',
                 outcome: { type: 'goto', nodeId: 'validation-final-combat' },
             },
         ],
@@ -335,6 +354,7 @@ const validationNodes: StoryNode[] = [
             {
                 id: 'view-summary',
                 text: 'View Campaign Summary',
+                category: 'special',
                 outcome: { type: 'exit' }, // This would show summary screen in full implementation
             },
         ],
