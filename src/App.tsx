@@ -16,6 +16,7 @@ import { LockPickingScreen } from './screens';
 import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
 import { LevelUpScreen } from './screens';
+import {TestingScreen} from "./screens/TestingScreen.tsx";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
@@ -157,16 +158,13 @@ function App() {
       {currentScreen.type === 'mainMenu' && (
         <MainMenuScreen
           onNewGame={() => setCurrentScreen({ type: 'home' })}
+          onTesting={() => setCurrentScreen({ type: 'testing' })}
         />
       )}
       {currentScreen.type === 'home' && (
         <HomeScreen
-          onStartCombat={() => setCurrentScreen({ type: 'combat', enemyId: 'goblin', onVictoryNodeId: '' })}
-          onCreateCharacter={handleCreateCharacter}
-          onViewCharacter={character ? handleViewSheet : undefined}
           hasCharacter={character !== null}
           onStartStory={handleStartStory}
-          onNavigate={setCurrentScreen}
         />
       )}
       {currentScreen.type === 'combat' && (
@@ -239,6 +237,14 @@ function App() {
               tableId={currentScreen.tableId}
               onceOnly={currentScreen.onceOnly}
               onComplete={currentScreen.onComplete}
+              onNavigate={setCurrentScreen}
+          />
+      )}
+      {currentScreen.type === 'testing' && (
+          <TestingScreen
+              onStartCombat={() => setCurrentScreen({ type: 'combat', enemyId: 'goblin', onVictoryNodeId: '' })}
+              onCreateCharacter={handleCreateCharacter}
+              onViewCharacter={character ? handleViewSheet : undefined}
               onNavigate={setCurrentScreen}
           />
       )}

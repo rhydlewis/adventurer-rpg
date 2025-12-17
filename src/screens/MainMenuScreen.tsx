@@ -3,7 +3,7 @@ import { Button, Icon } from '../components';
 interface MainMenuScreenProps {
   onNewGame: () => void;
   onContinue?: () => void;
-  onLoadGame?: () => void;
+  onTesting?: () => void;
   onOptions?: () => void;
   onCredits?: () => void;
 }
@@ -21,7 +21,7 @@ interface MainMenuScreenProps {
 export function MainMenuScreen({
   onNewGame,
   onContinue,
-  onLoadGame,
+  onTesting,
   onOptions,
   onCredits,
 }: MainMenuScreenProps) {
@@ -69,17 +69,6 @@ export function MainMenuScreen({
             variant="secondary"
             fullWidth
             size="default"
-            icon={<Icon name="FolderOpen" size={20} />}
-            disabled={!onLoadGame}
-            onClick={onLoadGame}
-          >
-            Load Game
-          </Button>
-
-          <Button
-            variant="secondary"
-            fullWidth
-            size="default"
             icon={<Icon name="Settings" size={20} />}
             disabled={!onOptions}
             onClick={onOptions}
@@ -97,6 +86,17 @@ export function MainMenuScreen({
           >
             Credits
           </Button>
+
+          <Button
+              variant="secondary"
+              fullWidth
+              size="default"
+              icon={<Icon name="TestTube" size={20} />}
+              onClick={onTesting}
+          >
+            Testing
+          </Button>
+
         </div>
 
         {/* Decorative divider */}

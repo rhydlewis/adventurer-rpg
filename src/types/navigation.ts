@@ -21,4 +21,7 @@ export type Screen =
   // Validation campaign screens
   | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number>; onClose: () => void }
   | { type: 'levelUp'; newLevel: number; featChoices: string[]; onComplete: () => void }
-  | { type: 'exploration'; tableId: string; onceOnly: boolean; onComplete: () => void };
+  | { type: 'exploration'; tableId: string; onceOnly: boolean; onComplete: () => void }
+  // Testing screen
+  | { type: 'testing' };
+
