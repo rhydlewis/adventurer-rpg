@@ -6,6 +6,7 @@ export * from './condition';
 export * from './dice';
 export * from './equipment';
 export * from './feat';
+export * from './gameSave';
 export * from './map';
 export * from './narrative';
 export * from './navigation';
