@@ -45,6 +45,7 @@ interface NarrativeStore {
 
   exitConversation: () => void;
   resetNarrative: () => void;
+  restoreState: (world: WorldState, conversation: ConversationState) => void;
 
   // Getters
   getCurrentAct: () => Act | null;
@@ -417,6 +418,14 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       conversation: null,
       campaign: null,
     });
+  },
+
+  /**
+   * Restore narrative state from saved game
+   */
+  restoreState: (world: WorldState, conversation: ConversationState) => {
+    set({ world, conversation });
+    console.log('[NarrativeStore] State restored from save');
   },
 
   // Getters
