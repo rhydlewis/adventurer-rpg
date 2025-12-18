@@ -80,6 +80,25 @@ export class GameSaveManager {
   }
 
   /**
+   * Get save metadata for UI display (fast, doesn't load full save)
+   */
+  static async getSaveMetadata(): Promise<SaveMetadata | null> {
+    try {
+      const { value } = await Preferences.get({ key: SAVE_KEY });
+
+      if (!value) {
+        return null;
+      }
+
+      const save = JSON.parse(value) as GameSave;
+      return save.metadata;
+    } catch (error) {
+      console.error('[GameSave] getSaveMetadata failed:', error);
+      return null;
+    }
+  }
+
+  /**
    * Get current version string
    */
   static getCurrentVersion(): string {

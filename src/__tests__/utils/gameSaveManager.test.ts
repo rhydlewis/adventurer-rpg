@@ -83,4 +83,41 @@ describe('GameSaveManager', () => {
 
     expect(result).toBeNull();
   });
+
+  it('should extract metadata without loading full save', async () => {
+    const mockSaveWithMetadata: GameSave = {
+      version: '1.0.0',
+      timestamp: Date.now(),
+      character: { name: 'TestHero', level: 3 } as any,
+      narrative: {} as any,
+      currentScreen: { type: 'story' },
+      metadata: {
+        characterName: 'TestHero',
+        characterLevel: 3,
+        lastPlayedTimestamp: 1234567890,
+        playTimeSeconds: 500,
+      },
+    };
+
+    vi.mocked(Preferences.get).mockResolvedValue({
+      value: JSON.stringify(mockSaveWithMetadata),
+    });
+
+    const metadata = await GameSaveManager.getSaveMetadata();
+
+    expect(metadata).toEqual({
+      characterName: 'TestHero',
+      characterLevel: 3,
+      lastPlayedTimestamp: 1234567890,
+      playTimeSeconds: 500,
+    });
+  });
+
+  it('should return null metadata if no save exists', async () => {
+    vi.mocked(Preferences.get).mockResolvedValue({ value: null });
+
+    const metadata = await GameSaveManager.getSaveMetadata();
+
+    expect(metadata).toBeNull();
+  });
 });
