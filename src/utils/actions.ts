@@ -79,8 +79,9 @@ export function getAvailableActions(character: Character): Action[] {
     }
   }
 
-  // 4. Use Item - healing potions (Phase 1.3+)
-  // TODO: Implement item usage when inventory system is added
+  // 4. Use Item
+  // Note: Items handled separately via Items button popover, not individual actions
+  // This keeps the action grid clean and mobile-friendly
 
   return actions;
 }
@@ -112,8 +113,9 @@ export function canPerformAction(character: Character, action: Action): boolean 
     }
 
     case 'use_item':
-      // TODO: Check inventory
-      return false;
+      // Check if item exists and has quantity
+      const item = character.equipment.items.find(i => i.id === action.itemId);
+      return item ? (item.quantity ?? 0) > 0 : false;
 
     default:
       return false;
