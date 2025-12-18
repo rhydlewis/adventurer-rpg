@@ -93,4 +93,29 @@ describe('itemEffects', () => {
       expect(updated.hp).toBe(30);
     });
   });
+
+  describe('applyItemEffect - escape', () => {
+    it('should handle escape items only in combat', () => {
+      const character = createTestCharacter();
+      const effect: ItemEffect = { type: 'escape' };
+
+      const inCombat = applyItemEffect(character, effect, true);
+      const outOfCombat = applyItemEffect(character, effect, false);
+
+      expect(inCombat.logMessage).toContain('Escaped');
+      expect(outOfCombat.logMessage).toContain('No effect');
+    });
+  });
+
+  describe('applyItemEffect - remove-condition', () => {
+    it('should log condition removal', () => {
+      const character = createTestCharacter();
+      const effect: ItemEffect = { type: 'remove-condition', condition: 'poisoned' };
+
+      const { logMessage } = applyItemEffect(character, effect, true);
+
+      expect(logMessage).toContain('poisoned');
+      expect(logMessage).toContain('Removed');
+    });
+  });
 });
