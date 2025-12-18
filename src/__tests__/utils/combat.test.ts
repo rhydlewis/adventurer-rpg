@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { CombatState } from '../../types';
 import type { Character } from '../../types';
 import type { Creature } from "../../types/creature";
-import type { AttackAction } from '../../types/action';
+import type { AttackAction, UseItemAction } from '../../types/action';
 
 // Mock dice utilities
 vi.mock('../../utils/dice', () => ({
@@ -64,6 +64,13 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
       finesse: false,
       description: 'A standard longsword',
     },
+    weapons: [{
+      name: 'Longsword',
+      damage: '1d8',
+      damageType: 'slashing',
+      finesse: false,
+      description: 'A standard longsword',
+    }],
     armor: {
       name: 'Chainmail',
       baseAC: 16,
@@ -121,6 +128,13 @@ const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
       finesse: true,
       description: 'A small dagger',
     },
+    weapons: [{
+      name: 'Dagger',
+      damage: '1d4',
+      damageType: 'piercing',
+      finesse: true,
+      description: 'A small dagger',
+    }],
     armor: {
       name: 'Leather',
       baseAC: 12,
@@ -972,6 +986,242 @@ describe('utils/combat', () => {
       const result = handleRetreat(lowHpCombat as CombatState);
 
       expect(result.playerCharacter.hp).toBe(1); // Not 0 or negative
+    });
+  });
+
+  describe('Item Usage in Combat', () => {
+    it('should apply healing potion effect during combat', () => {
+      const player = createTestCharacter({
+        hp: 10,
+        maxHp: 30,
+        equipment: {
+          weapon: {
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          },
+          weapons: [{
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          }],
+          armor: {
+            name: 'Chainmail',
+            baseAC: 16,
+            maxDexBonus: 2,
+            description: 'Standard chainmail armor',
+          },
+          shield: {
+            equipped: true,
+            acBonus: 2,
+          },
+          items: [
+            {
+              id: 'healing-potion',
+              name: 'Healing Potion',
+              description: 'Restores 2d8+2 HP',
+              type: 'consumable',
+              usableInCombat: true,
+              effect: { type: 'heal', amount: '2d8+2' },
+              value: 25,
+              quantity: 2,
+            },
+          ],
+        },
+      });
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: {
+          player: { actor: 'player', roll: 15, bonus: 0, total: 15 },
+          enemy: { actor: 'enemy', roll: 10, bonus: 0, total: 10 },
+          order: ['player', 'enemy'],
+        },
+        currentActor: 'player',
+        canRetreat: true,
+        retreatPenalty: {
+          goldLost: 20,
+          damageOnFlee: 5,
+          safeNodeId: 'home',
+        },
+      };
+
+      const action: UseItemAction = {
+        type: 'use_item',
+        name: 'Use Healing Potion',
+        description: '',
+        available: true,
+        itemId: 'healing-potion',
+      };
+
+      const result = resolveCombatRound(state, action);
+
+      expect(result.playerCharacter.hp).toBeGreaterThan(10);
+      expect(result.playerCharacter.hp).toBeLessThanOrEqual(30);
+    });
+
+    it('should decrement item quantity after use', () => {
+      const player = createTestCharacter({
+        equipment: {
+          weapon: {
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          },
+          weapons: [{
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          }],
+          armor: {
+            name: 'Chainmail',
+            baseAC: 16,
+            maxDexBonus: 2,
+            description: 'Standard chainmail armor',
+          },
+          shield: {
+            equipped: true,
+            acBonus: 2,
+          },
+          items: [
+            {
+              id: 'healing-potion',
+              name: 'Healing Potion',
+              description: 'Restores 2d8+2 HP',
+              type: 'consumable',
+              usableInCombat: true,
+              effect: { type: 'heal', amount: '2d8+2' },
+              value: 25,
+              quantity: 2,
+            },
+          ],
+        },
+      });
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: {
+          player: { actor: 'player', roll: 15, bonus: 0, total: 15 },
+          enemy: { actor: 'enemy', roll: 10, bonus: 0, total: 10 },
+          order: ['player', 'enemy'],
+        },
+        currentActor: 'player',
+        canRetreat: true,
+        retreatPenalty: {
+          goldLost: 20,
+          damageOnFlee: 5,
+          safeNodeId: 'home',
+        },
+      };
+
+      const action: UseItemAction = {
+        type: 'use_item',
+        name: 'Use Healing Potion',
+        description: '',
+        available: true,
+        itemId: 'healing-potion',
+      };
+
+      const result = resolveCombatRound(state, action);
+
+      const item = result.playerCharacter.equipment.items.find(
+        i => i.id === 'healing-potion'
+      );
+      expect(item?.quantity).toBe(1);
+    });
+
+    it('should remove item when quantity reaches 0', () => {
+      const player = createTestCharacter({
+        equipment: {
+          weapon: {
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          },
+          weapons: [{
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          }],
+          armor: {
+            name: 'Chainmail',
+            baseAC: 16,
+            maxDexBonus: 2,
+            description: 'Standard chainmail armor',
+          },
+          shield: {
+            equipped: true,
+            acBonus: 2,
+          },
+          items: [
+            {
+              id: 'healing-potion',
+              name: 'Healing Potion',
+              description: 'Restores 2d8+2 HP',
+              type: 'consumable',
+              usableInCombat: true,
+              effect: { type: 'heal', amount: '2d8+2' },
+              value: 25,
+              quantity: 1,
+            },
+          ],
+        },
+      });
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: {
+          player: { actor: 'player', roll: 15, bonus: 0, total: 15 },
+          enemy: { actor: 'enemy', roll: 10, bonus: 0, total: 10 },
+          order: ['player', 'enemy'],
+        },
+        currentActor: 'player',
+        canRetreat: true,
+        retreatPenalty: {
+          goldLost: 20,
+          damageOnFlee: 5,
+          safeNodeId: 'home',
+        },
+      };
+
+      const action: UseItemAction = {
+        type: 'use_item',
+        name: 'Use Healing Potion',
+        description: '',
+        available: true,
+        itemId: 'healing-potion',
+      };
+
+      const result = resolveCombatRound(state, action);
+
+      const item = result.playerCharacter.equipment.items.find(
+        i => i.id === 'healing-potion'
+      );
+      expect(item).toBeUndefined();
     });
   });
 });
