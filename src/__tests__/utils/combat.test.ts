@@ -1223,5 +1223,159 @@ describe('utils/combat', () => {
       );
       expect(item).toBeUndefined();
     });
+
+    it('should add item usage to combat log', () => {
+      const player = createTestCharacter({
+        equipment: {
+          weapon: {
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          },
+          weapons: [{
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          }],
+          armor: {
+            name: 'Chainmail',
+            baseAC: 16,
+            maxDexBonus: 2,
+            description: 'Standard chainmail armor',
+          },
+          shield: {
+            equipped: true,
+            acBonus: 2,
+          },
+          items: [
+            {
+              id: 'healing-potion',
+              name: 'Healing Potion',
+              description: 'Restores 2d8+2 HP',
+              type: 'consumable',
+              usableInCombat: true,
+              effect: { type: 'heal', amount: '2d8+2' },
+              value: 25,
+              quantity: 1,
+            },
+          ],
+        },
+      });
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: {
+          player: { actor: 'player', roll: 15, bonus: 0, total: 15 },
+          enemy: { actor: 'enemy', roll: 10, bonus: 0, total: 10 },
+          order: ['player', 'enemy'],
+        },
+        currentActor: 'player',
+        canRetreat: true,
+        retreatPenalty: {
+          goldLost: 20,
+          damageOnFlee: 5,
+          safeNodeId: 'home',
+        },
+      };
+
+      const action: UseItemAction = {
+        type: 'use_item',
+        name: 'Use Healing Potion',
+        description: '',
+        available: true,
+        itemId: 'healing-potion',
+      };
+
+      const result = resolveCombatRound(state, action);
+
+      const logEntry = result.log.find(l => l.message.includes('Healing Potion'));
+      expect(logEntry).toBeDefined();
+      expect(logEntry?.actor).toBe('player');
+      expect(logEntry?.message).toContain('HP restored');
+    });
+
+    it('should handle smoke bomb escape', () => {
+      const player = createTestCharacter({
+        equipment: {
+          weapon: {
+            name: 'Rapier',
+            damage: '1d6',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A rapier',
+          },
+          weapons: [{
+            name: 'Rapier',
+            damage: '1d6',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A rapier',
+          }],
+          armor: {
+            name: 'Leather',
+            baseAC: 12,
+            maxDexBonus: null,
+            description: 'Leather armor',
+          },
+          shield: {
+            equipped: false,
+            acBonus: 0,
+          },
+          items: [
+            {
+              id: 'smoke-bomb',
+              name: 'Smoke Bomb',
+              description: 'Escape combat',
+              type: 'consumable',
+              usableInCombat: true,
+              effect: { type: 'escape' },
+              value: 30,
+              quantity: 1,
+            },
+          ],
+        },
+      });
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: {
+          player: { actor: 'player', roll: 15, bonus: 0, total: 15 },
+          enemy: { actor: 'enemy', roll: 10, bonus: 0, total: 10 },
+          order: ['player', 'enemy'],
+        },
+        currentActor: 'player',
+        canRetreat: true,
+        retreatPenalty: {
+          goldLost: 20,
+          damageOnFlee: 5,
+          safeNodeId: 'home',
+        },
+      };
+
+      const action: UseItemAction = {
+        type: 'use_item',
+        name: 'Use Smoke Bomb',
+        description: '',
+        available: true,
+        itemId: 'smoke-bomb',
+      };
+
+      const result = resolveCombatRound(state, action);
+
+      expect(result.winner).toBe('player'); // Escaped
+      expect(result.log.some(l => l.message.includes('Escaped'))).toBe(true);
+    });
   });
 });
