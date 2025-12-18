@@ -4,6 +4,10 @@ import { calculateModifier } from '../utils/dice';
 import { calculateSkillBonus } from '../utils/skills';
 import type { SkillName } from '../types';
 import { Button, Card, Icon } from '../components';
+import { canUseItem, getItemDisabledReason } from '../utils/equipmentHelpers';
+import { applyItemEffect } from '../utils/itemEffects';
+import { useCombatStore } from '../stores/combatStore';
+import { useCharacterStore } from '../stores/characterStore';
 
 interface CharacterSheetScreenProps {
   character: Character | null;
@@ -376,6 +380,38 @@ function SkillsTab({ character, skillNames }: { character: Character; skillNames
 
 // Combat Tab
 function CombatTab({ character }: { character: Character }) {
+  const combat = useCombatStore(state => state.combat);
+  const setCharacter = useCharacterStore(state => state.setCharacter);
+
+  // Handle item usage
+  const handleUseItem = (itemId: string) => {
+    if (!character) return;
+
+    const item = character.equipment.items.find(i => i.id === itemId);
+    if (!item || !item.effect) return;
+
+    // Apply effect
+    const inCombat = combat !== null;
+    const { character: updated, logMessage } = applyItemEffect(character, item.effect, inCombat);
+
+    // Decrement quantity
+    const updatedItems = updated.equipment.items
+      .map(i =>
+        i.id === itemId
+          ? { ...i, quantity: (i.quantity ?? 1) - 1 }
+          : i
+      )
+      .filter(i => (i.quantity ?? 0) > 0);
+
+    const updatedCharacter = { ...updated, equipment: { ...updated.equipment, items: updatedItems } };
+
+    // Update character store
+    setCharacter(updatedCharacter);
+
+    // Show feedback (optional: add toast notification)
+    console.log(`Used ${item.name}: ${logMessage}`);
+  };
+
   return (
     <div className="space-y-6">
       {/* Feats */}
@@ -480,15 +516,33 @@ function CombatTab({ character }: { character: Character }) {
               Inventory
             </h3>
             <div className="space-y-2">
-              {character.equipment.items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center bg-surface rounded p-3 body-primary"
-                >
-                  <span>{item.name}</span>
-                  <span className="text-fg-muted">×{item.quantity}</span>
-                </div>
-              ))}
+              {character.equipment.items.map((item, idx) => {
+                const inCombat = combat !== null;
+                const canUse = canUseItem(character, item, inCombat);
+                const disabledReason = !canUse ? getItemDisabledReason(character, item, inCombat) : '';
+
+                return (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center bg-surface rounded p-3 body-primary"
+                  >
+                    <div className="flex-1">
+                      <span>{item.name}</span>
+                      <span className="text-fg-muted ml-2">×{item.quantity}</span>
+                      {disabledReason && (
+                        <span className="ml-2 text-fg-muted text-xs">({disabledReason})</span>
+                      )}
+                    </div>
+                    <Button
+                      onClick={() => handleUseItem(item.id)}
+                      variant={canUse ? 'primary' : 'secondary'}
+                      disabled={!canUse}
+                    >
+                      Use
+                    </Button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
