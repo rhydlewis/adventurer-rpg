@@ -26,6 +26,10 @@ export interface ClassDefinition {
   startingArmor: ArmorType;
   hasShield: boolean;
   startingFeats?: FeatName[]; // Only Fighter gets a feat at level 1
+  proficiencies: {
+    weapons: ('simple' | 'martial' | 'martial-finesse')[];
+    armor: ('light' | 'medium' | 'heavy')[];
+  };
 }
 
 export const CLASSES: Record<CharacterClass, ClassDefinition> = {
@@ -58,6 +62,10 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'Longsword',
     startingArmor: 'Chainmail',
     hasShield: true,
+    proficiencies: {
+      weapons: ['simple', 'martial'],
+      armor: ['light', 'medium', 'heavy'],
+    },
   },
   Rogue: {
     name: 'Rogue',
@@ -88,6 +96,10 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'Rapier',
     startingArmor: 'Leather',
     hasShield: false,
+    proficiencies: {
+      weapons: ['simple', 'martial-finesse'],
+      armor: ['light'],
+    },
   },
   Wizard: {
     name: 'Wizard',
@@ -118,6 +130,10 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'Dagger',
     startingArmor: 'None',
     hasShield: false,
+    proficiencies: {
+      weapons: ['simple'],
+      armor: [],
+    },
   },
   Cleric: {
     name: 'Cleric',
@@ -148,6 +164,10 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'Mace',
     startingArmor: 'Chainmail',
     hasShield: true,
+    proficiencies: {
+      weapons: ['simple'],
+      armor: ['light', 'medium'],
+    },
   },
 };
 
