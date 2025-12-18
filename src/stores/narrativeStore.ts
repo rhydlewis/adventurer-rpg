@@ -17,6 +17,8 @@ import {
   getChoiceDisplayText,
 } from '../utils/narrativeLogic';
 import { useCharacterStore } from './characterStore';
+import { GameSaveManager } from '../utils/gameSaveManager';
+import type { GameSave } from '../types/gameSave';
 
 interface NarrativeStore {
   // Persistent state
@@ -214,6 +216,32 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
           },
         });
       }
+    }
+
+    // Auto-save after entering node
+    const character = _player;
+    if (character) {
+      const saveData: GameSave = {
+        version: GameSaveManager.getCurrentVersion(),
+        timestamp: Date.now(),
+        character,
+        narrative: {
+          world,
+          conversation,
+          campaignId: campaign.id,
+        },
+        currentScreen: { type: 'story' },
+        metadata: {
+          characterName: character.name,
+          characterLevel: character.level,
+          lastPlayedTimestamp: Date.now(),
+          playTimeSeconds: 0, // TODO: Implement play time tracking
+        },
+      };
+
+      GameSaveManager.save(saveData).catch(err => {
+        console.error('[NarrativeStore] Auto-save failed:', err);
+      });
     }
   },
 
