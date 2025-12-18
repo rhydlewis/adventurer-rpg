@@ -94,7 +94,10 @@ export function createCharacter(params: CreateCharacterParams): Character {
   const saves = calculateSaves(className, attributes);
 
   // Build equipment
-  const weapon = WEAPONS[classDef.startingWeapon];
+  const weapon = {
+    ...WEAPONS[classDef.startingWeapon],
+    id: `${classDef.startingWeapon.toLowerCase()}-${Date.now()}`,
+  };
   const armor = ARMORS[classDef.startingArmor];
   const shield = {
     equipped: classDef.hasShield,
