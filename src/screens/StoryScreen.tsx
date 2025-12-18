@@ -180,6 +180,9 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
                     {currentNode.locationHint}
                   </p>
                 )}
+                <p className="text-xs text-white/50 font-mono mt-1">
+                  [Debug: Node {currentNode.id}]
+                </p>
               </div>
             </div>
             <OptionsMenu

@@ -211,8 +211,22 @@ function App() {
       return;
     }
 
+    console.log('[App] Save loaded:', save);
+
     // Restore character
     setCharacter(save.character);
+    console.log('[App] Character restored:', save.character.name);
+
+    // Fix null conversation (can happen with old/incomplete saves)
+    if (!save.narrative.conversation && save.narrative.world) {
+      console.warn('[App] Conversation is null, re-initializing from world state');
+      save.narrative.conversation = {
+        active: true,
+        currentNodeId: save.narrative.world.currentNodeId,
+        visitedChoiceIds: [],
+        log: [],
+      };
+    }
 
     // Restore narrative
     const { loadCampaign, restoreState } = useNarrativeStore.getState();
@@ -223,8 +237,31 @@ function App() {
       return;
     }
 
+    console.log('[App] Loading campaign:', campaign.title);
     loadCampaign(campaign);
+
+    console.log('[App] Restoring narrative state...', {
+      world: save.narrative.world,
+      conversation: save.narrative.conversation,
+    });
     restoreState(save.narrative.world, save.narrative.conversation);
+
+    // Verify state was set
+    const state = useNarrativeStore.getState();
+    console.log('[App] Narrative store state after restore:', {
+      hasCampaign: !!state.campaign,
+      hasConversation: !!state.conversation,
+      hasWorld: !!state.world,
+      currentNodeId: state.conversation?.currentNodeId,
+    });
+
+    // If conversation log is empty (happens with re-initialized conversation),
+    // re-enter the current node to populate the log with the node's description
+    if (state.conversation && state.conversation.log.length === 0) {
+      console.log('[App] Conversation log is empty, re-entering node:', state.conversation.currentNodeId);
+      const { enterNode } = useNarrativeStore.getState();
+      enterNode(state.conversation.currentNodeId, save.character);
+    }
 
     // Navigate to story screen
     setCurrentScreen({ type: 'story' });
@@ -308,7 +345,7 @@ function App() {
       )}
       {currentScreen.type === 'story' && (
         <StoryScreen
-          onExit={() => setCurrentScreen({ type: 'home' })}
+          onExit={() => setCurrentScreen({ type: 'mainMenu' })}
           onViewCharacterSheet={character ? handleViewSheet : undefined}
           onViewMap={() => setCurrentScreen({ type: 'worldMap' })}
         />

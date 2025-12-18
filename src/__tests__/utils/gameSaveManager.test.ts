@@ -125,4 +125,37 @@ describe('GameSaveManager', () => {
 
     expect(metadata).toBeNull();
   });
+
+  it('should load save with null conversation', async () => {
+    const saveWithNullConversation: GameSave = {
+      version: '1.0.0',
+      timestamp: Date.now(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      character: { name: 'TestHero', level: 1 } as any,
+      narrative: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        world: { currentNodeId: 'node-1', flags: {}, visitedNodeIds: [] } as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        conversation: null as any,
+        campaignId: 'campaign-1',
+      },
+      currentScreen: { type: 'story' },
+      metadata: {
+        characterName: 'TestHero',
+        characterLevel: 1,
+        lastPlayedTimestamp: Date.now(),
+        playTimeSeconds: 0,
+      },
+    };
+
+    vi.mocked(Preferences.get).mockResolvedValue({
+      value: JSON.stringify(saveWithNullConversation),
+    });
+
+    const result = await GameSaveManager.load();
+
+    expect(result).not.toBeNull();
+    expect(result?.narrative.conversation).toBeNull();
+    expect(result?.narrative.world.currentNodeId).toBe('node-1');
+  });
 });

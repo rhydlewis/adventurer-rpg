@@ -79,11 +79,11 @@ export function MainMenuScreen({
           {continueMetadata ? (
             <button
               onClick={onContinue}
-              className="w-full px-6 py-4 bg-secondary hover:bg-secondary-hover active:bg-secondary-active border border-border-default rounded-md transition-colors text-left"
+              className="w-full px-6 py-4 bg-secondary hover:bg-secondary-hover active:bg-secondary-active border border-border-default rounded-md transition-colors text-center"
             >
-              <div className="flex flex-col items-start space-y-1">
+              <div className="flex flex-col items-center space-y-1">
                 <div className="flex items-center space-x-2">
-                  <Icon name="RotateCcw" size={20} />
+                  <Icon name="RotateCcw" size={20} className="text-text-primary" />
                   <span className="heading-tertiary">Continue</span>
                 </div>
                 <span className="body-secondary text-sm">
