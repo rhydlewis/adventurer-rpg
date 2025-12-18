@@ -18,6 +18,9 @@ import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
 import { LevelUpScreen } from './screens';
 import {TestingScreen} from "./screens/TestingScreen.tsx";
+import { App as CapApp } from '@capacitor/app';
+import { GameSaveManager } from './utils/gameSaveManager';
+import type { GameSave } from './types/gameSave';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
@@ -121,6 +124,51 @@ function App() {
       }
     }
   }, [creationStep, character, currentScreen.type, phase2CustomizationPending, setCharacter, enterNode]);
+
+  // Auto-save when app goes to background
+  useEffect(() => {
+    const handleAppStateChange = ({ isActive }: { isActive: boolean }) => {
+      if (!isActive) {
+        console.log('[App] App backgrounding, triggering auto-save');
+
+        const character = useCharacterStore.getState().character;
+        const narrativeState = useNarrativeStore.getState();
+
+        if (character && narrativeState.campaign) {
+          const saveData: GameSave = {
+            version: GameSaveManager.getCurrentVersion(),
+            timestamp: Date.now(),
+            character,
+            narrative: {
+              world: narrativeState.world!,
+              conversation: narrativeState.conversation!,
+              campaignId: narrativeState.campaign.id,
+            },
+            currentScreen: { type: currentScreen.type },
+            metadata: {
+              characterName: character.name,
+              characterLevel: character.level,
+              lastPlayedTimestamp: Date.now(),
+              playTimeSeconds: 0, // TODO: Implement play time tracking
+            },
+          };
+
+          GameSaveManager.save(saveData).catch(err => {
+            console.error('[App] Background auto-save failed:', err);
+          });
+        }
+      }
+    };
+
+    CapApp.addListener('appStateChange', handleAppStateChange).then(listener => {
+      // Store listener for cleanup
+      return listener;
+    });
+
+    return () => {
+      CapApp.removeAllListeners();
+    };
+  }, [currentScreen.type]);
 
   const handleCreateCharacter = () => {
     startCreation();
