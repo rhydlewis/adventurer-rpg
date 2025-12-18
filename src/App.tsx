@@ -8,10 +8,11 @@ import { QuickCharacterCreationScreen } from './screens';
 import { CharacterSheetScreen } from './screens';
 import { StoryScreen } from './screens';
 import { ChooseCampaignScreen } from './screens';
+import { WorldMapScreen } from './screens';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 import { availableCampaigns } from './data/campaigns';
-import type { Screen, Character } from './types';
+import type { Screen, Character, Campaign } from './types';
 import { LockPickingScreen } from './screens';
 import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
@@ -146,7 +147,7 @@ function App() {
     setCurrentScreen({ type: 'chooseCampaign' });
   };
 
-  const handleSelectCampaign = (campaign: any) => {
+  const handleSelectCampaign = (campaign: Campaign) => {
     // Load and start the selected campaign
     const { loadCampaign, startCampaign } = useNarrativeStore.getState();
     loadCampaign(campaign);
@@ -218,6 +219,12 @@ function App() {
         <StoryScreen
           onExit={() => setCurrentScreen({ type: 'home' })}
           onViewCharacterSheet={character ? handleViewSheet : undefined}
+          onViewMap={() => setCurrentScreen({ type: 'worldMap' })}
+        />
+      )}
+      {currentScreen.type === 'worldMap' && (
+        <WorldMapScreen
+          onReturnToStory={() => setCurrentScreen({ type: 'story' })}
         />
       )}
       {currentScreen.type === 'lockPicking' && (
