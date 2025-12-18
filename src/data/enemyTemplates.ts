@@ -27,6 +27,13 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = {
                 finesse: true,
                 description: 'A short blade favored by bandits',
             },
+            weapons: [{
+                name: 'Dagger',
+                damage: '1d6',
+                damageType: 'piercing',
+                finesse: true,
+                description: 'A short blade favored by bandits',
+            }],
             armor: {
                 name: 'Leather',
                 baseAC: 11,
@@ -79,6 +86,13 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = {
                 finesse: false,
                 description: 'Rusty mace and claw attacks',
             },
+            weapons: [{
+                name: 'Mace',
+                damage: '1d6',
+                damageType: 'bludgeoning',
+                finesse: false,
+                description: 'Rusty mace and claw attacks',
+            }],
             armor: null, // Natural bone armor
             shield: { equipped: true, acBonus: 2 },
             items: [],
@@ -120,6 +134,7 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = {
         baseClass: 'Wizard',
         equipment: {
             weapon: null, // Life-draining touch (natural attack)
+            weapons: [], // No weapons, uses natural attack
             armor: null,
             shield: null,
             items: [],
@@ -161,6 +176,7 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = {
         baseClass: 'Fighter',
         equipment: {
             weapon: null, // Natural bite
+            weapons: [], // No weapons, uses natural bite
             armor: null,  // Natural exoskeleton
             shield: null,
             items: [],

@@ -13,13 +13,15 @@ export function applyItemEffect(
     let logMessage = '';
 
     switch (effect.type) {
-      case 'heal':
-        const healRoll = roller.roll(effect.amount);
+      case 'heal': {
+        const healRollResult = roller.roll(effect.amount);
+        const healRoll = Array.isArray(healRollResult) ? healRollResult[0] : healRollResult;
         const healTotal = healRoll.total;
         const healAmount = Math.min(healTotal, character.maxHp - character.hp);
-        updatedCharacter.hp = Math.min(character.hp + healTotal, character.maxHp);
+        updatedCharacter = { ...updatedCharacter, hp: Math.min(character.hp + healTotal, character.maxHp) };
         logMessage = `${effect.amount}: ${healRoll.output} = ${healAmount} HP restored`;
         break;
+      }
 
       case 'escape':
         logMessage = inCombat ? 'Escaped from combat!' : 'No effect outside combat';

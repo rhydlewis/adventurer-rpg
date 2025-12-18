@@ -46,6 +46,13 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
       finesse: false,
       description: 'A standard longsword',
     },
+    weapons: [{
+      name: 'Longsword',
+      damage: '1d8',
+      damageType: 'slashing',
+      finesse: false,
+      description: 'A standard longsword',
+    }],
     armor: {
       name: 'Chainmail',
       baseAC: 16,

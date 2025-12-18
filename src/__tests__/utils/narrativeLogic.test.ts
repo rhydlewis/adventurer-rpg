@@ -54,6 +54,13 @@ const createTestCharacter = (
       description: '',
       finesse: false
     },
+    weapons: [{
+      name: 'Longsword',
+      damage: '1d8',
+      damageType: 'slashing',
+      description: '',
+      finesse: false
+    }],
     armor: { name: 'Chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],

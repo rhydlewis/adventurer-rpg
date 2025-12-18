@@ -190,6 +190,7 @@ export function generateEnemy(
         feats: [...template.feats],
         equipment: {
             weapon: template.equipment.weapon ? { ...template.equipment.weapon } : null,
+            weapons: template.equipment.weapons.map(w => ({ ...w })),
             armor: template.equipment.armor ? { ...template.equipment.armor } : null,
             shield: template.equipment.shield ? { ...template.equipment.shield } : null,
             items: [...template.equipment.items],

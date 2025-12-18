@@ -7,6 +7,7 @@ import { generateEnemy } from '../utils/enemyGeneration';
 import type { CombatState } from '../types';
 import { Icon, OptionsMenu } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
+import { ItemsActionButton } from '../components/combat/ItemsActionButton';
 
 // Action icon mapping
 const actionIcons = {
@@ -29,7 +30,7 @@ interface CombatScreenProps {
 }
 
 export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, onViewCharacterSheet }: CombatScreenProps) {
-  const { combat, startCombat, executeTurn, resetCombat, retreat } = useCombatStore();
+  const { combat, startCombat, executeTurn, resetCombat, retreat, swapWeapon } = useCombatStore();
   const { character, setCharacter } = useCharacterStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
@@ -144,6 +145,7 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
               character={combat.playerCharacter}
               conditions={combat.activeConditions?.player || []}
               variant="player"
+              onSwapWeapon={swapWeapon}
             />
 
             {/* Enemy Compact */}
@@ -294,6 +296,30 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
                     </button>
                   );
                 })}
+
+                {/* Items Button - only show if player has usable items */}
+                {(() => {
+                  const usableItems = combat.playerCharacter.equipment.items.filter(
+                    item => item.usableInCombat && (item.quantity ?? 0) > 0
+                  );
+
+                  if (usableItems.length === 0) return null;
+
+                  return (
+                    <ItemsActionButton
+                      items={usableItems}
+                      onUseItem={(itemId) => {
+                        executeTurn({
+                          type: 'use_item',
+                          name: 'Use Item',
+                          description: '',
+                          available: true,
+                          itemId,
+                        });
+                      }}
+                    />
+                  );
+                })()}
               </div>
 
               {/* Retreat Button - Full Width Below Actions */}
@@ -372,9 +398,10 @@ interface CompactCombatantProps {
   character: CombatState['playerCharacter'] | CombatState['enemy'];
   conditions: import('../types/condition').Condition[];
   variant: 'player' | 'enemy';
+  onSwapWeapon?: (weaponId: string) => void;
 }
 
-function CompactCombatant({ character, conditions, variant }: CompactCombatantProps) {
+function CompactCombatant({ character, conditions, variant, onSwapWeapon }: CompactCombatantProps) {
   const hpPercent = Math.max(0, (character.hp / character.maxHp) * 100);
   const isLowHp = hpPercent < 30;
 
@@ -456,6 +483,28 @@ function CompactCombatant({ character, conditions, variant }: CompactCombatantPr
             {formatModifier(character.bab)}
           </div>
         </div>
+
+        {/* Swap Weapon Button (only if 2+ weapons and player) */}
+        {variant === 'player' && character.equipment.weapons.length > 1 && onSwapWeapon && (
+          <button
+            onClick={() => {
+              // Cycle to next weapon
+              const currentIndex = character.equipment.weapons.findIndex(
+                w => w.id === character.equipment.weapon?.id
+              );
+              const nextIndex = (currentIndex + 1) % character.equipment.weapons.length;
+              const nextWeapon = character.equipment.weapons[nextIndex];
+              onSwapWeapon(nextWeapon.id || nextWeapon.name);
+            }}
+            className="flex-1 bg-slate-900/50 border border-emerald-900/30 rounded p-1.5
+                       hover:bg-slate-800/50 hover:border-emerald-700/50 transition-colors
+                       flex flex-col items-center justify-center cursor-pointer"
+            title="Swap Weapon"
+          >
+            <Icon name="RefreshCw" size={12} />
+            <span className="text-[9px] text-slate-500 label-secondary mt-0.5">Swap</span>
+          </button>
+        )}
       </div>
 
       {/* Conditions */}

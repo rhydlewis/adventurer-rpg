@@ -112,10 +112,11 @@ export function canPerformAction(character: Character, action: Action): boolean 
       return false;
     }
 
-    case 'use_item':
+    case 'use_item': {
       // Check if item exists and has quantity
       const item = character.equipment.items.find(i => i.id === action.itemId);
       return item ? (item.quantity ?? 0) > 0 : false;
+    }
 
     default:
       return false;

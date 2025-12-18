@@ -28,7 +28,7 @@ const createWizard = (int: number = 16): Character => ({
   saves: { fortitude: 0, reflex: 2, will: 2 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: [],
-  equipment: { weapon: WEAPONS.Dagger, armor: ARMORS.None, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS.Dagger, weapons: [WEAPONS.Dagger], armor: ARMORS.None, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: { abilities: [], spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } } },
 });
 
@@ -45,7 +45,7 @@ const createCleric = (wis: number = 16): Character => ({
   saves: { fortitude: 2, reflex: 0, will: 2 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: [],
-  equipment: { weapon: WEAPONS.Mace, armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS.Mace, weapons: [WEAPONS.Mace], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: { abilities: [], spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } } },
 });
 
@@ -62,7 +62,7 @@ const createEnemy = (ac: number = 14, hp: number = 10): Creature => ({
   saves: { fortitude: 2, reflex: 2, will: 0 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: [],
-  equipment: { weapon: WEAPONS.Dagger, armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS.Dagger, weapons: [WEAPONS.Dagger], armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: { abilities: [] },
   lootTableId: 'test_loot'
 });

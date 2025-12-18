@@ -1,4 +1,4 @@
-import type { Character, Weapon, Armor } from '../types';
+import type { Character, Weapon, Armor, ItemEffect } from '../types';
 import { CLASSES } from '../data/classes';
 
 /**
@@ -39,7 +39,7 @@ export function hasArmorProficiency(character: Character, armor: Armor): boolean
  */
 export function canUseItem(
   character: Character,
-  item: { quantity?: number; effect?: any },
+  item: { quantity?: number; effect?: ItemEffect },
   inCombat: boolean
 ): boolean {
   // No quantity left
@@ -54,7 +54,9 @@ export function canUseItem(
   }
   if (item.effect?.type === 'remove-condition') {
     // Check if character has the condition (Phase 1.4+)
-    return character.conditions?.some(c => c.type === item.effect.condition) ?? false;
+    // TODO: Implement conditions system in Phase 1.4
+    // For now, return false as conditions are not yet implemented on Character
+    return false;
   }
 
   // Default: usable
@@ -66,7 +68,7 @@ export function canUseItem(
  */
 export function getItemDisabledReason(
   character: Character,
-  item: { quantity?: number; effect?: any },
+  item: { quantity?: number; effect?: ItemEffect },
   inCombat: boolean
 ): string {
   if ((item.quantity ?? 0) === 0) return 'None left';
