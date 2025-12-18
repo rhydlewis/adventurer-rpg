@@ -30,6 +30,7 @@ const createMockCharacter = (name: string = 'Player', hp: number = 10, _initiati
   feats: [],
   equipment: {
     weapon: { name: 'Longsword', damage: '1d8', damageType: 'slashing', finesse: false, description: '' },
+    weapons: [{ name: 'Longsword', damage: '1d8', damageType: 'slashing', finesse: false, description: '' }],
     armor: { name: 'None', baseAC: 10, maxDexBonus: null, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],
@@ -52,6 +53,7 @@ const createMockEnemy = (name: string = 'Skeleton', hp: number = 8, _initiative:
   feats: [],
   equipment: {
     weapon: { name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: '' },
+    weapons: [{ name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: '' }],
     armor: { name: 'None', baseAC: 10, maxDexBonus: null, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],
@@ -177,6 +179,77 @@ describe('stores/combatStore', () => {
       expect(useCombatStore.getState().combat).not.toBeNull();
 
       useCombatStore.getState().resetCombat();
+      expect(useCombatStore.getState().combat).toBeNull();
+    });
+  });
+
+  describe('swapWeapon', () => {
+    it('should swap weapons and update combat state', () => {
+      const longsword = { id: 'longsword-1', name: 'Longsword' as const, damage: '1d8', damageType: 'slashing' as const, finesse: false, description: 'A longsword' };
+      const rapier = { id: 'rapier-1', name: 'Rapier' as const, damage: '1d6', damageType: 'piercing' as const, finesse: true, description: 'A rapier' };
+
+      const playerWithWeapons = createMockCharacter();
+      playerWithWeapons.equipment.weapon = longsword;
+      playerWithWeapons.equipment.weapons = [longsword, rapier];
+
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === playerWithWeapons.name) return 12;
+        return 10;
+      });
+
+      useCombatStore.getState().startCombat(playerWithWeapons, enemy);
+      useCombatStore.getState().swapWeapon('rapier-1');
+
+      const combat = useCombatStore.getState().combat;
+      expect(combat?.playerCharacter.equipment.weapon?.id).toBe('rapier-1');
+      expect(combat?.playerCharacter.equipment.weapon?.name).toBe('Rapier');
+    });
+
+    it('should add weapon swap to combat log', () => {
+      const longsword = { id: 'longsword-1', name: 'Longsword' as const, damage: '1d8', damageType: 'slashing' as const, finesse: false, description: 'A longsword' };
+      const rapier = { id: 'rapier-1', name: 'Rapier' as const, damage: '1d6', damageType: 'piercing' as const, finesse: true, description: 'A rapier' };
+
+      const playerWithWeapons = createMockCharacter();
+      playerWithWeapons.equipment.weapon = longsword;
+      playerWithWeapons.equipment.weapons = [longsword, rapier];
+
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === playerWithWeapons.name) return 12;
+        return 10;
+      });
+
+      useCombatStore.getState().startCombat(playerWithWeapons, enemy);
+      const initialLogLength = useCombatStore.getState().combat?.log.length || 0;
+
+      useCombatStore.getState().swapWeapon('rapier-1');
+
+      const combat = useCombatStore.getState().combat;
+      expect(combat?.log.length).toBeGreaterThan(initialLogLength);
+      expect(combat?.log.some(l => l.message.includes('Switched to Rapier'))).toBe(true);
+    });
+
+    it('should not swap to non-existent weapon', () => {
+      const longsword = { id: 'longsword-1', name: 'Longsword' as const, damage: '1d8', damageType: 'slashing' as const, finesse: false, description: 'A longsword' };
+
+      const playerWithWeapons = createMockCharacter();
+      playerWithWeapons.equipment.weapon = longsword;
+      playerWithWeapons.equipment.weapons = [longsword];
+
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === playerWithWeapons.name) return 12;
+        return 10;
+      });
+
+      useCombatStore.getState().startCombat(playerWithWeapons, enemy);
+      useCombatStore.getState().swapWeapon('fake-weapon-id');
+
+      const combat = useCombatStore.getState().combat;
+      expect(combat?.playerCharacter.equipment.weapon?.id).toBe('longsword-1'); // Unchanged
+    });
+
+    it('should not swap weapon if no combat is active', () => {
+      useCombatStore.getState().swapWeapon('rapier-1');
+      // Should not throw, just warn and no-op
       expect(useCombatStore.getState().combat).toBeNull();
     });
   });
