@@ -19,6 +19,7 @@ import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
 import { calculateConditionModifiers, decrementConditions, applyConditionDamage, applyCondition } from './conditions';
 import { rollLoot, formatLootMessage } from './loot';
 import { selectTaunt, isLowHealth } from './taunts';
+import { applyItemEffect } from './itemEffects';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -285,6 +286,56 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
             actor: 'player',
             message: result.output,
           });
+        }
+      }
+    } else if (playerAction.type === 'use_item') {
+      // Handle item usage
+      const itemId = playerAction.itemId;
+      const item = playerCharacter.equipment.items.find(i => i.id === itemId);
+
+      if (item && item.effect) {
+        // Apply item effect
+        const { character: updatedCharacter, logMessage } = applyItemEffect(
+          playerCharacter,
+          item.effect,
+          true // inCombat = true
+        );
+
+        playerCharacter = updatedCharacter;
+
+        // Decrement item quantity
+        const updatedItems = playerCharacter.equipment.items
+          .map(i =>
+            i.id === item.id
+              ? { ...i, quantity: (i.quantity ?? 1) - 1 }
+              : i
+          )
+          .filter(i => (i.quantity ?? 0) > 0); // Remove if quantity = 0
+
+        playerCharacter = {
+          ...playerCharacter,
+          equipment: {
+            ...playerCharacter.equipment,
+            items: updatedItems,
+          },
+        };
+
+        // Add log entry
+        log.push({
+          turn: state.turn,
+          actor: 'player',
+          message: `${playerCharacter.name} uses ${item.name}: ${logMessage}`,
+        });
+
+        // Handle escape items (special case: end combat immediately)
+        if (item.effect.type === 'escape') {
+          return {
+            ...state,
+            turn: state.turn + 1,
+            playerCharacter,
+            log,
+            winner: 'player', // Escaped successfully
+          };
         }
       }
     } else if (playerAction.type === 'cast_spell') {
