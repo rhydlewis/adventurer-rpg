@@ -8,6 +8,11 @@ interface OptionsMenuProps {
   onViewCharacterSheet?: () => void;
 
   /**
+   * Callback when "View Map" is clicked
+   */
+  onViewMap?: () => void;
+
+  /**
    * Callback when "Save Game" is clicked
    */
   onSaveGame?: () => void;
@@ -22,6 +27,12 @@ interface OptionsMenuProps {
    * @default true
    */
   showCharacterSheet?: boolean;
+
+  /**
+   * Whether to show the "View Map" option
+   * @default true
+   */
+  showMap?: boolean;
 
   /**
    * Whether to show the "Save Game" option
@@ -48,9 +59,11 @@ interface OptionsMenuProps {
  */
 export function OptionsMenu({
   onViewCharacterSheet,
+  onViewMap,
   onSaveGame,
   onExit,
   showCharacterSheet = true,
+  showMap = true,
   showSaveGame = true,
 }: OptionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +116,17 @@ export function OptionsMenu({
             >
               <Icon name="User" size={20} className="text-player" />
               <span>View Character Sheet</span>
+            </button>
+          )}
+
+          {/* View Map Option */}
+          {showMap && onViewMap && (
+            <button
+              onClick={() => handleMenuItemClick(onViewMap)}
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
+            >
+              <Icon name="Map" size={20} className="text-player" />
+              <span>View Map</span>
             </button>
           )}
 

@@ -7,6 +7,7 @@ import { CharacterCreationScreen } from './screens';
 import { QuickCharacterCreationScreen } from './screens';
 import { CharacterSheetScreen } from './screens';
 import { StoryScreen } from './screens';
+import { WorldMapScreen } from './screens';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 // import { testCampaign } from './data/campaigns/test-campaign';
@@ -210,6 +211,12 @@ function App() {
         <StoryScreen
           onExit={() => setCurrentScreen({ type: 'home' })}
           onViewCharacterSheet={character ? handleViewSheet : undefined}
+          onViewMap={() => setCurrentScreen({ type: 'worldMap' })}
+        />
+      )}
+      {currentScreen.type === 'worldMap' && (
+        <WorldMapScreen
+          onReturnToStory={() => setCurrentScreen({ type: 'story' })}
         />
       )}
       {currentScreen.type === 'lockPicking' && (

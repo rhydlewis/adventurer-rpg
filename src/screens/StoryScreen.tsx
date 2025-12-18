@@ -14,6 +14,11 @@ interface StoryScreenProps {
    * Optional callback to view character sheet
    */
   onViewCharacterSheet?: () => void;
+
+  /**
+   * Optional callback to view world map
+   */
+  onViewMap?: () => void;
 }
 
 /**
@@ -29,7 +34,7 @@ interface StoryScreenProps {
  * @example
  * <StoryScreen onExit={() => setScreen('home')} />
  */
-export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) {
+export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StoryScreenProps) {
   const {
     conversation,
     campaign,
@@ -164,6 +169,7 @@ export function StoryScreen({ onExit, onViewCharacterSheet }: StoryScreenProps) 
             </div>
             <OptionsMenu
               onViewCharacterSheet={onViewCharacterSheet}
+              onViewMap={onViewMap}
               onSaveGame={handleSaveGame}
               onExit={handleExit}
             />
