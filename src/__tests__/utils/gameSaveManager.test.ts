@@ -20,9 +20,12 @@ describe('GameSaveManager', () => {
       name: 'TestHero',
       class: 'fighter',
       level: 1,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
     narrative: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       world: { flags: {}, visitedNodes: [] } as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       conversation: { currentNodeId: 'start', log: [] } as any,
       campaignId: 'campaign-1',
     },
@@ -88,7 +91,9 @@ describe('GameSaveManager', () => {
     const mockSaveWithMetadata: GameSave = {
       version: '1.0.0',
       timestamp: Date.now(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       character: { name: 'TestHero', level: 3 } as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       narrative: {} as any,
       currentScreen: { type: 'story' },
       metadata: {

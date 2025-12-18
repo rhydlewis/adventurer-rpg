@@ -2,9 +2,11 @@ import type { GameSave } from '../types/gameSave';
 
 export const CURRENT_VERSION = '1.0.0';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MigrationFunction = (save: any) => any;
 
 const migrations: Record<string, MigrationFunction> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   '1.0.0': (save: any): GameSave => {
     // Migration from pre-1.0.0 to 1.0.0
     return {
@@ -33,6 +35,7 @@ function compareVersions(v1: string, v2: string): number {
   return 0;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function migrateToCurrentVersion(save: any): GameSave {
   let currentSave = save;
   const versions = Object.keys(migrations).sort(compareVersions);

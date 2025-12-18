@@ -6,7 +6,9 @@ describe('gameSaveMigrations', () => {
     const save = {
       version: CURRENT_VERSION,
       timestamp: Date.now(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       character: {} as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       narrative: { world: {}, conversation: {}, campaignId: 'test' } as any,
       currentScreen: { type: 'story' as const },
       metadata: {
@@ -25,7 +27,9 @@ describe('gameSaveMigrations', () => {
     const oldSave = {
       version: '0.9.0',
       timestamp: Date.now(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       character: {} as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       narrative: { world: {}, conversation: {}, campaignId: 'test' } as any,
       currentScreen: { type: 'story' as const },
       metadata: {
@@ -36,6 +40,7 @@ describe('gameSaveMigrations', () => {
       },
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = migrateToCurrentVersion(oldSave as any);
     expect(result.version).toBe(CURRENT_VERSION);
     expect(result.metadata.playTimeSeconds).toBe(0); // Default value added

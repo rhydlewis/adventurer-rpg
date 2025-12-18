@@ -148,6 +148,113 @@ const useCombatStore = create<CombatStore>((set) => ({
 
 State updates are **immutable** - utilities return new objects, stores replace state.
 
+### Save System
+
+The save system provides cross-platform game persistence using Capacitor Preferences (localStorage on web, native storage on iOS/Android).
+
+**Architecture:**
+
+```
+GameSaveManager (utils/gameSaveManager.ts)
+  ↓
+Capacitor Preferences API
+  ↓
+Storage: adventurer-rpg:save (JSON)
+```
+
+**Key Files:**
+
+- **`types/gameSave.ts`** - Save data structure and metadata types
+- **`utils/gameSaveManager.ts`** - Single source of truth for save/load operations
+- **`utils/gameSaveMigrations.ts`** - Version migration system for backwards compatibility
+
+**Save Data Structure:**
+
+```typescript
+interface GameSave {
+  version: string;              // Semantic versioning (e.g., "1.0.0")
+  timestamp: number;            // Last save time (ms since epoch)
+  character: Character;         // Full character state
+  narrative: {
+    world: WorldState;          // World flags and visited nodes
+    conversation: ConversationState; // Current node and conversation log
+    campaignId: string;         // Active campaign identifier
+  };
+  currentScreen: { type: Screen['type'] }; // Where to resume
+  metadata: SaveMetadata;       // Lightweight info for UI display
+}
+
+interface SaveMetadata {
+  characterName: string;
+  characterLevel: number;
+  lastPlayedTimestamp: number;
+  playTimeSeconds: number;
+}
+```
+
+**Auto-Save Triggers:**
+
+1. **Story Node Progression** - Saves after entering each story node (`narrativeStore.enterNode()`)
+2. **App Backgrounding** - Saves when app goes to background (Capacitor App plugin listener in `App.tsx`)
+
+Both triggers are **fire-and-forget** (non-blocking async) to avoid UI freezes.
+
+**Usage Pattern:**
+
+```typescript
+// Save game
+const saveData: GameSave = { /* ... */ };
+await GameSaveManager.save(saveData);
+
+// Load full save
+const save = await GameSaveManager.load(); // Returns GameSave | null
+
+// Load just metadata (fast, for UI display)
+const metadata = await GameSaveManager.getSaveMetadata(); // Returns SaveMetadata | null
+
+// Get current version
+const version = GameSaveManager.getCurrentVersion(); // Returns "1.0.0"
+```
+
+**Version Migration:**
+
+Save data includes a semantic version number. When loading, `GameSaveManager.load()` automatically applies migrations to bring old saves up to the current version:
+
+```typescript
+// Migration example in gameSaveMigrations.ts
+const migrations: Record<string, MigrationFunction> = {
+  '1.0.0': (save: any): GameSave => {
+    return {
+      ...save,
+      version: '1.0.0',
+      metadata: {
+        ...save.metadata,
+        playTimeSeconds: save.metadata?.playTimeSeconds ?? 0, // Add missing field
+      },
+    };
+  },
+};
+```
+
+Migrations run sequentially in version order, ensuring saves can be upgraded across multiple versions.
+
+**Testing:**
+
+- **Unit tests** - Mock Capacitor Preferences API (`src/__tests__/utils/gameSaveManager.test.ts`, `gameSaveMigrations.test.ts`)
+- **Manual tests** - Web and mobile testing procedures documented in `docs/testing/2025-12-18-save-system-manual-tests.md`
+- Test corrupted saves, missing saves, version migrations, and platform-specific storage
+
+**Error Handling:**
+
+All save/load operations use try-catch and return `null` on failure. Corrupted saves don't crash the app - they're logged and treated as "no save exists".
+
+**Continue Button Integration:**
+
+The main menu displays Continue button when a valid save exists:
+- Shows character name and level
+- Shows "Last played" timestamp (human-readable: "5m ago", "2h ago", "3d ago")
+- Disabled when no save exists
+
 ### File Organization
 
 ```
