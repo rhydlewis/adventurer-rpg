@@ -20,11 +20,12 @@ import { LevelUpScreen } from './screens';
 import {TestingScreen} from "./screens/TestingScreen.tsx";
 import { App as CapApp } from '@capacitor/app';
 import { GameSaveManager } from './utils/gameSaveManager';
-import type { GameSave } from './types/gameSave';
+import type { GameSave, SaveMetadata } from './types/gameSave';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });
   const [previousScreen, setPreviousScreen] = useState<Screen | null>(null);
+  const [saveMetadata, setSaveMetadata] = useState<SaveMetadata | null>(null);
   const { character, creationStep, startCreation, setCharacter } = useCharacterStore();
   const { setNavigationCallback, phase2CustomizationPending, enterNode } = useNarrativeStore();
 
@@ -32,6 +33,17 @@ function App() {
   useEffect(() => {
     console.log('[DEBUG] Screen changed to:', currentScreen.type);
   }, [currentScreen]);
+
+  // Check for saved game on mount
+  useEffect(() => {
+    const checkForSave = async () => {
+      const metadata = await GameSaveManager.getSaveMetadata();
+      setSaveMetadata(metadata);
+      console.log('[App] Save metadata loaded:', metadata);
+    };
+
+    checkForSave();
+  }, []);
 
   // Register navigation callback with narrative store
   useEffect(() => {
@@ -190,6 +202,35 @@ function App() {
     }
   };
 
+  const handleContinue = async () => {
+    console.log('[App] Continue button clicked, loading save...');
+
+    const save = await GameSaveManager.load();
+    if (!save) {
+      console.error('[App] Failed to load save');
+      return;
+    }
+
+    // Restore character
+    setCharacter(save.character);
+
+    // Restore narrative
+    const { loadCampaign, restoreState } = useNarrativeStore.getState();
+    const campaign = availableCampaigns.find(c => c.id === save.narrative.campaignId);
+
+    if (!campaign) {
+      console.error('[App] Campaign not found:', save.narrative.campaignId);
+      return;
+    }
+
+    loadCampaign(campaign);
+    restoreState(save.narrative.world, save.narrative.conversation);
+
+    // Navigate to story screen
+    setCurrentScreen({ type: 'story' });
+    console.log('[App] Save loaded successfully, navigating to story');
+  };
+
   const handleStartStory = () => {
     // Navigate to campaign selection screen
     setCurrentScreen({ type: 'chooseCampaign' });
@@ -211,6 +252,8 @@ function App() {
       {currentScreen.type === 'mainMenu' && (
         <MainMenuScreen
           onNewGame={() => setCurrentScreen({ type: 'home' })}
+          onContinue={saveMetadata ? handleContinue : undefined}
+          continueMetadata={saveMetadata || undefined}
           onTesting={() => setCurrentScreen({ type: 'testing' })}
         />
       )}
