@@ -189,6 +189,7 @@ export function createCharacter(params: CreateCharacterParams): Character {
     feats,
     equipment: {
       weapon,
+      weapons: [weapon], // All owned weapons (includes equipped)
       armor,
       shield,
       items,
