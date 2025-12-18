@@ -47,10 +47,6 @@ interface CharacterStore {
 
   // NEW: Process narrative effects that modify character
   processNarrativeEffects: (effects: NodeEffect[]) => void;
-
-  // Save/Load
-  saveCharacter: () => void;
-  loadCharacter: () => void;
 }
 
 const defaultAttributes: Attributes = {
@@ -339,35 +335,4 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
 
     set({ character: updatedCharacter });
   },
-
-  saveCharacter: () => {
-    const { character } = get();
-    if (!character) {
-      console.warn('No character to save');
-      return;
-    }
-
-    try {
-      localStorage.setItem('adventurer-rpg:character', JSON.stringify(character));
-      console.log('Character saved successfully');
-    } catch (error) {
-      console.error('Failed to save character:', error);
-    }
-  },
-
-  loadCharacter: () => {
-    try {
-      const saved = localStorage.getItem('adventurer-rpg:character');
-      if (saved) {
-        const character = JSON.parse(saved) as Character;
-        set({ character, creationStep: 'complete' });
-        console.log('Character loaded successfully');
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Failed to load character:', error);
-      return false;
-    }
-  }
 }));

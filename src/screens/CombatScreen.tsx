@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCombatStore } from '../stores/combatStore';
 import { useCharacterStore } from '../stores/characterStore';
-import { useNarrativeStore } from '../stores/narrativeStore';
 import { setForcedD20Roll } from '../utils/dice';
 import { getAvailableActions } from '../utils/actions';
 import { generateEnemy } from '../utils/enemyGeneration';
@@ -31,8 +30,7 @@ interface CombatScreenProps {
 
 export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, onViewCharacterSheet }: CombatScreenProps) {
   const { combat, startCombat, executeTurn, resetCombat, retreat } = useCombatStore();
-  const { character, setCharacter, saveCharacter } = useCharacterStore();
-  const { saveNarrativeState } = useNarrativeStore();
+  const { character, setCharacter } = useCharacterStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
   const logContainerRef = useRef<HTMLDivElement>(null);
@@ -94,11 +92,6 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
     onDefeat();
   };
 
-  const handleSaveGame = () => {
-    saveCharacter();
-    saveNarrativeState();
-  };
-
   const actions = getAvailableActions(combat.playerCharacter);
 
   return (
@@ -117,7 +110,6 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
             </div>
             <OptionsMenu
               onViewCharacterSheet={onViewCharacterSheet}
-              onSaveGame={handleSaveGame}
               onExit={handleEndCombat}
             />
           </div>

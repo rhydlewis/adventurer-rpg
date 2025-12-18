@@ -62,10 +62,9 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
     selectChoice,
     requestCompanionHint,
     exitConversation,
-    saveNarrativeState,
   } = useNarrativeStore();
 
-  const { character, saveCharacter } = useCharacterStore();
+  const { character } = useCharacterStore();
   const logEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when log updates
@@ -161,12 +160,6 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
     onExit();
   };
 
-  const handleSaveGame = () => {
-    saveCharacter();
-    saveNarrativeState();
-    // You could show a toast notification here in the future
-  };
-
   return (
     <div
       className="h-screen bg-primary flex flex-col p-4"
@@ -192,7 +185,6 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
             <OptionsMenu
               onViewCharacterSheet={onViewCharacterSheet}
               onViewMap={onViewMap}
-              onSaveGame={handleSaveGame}
               onExit={handleExit}
             />
           </div>
