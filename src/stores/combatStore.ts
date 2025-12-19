@@ -10,6 +10,7 @@ interface CombatStore {
   combat: CombatState | null;
   startCombat: (player: Character, enemy: Creature) => void;
   executeTurn: (playerAction: Action) => void;
+  swapWeapon: (weaponId: string) => void;
   resetCombat: () => void;
   retreat: () => {
     player: Character;
@@ -91,6 +92,50 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       // Phase 1.3: Pass player action to combat resolution
       return {
         combat: resolveCombatRound(state.combat, playerAction),
+      };
+    });
+  },
+
+  swapWeapon: (weaponId: string) => {
+    set((state) => {
+      if (!state.combat) {
+        console.warn('Cannot swap weapon: no active combat');
+        return state;
+      }
+
+      const newWeapon = state.combat.playerCharacter.equipment.weapons.find(
+        w => w.id === weaponId
+      );
+
+      if (!newWeapon) {
+        console.error(`Weapon not found: ${weaponId}`);
+        return state; // No-op if weapon doesn't exist
+      }
+
+      const updatedPlayer = {
+        ...state.combat.playerCharacter,
+        equipment: {
+          ...state.combat.playerCharacter.equipment,
+          weapon: newWeapon,
+        },
+      };
+
+      // Note: AC recalculation not typically needed for weapon swaps
+      // unless weapon properties affect AC (which they don't in our system)
+
+      return {
+        combat: {
+          ...state.combat,
+          playerCharacter: updatedPlayer,
+          log: [
+            ...state.combat.log,
+            {
+              turn: state.combat.turn,
+              actor: 'system',
+              message: `Switched to ${newWeapon.name}`,
+            },
+          ],
+        },
       };
     });
   },

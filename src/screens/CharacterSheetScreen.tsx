@@ -4,6 +4,10 @@ import { calculateModifier } from '../utils/dice';
 import { calculateSkillBonus } from '../utils/skills';
 import type { SkillName } from '../types';
 import { Button, Card, Icon } from '../components';
+import { canUseItem, getItemDisabledReason, hasWeaponProficiency } from '../utils/equipmentHelpers';
+import { applyItemEffect } from '../utils/itemEffects';
+import { useCombatStore } from '../stores/combatStore';
+import { useCharacterStore } from '../stores/characterStore';
 
 interface CharacterSheetScreenProps {
   character: Character | null;
@@ -376,6 +380,71 @@ function SkillsTab({ character, skillNames }: { character: Character; skillNames
 
 // Combat Tab
 function CombatTab({ character }: { character: Character }) {
+  const combat = useCombatStore(state => state.combat);
+  const setCharacter = useCharacterStore(state => state.setCharacter);
+
+  // Handle item usage
+  const handleUseItem = (itemId: string) => {
+    if (!character) return;
+
+    const item = character.equipment.items.find(i => i.id === itemId);
+    if (!item || !item.effect) return;
+
+    // Apply effect
+    const inCombat = combat !== null;
+    const { character: updated, logMessage } = applyItemEffect(character, item.effect, inCombat);
+
+    // Decrement quantity
+    const updatedItems = updated.equipment.items
+      .map(i =>
+        i.id === itemId
+          ? { ...i, quantity: (i.quantity ?? 1) - 1 }
+          : i
+      )
+      .filter(i => (i.quantity ?? 0) > 0);
+
+    const updatedCharacter = { ...updated, equipment: { ...updated.equipment, items: updatedItems } };
+
+    // Update character store
+    setCharacter(updatedCharacter);
+
+    // Show feedback (optional: add toast notification)
+    console.log(`Used ${item.name}: ${logMessage}`);
+  };
+
+  // Handle weapon equipping
+  const handleEquipWeapon = (weaponId: string) => {
+    if (!character) return;
+
+    const weapon = character.equipment.weapons.find(
+      w => w.id === weaponId || w.name === weaponId
+    );
+    if (!weapon) return;
+
+    // Check proficiency
+    if (!hasWeaponProficiency(character, weapon)) {
+      console.warn('Cannot equip: not proficient');
+      return;
+    }
+
+    // Equip weapon
+    const updated = {
+      ...character,
+      equipment: {
+        ...character.equipment,
+        weapon,
+      },
+    };
+
+    // Update character store
+    setCharacter(updated);
+
+    // If in combat, also update combat store
+    if (combat && combat.playerCharacter) {
+      useCombatStore.getState().swapWeapon(weapon.id || weapon.name);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Feats */}
@@ -472,23 +541,91 @@ function CombatTab({ character }: { character: Character }) {
           )}
         </div>
 
+        {/* Weapons Section */}
+        {character.equipment.weapons.length > 0 && (
+          <div className="mt-4">
+            <h3 className="font-bold text-lg mb-3 heading-tertiary flex items-center">
+              <Icon name="Swords" size={20} className="mr-2 text-fg-accent" />
+              Weapons
+            </h3>
+            <div className="space-y-2">
+              {character.equipment.weapons.map((weapon, idx) => {
+                const isEquipped = character.equipment.weapon?.id === weapon.id ||
+                                  character.equipment.weapon?.name === weapon.name;
+                const canEquip = hasWeaponProficiency(character, weapon);
+
+                return (
+                  <div key={idx} className="flex justify-between items-center bg-surface rounded p-3 body-primary">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold">{weapon.name}</span>
+                        <span className="text-fg-muted text-xs">
+                          {weapon.damage} {weapon.damageType}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 mt-1">
+                        {isEquipped && (
+                          <span className="text-emerald-400 text-xs flex items-center">
+                            <Icon name="Check" size={12} className="mr-1" />
+                            Equipped
+                          </span>
+                        )}
+                        {!canEquip && (
+                          <span className="text-red-400 text-xs">
+                            ⚠️ Requires {weapon.proficiencyRequired} proficiency
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => handleEquipWeapon(weapon.id || weapon.name)}
+                      variant={!isEquipped && canEquip ? 'primary' : 'secondary'}
+                      disabled={isEquipped || !canEquip}
+                    >
+                      {isEquipped ? 'Equipped' : 'Equip'}
+                    </Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Inventory */}
         {character.equipment.items.length > 0 && (
-          <div>
+          <div className="mt-4">
             <h3 className="font-bold text-lg mb-3 heading-tertiary flex items-center">
               <Icon name="Backpack" size={20} className="mr-2 text-fg-accent" />
               Inventory
             </h3>
             <div className="space-y-2">
-              {character.equipment.items.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex justify-between items-center bg-surface rounded p-3 body-primary"
-                >
-                  <span>{item.name}</span>
-                  <span className="text-fg-muted">×{item.quantity}</span>
-                </div>
-              ))}
+              {character.equipment.items.map((item, idx) => {
+                const inCombat = combat !== null;
+                const canUse = canUseItem(character, item, inCombat);
+                const disabledReason = !canUse ? getItemDisabledReason(character, item, inCombat) : '';
+
+                return (
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center bg-surface rounded p-3 body-primary"
+                  >
+                    <div className="flex-1">
+                      <span>{item.name}</span>
+                      <span className="text-fg-muted ml-2">×{item.quantity}</span>
+                      {disabledReason && (
+                        <span className="ml-2 text-fg-muted text-xs">({disabledReason})</span>
+                      )}
+                    </div>
+                    <Button
+                      onClick={() => handleUseItem(item.id)}
+                      variant={canUse ? 'primary' : 'secondary'}
+                      disabled={!canUse}
+                    >
+                      Use
+                    </Button>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

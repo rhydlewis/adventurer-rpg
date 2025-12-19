@@ -35,6 +35,13 @@ describe('utils/equipment', () => {
         finesse: weaponName === 'Rapier' || weaponName === 'Dagger',
         description: '',
       },
+      weapons: [{
+        name: weaponName,
+        damage: weaponName === 'Longsword' ? '1d8' : weaponName === 'Rapier' ? '1d6' : '1d4',
+        damageType: 'slashing',
+        finesse: weaponName === 'Rapier' || weaponName === 'Dagger',
+        description: '',
+      }],
       armor: { name: 'Chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
       shield: { equipped: true, acBonus: 2 },
       items: [],

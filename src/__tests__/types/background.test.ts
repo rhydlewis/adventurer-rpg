@@ -24,6 +24,7 @@ describe('Character Type with Background & Traits', () => {
       feats: [],
       equipment: {
         weapon: { name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: 'A small blade' },
+        weapons: [{ name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: 'A small blade' }],
         armor: { name: 'Leather', baseAC: 12, maxDexBonus: null, description: 'Light armor' },
         shield: { equipped: false, acBonus: 0 },
         items: [],

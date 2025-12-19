@@ -28,6 +28,7 @@ describe('Entity Helpers', () => {
     feats: [],
     equipment: {
       weapon: null,
+      weapons: [],
       armor: null,
       shield: null,
       items: [],
@@ -60,6 +61,7 @@ describe('Entity Helpers', () => {
     feats: [],
     equipment: {
       weapon: null,
+      weapons: [],
       armor: null,
       shield: null,
       items: [],

@@ -7,6 +7,7 @@ export const WEAPONS: Record<WeaponType, Weapon> = {
     damageType: 'slashing',
     finesse: false,
     description: 'A versatile blade favored by warriors',
+    proficiencyRequired: 'martial',
   },
   Rapier: {
     name: 'Rapier',
@@ -14,6 +15,7 @@ export const WEAPONS: Record<WeaponType, Weapon> = {
     damageType: 'piercing',
     finesse: true, // Can use DEX for attack and damage
     description: 'A thin, precise blade perfect for quick strikes',
+    proficiencyRequired: 'martial-finesse',
   },
   Dagger: {
     name: 'Dagger',
@@ -21,6 +23,7 @@ export const WEAPONS: Record<WeaponType, Weapon> = {
     damageType: 'piercing',
     finesse: true,
     description: 'A small blade useful for close combat',
+    proficiencyRequired: 'simple',
   },
   Mace: {
     name: 'Mace',
@@ -28,6 +31,7 @@ export const WEAPONS: Record<WeaponType, Weapon> = {
     damageType: 'bludgeoning',
     finesse: false,
     description: 'A heavy club with a metal head',
+    proficiencyRequired: 'simple',
   },
 };
 
@@ -37,18 +41,21 @@ export const ARMORS: Record<ArmorType, Armor> = {
     baseAC: 10,
     maxDexBonus: null, // Unlimited DEX bonus
     description: 'No armor worn',
+    proficiencyRequired: undefined, // No proficiency needed for no armor
   },
   Leather: {
     name: 'Leather',
     baseAC: 12,
     maxDexBonus: null, // Light armor, unlimited DEX
     description: 'Light, flexible leather armor',
+    proficiencyRequired: 'light',
   },
   Chainmail: {
     name: 'Chainmail',
     baseAC: 16,
     maxDexBonus: 2, // Medium armor, max +2 DEX
     description: 'Interlocking metal rings providing solid protection',
+    proficiencyRequired: 'medium',
   },
 };
 

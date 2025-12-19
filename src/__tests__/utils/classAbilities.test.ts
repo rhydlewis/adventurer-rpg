@@ -28,7 +28,7 @@ const createFighter = (con: number = 14, featNames: string[] = []): Character =>
   saves: { fortitude: 2, reflex: 0, will: 0 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: featNames.map((name) => FEATS[name as keyof typeof FEATS]),
-  equipment: { weapon: WEAPONS.Longsword, armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS.Longsword, weapons: [WEAPONS.Longsword], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [
       { name: 'Second Wind', type: 'encounter', maxUses: 1, currentUses: 1, description: 'Heal 1d10+1' },
@@ -49,7 +49,7 @@ const createRogue = (): Character => ({
   saves: { fortitude: 0, reflex: 2, will: 0 },
   skills: { Perception: 0, Stealth: 5, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: [],
-  equipment: { weapon: WEAPONS.Rapier, armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS.Rapier, weapons: [WEAPONS.Rapier], armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [{ name: 'Dodge', type: 'encounter', maxUses: 1, currentUses: 1, description: '+4 AC' }],
   },
@@ -103,7 +103,7 @@ describe('Cleric Abilities - Channel Energy', () => {
     saves: { fortitude: 2, reflex: 0, will: 2 },
     skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
     feats: [],
-    equipment: { weapon: WEAPONS.Mace, armor: ARMORS.Chainmail, shield: { equipped: true, acBonus: 2 }, items: [] },
+    equipment: { weapon: WEAPONS.Mace, weapons: [WEAPONS.Mace], armor: ARMORS.Chainmail, shield: { equipped: true, acBonus: 2 }, items: [] },
     resources: {
       abilities: [
         { name: 'Channel Energy', type: 'daily', maxUses: 2, currentUses: 2, description: 'Heal 1d6 HP' },

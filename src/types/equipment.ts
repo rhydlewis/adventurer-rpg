@@ -3,11 +3,13 @@ export type ArmorType = 'None' | 'Leather' | 'Chainmail';
 export type ItemType = 'Healing Potion' | 'Smoke Bomb' | 'Arcane Scroll';
 
 export interface Weapon {
+  id?: string; // Unique identifier for weapon instances
   name: WeaponType;
   damage: string; // Dice notation (e.g., '1d8', '1d6')
   damageType: 'slashing' | 'piercing' | 'bludgeoning';
   finesse: boolean; // If true, can use DEX for attack/damage instead of STR
   description: string;
+  proficiencyRequired?: 'simple' | 'martial' | 'martial-finesse';
 }
 
 export interface Armor {
@@ -15,6 +17,7 @@ export interface Armor {
   baseAC: number; // Base AC provided (10 = no armor)
   maxDexBonus: number | null; // null = unlimited DEX bonus
   description: string;
+  proficiencyRequired?: 'light' | 'medium' | 'heavy';
 }
 
 export interface Shield {
@@ -46,8 +49,9 @@ export type ItemEffect =
   | { type: 'remove-condition'; condition: string }; // NEW: Antidote
 
 export interface Equipment {
-  weapon: Weapon | null;
-  armor: Armor | null;
-  shield: Shield | null;
-  items: Item[];
+  weapon: Weapon | null;       // Currently equipped weapon
+  weapons: Weapon[];           // All owned weapons (includes equipped)
+  armor: Armor | null;         // Currently equipped armor (no swapping Phase 1)
+  shield: Shield | null;       // Shield status
+  items: Item[];               // Consumables only (potions, scrolls, etc.)
 }
