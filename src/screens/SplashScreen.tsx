@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '../components';
+import { getRandomTip } from '../data/tips';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -11,11 +12,14 @@ interface SplashScreenProps {
  * Features:
  * - Two-line title: "Adventurer" + "RPG" (larger)
  * - Placeholder icon/image
+ * - Random gameplay tip or lore quote
  * - Auto-advance to main menu after 2.5 seconds
  * - Tap anywhere to skip
  * - Fade-in animation
  */
 export function SplashScreen({ onComplete }: SplashScreenProps) {
+  const [tip] = useState(() => getRandomTip());
+
   useEffect(() => {
     // Auto-advance to main menu after 2.5 seconds
     const timer = setTimeout(() => {
@@ -44,6 +48,13 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
           <h2 className="text-display heading-display text-fg-accent text-6xl">
             RPG
           </h2>
+        </div>
+
+        {/* Random Tip */}
+        <div className="max-w-md px-6">
+          <p className="body-secondary text-center italic text-fg-secondary">
+            {tip.text}
+          </p>
         </div>
       </div>
 
