@@ -27,9 +27,10 @@ interface CombatScreenProps {
   onVictory: (victoryNodeId: string) => void;
   onDefeat: () => void;
   onViewCharacterSheet?: () => void;
+  onExitToMainMenu?: () => void;
 }
 
-export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, onViewCharacterSheet }: CombatScreenProps) {
+export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, onViewCharacterSheet, onExitToMainMenu }: CombatScreenProps) {
   const { combat, startCombat, executeTurn, resetCombat, retreat, swapWeapon } = useCombatStore();
   const { character, setCharacter } = useCharacterStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
@@ -88,9 +89,13 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
   };
 
   const handleEndCombat = () => {
-    // Early exit from combat (treated as retreat/defeat)
+    // Exit to main menu if handler provided, otherwise treat as defeat
     resetCombat();
-    onDefeat();
+    if (onExitToMainMenu) {
+      onExitToMainMenu();
+    } else {
+      onDefeat();
+    }
   };
 
   const actions = getAvailableActions(combat.playerCharacter);
@@ -101,7 +106,7 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
       <div className="h-screen flex flex-col max-w-2xl mx-auto">
 
         {/* Header - Compact */}
-        <div className="flex-none px-4 pt-4 pb-2 bg-gradient-to-b from-black/40 to-transparent backdrop-blur-sm border-b border-amber-900/30">
+        <div className="flex-none px-4 pt-4 pb-2 bg-gradient-to-b from-black/40 to-transparent backdrop-blur-sm border-b border-amber-900/30 relative z-50">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-amber-600/20 border border-amber-600/50 rounded flex items-center justify-center">

@@ -255,17 +255,45 @@ function App() {
       currentNodeId: state.conversation?.currentNodeId,
     });
 
-    // If conversation log is empty (happens with re-initialized conversation),
-    // re-enter the current node to populate the log with the node's description
-    if (state.conversation && state.conversation.log.length === 0) {
-      console.log('[App] Conversation log is empty, re-entering node:', state.conversation.currentNodeId);
-      const { enterNode } = useNarrativeStore.getState();
-      enterNode(state.conversation.currentNodeId, save.character);
+    // Check if we need to re-enter the current node
+    let shouldNavigateToStory = true;
+
+    if (state.conversation) {
+      const { getCurrentNode, enterNode } = useNarrativeStore.getState();
+      const currentNode = getCurrentNode();
+
+      // Re-enter node if:
+      // 1. Conversation log is empty (needs population), OR
+      // 2. Node has combat/level-up triggers (need to fire on load)
+      const hasCombatOrLevelUp = currentNode?.onEnter?.some(
+        (e) => e.type === 'startCombat' || e.type === 'levelUp'
+      );
+
+      if (state.conversation.log.length === 0) {
+        console.log('[App] Conversation log is empty, re-entering node:', state.conversation.currentNodeId);
+        enterNode(state.conversation.currentNodeId, save.character);
+      } else if (hasCombatOrLevelUp) {
+        console.log('[App] Combat/level-up node detected on load. Clearing log and re-entering:', state.conversation.currentNodeId);
+        // Clear the log to avoid duplicates when re-entering combat node
+        useNarrativeStore.setState({
+          conversation: {
+            ...state.conversation,
+            log: [],
+          },
+        });
+        enterNode(state.conversation.currentNodeId, save.character);
+        // Don't navigate to story - enterNode will handle navigation to combat/level-up
+        shouldNavigateToStory = false;
+      }
     }
 
-    // Navigate to story screen
-    setCurrentScreen({ type: 'story' });
-    console.log('[App] Save loaded successfully, navigating to story');
+    // Navigate to story screen only if we didn't trigger combat/level-up
+    if (shouldNavigateToStory) {
+      setCurrentScreen({ type: 'story' });
+      console.log('[App] Save loaded successfully, navigating to story');
+    } else {
+      console.log('[App] Save loaded successfully, combat/level-up will handle navigation');
+    }
   };
 
   const handleStartStory = () => {
@@ -334,6 +362,10 @@ function App() {
             }
           }}
           onViewCharacterSheet={character ? handleViewSheet : undefined}
+          onExitToMainMenu={() => {
+            // Exit to main menu
+            setCurrentScreen({ type: 'mainMenu' });
+          }}
         />
       )}
       {currentScreen.type === 'characterCreation' && <CharacterCreationScreen />}
