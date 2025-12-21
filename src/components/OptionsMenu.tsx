@@ -23,6 +23,11 @@ interface OptionsMenuProps {
   onExit: () => void;
 
   /**
+   * Callback when "Retreat from Combat" is clicked
+   */
+  onRetreat?: () => void;
+
+  /**
    * Whether to show the "View Character Sheet" option
    * @default true
    */
@@ -39,6 +44,12 @@ interface OptionsMenuProps {
    * @default true
    */
   showSaveGame?: boolean;
+
+  /**
+   * Whether to show the "Retreat from Combat" option
+   * @default false
+   */
+  showRetreat?: boolean;
 }
 
 /**
@@ -62,9 +73,11 @@ export function OptionsMenu({
   onViewMap,
   onSaveGame,
   onExit,
+  onRetreat,
   showCharacterSheet = true,
   showMap = true,
   showSaveGame = true,
+  showRetreat = false,
 }: OptionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -138,6 +151,17 @@ export function OptionsMenu({
             >
               <Icon name="Save" size={20} className="text-success" />
               <span>Save Game</span>
+            </button>
+          )}
+
+          {/* Retreat Option */}
+          {showRetreat && onRetreat && (
+            <button
+              onClick={() => handleMenuItemClick(onRetreat)}
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
+            >
+              <Icon name="LogOut" size={20} className="text-orange-400" />
+              <span>Retreat from Combat</span>
             </button>
           )}
 

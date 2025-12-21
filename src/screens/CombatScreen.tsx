@@ -7,15 +7,9 @@ import { generateEnemy } from '../utils/enemyGeneration';
 import type { CombatState } from '../types';
 import { Icon, OptionsMenu } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
-import { ItemsActionButton } from '../components/combat/ItemsActionButton';
-
-// Action icon mapping
-const actionIcons = {
-  attack: 'Sword' as const,
-  cast_spell: 'Sparkles' as const,
-  use_ability: 'Zap' as const,
-  special: 'Star' as const,
-};
+import { ActionPopupButton } from '../components/combat/ActionPopupButton';
+import { PrimaryAttackButton } from '../components/combat/PrimaryAttackButton';
+import { SecondaryAttackButton } from '../components/combat/SecondaryAttackButton';
 
 const formatModifier = (value: number): string => {
   return value >= 0 ? `+${value}` : `${value}`;
@@ -98,6 +92,18 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
     }
   };
 
+  const handleRetreat = () => {
+    const retreatResult = retreat();
+    if (retreatResult) {
+      // Update character with retreat damage/gold loss
+      setCharacter(retreatResult.player);
+
+      // Navigate to safe node (treat as defeat for now)
+      resetCombat();
+      onDefeat();
+    }
+  };
+
   const actions = getAvailableActions(combat.playerCharacter);
 
   return (
@@ -116,6 +122,8 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
             </div>
             <OptionsMenu
               onViewCharacterSheet={onViewCharacterSheet}
+              onRetreat={combat.canRetreat ? handleRetreat : undefined}
+              showRetreat={combat.canRetreat}
               onExit={handleEndCombat}
             />
           </div>
@@ -249,105 +257,64 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
                   <Icon name="Swords" size={14} />
                   <span>Your Actions</span>
                 </h3>
-                <span className="text-[10px] text-slate-500 body-secondary">
-                  {actions.filter(a => a.available && !a.disabled).length} available
-                </span>
               </div>
 
-              {/* Grid Layout Actions - 2 columns, auto rows */}
-              <div className="grid grid-cols-2 gap-2">
-                {actions.map((action, index) => {
-                  const isDisabled = !action.available || action.disabled;
-                  const iconName = actionIcons[action.type as keyof typeof actionIcons] || 'Zap';
+              {/* NEW 2-ROW LAYOUT */}
+              <div className="space-y-2">
+                {/* Row 1: Attack Buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                  <PrimaryAttackButton
+                    attack={actions.find(a => a.type === 'attack' && !('variant' in a)) || null}
+                    weaponName={combat.playerCharacter.equipment.weapon?.name}
+                    onExecute={executeTurn}
+                  />
+                  <SecondaryAttackButton
+                    attack={actions.find(a => a.type === 'attack' && 'variant' in a) || null}
+                    onExecute={executeTurn}
+                  />
+                </div>
 
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => !isDisabled && executeTurn(action)}
-                      disabled={isDisabled}
-                      className={`min-h-[56px] p-2 rounded-lg transition-all button-text flex items-center space-x-2 ${
-                        isDisabled
-                          ? 'bg-slate-900/50 text-slate-600 cursor-not-allowed border border-slate-800'
-                          : action.type === 'attack'
-                          ? 'bg-gradient-to-br from-emerald-700 to-emerald-800 hover:from-emerald-600 hover:to-emerald-700 text-white border border-emerald-600/50 shadow-lg shadow-emerald-900/30 active:scale-95'
-                          : action.type === 'cast_spell'
-                          ? 'bg-gradient-to-br from-violet-700 to-violet-800 hover:from-violet-600 hover:to-violet-700 text-white border border-violet-600/50 shadow-lg shadow-violet-900/30 active:scale-95'
-                          : action.type === 'use_ability'
-                          ? 'bg-gradient-to-br from-blue-700 to-blue-800 hover:from-blue-600 hover:to-blue-700 text-white border border-blue-600/50 shadow-lg shadow-blue-900/30 active:scale-95'
-                          : 'bg-gradient-to-br from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-white border border-amber-600/50 shadow-lg shadow-amber-900/30 active:scale-95'
-                      }`}
-                    >
-                      {/* Icon */}
-                      <div className={`flex-shrink-0 p-1.5 rounded ${isDisabled ? 'bg-slate-800' : 'bg-black/20'}`}>
-                        <Icon name={iconName} size={18} />
-                      </div>
-
-                      {/* Action Details */}
-                      <div className="flex-1 text-left min-w-0">
-                        <div className={`text-xs font-bold leading-tight truncate ${isDisabled ? 'opacity-60' : ''}`}>
-                          {action.name}
-                        </div>
-                        {action.type === 'use_ability' && action.usesRemaining !== undefined && (
-                          <div className="text-[9px] opacity-75 mt-0.5">
-                            {action.usesRemaining}/{action.maxUses} uses
-                          </div>
-                        )}
-                        {isDisabled && action.disabledReason && (
-                          <div className="text-[9px] opacity-75 leading-tight mt-0.5">
-                            {action.disabledReason}
-                          </div>
-                        )}
-                      </div>
-                    </button>
-                  );
-                })}
-
-                {/* Items Button - only show if player has usable items */}
-                {(() => {
-                  const usableItems = combat.playerCharacter.equipment.items.filter(
-                    item => item.usableInCombat && (item.quantity ?? 0) > 0
-                  );
-
-                  if (usableItems.length === 0) return null;
-
-                  return (
-                    <ItemsActionButton
-                      items={usableItems}
-                      onUseItem={(itemId) => {
-                        executeTurn({
-                          type: 'use_item',
-                          name: 'Use Item',
-                          description: '',
-                          available: true,
-                          itemId,
-                        });
-                      }}
-                    />
-                  );
-                })()}
+                {/* Row 2: Resource Popups */}
+                <div className="grid grid-cols-3 gap-2">
+                  <ActionPopupButton
+                    label="Spells"
+                    icon="Sparkles"
+                    actions={actions.filter(a => a.type === 'cast_spell')}
+                    colorScheme="violet"
+                    onSelectAction={executeTurn}
+                  />
+                  <ActionPopupButton
+                    label="Inventory"
+                    icon="Package"
+                    actions={(() => {
+                      const usableItems = combat.playerCharacter.equipment.items.filter(
+                        item => item.usableInCombat && (item.quantity ?? 0) > 0
+                      );
+                      return usableItems.map(item => ({
+                        type: 'use_item' as const,
+                        name: item.name,
+                        description: item.description || '',
+                        available: true,
+                        disabled: false,
+                        itemId: item.id,
+                      }));
+                    })()}
+                    colorScheme="amber"
+                    onSelectAction={(action) => {
+                      if (action.type === 'use_item' && action.itemId) {
+                        executeTurn(action);
+                      }
+                    }}
+                  />
+                  <ActionPopupButton
+                    label="Abilities"
+                    icon="Zap"
+                    actions={actions.filter(a => a.type === 'use_ability')}
+                    colorScheme="blue"
+                    onSelectAction={executeTurn}
+                  />
+                </div>
               </div>
-
-              {/* Retreat Button - Full Width Below Actions */}
-              {combat.canRetreat && (
-                <button
-                  className="w-full mt-3 px-4 py-3 rounded-lg button-text text-sm bg-gradient-to-br from-orange-700/30 to-orange-800/30 border-2 border-orange-600/50 text-orange-300 hover:from-orange-600/40 hover:to-orange-700/40 hover:border-orange-500/60 transition-all active:scale-[0.98] flex items-center justify-center space-x-2"
-                  onClick={() => {
-                    const retreatResult = retreat();
-                    if (retreatResult) {
-                      // Update character with retreat damage/gold loss
-                      setCharacter(retreatResult.player);
-
-                      // Navigate to safe node
-                      // TODO: Wire this up with narrative store
-                      onDefeat(); // For now, treat as defeat
-                    }
-                  }}
-                >
-                  <Icon name="LogOut" size={18} />
-                  <span>Retreat from Combat</span>
-                  <span className="text-[10px] opacity-75">(Penalty: -20 gold, 5 damage)</span>
-                </button>
-              )}
             </div>
           )}
         </div>
