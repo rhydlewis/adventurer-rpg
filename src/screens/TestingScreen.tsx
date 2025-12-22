@@ -223,6 +223,31 @@ export function TestingScreen({ onStartCombat, onCreateCharacter, onViewCharacte
                 </div>
               </Card>
           )}
+
+          {/* Test Timing Minigame (Prototype) */}
+          {onNavigate && (
+              <Card variant="neutral" padding="compact" className="mt-3 border-magic">
+                <p className="text-caption text-fg-primary label-primary mb-2 text-center">
+                  🎯 Prototype: Symbol Match Minigame
+                </p>
+                <button
+                    onClick={() => onNavigate({
+                      type: 'timingGame',
+                      onSuccess: () => {
+                        console.log('Timing game completed successfully!');
+                        onNavigate({ type: 'home' });
+                      },
+                      onFailure: () => {
+                        console.log('Timing game exited without completion.');
+                        onNavigate({ type: 'home' });
+                      },
+                    })}
+                    className="w-full px-3 py-2 bg-magic text-white button-text text-caption rounded-lg hover:bg-purple-700 active:bg-purple-800 transition-all duration-200 active:scale-[0.98]"
+                >
+                  Play Timing Game
+                </button>
+              </Card>
+          )}
         </div>
       </div>
   );
