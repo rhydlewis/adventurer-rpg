@@ -98,6 +98,13 @@ export function createCharacter(params: CreateCharacterParams): Character {
     ...WEAPONS[classDef.startingWeapon],
     id: `${classDef.startingWeapon.toLowerCase()}-${Date.now()}`,
   };
+  // Add Dagger as second weapon for Fighter (for testing weapon swap)
+  const dagger = className === 'Fighter'
+      ? {
+        ...WEAPONS.Dagger,
+        id: `dagger-${Date.now()}-2`, // Different timestamp to ensure unique ID
+      }
+      : null;
   const armor = ARMORS[classDef.startingArmor];
   const shield = {
     equipped: classDef.hasShield,
@@ -192,7 +199,7 @@ export function createCharacter(params: CreateCharacterParams): Character {
     feats,
     equipment: {
       weapon,
-      weapons: [weapon], // All owned weapons (includes equipped)
+      weapons: dagger ? [weapon, dagger] : [weapon], // Fighter gets Dagger too
       armor,
       shield,
       items,
