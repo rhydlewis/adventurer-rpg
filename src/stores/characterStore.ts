@@ -4,7 +4,7 @@ import type { Attributes } from '../types';
 import type { SkillRanks } from '../types';
 import type { FeatName } from '../types';
 import type { NodeEffect } from '../types';
-import { createCharacter } from '../utils/characterCreation';
+import { createCharacter, createDefaultTestCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { DEFAULT_AVATAR } from '../data/avatars';
 import { getBackgroundByClass } from '../data/backgrounds';
@@ -300,7 +300,17 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
   },
 
   processNarrativeEffects: (effects) => {
-    const { character } = get();
+    let { character } = get();
+
+    // Check if we need to create a default character first
+    for (const effect of effects) {
+      if (effect.type === 'createDefaultCharacter' && !character) {
+        character = createDefaultTestCharacter();
+        set({ character });
+        return; // Character created, exit early
+      }
+    }
+
     if (!character) return;
 
     const updatedCharacter = { ...character };
@@ -325,6 +335,10 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
 
         case 'damage':
           updatedCharacter.hp = Math.max(0, updatedCharacter.hp - effect.amount);
+          break;
+
+        case 'createDefaultCharacter':
+          // Already handled above
           break;
 
           // Other effects handled by their respective systems

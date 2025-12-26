@@ -128,7 +128,8 @@ export type NodeEffect =
   | { type: 'heal'; amount: number | 'full' }
   | { type: 'damage'; amount: number }
   | { type: 'showCompanionHint'; hint: string }
-  | { type: 'levelUp'; newLevel: number; featChoices: string[] };
+  | { type: 'levelUp'; newLevel: number; featChoices: string[] }
+  | { type: 'createDefaultCharacter' };
 
 // =============================================================================
 // Story Nodes - The building blocks of narrative
@@ -281,5 +282,8 @@ export interface EffectResult {
   levelUpTrigger?: {
     newLevel: number;
     featChoices: string[];
+  };
+  deathTrigger?: {
+    nodeId?: string; // Optional custom death node, otherwise use Act's deathNodeId
   };
 }

@@ -161,6 +161,19 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
 
       // NEW: Process character effects
       useCharacterStore.getState().processNarrativeEffects(node.onEnter);
+
+      // Check for death after applying effects
+      const character = useCharacterStore.getState().character;
+      if (character && character.hp <= 0) {
+        // Character died! Navigate to death node
+        const deathNodeId = act?.deathNodeId;
+        if (deathNodeId && deathNodeId !== nodeId) {
+          // Prevent infinite loop if already at death node
+          // Navigate to death node immediately
+          get().enterNode(deathNodeId, character);
+          return;
+        }
+      }
     }
 
     // Update world state
@@ -399,11 +412,18 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     });
 
     // Enter the next node
-    // Player should exist at this point (character creation is handled above)
-    if (!player) {
+    // Check if the target node will create a character
+    const targetNode = findNode(campaign, resolution.nextNodeId);
+    const willCreateCharacter = targetNode?.onEnter?.some(e => e.type === 'createDefaultCharacter');
+
+    // Player should exist at this point, unless the next node creates one
+    if (!player && !willCreateCharacter) {
       throw new Error('Cannot navigate to next node without a character');
     }
-    get().enterNode(resolution.nextNodeId, player);
+
+    // enterNode expects a Character, but we'll allow null if the node creates one
+    // The node's onEnter effects will create the character before it's needed
+    get().enterNode(resolution.nextNodeId, player || {} as Character);
   },
 
   requestCompanionHint: () => {

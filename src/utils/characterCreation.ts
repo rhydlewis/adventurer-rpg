@@ -211,3 +211,49 @@ export function createCharacter(params: CreateCharacterParams): Character {
     maxInventorySlots: 10,
   };
 }
+
+/**
+ * Create a default test character for quick testing
+ * Creates a Level 3 Fighter with balanced stats
+ */
+export function createDefaultTestCharacter(): Character {
+  // Balanced attributes for testing
+  const attributes: Attributes = {
+    STR: 14,
+    DEX: 13,
+    CON: 14,
+    INT: 12,
+    WIS: 13,
+    CHA: 10,
+  };
+
+  // Balanced skill ranks
+  const skillRanks: SkillRanks = {
+    Athletics: 3,
+    Stealth: 2,
+    Perception: 3,
+    Arcana: 1,
+    Medicine: 1,
+    Intimidate: 2,
+  };
+
+  // Create base character
+  const baseCharacter = createCharacter({
+    name: 'Test Character',
+    avatarPath: '/portraits/fighter-test.png',
+    class: 'Fighter',
+    attributes,
+    skillRanks,
+    selectedFeat: 'Power Attack',
+  });
+
+  // Boost to level 3 for more HP and versatility
+  return {
+    ...baseCharacter,
+    level: 3,
+    maxHp: 30, // Enough to survive some traps but can still test death
+    hp: 30,
+    gold: 150, // Enough to test merchant
+    bab: 3, // Level 3 BAB for Fighter
+  };
+}

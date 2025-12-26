@@ -8,13 +8,15 @@
 
 import { testCampaign } from './test-campaign';
 import { validationCampaign } from './validation-campaign';
+import { singleNodeCampaign } from './single-node-campaign'
 
 // Export all available campaigns
 // Add new campaigns to this array to make them selectable in-game
 export const availableCampaigns = [
   validationCampaign,
   testCampaign,
+  singleNodeCampaign
 ];
 
 // Export individual campaigns for direct use (e.g., in tests)
-export { testCampaign, validationCampaign };
+export { testCampaign, validationCampaign, singleNodeCampaign };

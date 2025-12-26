@@ -1,0 +1,994 @@
+import type {Campaign, Act, StoryNode} from '../../types';
+
+/**
+ * Single Node Campaign - Comprehensive Testing Suite
+ *
+ * A test campaign with a central hub that branches to different test scenarios.
+ * Tests all supported encounter types, node flavors, choice outcomes, and mechanics.
+ */
+
+const testNodes: StoryNode[] = [
+    // =============================================================================
+    // CHARACTER CREATION ENTRY
+    // =============================================================================
+    {
+        id: 'test_start',
+        title: 'Testing Suite - Setup',
+        description: 'Welcome to the Testing Suite! Before we begin, let\'s set up your test character.',
+        locationId: 'crossroads',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'crown' },
+        choices: [
+            {
+                id: 'create_character',
+                text: '⚔️ Create Character (Full Process)',
+                category: 'special',
+                outcome: {
+                    type: 'characterCreation',
+                    phase: 1,
+                    nextNodeId: 'test_hub',
+                },
+            },
+            {
+                id: 'quick_character',
+                text: '⚡ Use Default Test Character (Instant)',
+                category: 'special',
+                outcome: {
+                    type: 'goto',
+                    nodeId: 'create_default_character',
+                },
+            }
+        ]
+    },
+    {
+        id: 'create_default_character',
+        title: 'Character Created!',
+        description: 'A default test character has been created for you:\n\n**Test Character** - Level 3 Fighter\n- HP: 30/30\n- Gold: 150g\n- Balanced stats for testing all mechanics\n\nReady to begin testing!',
+        flavor: { tone: 'triumphant', icon: 'crown' },
+        onEnter: [
+            { type: 'createDefaultCharacter' }
+        ],
+        choices: [
+            {
+                id: 'begin_testing',
+                text: '→ Begin Testing',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // CENTRAL HUB - Testing Menu
+    // =============================================================================
+    {
+        id: 'test_hub',
+        title: 'Testing Hub',
+        description: 'Welcome to the comprehensive testing suite. Choose which mechanic you want to test.',
+        locationId: 'crossroads',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'map' },
+        choices: [
+            {
+                id: 'test_skill_checks',
+                text: '🎲 Test Skill Checks',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'skill_check_hub' }
+            },
+            {
+                id: 'test_combat',
+                text: '⚔️ Test Combat',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'combat_hub' }
+            },
+            {
+                id: 'test_nested_outcomes',
+                text: '🔄 Test Nested Outcomes',
+                category: 'skillCheck',
+                outcome: { type: 'goto', nodeId: 'nested_outcomes_hub' }
+            },
+            {
+                id: 'test_node_effects',
+                text: '✨ Test Node Effects',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            },
+            {
+                id: 'test_exploration',
+                text: '🗺️ Test Exploration Tables',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'exploration_hub' }
+            },
+            {
+                id: 'test_dialogue',
+                text: '💬 Test Dialogue & Speakers',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            },
+            {
+                id: 'test_requirements',
+                text: '🔒 Test Requirements',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            },
+            {
+                id: 'test_merchant',
+                text: '🏪 Test Merchant',
+                category: 'merchant',
+                outcome: {
+                    type: 'merchant',
+                    shopInventory: ['healing-potion', 'antidote', 'sword-plus-1'],
+                    buyPrices: {
+                        'healing-potion': 50,
+                        'antidote': 25,
+                        'sword-plus-1': 300
+                    }
+                }
+            },
+            {
+                id: 'test_death_system',
+                text: '💀 Test Death System',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'death_test_node' }
+            },
+            {
+                id: 'exit_tests',
+                text: '🚪 Exit',
+                category: 'movement',
+                outcome: { type: 'exit' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // SKILL CHECKS TESTING
+    // =============================================================================
+    {
+        id: 'skill_check_hub',
+        title: 'Skill Check Tests',
+        description: 'Test different skill checks with varying DCs and outcomes.',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'question' },
+        choices: [
+            {
+                id: 'easy_check',
+                text: '🎲 Easy Check (DC 8)',
+                displayText: '🎲 Perception DC 8: Spot the obvious trap',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Perception',
+                    dc: 8,
+                    success: { type: 'goto', nodeId: 'check_success' },
+                    failure: { type: 'goto', nodeId: 'check_failure' }
+                }
+            },
+            {
+                id: 'medium_check',
+                text: '🎲 Medium Check (DC 15)',
+                displayText: '🎲 Athletics DC 15: Climb the cliff',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Athletics',
+                    dc: 15,
+                    success: { type: 'goto', nodeId: 'check_success' },
+                    failure: { type: 'goto', nodeId: 'check_failure' }
+                }
+            },
+            {
+                id: 'hard_check',
+                text: '🎲 Hard Check (DC 22)',
+                displayText: '🎲 Arcana DC 22: Decipher ancient runes',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Arcana',
+                    dc: 22,
+                    success: { type: 'goto', nodeId: 'check_success' },
+                    failure: { type: 'goto', nodeId: 'check_failure' }
+                }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'check_success',
+        title: 'Success!',
+        description: 'Your skill check succeeded! Well done.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 25 }
+        ],
+        choices: [
+            {
+                id: 'back_to_skill_hub',
+                text: '← Try another check',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'skill_check_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'check_failure',
+        title: 'Failure',
+        description: 'Your skill check failed. Better luck next time.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'back_to_skill_hub',
+                text: '← Try another check',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'skill_check_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // COMBAT TESTING
+    // =============================================================================
+    {
+        id: 'combat_hub',
+        title: 'Combat Tests',
+        description: 'Choose an enemy to fight.',
+        type: 'combat',
+        flavor: { tone: 'tense', icon: 'sword' },
+        choices: [
+            {
+                id: 'fight_bandit',
+                text: '⚔️ Fight a Bandit',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'bandit_combat' }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'bandit_combat',
+        title: 'Bandit Encounter',
+        description: 'A bandit steps from the shadows, dagger drawn!',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'bandit', onVictoryNodeId: 'combat_victory' }
+        ],
+        choices: []
+    },
+    {
+        id: 'combat_victory',
+        title: 'Victory!',
+        description: 'The bandit falls defeated. You search the body and find some gold.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 50 },
+            { type: 'setFlag', flag: 'defeated_bandit', value: true }
+        ],
+        choices: [
+            {
+                id: 'back_to_combat_hub',
+                text: '← Fight another enemy',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'combat_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // NESTED OUTCOMES TESTING
+    // =============================================================================
+    {
+        id: 'nested_outcomes_hub',
+        title: 'Nested Outcomes Test',
+        description: 'Test check-within-check scenarios: success/failure leads to another check.',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'search' },
+        choices: [
+            {
+                id: 'trapped_hallway',
+                text: '🎲 Navigate Trapped Hallway',
+                displayText: '🎲 Perception DC 13: Spot the trap, then Stealth DC 15: Disarm it',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Perception',
+                    dc: 13,
+                    success: {
+                        // Spotted the trap! Now disarm it
+                        type: 'check',
+                        skill: 'Stealth',
+                        dc: 15,
+                        success: { type: 'goto', nodeId: 'trap_disarmed' },
+                        failure: { type: 'goto', nodeId: 'trap_triggered_partial' }
+                    },
+                    failure: { type: 'goto', nodeId: 'trap_triggered_full' }
+                }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'trap_disarmed',
+        title: 'Trap Disarmed',
+        description: 'You carefully disable the blade trap. Safe passage achieved!',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 100 }
+        ],
+        choices: [
+            {
+                id: 'back_to_nested',
+                text: '← Try again',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'nested_outcomes_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'trap_triggered_partial',
+        title: 'Partial Damage',
+        description: 'You spotted the trap but failed to disarm it! Blades swing out, grazing you.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        onEnter: [
+            { type: 'damage', amount: 4 }
+        ],
+        choices: [
+            {
+                id: 'back_to_nested',
+                text: '← Try again',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'nested_outcomes_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'trap_triggered_full',
+        title: 'Trap Triggered!',
+        description: 'Blades swing from the walls! You barely dodge, but not fast enough.',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'damage', amount: 8 }
+        ],
+        choices: [
+            {
+                id: 'back_to_nested',
+                text: '← Try again',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'nested_outcomes_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // NODE EFFECTS TESTING
+    // =============================================================================
+    {
+        id: 'node_effects_hub',
+        title: 'Node Effects Test',
+        description: 'Test different onEnter effects: damage, healing, items, gold, flags.',
+        type: 'event',
+        flavor: { tone: 'calm', icon: 'magic' },
+        choices: [
+            {
+                id: 'test_damage',
+                text: '💔 Test Damage (8 HP)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'damage_node' }
+            },
+            {
+                id: 'test_healing',
+                text: '💚 Test Healing (10 HP)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'healing_node' }
+            },
+            {
+                id: 'test_full_heal',
+                text: '✨ Test Full Heal',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'full_heal_node' }
+            },
+            {
+                id: 'test_gold',
+                text: '💰 Test Gold (75g)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'gold_node' }
+            },
+            {
+                id: 'test_items',
+                text: '🎁 Test Items (potion + antidote)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'items_node' }
+            },
+            {
+                id: 'test_flags',
+                text: '🚩 Test Flags',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'flags_node' }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'damage_node',
+        title: 'Damage Test',
+        description: 'You trigger a poison dart trap! You take 8 damage.',
+        onEnter: [
+            { type: 'damage', amount: 8 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            }
+        ]
+    },
+    {
+        id: 'healing_node',
+        title: 'Healing Test',
+        description: 'A warm light washes over you. You heal 10 HP.',
+        onEnter: [
+            { type: 'heal', amount: 10 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            }
+        ]
+    },
+    {
+        id: 'full_heal_node',
+        title: 'Full Heal Test',
+        description: 'Divine energy surrounds you! Your wounds close completely.',
+        onEnter: [
+            { type: 'heal', amount: 'full' }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            }
+        ]
+    },
+    {
+        id: 'gold_node',
+        title: 'Gold Test',
+        description: 'You find a hidden stash! You gain 75 gold.',
+        onEnter: [
+            { type: 'giveGold', amount: 75 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            }
+        ]
+    },
+    {
+        id: 'items_node',
+        title: 'Items Test',
+        description: 'You discover a chest containing a healing potion and an antidote!',
+        onEnter: [
+            { type: 'giveItem', itemId: 'healing-potion' },
+            { type: 'giveItem', itemId: 'antidote' }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            }
+        ]
+    },
+    {
+        id: 'flags_node',
+        title: 'Flags Test',
+        description: 'You set a test flag. This can be used for requirements.',
+        onEnter: [
+            { type: 'setFlag', flag: 'test_flag_activated', value: true }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'node_effects_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // EXPLORATION TABLES TESTING
+    // =============================================================================
+    {
+        id: 'exploration_hub',
+        title: 'Exploration Tables Test',
+        description: 'Test random exploration encounters from weighted tables.',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'compass' },
+        choices: [
+            {
+                id: 'explore_forest',
+                text: '🌲 Explore the Forest',
+                category: 'exploration',
+                outcome: {
+                    type: 'explore',
+                    tableId: 'forest-exploration',
+                    onceOnly: false
+                }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // DIALOGUE & SPEAKERS TESTING
+    // =============================================================================
+    {
+        id: 'dialogue_hub',
+        title: 'Dialogue Test',
+        description: 'Test dialogue nodes with different speakers and tones.',
+        speakerName: 'Narrator',
+        type: 'dialogue',
+        flavor: { tone: 'calm', icon: 'speech' },
+        choices: [
+            {
+                id: 'meet_guard',
+                text: '💬 Talk to the Guard',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'guard_dialogue' }
+            },
+            {
+                id: 'meet_merchant',
+                text: '💬 Talk to the Merchant',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'merchant_dialogue' }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'guard_dialogue',
+        title: 'The Gate Guard',
+        description: '"Halt! State your business."',
+        speakerName: 'Gate Guard',
+        type: 'dialogue',
+        flavor: { tone: 'tense', icon: 'dialogue' },
+        choices: [
+            {
+                id: 'intimidate',
+                text: '💪 "I don\'t answer to you."',
+                displayText: '🎲 Intimidate DC 15: "I don\'t answer to you."',
+                category: 'dialogue',
+                outcome: {
+                    type: 'check',
+                    skill: 'Intimidate',
+                    dc: 15,
+                    success: { type: 'goto', nodeId: 'guard_cowed' },
+                    failure: { type: 'goto', nodeId: 'guard_angry' }
+                }
+            },
+            {
+                id: 'be_polite',
+                text: '😊 "I mean no harm, just passing through."',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'guard_friendly' }
+            },
+            {
+                id: 'act_suspicious',
+                text: '😐 "That\'s none of your concern."',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'guard_suspicious' }
+            },
+            {
+                id: 'back',
+                text: '← Back',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            }
+        ]
+    },
+    {
+        id: 'guard_cowed',
+        title: 'The Gate Guard',
+        description: 'The guard steps back, intimidated. "R-right. Move along then."',
+        speakerName: 'Gate Guard',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'setFlag', flag: 'intimidated_guard', value: true }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            }
+        ]
+    },
+    {
+        id: 'guard_angry',
+        title: 'The Gate Guard',
+        description: 'The guard\'s face reddens. "How dare you! You\'ll regret that!"',
+        speakerName: 'Gate Guard',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            }
+        ]
+    },
+    {
+        id: 'guard_friendly',
+        title: 'The Gate Guard',
+        description: 'The guard relaxes and smiles. "Well met, traveler. Safe journeys to you."',
+        speakerName: 'Gate Guard',
+        flavor: { tone: 'calm', icon: 'dialogue' },
+        onEnter: [
+            { type: 'setFlag', flag: 'guard_friendly', value: true }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            }
+        ]
+    },
+    {
+        id: 'guard_suspicious',
+        title: 'The Gate Guard',
+        description: 'The guard eyes you warily. "Hmm. I\'ll be watching you."',
+        speakerName: 'Gate Guard',
+        flavor: { tone: 'tense', icon: 'warning' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            }
+        ]
+    },
+    {
+        id: 'merchant_dialogue',
+        title: 'The Traveling Merchant',
+        description: '"Greetings, friend! Care to see my wares?"',
+        speakerName: 'Merchant',
+        type: 'dialogue',
+        flavor: { tone: 'calm', icon: 'dialogue' },
+        choices: [
+            {
+                id: 'browse',
+                text: '🏪 "Show me what you have."',
+                category: 'merchant',
+                outcome: {
+                    type: 'merchant',
+                    shopInventory: ['healing-potion', 'antidote'],
+                    buyPrices: {
+                        'healing-potion': 50,
+                        'antidote': 25
+                    }
+                }
+            },
+            {
+                id: 'leave',
+                text: '"Not interested."',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            },
+            {
+                id: 'back',
+                text: '← Back',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'dialogue_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // REQUIREMENTS TESTING
+    // =============================================================================
+    {
+        id: 'requirements_hub',
+        title: 'Requirements Test',
+        description: 'Test different choice requirements: flags, items, attributes, skills, class.',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'exclamation' },
+        companionHint: 'Some choices require specific flags, items, or stats. Try setting flags in the Node Effects test first!',
+        choices: [
+            {
+                id: 'requires_flag',
+                text: '🚩 This requires test_flag_activated',
+                category: 'special',
+                requirements: [{ type: 'flag', flag: 'test_flag_activated', value: true }],
+                outcome: { type: 'goto', nodeId: 'flag_requirement_met' }
+            },
+            {
+                id: 'requires_item',
+                text: '🎁 This requires healing-potion',
+                category: 'special',
+                requirements: [{ type: 'item', itemId: 'healing-potion' }],
+                outcome: { type: 'goto', nodeId: 'item_requirement_met' }
+            },
+            {
+                id: 'requires_str',
+                text: '💪 This requires STR 14+',
+                category: 'special',
+                requirements: [{ type: 'attribute', attr: 'STR', min: 14 }],
+                outcome: { type: 'goto', nodeId: 'attribute_requirement_met' }
+            },
+            {
+                id: 'requires_skill',
+                text: '🎲 This requires Stealth 5+',
+                category: 'special',
+                requirements: [{ type: 'skill', skill: 'Stealth', minRanks: 5 }],
+                outcome: { type: 'goto', nodeId: 'skill_requirement_met' }
+            },
+            {
+                id: 'requires_fighter',
+                text: '⚔️ This requires Fighter class',
+                category: 'combat',
+                requirements: [{ type: 'class', class: 'Fighter' }],
+                outcome: { type: 'goto', nodeId: 'class_requirement_met' }
+            },
+            {
+                id: 'requires_wizard',
+                text: '🔮 This requires Wizard class',
+                category: 'combat',
+                requirements: [{ type: 'class', class: 'Wizard' }],
+                outcome: { type: 'goto', nodeId: 'class_requirement_met' }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'flag_requirement_met',
+        title: 'Flag Requirement Met',
+        description: 'Success! You had the required flag.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            }
+        ]
+    },
+    {
+        id: 'item_requirement_met',
+        title: 'Item Requirement Met',
+        description: 'Success! You had the required item.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            }
+        ]
+    },
+    {
+        id: 'attribute_requirement_met',
+        title: 'Attribute Requirement Met',
+        description: 'Success! Your strength was sufficient.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            }
+        ]
+    },
+    {
+        id: 'skill_requirement_met',
+        title: 'Skill Requirement Met',
+        description: 'Success! Your skill ranks were high enough.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            }
+        ]
+    },
+    {
+        id: 'class_requirement_met',
+        title: 'Class Requirement Met',
+        description: 'Success! You are the correct class.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // DEATH SYSTEM TESTING
+    // =============================================================================
+    {
+        id: 'death_test_node',
+        title: 'Death Trap',
+        description: 'You enter a dark corridor. Ancient pressure plates line the floor, and you can see massive blade mechanisms built into the walls. This looks extremely dangerous.',
+        type: 'explore',
+        flavor: { tone: 'danger', icon: 'skull' },
+        choices: [
+            {
+                id: 'impossible_perception',
+                text: '🎲 Try to spot the safe path',
+                displayText: '🎲 Perception DC 30: Try to spot the safe path (impossible)',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Perception',
+                    dc: 30,
+                    success: { type: 'goto', nodeId: 'death_avoided' },
+                    failure: { type: 'goto', nodeId: 'instant_death_trap' }
+                }
+            },
+            {
+                id: 'trigger_trap',
+                text: '💀 Walk straight through (instant death)',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'instant_death_trap' }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub (safe)',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'instant_death_trap',
+        title: 'Lethal Trap!',
+        description: 'You step on a pressure plate. Massive blades swing from every direction! The trap is impossibly deadly.',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'damage', amount: 50 } // Lethal damage - will kill most characters
+        ],
+        choices: []
+    },
+    {
+        id: 'death_avoided',
+        title: 'Miraculous Perception!',
+        description: 'Against all odds, your eyes pick out the ONE safe tile in the entire corridor. You carefully step across and make it through unharmed!',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 500 } // Reward for the impossible
+        ],
+        choices: [
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // DEATH NODE
+    // =============================================================================
+    {
+        id: 'test_death',
+        title: 'Death',
+        description: 'Your wounds were too severe. Darkness closes in around you as your vision fades... But this is just a test, so let\'s bring you back!',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'heal', amount: 'full' } // Resurrect for testing purposes
+        ],
+        choices: [
+            {
+                id: 'restart',
+                text: '↻ Return to Hub (Resurrected)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            },
+            {
+                id: 'exit',
+                text: '🚪 Exit Testing Suite',
+                category: 'movement',
+                outcome: { type: 'exit' }
+            }
+        ]
+    }
+]
+
+const testAct: Act = {
+    id: 'test-act-1',
+    title: 'Testing Suite Act',
+    description: 'Comprehensive test suite for all narrative system features.',
+    locationId: 'crossroads',
+    startingNodeId: 'test_start',
+    deathNodeId: 'test_death',
+    nodes: testNodes,
+};
+
+export const singleNodeCampaign: Campaign = {
+    id: 'single-node-campaign',
+    title: 'Testing Suite',
+    description: 'A comprehensive testing campaign covering all encounter types, node flavors, choice outcomes, and game mechanics. Navigate from a central hub to test different features.',
+    companionName: 'Test Guide',
+    companionDescription: 'Your guide through the testing suite. Use the companion hint button (?) for helpful information about each test.',
+    acts: [testAct],
+};

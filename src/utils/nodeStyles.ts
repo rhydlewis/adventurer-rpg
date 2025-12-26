@@ -9,7 +9,7 @@ export const TONE_STYLES: Record<NodeTone, string> = {
   tense: 'border-orange-400 bg-orange-50',
   mysterious: 'border-purple-400 bg-purple-50',
   danger: 'border-red-500 bg-red-50',
-  triumphant: 'border-yellow-400 bg-yellow-50',
+  triumphant: 'border-green-400 bg-green-50',
   urgent: 'border-red-600 bg-red-100 animate-pulse',
 };
 
