@@ -188,7 +188,7 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
 
                     {/* Item Details */}
                     <h3 className="heading-tertiary text-fg-accent mb-1 text-base">{item.name}</h3>
-                    <p className="body-secondary text-xs text-fg-muted mb-2 line-clamp-2">{item.description}</p>
+                    <p className="body-secondary text-xs text-fg-muted mb-2 line-clamp-3">{item.description}</p>
 
                     {/* Price */}
                     <div className="flex items-center gap-1 mb-2">
@@ -253,7 +253,7 @@ export function MerchantScreen({ shopInventory, buyPrices, onClose }: MerchantSc
 
                   {/* Item Details */}
                   <h3 className="heading-tertiary text-fg-accent mb-1 text-base">{item.name}</h3>
-                  <p className="body-secondary text-xs text-fg-muted mb-2 line-clamp-2">{item.description}</p>
+                  <p className="body-secondary text-xs text-fg-muted mb-2 line-clamp-3">{item.description}</p>
 
                   {/* Sell Price */}
                   <div className="flex items-center gap-1 mb-2">
