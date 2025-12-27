@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { HomeScreen } from './screens';
 import { SplashScreen } from './screens';
 import { MainMenuScreen } from './screens';
@@ -183,24 +183,86 @@ function App() {
     };
   }, [currentScreen.type]);
 
-  const handleCreateCharacter = () => {
-    startCreation();
-    setCurrentScreen({ type: 'characterCreation' });
-  };
-
-  const handleViewSheet = () => {
+  // Navigation helper functions
+  const navigateWithBack = useCallback((newScreen: Screen) => {
     setPreviousScreen(currentScreen);
-    setCurrentScreen({ type: 'characterSheet' });
-  };
+    setCurrentScreen(newScreen);
+  }, [currentScreen]);
 
-  const handleCloseSheet = () => {
-    // Return to previous screen, or home if no previous screen exists
+  const navigateBack = useCallback(() => {
     if (previousScreen) {
       setCurrentScreen(previousScreen);
       setPreviousScreen(null);
     } else {
+      // Fallback: go to home if no previous screen
       setCurrentScreen({ type: 'home' });
     }
+  }, [previousScreen]);
+
+  const navigateHome = useCallback(() => {
+    setPreviousScreen(null);
+    setCurrentScreen({ type: 'home' });
+  }, []);
+
+  // Hardware back button support (Android)
+  useEffect(() => {
+    const handleHardwareBack = () => {
+      const screen = currentScreen.type;
+
+      // Screens with back navigation
+      if (screen === 'characterCreation') {
+        navigateHome();
+        return;
+      }
+
+      if (screen === 'chooseCampaign') {
+        navigateHome();
+        return;
+      }
+
+      if (screen === 'characterSheet') {
+        navigateBack();
+        return;
+      }
+
+      if (screen === 'worldMap') {
+        navigateBack();
+        return;
+      }
+
+      // Story screen - allow exit to home (same as Exit button)
+      if (screen === 'story') {
+        setCurrentScreen({ type: 'mainMenu' });
+        return;
+      }
+
+      // Screens without back (Combat, LevelUp, etc.)
+      // Do nothing - hardware back is disabled
+      // This prevents accidental exits during critical moments
+    };
+
+    const backButtonListener = CapApp.addListener('backButton', handleHardwareBack);
+
+    return () => {
+      backButtonListener.then(listener => listener.remove());
+    };
+  }, [currentScreen, previousScreen, navigateBack, navigateHome]);
+
+  const handleCreateCharacter = () => {
+    startCreation();
+    navigateWithBack({ type: 'characterCreation' });
+  };
+
+  const handleCancelCreation = () => {
+    navigateHome();
+  };
+
+  const handleViewSheet = () => {
+    navigateWithBack({ type: 'characterSheet' });
+  };
+
+  const handleCloseSheet = () => {
+    navigateBack();
   };
 
   const handleContinue = async () => {
@@ -298,8 +360,12 @@ function App() {
   };
 
   const handleStartStory = () => {
-    // Navigate to campaign selection screen
-    setCurrentScreen({ type: 'chooseCampaign' });
+    // Navigate to campaign selection screen with back context
+    navigateWithBack({ type: 'chooseCampaign' });
+  };
+
+  const handleViewMap = () => {
+    navigateWithBack({ type: 'worldMap' });
   };
 
   const handleSelectCampaign = (campaign: Campaign) => {
@@ -332,7 +398,7 @@ function App() {
         <ChooseCampaignScreen
           campaigns={availableCampaigns}
           onSelectCampaign={handleSelectCampaign}
-          onBack={() => setCurrentScreen({ type: 'home' })}
+          onBack={navigateHome}
         />
       )}
       {currentScreen.type === 'combat' && (
@@ -369,7 +435,9 @@ function App() {
           }}
         />
       )}
-      {currentScreen.type === 'characterCreation' && <CharacterCreationScreen />}
+      {currentScreen.type === 'characterCreation' && (
+        <CharacterCreationScreen onBack={handleCancelCreation} />
+      )}
       {currentScreen.type === 'quickCharacterCreation' && (
         <QuickCharacterCreationScreen onComplete={currentScreen.onComplete} />
       )}
@@ -380,12 +448,12 @@ function App() {
         <StoryScreen
           onExit={() => setCurrentScreen({ type: 'mainMenu' })}
           onViewCharacterSheet={character ? handleViewSheet : undefined}
-          onViewMap={() => setCurrentScreen({ type: 'worldMap' })}
+          onViewMap={handleViewMap}
         />
       )}
       {currentScreen.type === 'worldMap' && (
         <WorldMapScreen
-          onReturnToStory={() => setCurrentScreen({ type: 'story' })}
+          onReturnToStory={navigateBack}
         />
       )}
       {currentScreen.type === 'lockPicking' && (

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { generateCampaignMap, getNodeTitle } from '../utils/mapGenerator';
-import { Card, Button, Icon } from '../components';
+import { BackButton, Card, Button, Icon } from '../components';
 import type { StoryNode, MapGraph } from '../types';
 
 interface WorldMapScreenProps {
@@ -79,28 +79,24 @@ export function WorldMapScreen({ onReturnToStory }: WorldMapScreenProps) {
 
   return (
     <div className="min-h-screen bg-primary flex flex-col p-4">
+      {/* Back Button */}
+      <div className="mb-4">
+        <BackButton onBack={onReturnToStory} label="Back to Story" />
+      </div>
+
       {/* Header */}
       <div className="mb-4">
         <Card variant="neutral" padding="compact">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Icon name="Map" className="text-player" />
-              <div>
-                <h1 className="heading-primary text-h1 text-fg-primary">
-                  World Map
-                </h1>
-                <p className="text-xs text-fg-muted label-secondary">
-                  {campaign.title}
-                </p>
-              </div>
+          <div className="flex items-center gap-2">
+            <Icon name="Map" className="text-player" />
+            <div>
+              <h1 className="heading-primary text-h1 text-fg-primary">
+                World Map
+              </h1>
+              <p className="text-xs text-fg-muted label-secondary">
+                {campaign.title}
+              </p>
             </div>
-            <Button
-              variant="secondary"
-              onClick={onReturnToStory}
-              icon={<Icon name="ArrowLeft" />}
-            >
-              Return to Story
-            </Button>
           </div>
         </Card>
       </div>

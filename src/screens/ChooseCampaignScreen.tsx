@@ -1,4 +1,4 @@
-import { Card, Button, Icon } from '../components';
+import { BackButton, Card, Button, Icon } from '../components';
 import type { Campaign } from '../types';
 
 interface ChooseCampaignScreenProps {
@@ -41,21 +41,18 @@ export function ChooseCampaignScreen({
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-primary text-fg-primary p-4 pt-8">
       <div className="max-w-2xl w-full">
+        {/* Back Button */}
+        {onBack && (
+          <div className="mb-4">
+            <BackButton onBack={onBack} />
+          </div>
+        )}
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6">
           <h1 className="heading-display text-[28px] text-fg-accent">
             Choose Campaign
           </h1>
-          {onBack && (
-            <Button 
-              variant="secondary" 
-              size="default"
-              onClick={onBack}
-              icon={<Icon name="ArrowLeft" />}
-            >
-              Back
-            </Button>
-          )}
         </div>
 
         {/* Campaign List */}

@@ -8,7 +8,7 @@ import type { CharacterClass } from '../types';
 import type { Attributes } from '../types';
 import type { SkillName } from '../types';
 import type { FeatName } from '../types';
-import { Button, Card, Icon } from '../components';
+import { BackButton, Button, Card, Icon } from '../components';
 
 // Attribute icon mapping (reused from CharacterSheet)
 const attributeIcons = {
@@ -39,7 +39,11 @@ const skillIcons = {
   Intimidate: 'Flame' as const,
 };
 
-export function CharacterCreationScreen() {
+interface CharacterCreationScreenProps {
+  onBack?: () => void;
+}
+
+export function CharacterCreationScreen({ onBack }: CharacterCreationScreenProps) {
   const {
     creationStep,
     creationData,
@@ -55,7 +59,7 @@ export function CharacterCreationScreen() {
   } = useCharacterStore();
 
   if (creationStep === 'class') {
-    return <ClassSelectionStep currentClass={creationData.class} onSelect={setClass} onNext={nextStep} />;
+    return <ClassSelectionStep currentClass={creationData.class} onSelect={setClass} onNext={nextStep} onBack={onBack} />;
   }
 
   if (creationStep === 'attributes') {
@@ -113,10 +117,12 @@ function ClassSelectionStep({
   currentClass,
   onSelect,
   onNext,
+  onBack,
 }: {
   currentClass: CharacterClass | null;
   onSelect: (c: CharacterClass) => void;
   onNext: () => void;
+  onBack?: () => void;
 }) {
   const classes: CharacterClass[] = ['Fighter', 'Rogue', 'Wizard', 'Cleric'];
   const [selected, setSelected] = useState<CharacterClass | null>(currentClass);
@@ -136,6 +142,13 @@ function ClassSelectionStep({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-2xl w-full">
+        {/* Back Button */}
+        {onBack && (
+          <div className="mb-4">
+            <BackButton onBack={onBack} />
+          </div>
+        )}
+
         <h1 className="text-display heading-display mb-2 text-fg-accent">Choose Your Class</h1>
         <p className="text-fg-secondary mb-8 body-secondary">Select the class that fits your playstyle</p>
 

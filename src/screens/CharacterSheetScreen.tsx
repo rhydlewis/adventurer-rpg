@@ -3,7 +3,7 @@ import type { Character } from '../types';
 import { calculateModifier } from '../utils/dice';
 import { calculateSkillBonus } from '../utils/skills';
 import type { SkillName } from '../types';
-import { Button, Card, Icon } from '../components';
+import { BackButton, Button, Card, Icon } from '../components';
 import { canUseItem, getItemDisabledReason, hasWeaponProficiency } from '../utils/equipmentHelpers';
 import { applyItemEffect } from '../utils/itemEffects';
 import { useCombatStore } from '../stores/combatStore';
@@ -84,30 +84,30 @@ export function CharacterSheetScreen({ character, onClose }: CharacterSheetScree
   return (
     <div className="min-h-screen bg-primary text-fg-primary p-4">
       <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <div className="mb-4">
+          <BackButton onBack={onClose} />
+        </div>
+
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center space-x-4">
-            {/* Character Avatar */}
-            <img
-              src={`/assets/avatars/${character!.avatarPath}`}
-              alt={character!.name}
-              className="w-20 h-20 rounded-lg ring-4 ring-accent object-cover"
-            />
-            <div>
-              <h1 className="heading-primary text-fg-accent">{character!.name}</h1>
-              <p className="body-secondary text-fg-secondary">
-                Level {character!.level} {character!.class}
+        <div className="flex items-center space-x-4 mb-6">
+          {/* Character Avatar */}
+          <img
+            src={`/assets/avatars/${character!.avatarPath}`}
+            alt={character!.name}
+            className="w-20 h-20 rounded-lg ring-4 ring-accent object-cover"
+          />
+          <div>
+            <h1 className="heading-primary text-fg-accent">{character!.name}</h1>
+            <p className="body-secondary text-fg-secondary">
+              Level {character!.level} {character!.class}
+            </p>
+            {characterState === 'phase1' && (
+              <p className="text-xs text-warning mt-1">
+                ⚠️ Identity-First Character - Complete training to unlock full customization
               </p>
-              {characterState === 'phase1' && (
-                <p className="text-xs text-warning mt-1">
-                  ⚠️ Identity-First Character - Complete training to unlock full customization
-                </p>
-              )}
-            </div>
+            )}
           </div>
-          <Button onClick={onClose} variant="secondary">
-            Close
-          </Button>
         </div>
 
         {/* Tab Navigation - Only show all tabs for phase2 characters */}
