@@ -210,6 +210,11 @@ function App() {
       const screen = currentScreen.type;
 
       // Screens with back navigation
+      if (screen === 'home') {
+        setCurrentScreen({ type: 'mainMenu' });
+        return;
+      }
+
       if (screen === 'characterCreation') {
         navigateHome();
         return;
@@ -392,6 +397,7 @@ function App() {
       {currentScreen.type === 'home' && (
         <HomeScreen
           onStartStory={handleStartStory}
+          onBack={() => setCurrentScreen({ type: 'mainMenu' })}
         />
       )}
       {currentScreen.type === 'chooseCampaign' && (

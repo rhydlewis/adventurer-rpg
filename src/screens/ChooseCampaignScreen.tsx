@@ -33,10 +33,10 @@ interface ChooseCampaignScreenProps {
  *   onBack={() => setScreen('home')}
  * />
  */
-export function ChooseCampaignScreen({ 
-  campaigns, 
-  onSelectCampaign, 
-  onBack 
+export function ChooseCampaignScreen({
+  campaigns,
+  onSelectCampaign,
+  onBack
 }: ChooseCampaignScreenProps) {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-primary text-fg-primary p-4 pt-8">
