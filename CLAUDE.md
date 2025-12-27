@@ -1,532 +1,95 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with code in this repository.
 
 ## Project Overview
 
-Adventurer RPG is a single-player narrative RPG with streamlined d20 mechanics, built for web and mobile (iOS/Android via Capacitor). The project is currently in **Phase 0 (Walking Skeleton Complete)** with a minimal combat system that proves the full stack works end-to-end.
+**WHAT**: Adventurer RPG is a single-player narrative RPG with streamlined d20 mechanics, built for web and mobile (iOS/Android via Capacitor).
 
-**Current Status:** Basic d20 combat (Level 1 Fighter vs Goblin) is working with turn-based attacks, damage rolls, and combat logs. The walking skeleton validates the tech stack (React + TypeScript + Vite + Capacitor + Zustand) but lacks class differentiation, spells, narrative, and progression systems.
+**WHY**: Create an accessible, story-driven RPG experience that works seamlessly across platforms.
 
-**Next Phase:** Phase 1 will implement all 4 character classes (Fighter/Rogue/Wizard/Cleric) with distinct mechanics, a complete spell system, and combat variety with 6 enemy types.
+**CURRENT STATUS**: Phase 1 complete (4 character classes, spell system, combat mechanics). Phase 2 in progress: narrative campaign and character customization.
 
-## Commands
+## Essential Commands
 
-### Development
 ```bash
-# Start dev server (http://localhost:5173)
-npm run dev
+# Development
+npm run dev          # Start dev server (http://localhost:5173)
+npm run build        # Build for production
+npm test             # Run all tests
+npm run lint         # Lint code
 
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Lint code
-npm run lint
-```
-
-### Testing
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm test:watch
-
-# Run tests with UI
-npm test:ui
-```
-
-Testing framework: Vitest with jsdom environment. Tests are located in `src/__tests__/` following the same directory structure as the source.
-
-### Mobile Development
-```bash
-# Build web app and sync to native platforms
+# Mobile (always build before syncing)
 npm run build && npx cap sync
-
-# Open in Xcode (iOS)
-npx cap open ios
-
-# Open in Android Studio (Android)
-npx cap open android
+npx cap open ios     # Open in Xcode
+npx cap open android # Open in Android Studio
 ```
 
-**Important:** Always run `npm run build` before `npx cap sync` to ensure native platforms have the latest web assets.
-
-## Architecture
-
-### Core Philosophy
-
-The project uses **separation of data and logic** with strict TypeScript types throughout:
-
-- **`/types`** - TypeScript type definitions (the contract)
-- **`/utils`** - Pure functions for game mechanics (the logic)
-- **`/data`** - Game content definitions (the content)
-- **`/stores`** - Zustand state management (the state)
-- **`/screens`** - React components for full-screen views (the UI)
-
-### Type System Architecture
-
-The type system is built in layers to ensure consistency:
-
-1. **`types/attributes.ts`** - Core 6 attributes (STR, DEX, CON, INT, WIS, CHA)
-2. **`types/dice.ts`** - Dice roll results and notation
-3. **`types/character.ts`** - Character structure with attributes, class, HP, AC, BAB, saves
-4. **`types/combat.ts`** - Combat state, creatures (same as Character for now), and combat log
-
-**Key Type Pattern:**
-```typescript
-// Characters have:
-interface Character {
-  attributes: Attributes;  // Base stats
-  // Derived stats (calculated from attributes):
-  ac: number;    // Armor Class
-  bab: number;   // Base Attack Bonus
-  saves: { fortitude, reflex, will };
-}
-```
-
-All derived stats (AC, HP, saves, attack bonuses) are calculated from attributes + class + level. Never store these separately without a clear source of truth.
-
-### Combat System Flow
-
-```
-1. combatStore.startCombat(player, enemy)
-   ↓
-2. Creates CombatState with turn=1, log=[], winner=null
-   ↓
-3. User clicks "Attack" → combatStore.executeTurn()
-   ↓
-4. utils/combat.ts::resolveCombatRound()
-   ├─→ performAttack(player, enemy)
-   │   ├─→ rollAttack(bab, abilityMod) from utils/dice.ts
-   │   ├─→ Compare to defender.ac
-   │   └─→ If hit: rollDamage('1d8', mod)
-   ├─→ Update enemy HP, check for defeat
-   ├─→ performAttack(enemy, player)
-   └─→ Update player HP, check for defeat
-   ↓
-5. Returns new CombatState with updated HP, log entries, winner
-```
-
-**Critical Pattern:** Combat utilities are pure functions that return new state. Never mutate state directly in utils - that's the store's job.
-
-### Dice System
-
-Uses `@dice-roller/rpg-dice-roller` library for advanced dice notation:
-
-```typescript
-// Current usage:
-roll('1d20+5')  // Attack roll
-roll('1d8+3')   // Damage roll
-
-// Future-proofed for Phase 1+:
-roll('2d20kh1+5')  // Advantage (keep highest)
-roll('2d20kl1+5')  // Disadvantage (keep lowest)
-roll('1d6!')       // Exploding dice for crits
-```
-
-**Wrapper Pattern:** All dice rolling goes through `utils/dice.ts` wrappers (`rollAttack`, `rollDamage`, etc.) which return structured objects with detailed output for combat logs. Never call the library directly from UI code.
-
-### State Management (Zustand)
-
-Stores are simple and focused:
-
-- **`combatStore`** - Manages active combat state (turn, HP, log, winner)
-
-**Pattern:**
-```typescript
-const useCombatStore = create<CombatStore>((set) => ({
-  combat: null,
-  executeTurn: () => set((state) => ({
-    combat: resolveCombatRound(state.combat)
-  }))
-}))
-```
-
-State updates are **immutable** - utilities return new objects, stores replace state.
-
-### Save System
-
-The save system provides cross-platform game persistence using Capacitor Preferences (localStorage on web, native storage on iOS/Android).
-
-**Architecture:**
-
-```
-GameSaveManager (utils/gameSaveManager.ts)
-  ↓
-Capacitor Preferences API
-  ↓
-Storage: adventurer-rpg:save (JSON)
-```
-
-**Key Files:**
-
-- **`types/gameSave.ts`** - Save data structure and metadata types
-- **`utils/gameSaveManager.ts`** - Single source of truth for save/load operations
-- **`utils/gameSaveMigrations.ts`** - Version migration system for backwards compatibility
-
-**Save Data Structure:**
-
-```typescript
-interface GameSave {
-  version: string;              // Semantic versioning (e.g., "1.0.0")
-  timestamp: number;            // Last save time (ms since epoch)
-  character: Character;         // Full character state
-  narrative: {
-    world: WorldState;          // World flags and visited nodes
-    conversation: ConversationState; // Current node and conversation log
-    campaignId: string;         // Active campaign identifier
-  };
-  currentScreen: { type: Screen['type'] }; // Where to resume
-  metadata: SaveMetadata;       // Lightweight info for UI display
-}
-
-interface SaveMetadata {
-  characterName: string;
-  characterLevel: number;
-  lastPlayedTimestamp: number;
-  playTimeSeconds: number;
-}
-```
-
-**Auto-Save Triggers:**
-
-1. **Story Node Progression** - Saves after entering each story node (`narrativeStore.enterNode()`)
-2. **App Backgrounding** - Saves when app goes to background (Capacitor App plugin listener in `App.tsx`)
-
-Both triggers are **fire-and-forget** (non-blocking async) to avoid UI freezes.
-
-**Usage Pattern:**
-
-```typescript
-// Save game
-const saveData: GameSave = { /* ... */ };
-await GameSaveManager.save(saveData);
-
-// Load full save
-const save = await GameSaveManager.load(); // Returns GameSave | null
-
-// Load just metadata (fast, for UI display)
-const metadata = await GameSaveManager.getSaveMetadata(); // Returns SaveMetadata | null
-
-// Get current version
-const version = GameSaveManager.getCurrentVersion(); // Returns "1.0.0"
-```
-
-**Version Migration:**
-
-Save data includes a semantic version number. When loading, `GameSaveManager.load()` automatically applies migrations to bring old saves up to the current version:
-
-```typescript
-// Migration example in gameSaveMigrations.ts
-const migrations: Record<string, MigrationFunction> = {
-  '1.0.0': (save: any): GameSave => {
-    return {
-      ...save,
-      version: '1.0.0',
-      metadata: {
-        ...save.metadata,
-        playTimeSeconds: save.metadata?.playTimeSeconds ?? 0, // Add missing field
-      },
-    };
-  },
-};
-```
-
-Migrations run sequentially in version order, ensuring saves can be upgraded across multiple versions.
-
-**Testing:**
-
-- **Unit tests** - Mock Capacitor Preferences API (`src/__tests__/utils/gameSaveManager.test.ts`, `gameSaveMigrations.test.ts`)
-- **Manual tests** - Web and mobile testing procedures documented in `docs/testing/2025-12-18-save-system-manual-tests.md`
-- Test corrupted saves, missing saves, version migrations, and platform-specific storage
-
-**Error Handling:**
-
-All save/load operations use try-catch and return `null` on failure. Corrupted saves don't crash the app - they're logged and treated as "no save exists".
-
-**Continue Button Integration:**
-
-The main menu displays Continue button when a valid save exists:
-- Shows character name and level
-- Shows "Last played" timestamp (human-readable: "5m ago", "2h ago", "3d ago")
-- Disabled when no save exists
-
-### File Organization
-
-```
-src/
-├── types/           # Type definitions (*.ts only, no logic)
-├── utils/           # Game mechanics (pure functions, fully tested)
-├── data/            # Game content (classes, spells, enemies) [Phase 1+]
-├── stores/          # Zustand stores (state management)
-├── screens/         # Full-screen React components
-├── __tests__/       # Vitest tests (mirrors src/ structure)
-└── App.tsx          # Root component, minimal routing logic
-```
-
-## Design Documents
-
-**Critical references** when implementing features:
-
-- **`/docs/specs/2025-12-08-design-spec.md`** - Complete design vision, all 6 phases planned
-- **`/docs/plans/2025-12-09-phase-1.md`** - Detailed Phase 1 implementation plan (next work)
-- **`/docs/specs/2025-12-08-questions-and-answers.md`** - Design decisions and rationale
-- **`/docs/campaigns/2025-12-08-campaign-1.md`** - First campaign narrative
-
-**Before implementing any feature, check the Phase 1 plan for:**
-- Data structures to use
-- File organization
-- Calculation formulas (AC, saves, damage, etc.)
-- Testing requirements
-
-## Key Implementation Patterns
-
-### Adding New Game Mechanics
-
-**Example: Adding a new character class ability**
-
-1. **Define types** in `/types` (e.g., `types/character.ts` - add to Character interface)
-2. **Create calculation logic** in `/utils` (e.g., `utils/classAbilities.ts::calculateSecondWind()`)
-3. **Write tests** in `/__tests__/utils/` (test the calculation)
-4. **Add to data** in `/data` (e.g., `data/classes.ts` - define ability parameters)
-5. **Wire to store** in `/stores` (e.g., `combatStore.useAbility()`)
-6. **Update UI** in `/screens` (show the button, display the effect)
-
-### Extending Combat System
-
-When adding new combat mechanics (crits, saves, conditions):
-
-1. **Extend `CombatState` type** with new fields (e.g., `activeConditions: Condition[]`)
-2. **Add calculation utilities** (`utils/savingThrows.ts`, `utils/conditions.ts`)
-3. **Modify `resolveCombatRound()`** to incorporate new mechanics
-4. **Update combat log messages** to show new information
-5. **Add UI indicators** (icons, badges, color coding)
-
-**Never break the walking skeleton** - new mechanics should be additive, not replace existing functionality.
-
-### Spell System (Phase 1 Step 2)
-
-Spell architecture (from Phase 1 plan):
-
-```typescript
-// types/spell.ts
-interface Spell {
-  name: string;
-  level: number;  // 0 = cantrip
-  school: string;
-  castingTime: 'standard' | 'immediate';
-  target: 'self' | 'single' | 'area';
-  effect: SpellEffect;  // damage, heal, condition, buff
-  savingThrow?: { type: 'fort' | 'reflex' | 'will', dc: number };
-}
-
-// utils/spellcasting.ts
-function castSpell(caster: Character, spell: Spell, target: Character) {
-  // 1. Check spell slots
-  // 2. Calculate DC (10 + spell.level + abilityMod)
-  // 3. Roll saves if needed
-  // 4. Apply effects
-  // 5. Consume spell slot
-  // 6. Return new state + log messages
-}
-```
-
-## Mobile Deployment (Capacitor)
-
-### Native Folder Structure
-
-```
-ios/                 # iOS project (committed to git)
-├── App/
-│   ├── App/
-│   │   ├── public/      # Synced from dist/ (IGNORED in git)
-│   │   └── capacitor.config.json
-│   └── Podfile
-
-android/             # Android project (committed to git)
-├── app/
-│   └── src/
-│       └── main/
-│           └── assets/  # Synced from dist/ (IGNORED in git)
-```
-
-**Key Points:**
-- Native projects (`ios/`, `android/`) are committed to git (contain customizable config)
-- Generated web assets (`ios/App/App/public/`, `android/app/src/main/assets/`) are gitignored
-- Always build (`npm run build`) before syncing (`npx cap sync`)
-
-### Debugging Mobile Issues
-
-1. **Web debugging:** Test in browser first (`npm run dev`)
-2. **iOS Safari debugging:** Open Safari → Develop → [Device] → localhost
-3. **Android Chrome debugging:** chrome://inspect on desktop Chrome
-4. **Console logs:** Use `console.log()` - visible in platform dev tools
-
-## Common Patterns & Conventions
-
-### TypeScript Strict Mode
-
-- **Strict null checks enabled** - always handle `null`/`undefined` explicitly
-- **No implicit `any`** - all types must be explicit
-- **Prefer interfaces over types** for object shapes (established pattern in codebase)
-
-### Testing Philosophy
-
-- **Test game mechanics, not UI** - focus on `/utils` functions
-- **Test edge cases** - zero HP, max stats, critical hits, save failures
-- **Use descriptive test names** - `"rollAttack should add BAB and ability modifier to d20 result"`
-- **Mock dice rolls when needed** - for deterministic tests of combat logic
-
-### Semantic Typography System
-
-The app uses **semantic typography classes** instead of direct font utilities. This makes it easy to change fonts, sizes, and weights globally without touching component code.
-
-**Defined in:** `src/index.css` under `@layer utilities`
-
-**Usage Pattern:**
-```tsx
-// ❌ OLD (hard to theme)
-<h1 className="font-cinzel font-bold text-display text-text-accent">Title</h1>
-<p className="font-inter text-body text-text-primary">Body text</p>
-
-// ✅ NEW (semantic, themeable)
-<h1 className="heading-display text-text-accent">Title</h1>
-<p className="body-primary">Body text</p>
-```
-
-**Available Classes:**
-
-**Headings:**
-- `.heading-display` - Large page titles (Cinzel, bold, display size)
-- `.heading-primary` - Section headings (Cinzel, bold, h1 size)
-- `.heading-secondary` - Subsection headings (Cinzel, bold, h2 size)
-- `.heading-tertiary` - Minor headings (Cinzel, semibold, xl size)
-
-**Stats & Numbers:**
-- `.stat-large` - Large stat displays (Cinzel, bold, 3xl)
-- `.stat-medium` - Medium stats (Cinzel, bold, 2xl)
-- `.stat-small` - Small stats (Cinzel, semibold, xl)
-- `.stat-modifier` - Stat modifiers (Cinzel, semibold, lg)
-
-**Body Text:**
-- `.body-primary` - Main body text (Inter, body size, primary color)
-- `.body-secondary` - Secondary text (Inter, body size, secondary color)
-- `.body-muted` - Muted text (Inter, body size, muted color)
-- `.body-narrative` - Story/flavor text (Merriweather, relaxed leading)
-
-**UI Elements:**
-- `.button-text` - Button labels (Inter, medium weight)
-- `.label-primary` - Form labels (Inter, caption size, uppercase, tracked)
-- `.label-secondary` - Secondary labels (Inter, caption size)
-- `.combat-log` - Combat log entries (Inter, dice size)
-- `.tab-text` - Tab navigation (Inter, medium weight)
-- `.input-text` - Form inputs (Inter, body size)
-
-**Special Purpose:**
-- `.character-name` - Character names (Cinzel, bold, 2xl)
-- `.skill-name` - Skill labels (Inter, medium weight)
-- `.feat-name` - Feat names (Cinzel, semibold, lg)
-- `.attribute-value` - Attribute scores (Cinzel, bold, 4xl)
-- `.attribute-label` - Attribute labels (Inter, caption, uppercase)
-
-**Benefits:**
-- Change fonts app-wide by modifying one CSS file
-- Consistent typography across all screens
-- Easier to maintain and theme
-- Self-documenting code (`.heading-primary` vs `.font-cinzel font-bold text-h1`)
-
-### Combat Log Messages
-
-Follow established format for consistency:
-
-```typescript
-// Attack roll format:
-`1d20+${bonus}: [${d20Result}]+${bonus} = ${total} vs AC ${ac} - ${hit ? 'HIT!' : 'MISS!'}`
-
-// Damage format:
-`1d8+${mod}: [${roll}]+${mod} = ${total} damage`
-
-// System messages:
-`${character.name} has been defeated!`
-```
-
-Color coding by actor: player (blue), enemy (red), system (gray).
-
-## Deployment
-
-### Web (Vercel)
-
-Auto-deploys on push to `main` branch. No manual steps required.
-
-### App Stores
-
-Not yet implemented. See:
-- iOS: [Capacitor iOS Deployment Guide](https://capacitorjs.com/docs/ios)
-- Android: [Capacitor Android Deployment Guide](https://capacitorjs.com/docs/android)
+## Tech Stack
+
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS
+- **State**: Zustand stores
+- **Mobile**: Capacitor (iOS/Android)
+- **Testing**: Vitest with jsdom
+- **Dice**: @dice-roller/rpg-dice-roller library
+
+## Core Architecture
+
+**Separation of data and logic** with strict TypeScript:
+- `/types` - TypeScript definitions (the contract)
+- `/utils` - Pure functions for game mechanics (the logic)
+- `/data` - Game content definitions (the content)
+- `/stores` - Zustand state management (the state)
+- `/components` - Reusable UI components (the building blocks)
+- `/screens` - React components for full-screen views (the UI)
+
+**Key principle**: Utilities are pure functions that return new state. Never mutate state directly in utils - that's the store's job. All state updates are immutable.
+
+## Testing Philosophy
+
+- Test game mechanics in `/utils`, not UI
+- Test edge cases (zero HP, max stats, critical hits)
+- Use descriptive test names
+- Mock dice rolls for deterministic tests
 
 ## Development Workflow
 
-### Working on Phase 1
+1. **Before making changes**: Check if relevant documentation exists in `agent_docs/`
+2. **Read relevant docs**: Architecture, systems, or workflow guides as needed
+3. **Write tests first**: Especially for game mechanics
+4. **Extend, don't rewrite**: Never break the walking skeleton
+5. **Verify changes**: Run `npm test` and `npm run lint` before committing
 
-The Phase 1 plan (`/docs/plans/2025-12-09-phase-1.md`) breaks work into sequential steps:
+## Working in Batches
 
-**Step 1: Class Differentiation** (5 phases)
-- 1.1: Character creation & point buy
-- 1.2: Initiative, crits, fumbles, saves, action selection
-- 1.3: Class-specific abilities (Second Wind, Sneak Attack, etc.)
-- 1.4: Conditions system (8 conditions with duration tracking)
-- 1.5: Rest system (short/long rest)
+When implementing complex features, work in **small, focused batches**:
+1. Execute batch (complete 2-3 related tasks)
+2. Verify batch (run tests, fix `npm run build` and `npm run lint` errors)
+3. Report for review
+4. Commit batch after approval
+5. Repeat with next batch
 
-**Step 2: Spell System**
-- Spell infrastructure, casting, saves, cantrips, spell slots
+This approach provides clear progress tracking, easier rollback points, and independently tested commits.
 
-**Step 3: Combat Variety**
-- 6 enemy types (Goblin, Skeleton, Wolf, Cultist, Spider, Wraith)
+## Documentation
 
-**Approach:** Build incrementally. Each phase should leave the game in a playable state (even if incomplete). Always extend, never rewrite. Offer to write unit tests where appropriate.
+Detailed documentation is in `agent_docs/`. **Before starting work, read relevant files**:
 
-### Batch Execution and Commits
+**Architecture** (system deep dives):
+- `architecture/combat-system.md` - Combat flow, dice mechanics, spells, extending combat
+- `architecture/save-system.md` - Save/load, migrations, Capacitor Preferences
+- `architecture/state-management.md` - Zustand patterns, pure functions
 
-When implementing phases from the plan, work in **batches of 3 tasks** with commits after each batch:
+**UI/UX**:
+- `ui/guidelines.md` - Semantic typography, component patterns, mobile
+- `ui/component-patterns.md` - Reusable components, usage patterns, design system
 
-1. **Execute batch** - Complete 3 tasks (or remaining tasks if <3 left)
-2. **Verify batch** - Run all tests for the batch, ensure they pass. **Important:** Always run and fix issues reported by `npm run build` & `npm run lint` before the next stage to ensure there are no build errors.
-3. **Report for review** - Show what was implemented and test results
-4. **Commit batch** - After user approval, commit with descriptive message
-5. **Repeat** - Continue with next batch
+**Workflows**:
+- `workflows/phase-1.md` - Phase 1 workflow (archived - see /docs/plans/archive/)
 
-**Commit Message Format:**
-```bash
-# Batch commits during a phase:
-"Add Phase 1.2 Batch 1: initiative, criticals, saving throws utilities"
-"Add Phase 1.2 Batch 2: integrate systems into combat store"
+**Development**:
+- `development/testing-guide.md` - Testing philosophy, patterns, mocking
+- `development/git-workflow.md` - Branching, commits, operations
+- `development/mobile-deployment.md` - Capacitor workflow, debugging
 
-# Final commit at end of phase (if needed):
-"Complete Phase 1.2: Enhanced Combat Foundation"
-```
-
-**Benefits:**
-- Smaller, focused commits that are easy to review and revert
-- Clear progress tracking through git history
-- Each commit is independently tested and verified
-- Rollback points if issues are discovered later
-
-### Before Making Changes
-
-1. **Read the design spec** - understand the vision
-2. **Check Phase 1 plan** - see if it's already designed
-3. **Review existing types** - understand current data structures
-4. **Write tests first** - especially for game mechanics in `/utils`, data types in `/data` and storage mechanisms in `/stores`
-5. **Update incrementally** - extend existing files where possible
-
-### After Making Changes
-
-1. **Run tests** - `npm test` must pass
-2. **Run lint** - `npm run lint` should be clean
-3. **Test in browser** - `npm run dev` and play through the feature
-4. **Test on mobile** - `npm run build && npx cap sync` if UI changes
-5. **Update this file** - if you changed architecture or added new patterns
+Use `view` to read these before working on related features.
