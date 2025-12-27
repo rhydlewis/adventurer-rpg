@@ -1,8 +1,7 @@
 import { useEffect, useRef, useMemo } from 'react';
-import { Coins } from 'lucide-react';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
-import { NarrativeLog, ChoiceButton, Card, Icon, OptionsMenu, Button } from '../components';
+import { NarrativeLog, ChoiceButton, Card, Icon, OptionsMenu, Button, CharacterStatusBar } from '../components';
 import { resolveLocation } from '../utils/locationResolver';
 import { getNodeIconComponent } from '../utils/nodeIcons';
 import { getToneStyles } from '../utils/nodeStyles';
@@ -192,44 +191,14 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
               onExit={handleExit}
             />
           </div>
-        </Card>
 
-        {/* HP and Gold Bar */}
-        {character && (
-          <Card variant="neutral" padding="compact" className="mt-2">
-            <div className="flex items-center gap-4">
-              {/* HP Bar */}
-              <div className="flex-1 flex items-center gap-3">
-                <span className="text-sm font-semibold text-blue-400">HP</span>
-                <div className="flex-1 h-4 bg-surface-tertiary rounded-full overflow-hidden border border-border-primary">
-                  <div
-                    className={`h-full transition-all duration-300 ${
-                      character.hp / character.maxHp > 0.5
-                        ? 'bg-green-500'
-                        : character.hp / character.maxHp > 0.25
-                        ? 'bg-yellow-500'
-                        : 'bg-red-500'
-                    }`}
-                    style={{ width: `${Math.max(0, (character.hp / character.maxHp) * 100)}%` }}
-                  />
-                </div>
-                <span className="text-sm font-semibold text-blue-400 min-w-[4rem] text-right">
-                  {character.hp}/{character.maxHp}
-                </span>
-              </div>
-
-              {/* Gold Indicator */}
-              <div className="flex items-center gap-2 pl-4 border-l border-border-primary">
-                <div className="w-6 h-6 rounded-full bg-yellow-600 border-2 border-yellow-400 flex items-center justify-center">
-                  <Coins className="w-4 h-4 text-yellow-900" />
-                </div>
-                <span className="text-sm font-semibold text-yellow-400 min-w-[3rem]">
-                  {character.gold || 0}
-                </span>
-              </div>
+          {/* Character Status Row */}
+          {character && (
+            <div className="mt-3 pt-3 border-t border-border-primary">
+              <CharacterStatusBar character={character} />
             </div>
-          </Card>
-        )}
+          )}
+        </Card>
       </div>
 
       {/* Scrollable Log Area */}
