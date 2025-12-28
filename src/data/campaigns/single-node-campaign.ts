@@ -126,6 +126,12 @@ const testNodes: StoryNode[] = [
                 }
             },
             {
+                id: 'test_puzzles',
+                text: '🧩 Test Puzzles',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'puzzle_hub' }
+            },
+            {
                 id: 'test_death_system',
                 text: '💀 Test Death System',
                 category: 'special',
@@ -945,6 +951,129 @@ const testNodes: StoryNode[] = [
                 id: 'back',
                 text: '← Back',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // PUZZLE TESTING
+    // =============================================================================
+    {
+        id: 'puzzle_hub',
+        title: 'Puzzle Tests',
+        description: 'Test puzzle mini-games: player-initiated (choice) and auto-triggered (effect).',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'magic' },
+        companionHint: 'Puzzles can be triggered by player choice or automatically when entering a node. They route to different nodes based on success or failure!',
+        choices: [
+            {
+                id: 'choice_puzzle_easy',
+                text: '🧩 Easy Puzzle (Player Choice)',
+                category: 'special',
+                outcome: {
+                    type: 'puzzle',
+                    puzzleType: 'timing',
+                    config: {
+                        gridSize: 2,
+                        tickInterval: 2000,
+                        lockDuration: 6000
+                    },
+                    successNodeId: 'puzzle_success',
+                    failureNodeId: 'puzzle_failure'
+                }
+            },
+            {
+                id: 'choice_puzzle_hard',
+                text: '🧩 Hard Puzzle (Player Choice)',
+                category: 'special',
+                outcome: {
+                    type: 'puzzle',
+                    puzzleType: 'timing',
+                    config: {
+                        gridSize: 3,
+                        tickInterval: 1000,
+                        lockDuration: 3000
+                    },
+                    successNodeId: 'puzzle_success',
+                    failureNodeId: 'puzzle_failure'
+                }
+            },
+            {
+                id: 'auto_puzzle',
+                text: '⚡ Auto-Trigger Puzzle (Node Effect)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'auto_puzzle_node' }
+            },
+            {
+                id: 'back_to_hub',
+                text: '← Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'auto_puzzle_node',
+        title: 'Magical Trap!',
+        description: 'As you step forward, ancient runes on the floor begin to glow! You must synchronize the symbols quickly or face the consequences!',
+        type: 'event',
+        flavor: { tone: 'urgent', icon: 'warning' },
+        onEnter: [
+            {
+                type: 'startPuzzle',
+                puzzleType: 'timing',
+                config: {
+                    gridSize: 2,
+                    tickInterval: 1500,
+                    lockDuration: 4000
+                },
+                successNodeId: 'puzzle_success',
+                failureNodeId: 'puzzle_failure'
+            }
+        ],
+        choices: [] // No choices - puzzle starts immediately
+    },
+    {
+        id: 'puzzle_success',
+        title: 'Puzzle Solved!',
+        description: 'The symbols align perfectly, and you hear a satisfying click. You\'ve solved the puzzle! A hidden compartment opens, revealing treasure.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 100 },
+            { type: 'setFlag', flag: 'solved_puzzle', value: true }
+        ],
+        choices: [
+            {
+                id: 'back_to_puzzle_hub',
+                text: '← Try another puzzle',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'puzzle_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'puzzle_failure',
+        title: 'Puzzle Failed',
+        description: 'The symbols fade away, and you realize you couldn\'t solve it in time. Perhaps you\'ll try again later.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'back_to_puzzle_hub',
+                text: '← Try another puzzle',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'puzzle_hub' }
+            },
+            {
+                id: 'back_to_main',
+                text: '← Back to Main Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
             }
         ]
     },
