@@ -80,7 +80,7 @@ describe('ENEMY_TEMPLATES equipment resolution', () => {
         const hobgoblin = ENEMY_TEMPLATES['hobgoblin'];
         expect(hobgoblin).toBeDefined();
         expect(hobgoblin.equipment.armor).toBeDefined();
-        expect(hobgoblin.equipment.armor?.name).toBe('Chain Mail');
+        expect(hobgoblin.equipment.armor?.name).toBe('Chainmail');
         expect(hobgoblin.equipment.armor?.baseAC).toBe(16);
     });
 

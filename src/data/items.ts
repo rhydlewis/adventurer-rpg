@@ -1,4 +1,4 @@
-import itemsJson from './items-data.json';
+import itemsJson from './items.json';
 import { ItemsSchema } from '../schemas/item.schema';
 import type { InventoryItem } from '../types';
 
@@ -7,7 +7,7 @@ const validatedItems = ItemsSchema.parse(itemsJson);
 
 /**
  * All available items in the game
- * Loaded from items-data.json and validated with Zod schema
+ * Loaded from items.json and validated with Zod schema
  */
 export const ITEMS: Record<string, InventoryItem> = Object.fromEntries(
   Object.entries(validatedItems).map(([id, item]) => [
