@@ -49,9 +49,9 @@ export type ItemEffect =
   | { type: 'remove-condition'; condition: string }; // NEW: Antidote
 
 export interface Equipment {
-  weapon: Weapon | null;       // Currently equipped weapon
-  weapons: Weapon[];           // All owned weapons (includes equipped)
-  armor: Armor | null;         // Currently equipped armor (no swapping Phase 1)
-  shield: Shield | null;       // Shield status
-  items: Item[];               // Consumables only (potions, scrolls, etc.)
+  weapon?: Weapon | null;       // Currently equipped weapon (optional during migration)
+  weapons?: Weapon[];           // All owned weapons (optional during migration)
+  armor?: Armor | null;         // Currently equipped armor (optional during migration)
+  shield: Shield | null;        // Shield status
+  items: Item[];                // Consumables only (potions, scrolls, etc.)
 }

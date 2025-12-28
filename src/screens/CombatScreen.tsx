@@ -477,15 +477,16 @@ function CompactCombatant({ character, conditions, variant, onSwapWeapon }: Comp
         </div>
 
         {/* Swap Weapon Button (only if 2+ weapons and player) */}
-        {variant === 'player' && character.equipment.weapons.length > 1 && onSwapWeapon && (
+        {variant === 'player' && (character.equipment.weapons?.length ?? 0) > 1 && onSwapWeapon && (
           <button
             onClick={() => {
               // Cycle to next weapon
-              const currentIndex = character.equipment.weapons.findIndex(
+              const weapons = character.equipment.weapons ?? [];
+              const currentIndex = weapons.findIndex(
                 w => w.id === character.equipment.weapon?.id
               );
-              const nextIndex = (currentIndex + 1) % character.equipment.weapons.length;
-              const nextWeapon = character.equipment.weapons[nextIndex];
+              const nextIndex = (currentIndex + 1) % weapons.length;
+              const nextWeapon = weapons[nextIndex];
               onSwapWeapon(nextWeapon.id || nextWeapon.name);
             }}
             className="flex-1 bg-slate-900/50 border border-emerald-900/30 rounded p-1.5

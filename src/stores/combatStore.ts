@@ -131,7 +131,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
         return state;
       }
 
-      const newWeapon = state.combat.playerCharacter.equipment.weapons.find(
+      const newWeapon = state.combat.playerCharacter.equipment.weapons?.find(
         w => w.id === weaponId
       );
 

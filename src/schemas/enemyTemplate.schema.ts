@@ -68,14 +68,53 @@ const InventoryItemSchema = z.object({
   quantity: z.number().int().positive().optional(),
 });
 
-// Equipment schema
+// Equipment schema - supports both reference-based and inline patterns
 const EquipmentSchema = z.object({
-  weapon: WeaponSchema.nullable(),
-  weapons: z.array(WeaponSchema),
-  armor: ArmorSchema.nullable(),
+  // New reference-based approach (weaponId/armorId)
+  weaponId: z.string().min(1).nullable().optional(),
+  armorId: z.string().min(1).nullable().optional(),
+
+  // Legacy inline approach (for backward compatibility)
+  weapon: WeaponSchema.nullable().optional(),
+  weapons: z.array(WeaponSchema).optional(),
+  armor: ArmorSchema.nullable().optional(),
+
+  // Common fields
   shield: ShieldSchema.nullable(),
   items: z.array(InventoryItemSchema),
-});
+}).refine(
+  (data) => {
+    // Must have EITHER weaponId OR weapon/weapons (or neither if no weapon)
+    const hasWeaponId = data.weaponId !== undefined;
+    const hasInlineWeapon = data.weapon !== undefined || (data.weapons && data.weapons.length > 0);
+
+    // Valid combinations:
+    // 1. weaponId only
+    // 2. weapon/weapons only
+    // 3. neither (no weapon)
+    // Invalid: both weaponId AND weapon/weapons
+    return !(hasWeaponId && hasInlineWeapon);
+  },
+  {
+    message: 'Equipment cannot specify both weaponId and inline weapon/weapons',
+  }
+).refine(
+  (data) => {
+    // Must have EITHER armorId OR armor (or neither for no armor)
+    const hasArmorId = data.armorId !== undefined;
+    const hasInlineArmor = data.armor !== undefined;
+
+    // Valid combinations:
+    // 1. armorId only
+    // 2. armor only
+    // 3. neither (no armor)
+    // Invalid: both armorId AND armor
+    return !(hasArmorId && hasInlineArmor);
+  },
+  {
+    message: 'Equipment cannot specify both armorId and inline armor',
+  }
+);
 
 // Skills schema
 const SkillRanksSchema = z.object({

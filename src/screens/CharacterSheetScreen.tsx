@@ -416,7 +416,7 @@ function CombatTab({ character }: { character: Character }) {
   const handleEquipWeapon = (weaponId: string) => {
     if (!character) return;
 
-    const weapon = character.equipment.weapons.find(
+    const weapon = character.equipment.weapons?.find(
       w => w.id === weaponId || w.name === weaponId
     );
     if (!weapon) return;
@@ -542,14 +542,14 @@ function CombatTab({ character }: { character: Character }) {
         </div>
 
         {/* Weapons Section */}
-        {character.equipment.weapons.length > 0 && (
+        {(character.equipment.weapons?.length ?? 0) > 0 && (
           <div className="mt-4">
             <h3 className="font-bold text-lg mb-3 heading-tertiary flex items-center">
               <Icon name="Swords" size={20} className="mr-2 text-fg-accent" />
               Weapons
             </h3>
             <div className="space-y-2">
-              {character.equipment.weapons.map((weapon, idx) => {
+              {character.equipment.weapons?.map((weapon, idx) => {
                 const isEquipped = character.equipment.weapon?.id === weapon.id ||
                                   character.equipment.weapon?.name === weapon.name;
                 const canEquip = hasWeaponProficiency(character, weapon);
