@@ -50,7 +50,7 @@ export function applyStartingQuirk(
           log: [{
             turn: 1,
             actor: 'system',
-            message: "You blend into the shadows...",
+            message: "You blend into the shadows (+4 AC bonus)...",
           }],
           playerHidden: true,
           quirkTriggered: true,
@@ -58,15 +58,15 @@ export function applyStartingQuirk(
       }
       break;
 
-    case 'bonus-cantrip-turn-1':
+    case 'arcane-shield-turn-1':
       if (trigger === 'turn-1') {
         return {
           log: [{
             turn: combat.turn,
             actor: 'system',
-            message: "Arcane energy surges through you!",
+            message: "An arcane shield flares to life (+4 AC this turn)!",
           }],
-          playerExtraAction: true,
+          acBonus: 4,
           quirkTriggered: true,
         };
       }

@@ -171,6 +171,27 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         taunt: startTaunt,
       });
     }
+
+    // Apply turn-1 quirks at the start of turn 1, before any combat actions
+    if (!quirkTriggered) {
+      const quirkResult = applyStartingQuirk(playerCharacter, state, 'turn-1');
+      if (quirkResult.log.length > 0) {
+        log.push(...quirkResult.log);
+      }
+      if (quirkResult.playerHp) {
+        playerCharacter = { ...playerCharacter, hp: quirkResult.playerHp };
+      }
+      if (quirkResult.acBonus) {
+        playerAcBonus = quirkResult.acBonus;
+        // Apply AC bonus as a condition that lasts for this turn
+        // Use duration 2 so it survives the condition decrement that happens later
+        const conditionType = quirkResult.acBonus >= 4 ? 'Shielded' : 'Guarded';
+        playerConditions = applyCondition(playerConditions, conditionType, state.turn, 2);
+      }
+      if (quirkResult.quirkTriggered) {
+        quirkTriggered = true;
+      }
+    }
   }
 
   // Clear player's Dodge at start of their turn (it lasted until their next turn)
@@ -593,7 +614,9 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       if (quirkResult.acBonus) {
         playerAcBonus = quirkResult.acBonus;
         // Apply AC bonus as a temporary condition for this attack
-        playerConditions = applyCondition(playerConditions, 'Guarded', state.turn, 1);
+        // Use duration 2 so it survives the condition decrement
+        const conditionType = quirkResult.acBonus >= 4 ? 'Shielded' : 'Guarded';
+        playerConditions = applyCondition(playerConditions, conditionType, state.turn, 2);
       }
       if (quirkResult.autoBlockActive) {
         autoBlockActive = true;

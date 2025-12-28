@@ -217,7 +217,7 @@ describe('stores/combatStore', () => {
       expect(combat?.quirkTriggered).toBeUndefined();
     });
 
-    it('should apply turn-1 quirk (healing-aura) on first turn', () => {
+    it('should apply turn-1 quirk (healing-aura) on first turn', async () => {
       const clericPlayer = createMockCharacter('Cleric', 8); // Not at max HP
       clericPlayer.maxHp = 10;
       clericPlayer.startingQuirk = 'healing-aura';
@@ -227,10 +227,12 @@ describe('stores/combatStore', () => {
         return 10;
       });
 
-      // Mock resolveCombatRound to return updated state
-      vi.mocked(resolveCombatRound).mockImplementation((state) => {
-        // Simulate combat resolution returning same state for simplicity
-        return { ...state, turn: 2 };
+      // Use real resolveCombatRound to test turn-1 quirk application
+      const { resolveCombatRound: realResolveCombatRound } = await vi.importActual<typeof import('../../utils/combat')>('../../utils/combat');
+      vi.mocked(resolveCombatRound).mockImplementation((state, action) => {
+        const result = realResolveCombatRound(state, action);
+        // Force turn increment for test
+        return { ...result, turn: 2 };
       });
 
       useCombatStore.getState().startCombat(clericPlayer, enemy);

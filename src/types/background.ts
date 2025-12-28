@@ -4,7 +4,7 @@ import type { CharacterClass } from './character';
 export type StartingQuirk =
   | 'auto-block-first-attack' // Fighter: Border Guard
   | 'start-hidden' // Rogue: Street Urchin
-  | 'bonus-cantrip-turn-1' // Wizard: Academy Dropout
+  | 'arcane-shield-turn-1' // Wizard: Academy Dropout
   | 'healing-aura'; // Cleric: Temple Acolyte
 
 export interface Background {

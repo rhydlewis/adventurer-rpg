@@ -47,17 +47,17 @@ describe('Starting Quirks System', () => {
     );
   });
 
-  it('should apply bonus-cantrip quirk on turn 1', () => {
-    const wizardPlayer = { ...mockPlayer, class: 'Wizard', startingQuirk: 'bonus-cantrip-turn-1' };
+  it('should apply arcane-shield quirk on turn 1', () => {
+    const wizardPlayer = { ...mockPlayer, class: 'Wizard', startingQuirk: 'arcane-shield-turn-1' };
     const result = applyStartingQuirk(
       wizardPlayer as Character,
       mockCombat as CombatState,
       'turn-1'
     );
 
-    expect(result.playerExtraAction).toBe(true);
+    expect(result.acBonus).toBe(4);
     expect(result.log).toContainEqual(
-      expect.objectContaining({ message: expect.stringContaining('Arcane energy') })
+      expect.objectContaining({ message: expect.stringContaining('arcane shield') })
     );
   });
 

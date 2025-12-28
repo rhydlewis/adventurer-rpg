@@ -59,7 +59,7 @@ export const BACKGROUNDS: Record<string, Background> = {
       CHA: 10,
     },
     taggedSkills: ['Arcana', 'Perception'],
-    startingQuirk: 'bonus-cantrip-turn-1',
+    startingQuirk: 'arcane-shield-turn-1',
     puzzleAbility: 'arcane-sight',
   },
 

@@ -113,28 +113,12 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
     set((state) => {
       if (!state.combat) return state;
 
-      // Apply turn-1 quirks before combat resolution
-      let combatState = state.combat;
-      if (combatState.turn === 1 && !combatState.quirkTriggered) {
-        const quirkResult = applyStartingQuirk(
-          combatState.playerCharacter,
-          combatState,
-          'turn-1'
-        );
-
-        combatState = {
-          ...combatState,
-          log: [...combatState.log, ...quirkResult.log],
-          playerCharacter: quirkResult.playerHp
-            ? { ...combatState.playerCharacter, hp: quirkResult.playerHp }
-            : combatState.playerCharacter,
-          quirkTriggered: quirkResult.quirkTriggered || combatState.quirkTriggered,
-        };
-      }
+      // Turn-1 quirks are now applied in resolveCombatRound to ensure
+      // they trigger before any combat actions, regardless of initiative
 
       // Phase 1.3: Pass player action to combat resolution
       return {
-        combat: resolveCombatRound(combatState, playerAction),
+        combat: resolveCombatRound(state.combat, playerAction),
       };
     });
   },

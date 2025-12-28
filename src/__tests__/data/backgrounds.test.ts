@@ -22,7 +22,7 @@ describe('Backgrounds Data', () => {
   it('should map quirks correctly to classes', () => {
     expect(BACKGROUNDS['border-guard'].startingQuirk).toBe('auto-block-first-attack');
     expect(BACKGROUNDS['street-urchin'].startingQuirk).toBe('start-hidden');
-    expect(BACKGROUNDS['academy-dropout'].startingQuirk).toBe('bonus-cantrip-turn-1');
+    expect(BACKGROUNDS['academy-dropout'].startingQuirk).toBe('arcane-shield-turn-1');
     expect(BACKGROUNDS['temple-acolyte'].startingQuirk).toBe('healing-aura');
   });
 
