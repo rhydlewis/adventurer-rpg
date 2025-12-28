@@ -96,12 +96,12 @@ export function createCharacter(params: CreateCharacterParams): Character {
   // Build equipment
   const weapon = {
     ...WEAPONS[classDef.startingWeapon],
-    id: `${classDef.startingWeapon.toLowerCase()}-${Date.now()}`,
+    id: `${classDef.startingWeapon}-${Date.now()}`,
   };
   // Add Dagger as second weapon for Fighter (for testing weapon swap)
   const dagger = className === 'Fighter'
       ? {
-        ...WEAPONS.Dagger,
+        ...WEAPONS['dagger'],
         id: `dagger-${Date.now()}-2`, // Different timestamp to ensure unique ID
       }
       : null;

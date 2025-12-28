@@ -72,36 +72,36 @@ describe('equipmentHelpers', () => {
     it('Fighter should be proficient with all weapons', () => {
       const fighter = createTestCharacter('Fighter');
 
-      expect(hasWeaponProficiency(fighter, WEAPONS.Longsword)).toBe(true);
-      expect(hasWeaponProficiency(fighter, WEAPONS.Rapier)).toBe(true);
-      expect(hasWeaponProficiency(fighter, WEAPONS.Dagger)).toBe(true);
-      expect(hasWeaponProficiency(fighter, WEAPONS.Mace)).toBe(true);
+      expect(hasWeaponProficiency(fighter, WEAPONS['longsword'])).toBe(true);
+      expect(hasWeaponProficiency(fighter, WEAPONS['rapier'])).toBe(true);
+      expect(hasWeaponProficiency(fighter, WEAPONS['dagger'])).toBe(true);
+      expect(hasWeaponProficiency(fighter, WEAPONS['mace'])).toBe(true);
     });
 
     it('Wizard should only be proficient with simple weapons', () => {
       const wizard = createTestCharacter('Wizard');
 
-      expect(hasWeaponProficiency(wizard, WEAPONS.Dagger)).toBe(true);
-      expect(hasWeaponProficiency(wizard, WEAPONS.Mace)).toBe(true);
-      expect(hasWeaponProficiency(wizard, WEAPONS.Longsword)).toBe(false);
-      expect(hasWeaponProficiency(wizard, WEAPONS.Rapier)).toBe(false);
+      expect(hasWeaponProficiency(wizard, WEAPONS['dagger'])).toBe(true);
+      expect(hasWeaponProficiency(wizard, WEAPONS['mace'])).toBe(true);
+      expect(hasWeaponProficiency(wizard, WEAPONS['longsword'])).toBe(false);
+      expect(hasWeaponProficiency(wizard, WEAPONS['rapier'])).toBe(false);
     });
 
     it('Rogue should be proficient with finesse weapons', () => {
       const rogue = createTestCharacter('Rogue');
 
-      expect(hasWeaponProficiency(rogue, WEAPONS.Rapier)).toBe(true);
-      expect(hasWeaponProficiency(rogue, WEAPONS.Dagger)).toBe(true);
-      expect(hasWeaponProficiency(rogue, WEAPONS.Longsword)).toBe(false);
+      expect(hasWeaponProficiency(rogue, WEAPONS['rapier'])).toBe(true);
+      expect(hasWeaponProficiency(rogue, WEAPONS['dagger'])).toBe(true);
+      expect(hasWeaponProficiency(rogue, WEAPONS['longsword'])).toBe(false);
     });
 
     it('Cleric should be proficient with simple weapons only', () => {
       const cleric = createTestCharacter('Cleric');
 
-      expect(hasWeaponProficiency(cleric, WEAPONS.Mace)).toBe(true);
-      expect(hasWeaponProficiency(cleric, WEAPONS.Dagger)).toBe(true);
-      expect(hasWeaponProficiency(cleric, WEAPONS.Longsword)).toBe(false);
-      expect(hasWeaponProficiency(cleric, WEAPONS.Rapier)).toBe(false);
+      expect(hasWeaponProficiency(cleric, WEAPONS['mace'])).toBe(true);
+      expect(hasWeaponProficiency(cleric, WEAPONS['dagger'])).toBe(true);
+      expect(hasWeaponProficiency(cleric, WEAPONS['longsword'])).toBe(false);
+      expect(hasWeaponProficiency(cleric, WEAPONS['rapier'])).toBe(false);
     });
   });
 

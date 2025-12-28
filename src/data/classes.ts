@@ -1,6 +1,6 @@
 import type { CharacterClass } from '../types';
 import type { Attributes } from '../types';
-import type { WeaponType, ArmorType } from '../types';
+import type { ArmorType } from '../types';
 import type { FeatName } from '../types';
 
 export interface ClassDefinition {
@@ -22,7 +22,7 @@ export interface ClassDefinition {
     will: number;
   };
   recommendedAttributes: Attributes;
-  startingWeapon: WeaponType;
+  startingWeapon: string; // Weapon ID (lowercase, e.g., "longsword", "rapier")
   startingArmor: ArmorType;
   hasShield: boolean;
   startingFeats?: FeatName[]; // Only Fighter gets a feat at level 1
@@ -59,7 +59,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       WIS: 10,
       CHA: 8,
     },
-    startingWeapon: 'Longsword',
+    startingWeapon: 'longsword',
     startingArmor: 'Chainmail',
     hasShield: true,
     proficiencies: {
@@ -93,7 +93,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       WIS: 12,
       CHA: 10,
     },
-    startingWeapon: 'Rapier',
+    startingWeapon: 'rapier',
     startingArmor: 'Leather',
     hasShield: false,
     proficiencies: {
@@ -127,7 +127,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       WIS: 12,
       CHA: 10,
     },
-    startingWeapon: 'Dagger',
+    startingWeapon: 'dagger',
     startingArmor: 'None',
     hasShield: false,
     proficiencies: {
@@ -161,7 +161,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       WIS: 16,
       CHA: 8,
     },
-    startingWeapon: 'Mace',
+    startingWeapon: 'mace',
     startingArmor: 'Chainmail',
     hasShield: true,
     proficiencies: {

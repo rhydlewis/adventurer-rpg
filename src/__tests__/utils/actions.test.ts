@@ -19,7 +19,7 @@ const createFighter = (): Character => ({
   saves: { fortitude: 2, reflex: 0, will: 0 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: [FEATS['Weapon Focus']],
-  equipment: { weapon: WEAPONS.Longsword, weapons: [WEAPONS.Longsword], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS['longsword'], weapons: [WEAPONS['longsword']], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [
       { name: 'Second Wind', type: 'encounter', maxUses: 1, currentUses: 1, description: 'Heal 1d10+1' },
@@ -40,7 +40,7 @@ const createRogue = (): Character => ({
   saves: { fortitude: 0, reflex: 2, will: 0 },
   skills: { Perception: 0, Stealth: 5, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
   feats: [],
-  equipment: { weapon: WEAPONS.Rapier, weapons: [WEAPONS.Rapier], armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS['rapier'], weapons: [WEAPONS['rapier']], armor: ARMORS.Leather, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [{ name: 'Dodge', type: 'encounter', maxUses: 1, currentUses: 1, description: '+4 AC' }],
   },
@@ -59,7 +59,7 @@ const createWizard = (): Character => ({
   saves: { fortitude: 0, reflex: 2, will: 2 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 4, Medicine: 0, Intimidate: 0 },
   feats: [],
-  equipment: { weapon: WEAPONS.Dagger, weapons: [WEAPONS.Dagger], armor: ARMORS.None, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS['dagger'], weapons: [WEAPONS['dagger']], armor: ARMORS.None, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [],
     spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } },
@@ -79,7 +79,7 @@ const createCleric = (): Character => ({
   saves: { fortitude: 2, reflex: 0, will: 2 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 4 },
   feats: [],
-  equipment: { weapon: WEAPONS.Mace, weapons: [WEAPONS.Mace], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
+  equipment: { weapon: WEAPONS['mace'], weapons: [WEAPONS['mace']], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [],
     spellSlots: { level0: { current: 0, max: 0 }, level1: { current: 2, max: 2 } },
