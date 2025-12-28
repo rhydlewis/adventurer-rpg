@@ -7,7 +7,9 @@ import type {
   Choice,
   WorldState,
   ConversationState,
-  LogEntry
+  LogEntry,
+  PuzzleType,
+  PuzzleConfig,
 } from '../types';
 import type { Screen } from '../types';
 import {
@@ -36,6 +38,14 @@ interface NarrativeStore {
   // Phase 2 character customization tracking
   phase2CustomizationPending: { nextNodeId: string } | null;
 
+  // Active puzzle state
+  activePuzzle: {
+    puzzleType: PuzzleType;
+    config?: PuzzleConfig;
+    successNodeId: string;
+    failureNodeId: string;
+  } | null;
+
   // Actions
   loadCampaign: (campaign: Campaign) => void;
   startCampaign: () => void;
@@ -44,6 +54,14 @@ interface NarrativeStore {
   enterNode: (nodeId: string, player: Character) => void;
   selectChoice: (choiceId: string, player: Character | null) => void;
   requestCompanionHint: () => void;
+
+  startPuzzle: (
+    puzzleType: PuzzleType,
+    config: PuzzleConfig | undefined,
+    successNodeId: string,
+    failureNodeId: string
+  ) => void;
+  completePuzzle: (success: boolean) => void;
 
   exitConversation: () => void;
   resetNarrative: () => void;
@@ -85,6 +103,7 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
   campaign: null,
   onNavigate: null,
   phase2CustomizationPending: null,
+  activePuzzle: null,
 
   loadCampaign: (campaign) => {
     set({ campaign });
@@ -151,6 +170,7 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     let worldUpdates: Partial<WorldState> = {};
     let combatTrigger: { enemyId: string; onVictoryNodeId: string } | undefined;
     let levelUpTrigger = undefined;
+    let puzzleTrigger = undefined;
 
     if (node.onEnter && node.onEnter.length > 0) {
       const effectResult = processNodeEffects(node.onEnter, world);
@@ -158,6 +178,7 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       worldUpdates = effectResult.worldUpdates;
       combatTrigger = effectResult.combatTrigger;
       levelUpTrigger = effectResult.levelUpTrigger;
+      puzzleTrigger = effectResult.puzzleTrigger;
 
       // NEW: Process character effects
       useCharacterStore.getState().processNarrativeEffects(node.onEnter);
@@ -225,6 +246,16 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
           },
         });
       }
+    }
+
+    // Handle puzzle trigger
+    if (puzzleTrigger) {
+      get().startPuzzle(
+        puzzleTrigger.puzzleType,
+        puzzleTrigger.config,
+        puzzleTrigger.successNodeId,
+        puzzleTrigger.failureNodeId
+      );
     }
 
     // Auto-save after entering node
@@ -374,6 +405,17 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       return; // Don't process navigation yet
     }
 
+    // Handle puzzle trigger
+    if (resolution.puzzleTrigger) {
+      get().startPuzzle(
+        resolution.puzzleTrigger.puzzleType,
+        resolution.puzzleTrigger.config,
+        resolution.puzzleTrigger.successNodeId,
+        resolution.puzzleTrigger.failureNodeId
+      );
+      return; // Don't process navigation yet - puzzle will handle it
+    }
+
     // Update conversation state with visited choice
     const newVisitedChoiceIds = conversation.visitedChoiceIds.includes(choiceId)
       ? conversation.visitedChoiceIds
@@ -450,6 +492,36 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
         log: [...conversation.log, hintEntry],
       },
     });
+  },
+
+  startPuzzle: (puzzleType, config, successNodeId, failureNodeId) => {
+    set({
+      activePuzzle: {
+        puzzleType,
+        config,
+        successNodeId,
+        failureNodeId,
+      },
+    });
+  },
+
+  completePuzzle: (success) => {
+    const { activePuzzle } = get();
+    if (!activePuzzle) {
+      console.error('completePuzzle called but no active puzzle');
+      return;
+    }
+
+    const nextNodeId = success ? activePuzzle.successNodeId : activePuzzle.failureNodeId;
+
+    // Clear puzzle state
+    set({ activePuzzle: null });
+
+    // Navigate to the success/failure node
+    const character = useCharacterStore.getState().character;
+    if (character) {
+      get().enterNode(nextNodeId, character);
+    }
   },
 
   exitConversation: () => {

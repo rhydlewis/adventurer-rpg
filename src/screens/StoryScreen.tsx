@@ -6,6 +6,7 @@ import { resolveLocation } from '../utils/locationResolver';
 import { getNodeIconComponent } from '../utils/nodeIcons';
 import { getToneStyles } from '../utils/nodeStyles';
 import type { NodeIcon } from '../types';
+import { PuzzleDispatcher } from './puzzles';
 
 /**
  * Helper component to render node icon or fallback to book icon
@@ -62,6 +63,8 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
     selectChoice,
     requestCompanionHint,
     exitConversation,
+    activePuzzle,
+    completePuzzle,
   } = useNarrativeStore();
 
   const { character } = useCharacterStore();
@@ -71,6 +74,18 @@ export function StoryScreen({ onExit, onViewCharacterSheet, onViewMap }: StorySc
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation?.log]);
+
+  // If puzzle is active, show puzzle instead of story UI
+  if (activePuzzle) {
+    return (
+      <PuzzleDispatcher
+        puzzleType={activePuzzle.puzzleType}
+        config={activePuzzle.config}
+        onSuccess={() => completePuzzle(true)}
+        onFailure={() => completePuzzle(false)}
+      />
+    );
+  }
 
   // Allow story to start without character - campaign may create it
   if (!conversation || !campaign) {

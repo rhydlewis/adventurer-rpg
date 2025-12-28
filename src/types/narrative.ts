@@ -74,6 +74,36 @@ export interface ExplorationTable {
 }
 
 // =============================================================================
+// Puzzle System - Interactive mini-game challenges
+// =============================================================================
+
+export type PuzzleType = 'timing' | 'matching' | 'memory' | 'sequence';
+
+// Base config shared by all puzzles
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface BasePuzzleConfig {
+  // Reserved for common settings like time limits, attempts, etc.
+}
+
+// Timing puzzle configuration
+export interface TimingPuzzleConfig extends BasePuzzleConfig {
+  gridSize?: number;
+  tickInterval?: number;
+  lockDuration?: number;
+  autoUnlock?: boolean;
+  allowManualUnlock?: boolean;
+}
+
+// Future puzzle configs
+export interface MatchingPuzzleConfig extends BasePuzzleConfig {
+  pairs?: number;
+  difficulty?: 'easy' | 'medium' | 'hard';
+}
+
+// Union of all puzzle configs
+export type PuzzleConfig = TimingPuzzleConfig | MatchingPuzzleConfig;
+
+// =============================================================================
 // Choice Outcomes - Unified recursive pattern for all choice routing
 // =============================================================================
 
@@ -90,7 +120,14 @@ export type ChoiceOutcome =
     }
   | { type: 'explore'; tableId: string; onceOnly: boolean }
   | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> }
-  | { type: 'characterCreation'; phase: 1 | 2; nextNodeId: string };
+  | { type: 'characterCreation'; phase: 1 | 2; nextNodeId: string }
+  | {
+      type: 'puzzle';
+      puzzleType: PuzzleType;
+      config?: PuzzleConfig;
+      successNodeId: string;
+      failureNodeId: string;
+    };
 
 // =============================================================================
 // Choice Categories - Visual styling for different action types
@@ -129,7 +166,14 @@ export type NodeEffect =
   | { type: 'damage'; amount: number }
   | { type: 'showCompanionHint'; hint: string }
   | { type: 'levelUp'; newLevel: number; featChoices: string[] }
-  | { type: 'createDefaultCharacter' };
+  | { type: 'createDefaultCharacter' }
+  | {
+      type: 'startPuzzle';
+      puzzleType: PuzzleType;
+      config?: PuzzleConfig;
+      successNodeId: string;
+      failureNodeId: string;
+    };
 
 // =============================================================================
 // Story Nodes - The building blocks of narrative
@@ -266,6 +310,12 @@ export interface OutcomeResolution {
     phase: 1 | 2;
     nextNodeId: string;
   };
+  puzzleTrigger?: {
+    puzzleType: PuzzleType;
+    config?: PuzzleConfig;
+    successNodeId: string;
+    failureNodeId: string;
+  };
 }
 
 // =============================================================================
@@ -285,5 +335,11 @@ export interface EffectResult {
   };
   deathTrigger?: {
     nodeId?: string; // Optional custom death node, otherwise use Act's deathNodeId
+  };
+  puzzleTrigger?: {
+    puzzleType: PuzzleType;
+    config?: PuzzleConfig;
+    successNodeId: string;
+    failureNodeId: string;
   };
 }

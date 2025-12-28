@@ -453,6 +453,87 @@ const testNodes: StoryNode[] = [
     ],
     choices: [], // No choices - combat starts immediately
   },
+
+  // === PUZZLE TEST: Player-initiated (choice outcome) ===
+  {
+    id: 'test-puzzle-choice',
+    title: 'A Locked Chest',
+    description:
+      'You discover an ornate chest covered in strange glowing symbols. The lock appears to be magical.',
+    choices: [
+      {
+        id: 'attempt-unlock',
+        text: 'Attempt to unlock the chest',
+        outcome: {
+          type: 'puzzle',
+          puzzleType: 'timing',
+          config: {
+            gridSize: 2,
+            tickInterval: 2000,
+            lockDuration: 6000,
+          },
+          successNodeId: 'test-puzzle-success',
+          failureNodeId: 'test-puzzle-failure',
+        },
+      },
+      {
+        id: 'leave-chest',
+        text: 'Leave the chest alone',
+        outcome: { type: 'goto', nodeId: 'test-start' },
+      },
+    ],
+  },
+
+  // === PUZZLE TEST: Auto-triggered (node effect) ===
+  {
+    id: 'test-puzzle-auto',
+    title: 'A Magical Trap!',
+    description:
+      'As you step forward, ancient runes on the floor begin to glow. You must synchronize the symbols quickly or face the consequences!',
+    onEnter: [
+      {
+        type: 'startPuzzle',
+        puzzleType: 'timing',
+        config: {
+          gridSize: 3,
+          tickInterval: 1000,
+          lockDuration: 3000,
+        },
+        successNodeId: 'test-puzzle-success',
+        failureNodeId: 'test-puzzle-failure',
+      },
+    ],
+    choices: [], // No choices - puzzle starts immediately
+  },
+
+  // === PUZZLE OUTCOMES ===
+  {
+    id: 'test-puzzle-success',
+    title: 'Success!',
+    description:
+      'The symbols align perfectly, and you hear a satisfying click. You\'ve solved the puzzle!',
+    choices: [
+      {
+        id: 'continue-after-success',
+        text: 'Continue exploring',
+        outcome: { type: 'goto', nodeId: 'test-start' },
+      },
+    ],
+  },
+
+  {
+    id: 'test-puzzle-failure',
+    title: 'Failure',
+    description:
+      'The symbols fade away, and you realize you couldn\'t solve it in time. Perhaps you\'ll try again later.',
+    choices: [
+      {
+        id: 'continue-after-failure',
+        text: 'Continue exploring',
+        outcome: { type: 'goto', nodeId: 'test-start' },
+      },
+    ],
+  },
 ];
 
 const testAct: Act = {

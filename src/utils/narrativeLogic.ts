@@ -251,6 +251,20 @@ export function resolveOutcome(
         },
       };
 
+    case 'puzzle':
+      // Trigger puzzle UI
+      return {
+        nextNodeId: null, // Don't navigate yet - puzzle will handle it
+        logEntries: [],
+        worldUpdates: {},
+        puzzleTrigger: {
+          puzzleType: outcome.puzzleType,
+          config: outcome.config,
+          successNodeId: outcome.successNodeId,
+          failureNodeId: outcome.failureNodeId,
+        },
+      };
+
     default:
       return {
         nextNodeId: null,
@@ -275,6 +289,7 @@ export function processNodeEffects(
   const worldUpdates: Partial<WorldState> = {};
   let combatTrigger: EffectResult['combatTrigger'] = undefined;
   let levelUpTrigger: EffectResult['levelUpTrigger'] = undefined;
+  let puzzleTrigger: EffectResult['puzzleTrigger'] = undefined;
 
   // Clone arrays to avoid mutating original
   const newFlags = { ...world.flags };
@@ -359,6 +374,15 @@ export function processNodeEffects(
           message: `You've reached level ${effect.newLevel}!`,
         });
         break;
+
+      case 'startPuzzle':
+        puzzleTrigger = {
+          puzzleType: effect.puzzleType,
+          config: effect.config,
+          successNodeId: effect.successNodeId,
+          failureNodeId: effect.failureNodeId,
+        };
+        break;
     }
   }
 
@@ -378,6 +402,7 @@ export function processNodeEffects(
     worldUpdates,
     combatTrigger,
     levelUpTrigger,
+    puzzleTrigger,
   };
 }
 

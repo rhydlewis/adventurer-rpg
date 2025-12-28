@@ -14,7 +14,7 @@ import { useNarrativeStore } from './stores/narrativeStore';
 import { availableCampaigns } from './data/campaigns';
 import type { Screen, Character, Campaign } from './types';
 import { LockPickingScreen } from './screens';
-import { TimingGame } from './screens/TimingGame';
+import { TimingGame } from './screens/puzzles/TimingGame';
 import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
 import { LevelUpScreen } from './screens';

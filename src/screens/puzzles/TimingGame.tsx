@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Button, Card } from '../components';
+import { Button, Card } from '../../components';
+import type { TimingPuzzleConfig } from '../../types/narrative';
 
 // =============================================================================
 // Types & Configuration
@@ -48,6 +49,7 @@ interface ButtonData {
 }
 
 interface TimingGameProps {
+  config?: Partial<TimingPuzzleConfig>;
   onSuccess: () => void;
   onFailure: () => void;
 }
@@ -82,8 +84,11 @@ function createInitialButtons(config: GameConfig): ButtonData[] {
 // Main Component
 // =============================================================================
 
-export function TimingGame({ onSuccess, onFailure }: TimingGameProps) {
-  const [config] = useState<GameConfig>(DEFAULT_CONFIG);
+export function TimingGame({ config: configOverride, onSuccess, onFailure }: TimingGameProps) {
+  const [config] = useState<GameConfig>({
+    ...DEFAULT_CONFIG,
+    ...configOverride,
+  });
   const [buttons, setButtons] = useState<ButtonData[]>(() => createInitialButtons(config));
   const [gameState, setGameState] = useState<GameState>('playing');
   const [moveCount, setMoveCount] = useState(0);
