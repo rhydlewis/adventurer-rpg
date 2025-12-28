@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { CLASSES } from '../data/classes';
 import { getBackgroundByClass } from '../data/backgrounds';
+import { getQuirkInfo } from '../data/quirkInfo';
 import type { CharacterClass } from '../types';
 import { Button, Card, Icon } from '../components';
 
@@ -16,10 +17,10 @@ const classIcons = {
 };
 
 const classDescriptions = {
-  Fighter: 'Master of weapons and armor. High HP and strong in melee combat.',
-  Rogue: 'Sneaky and skillful. Deals extra damage with sneak attacks.',
-  Wizard: 'Arcane spellcaster. Wields powerful magic but fragile in combat.',
-  Cleric: 'Divine spellcaster. Heals allies and smites enemies with holy power.',
+  Fighter: 'Master of weapons & armor. High hit points, solid damage output and a knack for turning the tide in melee.',
+  Rogue: 'Rapid, clever and always looking for the perfect opening. Deals bonus damage when catching enemies unaware.',
+  Wizard: 'Spell‑studying prodigy who commands powerful, reality‑bending magic. Relies on preparation and cunning.',
+  Cleric: 'Channels sacred power to heal and vanquish the unholy. Steadfast defender whose prayers can turn the tide of battle.',
 };
 
 export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreationScreenProps) {
@@ -68,12 +69,19 @@ export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreat
               </p>
 
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Icon name="Zap" size={16} className="text-fg-accent flex-shrink-0" />
-                  <span className="body-primary text-sm">
-                    Starting Quirk: <span className="text-fg-accent">{background.startingQuirk}</span>
-                  </span>
-                </div>
+                {background.startingQuirk && (
+                  <div className="flex items-start gap-2">
+                    <Icon name="Zap" size={16} className="text-fg-accent flex-shrink-0" />
+                    <div className="flex-1">
+                      <span className="body-primary text-sm font-semibold text-fg-accent">
+                        {getQuirkInfo(background.startingQuirk).displayName}
+                      </span>
+                      <p className="body-secondary text-xs mt-1">
+                        {getQuirkInfo(background.startingQuirk).description}
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <Icon name="Book" size={16} className="text-fg-accent flex-shrink-0" />
                   <span className="body-primary text-sm">
@@ -114,7 +122,7 @@ export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreat
           Choose Your Path
         </h1>
         <p className="body-secondary text-center mb-8">
-          Select your character class to begin your adventure
+          Select your character class
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -125,7 +133,7 @@ export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreat
               <button
                 key={className}
                 onClick={() => handleClassSelect(className)}
-                className="text-left p-6 rounded-lg border-2 border-border-default hover:border-accent bg-secondary hover:bg-secondary/80 transition-all"
+                className="text-left p-4 rounded-lg border-2 border-border-default hover:border-accent bg-secondary hover:bg-secondary/80 transition-all"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center flex-shrink-0">
@@ -133,10 +141,10 @@ export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreat
                   </div>
                   <div className="flex-1">
                     <h2 className="heading-secondary mb-2">{className}</h2>
-                    <p className="body-secondary text-sm mb-3">{classDescriptions[className]}</p>
+                    <p className="text-xs mb-2">{classDescriptions[className]}</p>
                     <div className="text-xs text-fg-muted">
                       <p>Background: <span className="text-fg-accent">{background.name}</span></p>
-                      <p>Quirk: {background.startingQuirk}</p>
+                      <p>Quirk: {background.startingQuirk ? getQuirkInfo(background.startingQuirk).displayName : 'None'}</p>
                     </div>
                   </div>
                 </div>

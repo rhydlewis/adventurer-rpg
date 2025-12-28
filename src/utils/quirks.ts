@@ -1,4 +1,5 @@
 import type { Character, CombatState, CombatLogEntry } from '../types';
+import { QUIRK_INFO } from '../data/quirkInfo';
 
 export interface QuirkResult {
   log: CombatLogEntry[];
@@ -37,7 +38,7 @@ export function applyStartingQuirk(
           log: [{
             turn: combat.turn,
             actor: 'system',
-            message: "Your guard training kicks in—you deflect the blow!",
+            message: QUIRK_INFO[quirk].combatMessage,
           }],
           autoBlockActive: true,
           quirkTriggered: true,
@@ -51,7 +52,7 @@ export function applyStartingQuirk(
           log: [{
             turn: 1,
             actor: 'system',
-            message: "You blend into the shadows (+4 AC bonus)...",
+            message: QUIRK_INFO[quirk].combatMessage,
           }],
           playerHidden: true,
           quirkTriggered: true,
@@ -65,7 +66,7 @@ export function applyStartingQuirk(
           log: [{
             turn: combat.turn,
             actor: 'system',
-            message: "An arcane shield flares to life (+4 AC this turn)!",
+            message: QUIRK_INFO[quirk].combatMessage,
           }],
           acBonus: 4,
           quirkTriggered: true,
@@ -79,7 +80,7 @@ export function applyStartingQuirk(
           log: [{
             turn: 1,
             actor: 'system',
-            message: "Divine protection surrounds you...",
+            message: QUIRK_INFO[quirk].combatMessage,
           }],
           autoHealActive: true,
           quirkTriggered: true,
