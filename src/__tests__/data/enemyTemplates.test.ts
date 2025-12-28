@@ -66,3 +66,40 @@ describe('Enemy Templates', () => {
         });
     });
 });
+
+describe('ENEMY_TEMPLATES equipment resolution', () => {
+    it('should resolve weapon reference for bandit', () => {
+        const bandit = ENEMY_TEMPLATES['bandit'];
+        expect(bandit).toBeDefined();
+        expect(bandit.equipment.weapon).toBeDefined();
+        expect(bandit.equipment.weapon?.name).toBe('Dagger');
+        expect(bandit.equipment.weapon?.damage).toBe('1d4');
+    });
+
+    it('should resolve armor reference for hobgoblin', () => {
+        const hobgoblin = ENEMY_TEMPLATES['hobgoblin'];
+        expect(hobgoblin).toBeDefined();
+        expect(hobgoblin.equipment.armor).toBeDefined();
+        expect(hobgoblin.equipment.armor?.name).toBe('Chain Mail');
+        expect(hobgoblin.equipment.armor?.baseAC).toBe(16);
+    });
+
+    it('should handle null weaponId (wraith)', () => {
+        const wraith = ENEMY_TEMPLATES['wraith'];
+        expect(wraith).toBeDefined();
+        expect(wraith.equipment.weapon).toBeNull();
+    });
+
+    it('should handle null armorId (skeleton)', () => {
+        const skeleton = ENEMY_TEMPLATES['skeleton'];
+        expect(skeleton).toBeDefined();
+        expect(skeleton.equipment.armor).toBeNull();
+    });
+
+    it('should populate weapons array from weaponId', () => {
+        const bandit = ENEMY_TEMPLATES['bandit'];
+        expect(bandit.equipment.weapons).toBeDefined();
+        expect(bandit.equipment.weapons?.length).toBeGreaterThan(0);
+        expect(bandit.equipment.weapons?.[0]?.name).toBe('Dagger');
+    });
+});

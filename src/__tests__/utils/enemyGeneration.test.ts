@@ -77,6 +77,6 @@ describe('Enemy Generation', () => {
         }
 
         // Enemy2 should be unaffected
-        expect(enemy2?.equipment.weapon?.damage).toBe('1d6');
+        expect(enemy2?.equipment.weapon?.damage).toBe('1d4');
     });
 });
