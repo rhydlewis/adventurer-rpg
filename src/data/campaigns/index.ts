@@ -8,15 +8,17 @@
 
 import { testCampaign } from './test-campaign';
 import { validationCampaign } from './validation-campaign';
-import { singleNodeCampaign } from './single-node-campaign'
+import { singleNodeCampaign } from './single-node-campaign';
+import { spireOfLichKingCampaign } from './spire-of-lich-king-campaign';
 
 // Export all available campaigns
 // Add new campaigns to this array to make them selectable in-game
 export const availableCampaigns = [
   validationCampaign,
   testCampaign,
-  singleNodeCampaign
+  singleNodeCampaign,
+  spireOfLichKingCampaign
 ];
 
 // Export individual campaigns for direct use (e.g., in tests)
-export { testCampaign, validationCampaign, singleNodeCampaign };
+export { testCampaign, validationCampaign, singleNodeCampaign, spireOfLichKingCampaign };
