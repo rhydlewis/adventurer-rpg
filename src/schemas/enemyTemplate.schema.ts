@@ -16,7 +16,7 @@ const AttributeRangeSchema = z.object({
 // Weapon schema
 const WeaponSchema = z.object({
   id: z.string().optional(),
-  name: z.enum(['Longsword', 'Rapier', 'Dagger', 'Mace']),
+  name: z.enum(['Longsword', 'Rapier', 'Dagger', 'Mace', 'Scimitar', 'Bite', 'Slam', 'Tusk']),
   damage: z.string().regex(/^\d+d\d+$/, {
     message: "Damage must be in dice notation format (e.g., '1d6', '2d8')"
   }),
@@ -28,8 +28,8 @@ const WeaponSchema = z.object({
 
 // Armor schema
 const ArmorSchema = z.object({
-  name: z.enum(['None', 'Leather', 'Chainmail']),
-  baseAC: z.number().int().min(10).max(20),
+  name: z.enum(['None', 'Leather', 'Chainmail', 'Chain Mail', 'Leather Armor', 'Natural Armor']),
+  baseAC: z.number().int().min(8).max(20),
   maxDexBonus: z.number().int().nullable(),
   description: z.string(),
   proficiencyRequired: z.enum(['light', 'medium', 'heavy']).optional(),

@@ -3,18 +3,21 @@
  * Images are located in /public/assets/creatures/
  */
 
-type CreatureName = 'Skeleton' | 'Bandit' | 'Goblin' | 'Wolf' | 'Cultist' | 'Spider' | 'Wraith';
+type CreatureName = 'Skeleton' | 'Bandit' | 'Goblin' | 'Cultist' | 'Spider' | 'Wraith' | 'Hobgoblin' | 'Werewolf' | 'Lich' | 'Zombie' | 'Rat' | 'Boar';
 
 export const CREATURE_AVATARS: Partial<Record<CreatureName, string>> = {
   Skeleton: 'monster_skeleton_00009.png',
   Bandit: 'human_bandit.png',
-  // Add more as images become available:
-  // Goblin: 'monster_goblin_00001.png',
-  // Wolf: 'monster_wolf_00001.png',
-  // Cultist: 'monster_cultist_00001.png',
-  // Spider: 'monster_spider_00001.png',
+  Goblin: 'goblin.png',
+  Cultist: 'cultist.png',
+  Spider: 'spider.png',
   Wraith: 'monster_spirit_00014.png',
-  Spider: 'spider.png'
+  Hobgoblin: 'hobgoblin.png',
+  Werewolf: 'werewolf.png',
+  Lich: 'lich.png',
+  Zombie: 'zombie.png',
+  Rat: 'rat.png',
+  Boar: 'boar.png'
 } as const;
 
 export const DEFAULT_CREATURE_AVATAR = 'monster_generic.png';

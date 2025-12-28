@@ -252,10 +252,34 @@ const testNodes: StoryNode[] = [
         flavor: { tone: 'tense', icon: 'sword' },
         choices: [
             {
+                id: 'fight_random',
+                text: '🎲 Fight Random Enemy',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'random_enemy_combat' }
+            },
+            {
                 id: 'fight_bandit',
                 text: '⚔️ Fight a Bandit',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
+            },
+            {
+                id: 'fight_skeleton',
+                text: '💀 Fight a Skeleton',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'skeleton_combat' }
+            },
+            {
+                id: 'fight_wraith',
+                text: '👻 Fight a Wraith',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'wraith_combat' }
+            },
+            {
+                id: 'fight_spider',
+                text: '🕷️ Fight a Giant Spider',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'giantSpider_combat' }
             },
             {
                 id: 'back_to_hub',
@@ -266,6 +290,17 @@ const testNodes: StoryNode[] = [
         ]
     },
     {
+        id: 'random_enemy_combat',
+        title: 'Random Encounter',
+        description: 'A mysterious figure emerges from the shadows!',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'random', onVictoryNodeId: 'combat_victory' }
+        ],
+        choices: []
+    },
+    {
         id: 'bandit_combat',
         title: 'Bandit Encounter',
         description: 'A bandit steps from the shadows, dagger drawn!',
@@ -273,6 +308,39 @@ const testNodes: StoryNode[] = [
         flavor: { tone: 'danger', icon: 'skull' },
         onEnter: [
             { type: 'startCombat', enemyId: 'bandit', onVictoryNodeId: 'combat_victory' }
+        ],
+        choices: []
+    },
+    {
+        id: 'skeleton_combat',
+        title: 'Skeleton Encounter',
+        description: 'Bones rattle as an undead skeleton emerges, wielding a rusty mace!',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'skeleton', onVictoryNodeId: 'combat_victory' }
+        ],
+        choices: []
+    },
+    {
+        id: 'wraith_combat',
+        title: 'Wraith Encounter',
+        description: 'A spectral wraith materializes from the shadows, its ethereal form chilling the air!',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'wraith', onVictoryNodeId: 'combat_victory' }
+        ],
+        choices: []
+    },
+    {
+        id: 'giantSpider_combat',
+        title: 'Giant Spider Encounter',
+        description: 'A massive spider drops from above, fangs dripping with venom!',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'giantSpider', onVictoryNodeId: 'combat_victory' }
         ],
         choices: []
     },

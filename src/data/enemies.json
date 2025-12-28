@@ -200,5 +200,479 @@
       ]
     },
     "lootTableId": "spider_loot"
+  },
+  "hobgoblin": {
+    "id": "hobgoblin",
+    "baseName": "Hobgoblin",
+    "creatureClass": "Humanoid",
+    "avatarPaths": ["Hobgoblin"],
+    "levelRange": { "min": 1, "max": 2 },
+    "attributeRanges": {
+      "STR": { "min": 12, "max": 14 },
+      "DEX": { "min": 11, "max": 13 },
+      "CON": { "min": 11, "max": 13 },
+      "INT": { "min": 9, "max": 11 },
+      "WIS": { "min": 9, "max": 11 },
+      "CHA": { "min": 8, "max": 10 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Longsword",
+        "damage": "1d8",
+        "damageType": "slashing",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage, or 6 (1d10 + 1) slashing damage if used with two hands."
+      },
+      "weapons": [
+        {
+          "name": "Longsword",
+          "damage": "1d8",
+          "damageType": "slashing",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage, or 6 (1d10 + 1) slashing damage if used with two hands."
+        }
+      ],
+      "armor": {
+        "name": "Chain Mail",
+        "baseAC": 16,
+        "maxDexBonus": null,
+        "description": "Chain Mail armor"
+      },
+      "shield": {
+        "equipped": true,
+        "acBonus": 2
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 0,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["Your formation is weak!", "For the legion!", "Warriors, attack!"],
+      "onPlayerMiss": ["Pathetic strike!", "You lack discipline!"],
+      "onEnemyHit": ["Taste hobgoblin steel!", "Another blow lands!"],
+      "onLowHealth": ["Retreat is not an option!", "I won't fall alone!"]
+    },
+    "lootTableId": "hobgoblin_loot"
+  },
+  "goblin": {
+    "id": "goblin",
+    "baseName": "Goblin",
+    "creatureClass": "Humanoid",
+    "avatarPaths": ["Goblin"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 7, "max": 9 },
+      "DEX": { "min": 13, "max": 15 },
+      "CON": { "min": 9, "max": 11 },
+      "INT": { "min": 9, "max": 11 },
+      "WIS": { "min": 7, "max": 9 },
+      "CHA": { "min": 7, "max": 9 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Scimitar",
+        "damage": "1d6",
+        "damageType": "slashing",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
+      },
+      "weapons": [
+        {
+          "name": "Scimitar",
+          "damage": "1d6",
+          "damageType": "slashing",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
+        }
+      ],
+      "armor": {
+        "name": "Leather Armor",
+        "baseAC": 13,
+        "maxDexBonus": null,
+        "description": "Leather Armor"
+      },
+      "shield": {
+        "equipped": true,
+        "acBonus": 2
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 6,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["Stick 'em!", "Get da shinies!", "Hehe, fresh meat!"],
+      "onPlayerMiss": ["Too slow, dummy!", "Haha! Missed!"],
+      "onEnemyHit": ["Got ya!", "Take that, big'un!"],
+      "onLowHealth": ["No fair!", "Boss won't like this...", "Gotta run!"]
+    },
+    "lootTableId": "goblin_loot"
+  },
+  "cultist": {
+    "id": "cultist",
+    "baseName": "Cultist",
+    "creatureClass": "Humanoid",
+    "avatarPaths": ["Cultist"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 10, "max": 12 },
+      "DEX": { "min": 11, "max": 13 },
+      "CON": { "min": 9, "max": 11 },
+      "INT": { "min": 9, "max": 11 },
+      "WIS": { "min": 10, "max": 12 },
+      "CHA": { "min": 9, "max": 11 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Scimitar",
+        "damage": "1d6",
+        "damageType": "slashing",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage."
+      },
+      "weapons": [
+        {
+          "name": "Scimitar",
+          "damage": "1d6",
+          "damageType": "slashing",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage."
+        }
+      ],
+      "armor": {
+        "name": "Leather Armor",
+        "baseAC": 12,
+        "maxDexBonus": null,
+        "description": "Leather Armor"
+      },
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 0,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["For the dark master!", "Your soul is forfeit!", "The ritual begins!"],
+      "onPlayerMiss": ["The shadows protect me!", "You cannot stop us!"],
+      "onEnemyHit": ["Dark power flows through me!", "Feel the master's wrath!"],
+      "onLowHealth": ["The master will avenge me!", "My sacrifice means nothing!"]
+    },
+    "lootTableId": "cultist_loot"
+  },
+  "werewolf": {
+    "id": "werewolf",
+    "baseName": "Werewolf",
+    "creatureClass": "Humanoid",
+    "avatarPaths": ["Werewolf"],
+    "levelRange": { "min": 3, "max": 4 },
+    "attributeRanges": {
+      "STR": { "min": 14, "max": 16 },
+      "DEX": { "min": 12, "max": 14 },
+      "CON": { "min": 13, "max": 15 },
+      "INT": { "min": 9, "max": 11 },
+      "WIS": { "min": 10, "max": 12 },
+      "CHA": { "min": 9, "max": 11 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Bite",
+        "damage": "1d8",
+        "damageType": "piercing",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with werewolf lycanthropy."
+      },
+      "weapons": [
+        {
+          "name": "Bite",
+          "damage": "1d8",
+          "damageType": "piercing",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with werewolf lycanthropy."
+        }
+      ],
+      "armor": {
+        "name": "Natural Armor",
+        "baseAC": 11,
+        "maxDexBonus": null,
+        "description": "Natural protection"
+      },
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 3,
+      "Perception": 4,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*howls at the moon*", "The beast awakens!", "*snarls and bares fangs*"],
+      "onPlayerMiss": ["*dodges with inhuman speed*", "You cannot catch the wolf!"],
+      "onEnemyHit": ["*rends with savage claws*", "Feel the curse!"],
+      "onLowHealth": ["*wounded howl*", "The pack will remember...", "*retreats, limping*"]
+    },
+    "lootTableId": "werewolf_loot"
+  },
+  "lich": {
+    "id": "lich",
+    "baseName": "Lich",
+    "creatureClass": "Undead",
+    "avatarPaths": ["Lich"],
+    "levelRange": { "min": 20, "max": 22 },
+    "attributeRanges": {
+      "STR": { "min": 10, "max": 12 },
+      "DEX": { "min": 15, "max": 17 },
+      "CON": { "min": 15, "max": 17 },
+      "INT": { "min": 19, "max": 20 },
+      "WIS": { "min": 13, "max": 15 },
+      "CHA": { "min": 15, "max": 17 }
+    },
+    "baseClass": "Wizard",
+    "equipment": {
+      "weapon": null,
+      "weapons": [],
+      "armor": {
+        "name": "Natural Armor",
+        "baseAC": 17,
+        "maxDexBonus": null,
+        "description": "Natural Armor"
+      },
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 0,
+      "Perception": 9,
+      "Arcana": 18,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["Your mortal flesh will serve me well...", "*raises skeletal hand*", "Witness true power!"],
+      "onPlayerMiss": ["Pathetic mortal!", "*phases through the attack*"],
+      "onEnemyHit": ["*paralyzing touch*", "Feel death's embrace!", "Your soul is mine!"],
+      "onLowHealth": ["My phylactery ensures my return!", "This form is merely temporary...", "*dark ritual begins*"]
+    },
+    "lootTableId": "lich_loot"
+  },
+  "zombie": {
+    "id": "zombie",
+    "baseName": "Zombie",
+    "creatureClass": "Undead",
+    "avatarPaths": ["Zombie"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 12, "max": 14 },
+      "DEX": { "min": 5, "max": 7 },
+      "CON": { "min": 15, "max": 17 },
+      "INT": { "min": 2, "max": 4 },
+      "WIS": { "min": 5, "max": 7 },
+      "CHA": { "min": 4, "max": 6 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Slam",
+        "damage": "1d6",
+        "damageType": "bludgeoning",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."
+      },
+      "weapons": [
+        {
+          "name": "Slam",
+          "damage": "1d6",
+          "damageType": "bludgeoning",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."
+        }
+      ],
+      "armor": {
+        "name": "Natural Armor",
+        "baseAC": 8,
+        "maxDexBonus": null,
+        "description": "Natural protection"
+      },
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 0,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*shambling groans*", "*lurches forward hungrily*", "*dead eyes fixate on you*"],
+      "onPlayerMiss": ["*stumbles but keeps coming*", "*ignores the attack*"],
+      "onEnemyHit": ["*rotten fist connects*", "*grasping decayed hands*"],
+      "onLowHealth": ["*continues despite wounds*", "*falls apart piece by piece*"]
+    },
+    "lootTableId": "zombie_loot"
+  },
+  "rat": {
+    "id": "rat",
+    "baseName": "Rat",
+    "creatureClass": "Beast",
+    "avatarPaths": ["Rat"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 2, "max": 2 },
+      "DEX": { "min": 10, "max": 12 },
+      "CON": { "min": 8, "max": 10 },
+      "INT": { "min": 2, "max": 2 },
+      "WIS": { "min": 9, "max": 11 },
+      "CHA": { "min": 3, "max": 5 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Bite",
+        "damage": "1d6",
+        "damageType": "piercing",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
+      },
+      "weapons": [
+        {
+          "name": "Bite",
+          "damage": "1d6",
+          "damageType": "piercing",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
+        }
+      ],
+      "armor": {
+        "name": "Natural Armor",
+        "baseAC": 10,
+        "maxDexBonus": null,
+        "description": "Natural protection"
+      },
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 0,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*aggressive squeaking*", "*bares tiny fangs*", "*scurries forward*"],
+      "onPlayerMiss": ["*dodges nimbly*", "*too small and quick*"],
+      "onEnemyHit": ["*tiny bite*", "*scratches with claws*"],
+      "onLowHealth": ["*frightened squeak*", "*attempts to flee*"]
+    },
+    "lootTableId": "rat_loot"
+  },
+  "boar": {
+    "id": "boar",
+    "baseName": "Boar",
+    "creatureClass": "Beast",
+    "avatarPaths": ["Boar"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 12, "max": 14 },
+      "DEX": { "min": 10, "max": 12 },
+      "CON": { "min": 11, "max": 13 },
+      "INT": { "min": 2, "max": 2 },
+      "WIS": { "min": 8, "max": 10 },
+      "CHA": { "min": 4, "max": 6 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weapon": {
+        "name": "Tusk",
+        "damage": "1d6",
+        "damageType": "slashing",
+        "finesse": false,
+        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
+      },
+      "weapons": [
+        {
+          "name": "Tusk",
+          "damage": "1d6",
+          "damageType": "slashing",
+          "finesse": false,
+          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
+        }
+      ],
+      "armor": {
+        "name": "Natural Armor",
+        "baseAC": 11,
+        "maxDexBonus": null,
+        "description": "Natural Armor"
+      },
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 0,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*snorts aggressively*", "*paws the ground*", "*charges forward with tusks lowered*"],
+      "onPlayerMiss": ["*dodges with surprising speed*", "*tramples past*"],
+      "onEnemyHit": ["*gores with tusks*", "*tramples underfoot*"],
+      "onLowHealth": ["*wounded but defiant*", "*makes one final charge*"]
+    },
+    "lootTableId": "boar_loot"
   }
 }

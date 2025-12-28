@@ -1,7 +1,7 @@
 import type { Creature } from '../types/creature';
 import type { Attributes } from '../types/attributes';
 import type { Resources } from '../types/resource';
-import { getEnemyTemplate } from '../data/enemyTemplates';
+import { getEnemyTemplate, ENEMY_TEMPLATES } from '../data/enemyTemplates';
 import { applyCreatureClassEffects } from '../data/creatureClasses';
 import { calculateModifier } from './dice';
 
@@ -119,14 +119,28 @@ function calculateMaxHP(baseClass: string, level: number, conMod: number): numbe
 
 /**
  * Generate a creature from a template
+ * @param templateId - The enemy template ID, or 'random' to select a random enemy
+ * @param options - Optional parameters like level
  */
 export function generateEnemy(
     templateId: string,
     options?: { level?: number }
 ): Creature | null {
-    const template = getEnemyTemplate(templateId);
+    // Handle random enemy selection
+    let actualTemplateId = templateId;
+    if (templateId === 'random') {
+        const allTemplateIds = Object.keys(ENEMY_TEMPLATES);
+        if (allTemplateIds.length === 0) {
+            console.error('No enemy templates available for random selection');
+            return null;
+        }
+        actualTemplateId = randomPick(allTemplateIds);
+        console.log(`Random enemy selected: ${actualTemplateId}`);
+    }
+
+    const template = getEnemyTemplate(actualTemplateId);
     if (!template) {
-        console.error(`Enemy template not found: ${templateId}`);
+        console.error(`Enemy template not found: ${actualTemplateId}`);
         return null;
     }
 

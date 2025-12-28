@@ -33,6 +33,38 @@ export const WEAPONS: Record<WeaponType, Weapon> = {
     description: 'A heavy club with a metal head',
     proficiencyRequired: 'simple',
   },
+  Scimitar: {
+    name: 'Scimitar',
+    damage: '1d6',
+    damageType: 'slashing',
+    finesse: false,
+    description: 'A curved blade favored by raiders',
+    proficiencyRequired: 'martial',
+  },
+  Bite: {
+    name: 'Bite',
+    damage: '1d6',
+    damageType: 'piercing',
+    finesse: false,
+    description: 'Natural bite attack',
+    proficiencyRequired: 'simple',
+  },
+  Slam: {
+    name: 'Slam',
+    damage: '1d6',
+    damageType: 'bludgeoning',
+    finesse: false,
+    description: 'Natural slam attack',
+    proficiencyRequired: 'simple',
+  },
+  Tusk: {
+    name: 'Tusk',
+    damage: '1d6',
+    damageType: 'slashing',
+    finesse: false,
+    description: 'Natural tusk attack',
+    proficiencyRequired: 'simple',
+  },
 };
 
 export const ARMORS: Record<ArmorType, Armor> = {
@@ -56,6 +88,27 @@ export const ARMORS: Record<ArmorType, Armor> = {
     maxDexBonus: 2, // Medium armor, max +2 DEX
     description: 'Interlocking metal rings providing solid protection',
     proficiencyRequired: 'medium',
+  },
+  'Chain Mail': {
+    name: 'Chain Mail',
+    baseAC: 16,
+    maxDexBonus: 2, // Medium armor, max +2 DEX
+    description: 'Interlocking metal rings providing solid protection',
+    proficiencyRequired: 'medium',
+  },
+  'Leather Armor': {
+    name: 'Leather Armor',
+    baseAC: 12,
+    maxDexBonus: null, // Light armor, unlimited DEX
+    description: 'Light, flexible leather armor',
+    proficiencyRequired: 'light',
+  },
+  'Natural Armor': {
+    name: 'Natural Armor',
+    baseAC: 10,
+    maxDexBonus: null,
+    description: 'Natural protection from thick hide or scales',
+    proficiencyRequired: undefined,
   },
 };
 

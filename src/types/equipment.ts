@@ -1,5 +1,5 @@
-export type WeaponType = 'Longsword' | 'Rapier' | 'Dagger' | 'Mace';
-export type ArmorType = 'None' | 'Leather' | 'Chainmail';
+export type WeaponType = 'Longsword' | 'Rapier' | 'Dagger' | 'Mace' | 'Scimitar' | 'Bite' | 'Slam' | 'Tusk';
+export type ArmorType = 'None' | 'Leather' | 'Chainmail' | 'Chain Mail' | 'Leather Armor' | 'Natural Armor';
 export type ItemType = 'Healing Potion' | 'Smoke Bomb' | 'Arcane Scroll';
 
 export interface Weapon {
