@@ -1,0 +1,42 @@
+{
+  "none": {
+    "name": "None",
+    "baseAC": 10,
+    "maxDexBonus": null,
+    "description": "No armor worn"
+  },
+  "leather": {
+    "name": "Leather",
+    "baseAC": 12,
+    "maxDexBonus": null,
+    "description": "Light, flexible leather armor",
+    "proficiencyRequired": "light"
+  },
+  "leather-armor": {
+    "name": "Leather Armor",
+    "baseAC": 12,
+    "maxDexBonus": null,
+    "description": "Light, flexible leather armor",
+    "proficiencyRequired": "light"
+  },
+  "chainmail": {
+    "name": "Chainmail",
+    "baseAC": 16,
+    "maxDexBonus": 2,
+    "description": "Interlocking metal rings providing solid protection",
+    "proficiencyRequired": "medium"
+  },
+  "chain-mail": {
+    "name": "Chain Mail",
+    "baseAC": 16,
+    "maxDexBonus": 2,
+    "description": "Interlocking metal rings providing solid protection",
+    "proficiencyRequired": "medium"
+  },
+  "natural-armor": {
+    "name": "Natural Armor",
+    "baseAC": 10,
+    "maxDexBonus": null,
+    "description": "Natural protection from thick hide or scales"
+  }
+}

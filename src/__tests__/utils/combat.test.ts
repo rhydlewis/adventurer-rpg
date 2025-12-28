@@ -72,7 +72,7 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
       description: 'A standard longsword',
     }],
     armor: {
-      name: 'Chainmail',
+      name: 'chainmail',
       baseAC: 16,
       maxDexBonus: 2,
       description: 'Standard chainmail armor',
@@ -136,7 +136,7 @@ const createTestEnemy = (overrides?: Partial<Creature>): Creature => ({
       description: 'A small dagger',
     }],
     armor: {
-      name: 'Leather',
+      name: 'leather',
       baseAC: 12,
       maxDexBonus: null,
       description: 'Light leather armor',
@@ -1177,7 +1177,7 @@ describe('utils/combat', () => {
             description: 'A standard longsword',
           }],
           armor: {
-            name: 'Chainmail',
+            name: 'chainmail',
             baseAC: 16,
             maxDexBonus: 2,
             description: 'Standard chainmail armor',
@@ -1263,7 +1263,7 @@ describe('utils/combat', () => {
             description: 'A standard longsword',
           }],
           armor: {
-            name: 'Chainmail',
+            name: 'chainmail',
             baseAC: 16,
             maxDexBonus: 2,
             description: 'Standard chainmail armor',
@@ -1341,7 +1341,7 @@ describe('utils/combat', () => {
             description: 'A standard longsword',
           }],
           armor: {
-            name: 'Chainmail',
+            name: 'chainmail',
             baseAC: 16,
             maxDexBonus: 2,
             description: 'Standard chainmail armor',
@@ -1419,7 +1419,7 @@ describe('utils/combat', () => {
             description: 'A standard longsword',
           }],
           armor: {
-            name: 'Chainmail',
+            name: 'chainmail',
             baseAC: 16,
             maxDexBonus: 2,
             description: 'Standard chainmail armor',
@@ -1497,7 +1497,7 @@ describe('utils/combat', () => {
             description: 'A rapier',
           }],
           armor: {
-            name: 'Leather',
+            name: 'leather',
             baseAC: 12,
             maxDexBonus: null,
             description: 'Leather armor',

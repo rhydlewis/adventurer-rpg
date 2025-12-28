@@ -32,7 +32,7 @@
         }
       ],
       "armor": {
-        "name": "Leather",
+        "name": "leather",
         "baseAC": 11,
         "maxDexBonus": null,
         "description": "Supple leather armor"
@@ -234,7 +234,7 @@
         }
       ],
       "armor": {
-        "name": "Chain Mail",
+        "name": "chain-mail",
         "baseAC": 16,
         "maxDexBonus": null,
         "description": "Chain Mail armor"
@@ -295,10 +295,10 @@
         }
       ],
       "armor": {
-        "name": "Leather Armor",
+        "name": "leather-armor",
         "baseAC": 13,
         "maxDexBonus": null,
-        "description": "Leather Armor"
+        "description": "Light, flexible leather armor"
       },
       "shield": {
         "equipped": true,
@@ -356,10 +356,10 @@
         }
       ],
       "armor": {
-        "name": "Leather Armor",
+        "name": "leather-armor",
         "baseAC": 12,
         "maxDexBonus": null,
-        "description": "Leather Armor"
+        "description": "Light, flexible leather armor"
       },
       "shield": {
         "equipped": false,
@@ -417,7 +417,7 @@
         }
       ],
       "armor": {
-        "name": "Natural Armor",
+        "name": "natural-armor",
         "baseAC": 11,
         "maxDexBonus": null,
         "description": "Natural protection"
@@ -464,10 +464,10 @@
       "weapon": null,
       "weapons": [],
       "armor": {
-        "name": "Natural Armor",
+        "name": "natural-armor",
         "baseAC": 17,
         "maxDexBonus": null,
-        "description": "Natural Armor"
+        "description": "Natural protection from thick hide or scales"
       },
       "shield": {
         "equipped": false,
@@ -525,7 +525,7 @@
         }
       ],
       "armor": {
-        "name": "Natural Armor",
+        "name": "natural-armor",
         "baseAC": 8,
         "maxDexBonus": null,
         "description": "Natural protection"
@@ -586,7 +586,7 @@
         }
       ],
       "armor": {
-        "name": "Natural Armor",
+        "name": "natural-armor",
         "baseAC": 10,
         "maxDexBonus": null,
         "description": "Natural protection"
@@ -647,10 +647,10 @@
         }
       ],
       "armor": {
-        "name": "Natural Armor",
+        "name": "natural-armor",
         "baseAC": 11,
         "maxDexBonus": null,
-        "description": "Natural Armor"
+        "description": "Natural protection from thick hide or scales"
       },
       "shield": {
         "equipped": false,

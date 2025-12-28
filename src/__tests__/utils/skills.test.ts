@@ -35,7 +35,7 @@ describe('utils/skills', () => {
         finesse: true,
         description: '',
       }],
-      armor: { name: 'None', baseAC: 10, maxDexBonus: null, description: '' },
+      armor: { name: 'none', baseAC: 10, maxDexBonus: null, description: '' },
       shield: { equipped: false, acBonus: 0 },
       items: [],
     },

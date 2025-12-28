@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WEAPONS, ARMORS, STARTING_ITEMS, getWeapon } from '../../data/equipment';
-import type { ArmorType } from '../../types';
+import { WEAPONS, ARMORS, STARTING_ITEMS, getWeapon, getArmor } from '../../data/equipment';
 
 describe('data/equipment', () => {
   describe('WEAPONS constant', () => {
@@ -95,14 +94,14 @@ describe('data/equipment', () => {
     it('should be defined and contain expected armors', () => {
       expect(ARMORS).toBeDefined();
       expect(Object.keys(ARMORS).length).toBeGreaterThan(0);
-      expect(ARMORS).toHaveProperty('None');
-      expect(ARMORS).toHaveProperty('Leather');
-      expect(ARMORS).toHaveProperty('Chainmail');
+      expect(ARMORS).toHaveProperty('none');
+      expect(ARMORS).toHaveProperty('leather');
+      expect(ARMORS).toHaveProperty('chainmail');
     });
 
     it('each armor definition should have required properties', () => {
-      for (const armorType in ARMORS) {
-        const armor = ARMORS[armorType as ArmorType];
+      for (const armorId in ARMORS) {
+        const armor = ARMORS[armorId];
         expect(armor).toHaveProperty('name');
         expect(armor).toHaveProperty('baseAC');
         expect(armor).toHaveProperty('maxDexBonus');
@@ -113,6 +112,46 @@ describe('data/equipment', () => {
         expect(armor.maxDexBonus === null || typeof armor.maxDexBonus === 'number').toBe(true);
         expect(typeof armor.description).toBe('string');
       }
+    });
+  });
+
+  describe('ARMORS from JSON', () => {
+    it('should load all armors from JSON', () => {
+      expect(Object.keys(ARMORS).length).toBeGreaterThan(0);
+    });
+
+    it('should have leather armor with correct properties', () => {
+      const leather = ARMORS['leather'];
+      expect(leather).toBeDefined();
+      expect(leather.name).toBe('Leather');
+      expect(leather.baseAC).toBe(12);
+      expect(leather.maxDexBonus).toBeNull();
+    });
+
+    it('should have chainmail with dex limit', () => {
+      const chainmail = ARMORS['chainmail'];
+      expect(chainmail).toBeDefined();
+      expect(chainmail.name).toBe('Chainmail');
+      expect(chainmail.baseAC).toBe(16);
+      expect(chainmail.maxDexBonus).toBe(2);
+    });
+
+    it('getArmor should return armor by id', () => {
+      const armor = getArmor('leather');
+      expect(armor).toBeDefined();
+      expect(armor?.name).toBe('Leather');
+    });
+
+    it('getArmor should return null for invalid id', () => {
+      const armor = getArmor('nonexistent');
+      expect(armor).toBeNull();
+    });
+
+    it('all armors should have valid AC range', () => {
+      Object.values(ARMORS).forEach((armor) => {
+        expect(armor.baseAC).toBeGreaterThanOrEqual(8);
+        expect(armor.baseAC).toBeLessThanOrEqual(20);
+      });
     });
   });
 

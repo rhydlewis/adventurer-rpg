@@ -31,7 +31,7 @@ const createMockCharacter = (name: string = 'Player', hp: number = 10, _initiati
   equipment: {
     weapon: { name: 'Longsword', damage: '1d8', damageType: 'slashing', finesse: false, description: '' },
     weapons: [{ name: 'Longsword', damage: '1d8', damageType: 'slashing', finesse: false, description: '' }],
-    armor: { name: 'None', baseAC: 10, maxDexBonus: null, description: '' },
+    armor: { name: 'none', baseAC: 10, maxDexBonus: null, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],
   },
@@ -54,7 +54,7 @@ const createMockEnemy = (name: string = 'Skeleton', hp: number = 8, _initiative:
   equipment: {
     weapon: { name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: '' },
     weapons: [{ name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: '' }],
-    armor: { name: 'None', baseAC: 10, maxDexBonus: null, description: '' },
+    armor: { name: 'none', baseAC: 10, maxDexBonus: null, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],
   },

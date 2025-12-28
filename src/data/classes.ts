@@ -60,7 +60,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       CHA: 8,
     },
     startingWeapon: 'longsword',
-    startingArmor: 'Chainmail',
+    startingArmor: 'chainmail',
     hasShield: true,
     proficiencies: {
       weapons: ['simple', 'martial'],
@@ -94,7 +94,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       CHA: 10,
     },
     startingWeapon: 'rapier',
-    startingArmor: 'Leather',
+    startingArmor: 'leather',
     hasShield: false,
     proficiencies: {
       weapons: ['simple', 'martial-finesse'],
@@ -128,7 +128,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       CHA: 10,
     },
     startingWeapon: 'dagger',
-    startingArmor: 'None',
+    startingArmor: 'none',
     hasShield: false,
     proficiencies: {
       weapons: ['simple'],
@@ -162,7 +162,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
       CHA: 8,
     },
     startingWeapon: 'mace',
-    startingArmor: 'Chainmail',
+    startingArmor: 'chainmail',
     hasShield: true,
     proficiencies: {
       weapons: ['simple'],
@@ -182,9 +182,9 @@ export function getBaseAC(className: CharacterClass): number {
   const armor = classDef.startingArmor;
 
   let baseAC = 0;
-  if (armor === 'None') baseAC = 10;
-  else if (armor === 'Leather') baseAC = 12;
-  else if (armor === 'Chainmail') baseAC = 16;
+  if (armor === 'none') baseAC = 10;
+  else if (armor === 'leather') baseAC = 12;
+  else if (armor === 'chainmail') baseAC = 16;
 
   if (classDef.hasShield) baseAC += 2;
 

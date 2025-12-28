@@ -42,7 +42,7 @@ describe('Character Type with Inventory & Gold', () => {
           finesse: false,
           description: 'A versatile blade',
         }],
-        armor: { name: 'Chainmail', baseAC: 16, maxDexBonus: 2, description: 'Medium armor' },
+        armor: { name: 'chainmail', baseAC: 16, maxDexBonus: 2, description: 'Medium armor' },
         shield: { equipped: false, acBonus: 0 },
         items: [],
       },

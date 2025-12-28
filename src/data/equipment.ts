@@ -1,6 +1,8 @@
-import type { Weapon, Armor, ArmorType, Item } from '../types';
+import type { Weapon, Armor, Item } from '../types';
 import weaponsJson from './weapons.json';
 import { WeaponsSchema } from '../schemas/weapon.schema';
+import armorsJson from './armors.json';
+import { ArmorsSchema } from '../schemas/armor.schema';
 
 // Validate weapons at build time
 const validatedWeapons = WeaponsSchema.parse(weaponsJson);
@@ -28,50 +30,28 @@ export function getWeapon(id: string): Weapon | null {
   return WEAPONS[id] ?? null;
 }
 
-export const ARMORS: Record<ArmorType, Armor> = {
-  None: {
-    name: 'None',
-    baseAC: 10,
-    maxDexBonus: null, // Unlimited DEX bonus
-    description: 'No armor worn',
-    proficiencyRequired: undefined, // No proficiency needed for no armor
-  },
-  Leather: {
-    name: 'Leather',
-    baseAC: 12,
-    maxDexBonus: null, // Light armor, unlimited DEX
-    description: 'Light, flexible leather armor',
-    proficiencyRequired: 'light',
-  },
-  Chainmail: {
-    name: 'Chainmail',
-    baseAC: 16,
-    maxDexBonus: 2, // Medium armor, max +2 DEX
-    description: 'Interlocking metal rings providing solid protection',
-    proficiencyRequired: 'medium',
-  },
-  'Chain Mail': {
-    name: 'Chain Mail',
-    baseAC: 16,
-    maxDexBonus: 2, // Medium armor, max +2 DEX
-    description: 'Interlocking metal rings providing solid protection',
-    proficiencyRequired: 'medium',
-  },
-  'Leather Armor': {
-    name: 'Leather Armor',
-    baseAC: 12,
-    maxDexBonus: null, // Light armor, unlimited DEX
-    description: 'Light, flexible leather armor',
-    proficiencyRequired: 'light',
-  },
-  'Natural Armor': {
-    name: 'Natural Armor',
-    baseAC: 10,
-    maxDexBonus: null,
-    description: 'Natural protection from thick hide or scales',
-    proficiencyRequired: undefined,
-  },
-};
+// Validate armors at build time
+const validatedArmors = ArmorsSchema.parse(armorsJson);
+
+/**
+ * All available armors in the game
+ * Loaded from armors.json and validated with Zod schema
+ */
+export const ARMORS: Record<string, Armor> = Object.fromEntries(
+  Object.entries(validatedArmors).map(([id, armor]) => [
+    id,
+    armor as Armor,
+  ])
+);
+
+/**
+ * Get an armor by ID
+ * @param id - The armor ID (e.g., "leather", "chainmail")
+ * @returns The armor object, or null if not found
+ */
+export function getArmor(id: string): Armor | null {
+  return ARMORS[id] ?? null;
+}
 
 // Starting items by type
 export const STARTING_ITEMS: Record<string, Item[]> = {

@@ -61,7 +61,7 @@ const createTestCharacter = (
       description: '',
       finesse: false
     }],
-    armor: { name: 'Chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
+    armor: { name: 'chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
     shield: { equipped: false, acBonus: 0 },
     items: [],
   },

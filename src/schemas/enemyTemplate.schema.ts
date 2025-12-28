@@ -28,7 +28,7 @@ const WeaponSchema = z.object({
 
 // Armor schema
 const ArmorSchema = z.object({
-  name: z.enum(['None', 'Leather', 'Chainmail', 'Chain Mail', 'Leather Armor', 'Natural Armor']),
+  name: z.enum(['none', 'leather', 'chainmail', 'chain-mail', 'leather-armor', 'natural-armor']),
   baseAC: z.number().int().min(8).max(20),
   maxDexBonus: z.number().int().nullable(),
   description: z.string(),

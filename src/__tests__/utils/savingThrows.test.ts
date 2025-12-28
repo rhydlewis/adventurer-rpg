@@ -54,7 +54,7 @@ const createTestCharacter = (overrides?: Partial<Character>): Character => ({
       description: 'A standard longsword',
     }],
     armor: {
-      name: 'Chainmail',
+      name: 'chainmail',
       baseAC: 16,
       maxDexBonus: 2,
       description: 'Standard chainmail armor',

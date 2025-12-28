@@ -30,7 +30,7 @@ describe('Combat Type Extensions', () => {
       equipment: {
         weapon: { name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: 'A crude blade' },
         weapons: [{ name: 'Dagger', damage: '1d4', damageType: 'piercing', finesse: true, description: 'A crude blade' }],
-        armor: { name: 'Leather', baseAC: 12, maxDexBonus: null, description: 'Worn leather' },
+        armor: { name: 'leather', baseAC: 12, maxDexBonus: null, description: 'Worn leather' },
         shield: { equipped: false, acBonus: 0 },
         items: [],
       },

@@ -51,7 +51,7 @@ const createTestCharacter = (className: 'Fighter' | 'Wizard' | 'Rogue' | 'Cleric
       description: 'A standard longsword',
     }],
     armor: {
-      name: 'Chainmail',
+      name: 'chainmail',
       baseAC: 16,
       maxDexBonus: 2,
       description: 'Standard chainmail armor',
@@ -109,36 +109,36 @@ describe('equipmentHelpers', () => {
     it('Fighter should be proficient with all armor', () => {
       const fighter = createTestCharacter('Fighter');
 
-      expect(hasArmorProficiency(fighter, ARMORS.Leather)).toBe(true);
-      expect(hasArmorProficiency(fighter, ARMORS.Chainmail)).toBe(true);
+      expect(hasArmorProficiency(fighter, ARMORS['leather'])).toBe(true);
+      expect(hasArmorProficiency(fighter, ARMORS['chainmail'])).toBe(true);
     });
 
     it('Wizard should not be proficient with any armor', () => {
       const wizard = createTestCharacter('Wizard');
 
-      expect(hasArmorProficiency(wizard, ARMORS.Leather)).toBe(false);
-      expect(hasArmorProficiency(wizard, ARMORS.Chainmail)).toBe(false);
+      expect(hasArmorProficiency(wizard, ARMORS['leather'])).toBe(false);
+      expect(hasArmorProficiency(wizard, ARMORS['chainmail'])).toBe(false);
     });
 
     it('Rogue should be proficient with light armor', () => {
       const rogue = createTestCharacter('Rogue');
 
-      expect(hasArmorProficiency(rogue, ARMORS.Leather)).toBe(true);
-      expect(hasArmorProficiency(rogue, ARMORS.Chainmail)).toBe(false);
+      expect(hasArmorProficiency(rogue, ARMORS['leather'])).toBe(true);
+      expect(hasArmorProficiency(rogue, ARMORS['chainmail'])).toBe(false);
     });
 
     it('Cleric should be proficient with light and medium armor', () => {
       const cleric = createTestCharacter('Cleric');
 
-      expect(hasArmorProficiency(cleric, ARMORS.Leather)).toBe(true);
-      expect(hasArmorProficiency(cleric, ARMORS.Chainmail)).toBe(true);
+      expect(hasArmorProficiency(cleric, ARMORS['leather'])).toBe(true);
+      expect(hasArmorProficiency(cleric, ARMORS['chainmail'])).toBe(true);
     });
 
     it('All classes should be proficient with no armor', () => {
-      expect(hasArmorProficiency(createTestCharacter('Fighter'), ARMORS.None)).toBe(true);
-      expect(hasArmorProficiency(createTestCharacter('Wizard'), ARMORS.None)).toBe(true);
-      expect(hasArmorProficiency(createTestCharacter('Rogue'), ARMORS.None)).toBe(true);
-      expect(hasArmorProficiency(createTestCharacter('Cleric'), ARMORS.None)).toBe(true);
+      expect(hasArmorProficiency(createTestCharacter('Fighter'), ARMORS['none'])).toBe(true);
+      expect(hasArmorProficiency(createTestCharacter('Wizard'), ARMORS['none'])).toBe(true);
+      expect(hasArmorProficiency(createTestCharacter('Rogue'), ARMORS['none'])).toBe(true);
+      expect(hasArmorProficiency(createTestCharacter('Cleric'), ARMORS['none'])).toBe(true);
     });
   });
 });

@@ -42,7 +42,7 @@ describe('utils/equipment', () => {
         finesse: weaponName === 'Rapier' || weaponName === 'Dagger',
         description: '',
       }],
-      armor: { name: 'Chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
+      armor: { name: 'chainmail', baseAC: 16, maxDexBonus: 2, description: '' },
       shield: { equipped: true, acBonus: 2 },
       items: [],
     },
