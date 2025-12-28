@@ -1,5 +1,7 @@
-import type { PuzzleType, PuzzleConfig, TimingPuzzleConfig } from '../../types/narrative';
+import type { PuzzleType, PuzzleConfig, TimingPuzzleConfig, SlidingPuzzleConfig, RotationPuzzleConfig } from '../../types/narrative';
 import { TimingGame } from './TimingGame';
+import { SlidingSymbolMatch } from './SlidingSymbolMatch';
+import { RuneRotation } from './RuneRotation';
 
 // =============================================================================
 // Puzzle Dispatcher - Routes to correct puzzle component
@@ -21,6 +23,12 @@ export function PuzzleDispatcher({
   switch (puzzleType) {
     case 'timing':
       return <TimingGame config={config as Partial<TimingPuzzleConfig>} onSuccess={onSuccess} onFailure={onFailure} />;
+
+    case 'sliding':
+      return <SlidingSymbolMatch config={config as Partial<SlidingPuzzleConfig>} onSuccess={onSuccess} onFailure={onFailure} />;
+
+    case 'rotation':
+      return <RuneRotation config={config as Partial<RotationPuzzleConfig>} onSuccess={onSuccess} onFailure={onFailure} />;
 
     // Future puzzle types
     case 'matching':

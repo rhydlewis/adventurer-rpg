@@ -77,7 +77,7 @@ export interface ExplorationTable {
 // Puzzle System - Interactive mini-game challenges
 // =============================================================================
 
-export type PuzzleType = 'timing' | 'matching' | 'memory' | 'sequence';
+export type PuzzleType = 'timing' | 'matching' | 'memory' | 'sequence' | 'sliding' | 'rotation';
 
 // Base config shared by all puzzles
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -100,8 +100,19 @@ export interface MatchingPuzzleConfig extends BasePuzzleConfig {
   difficulty?: 'easy' | 'medium' | 'hard';
 }
 
+// Sliding symbol match configuration
+export interface SlidingPuzzleConfig extends BasePuzzleConfig {
+  gridSize?: number;
+  targetLength?: number;
+}
+
+// Rune rotation configuration
+export interface RotationPuzzleConfig extends BasePuzzleConfig {
+  gridSize?: number;
+}
+
 // Union of all puzzle configs
-export type PuzzleConfig = TimingPuzzleConfig | MatchingPuzzleConfig;
+export type PuzzleConfig = TimingPuzzleConfig | MatchingPuzzleConfig | SlidingPuzzleConfig | RotationPuzzleConfig;
 
 // =============================================================================
 // Choice Outcomes - Unified recursive pattern for all choice routing
