@@ -1,7 +1,9 @@
-import type { PuzzleType, PuzzleConfig, TimingPuzzleConfig, SlidingPuzzleConfig, RotationPuzzleConfig } from '../../types/narrative';
+import type { PuzzleType, PuzzleConfig, TimingPuzzleConfig, SlidingPuzzleConfig, RotationPuzzleConfig, TumblerPuzzleConfig, PressurePuzzleConfig } from '../../types/narrative';
 import { TimingGame } from './TimingGame';
 import { SlidingSymbolMatch } from './SlidingSymbolMatch';
 import { RuneRotation } from './RuneRotation';
+import { LockTumbler } from './LockTumbler';
+import { PressurePlates } from './PressurePlates';
 
 // =============================================================================
 // Puzzle Dispatcher - Routes to correct puzzle component
@@ -29,6 +31,12 @@ export function PuzzleDispatcher({
 
     case 'rotation':
       return <RuneRotation config={config as Partial<RotationPuzzleConfig>} onSuccess={onSuccess} onFailure={onFailure} />;
+
+    case 'tumbler':
+      return <LockTumbler config={config as Partial<TumblerPuzzleConfig>} onSuccess={onSuccess} onFailure={onFailure} />;
+
+    case 'pressure':
+      return <PressurePlates config={config as Partial<PressurePuzzleConfig>} onSuccess={onSuccess} onFailure={onFailure} />;
 
     // Future puzzle types
     case 'matching':

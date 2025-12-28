@@ -77,7 +77,7 @@ export interface ExplorationTable {
 // Puzzle System - Interactive mini-game challenges
 // =============================================================================
 
-export type PuzzleType = 'timing' | 'matching' | 'memory' | 'sequence' | 'sliding' | 'rotation';
+export type PuzzleType = 'timing' | 'matching' | 'memory' | 'sequence' | 'sliding' | 'rotation' | 'tumbler' | 'pressure';
 
 // Base config shared by all puzzles
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -111,8 +111,21 @@ export interface RotationPuzzleConfig extends BasePuzzleConfig {
   gridSize?: number;
 }
 
+// Lock tumbler configuration
+export interface TumblerPuzzleConfig extends BasePuzzleConfig {
+  dialCount?: number;
+  symbolsPerDial?: number;
+  linkedDials?: boolean;
+}
+
+// Pressure plates configuration
+export interface PressurePuzzleConfig extends BasePuzzleConfig {
+  gridSize?: number;
+  togglePattern?: 'cross' | 'plus' | 'diagonal' | 'adjacent';
+}
+
 // Union of all puzzle configs
-export type PuzzleConfig = TimingPuzzleConfig | MatchingPuzzleConfig | SlidingPuzzleConfig | RotationPuzzleConfig;
+export type PuzzleConfig = TimingPuzzleConfig | MatchingPuzzleConfig | SlidingPuzzleConfig | RotationPuzzleConfig | TumblerPuzzleConfig | PressurePuzzleConfig;
 
 // =============================================================================
 // Choice Outcomes - Unified recursive pattern for all choice routing
