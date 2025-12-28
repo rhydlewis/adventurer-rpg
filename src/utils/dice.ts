@@ -4,13 +4,24 @@ const roller = new DiceRoller();
 
 // Debug mode: force next d20 roll to a specific value (1-20)
 let forcedD20Roll: number | null = null;
+let forcedPlayerD20Roll: number | null = null;
+let forcedEnemyD20Roll: number | null = null;
 
-export function setForcedD20Roll(value: number | null) {
-  forcedD20Roll = value;
+export function setForcedD20Roll(value: number | null, context?: 'player' | 'enemy') {
+  if (!context) {
+    // Legacy support: set both player and enemy
+    forcedD20Roll = value;
+  } else if (context === 'player') {
+    forcedPlayerD20Roll = value;
+  } else if (context === 'enemy') {
+    forcedEnemyD20Roll = value;
+  }
 }
 
 export function clearForcedD20Roll() {
   forcedD20Roll = null;
+  forcedPlayerD20Roll = null;
+  forcedEnemyD20Roll = null;
 }
 
 /**
@@ -33,19 +44,30 @@ export function rollD20(modifier: number = 0): number {
  * Roll attack: d20 + BAB + ability modifier
  * Returns total, the d20 roll (for crit checking), and formatted output
  */
-export function rollAttack(bab: number, abilityMod: number): {
+export function rollAttack(bab: number, abilityMod: number, context?: 'player' | 'enemy'): {
   total: number;
   d20Result: number;
   output: string;
 } {
   // Check if we're forcing the d20 roll for debug purposes
-  if (forcedD20Roll !== null) {
-    const d20 = forcedD20Roll;
+  // Priority: context-specific forced roll > legacy forced roll
+  let debugRoll: number | null = null;
+
+  if (context === 'player' && forcedPlayerD20Roll !== null) {
+    debugRoll = forcedPlayerD20Roll;
+    forcedPlayerD20Roll = null;
+  } else if (context === 'enemy' && forcedEnemyD20Roll !== null) {
+    debugRoll = forcedEnemyD20Roll;
+    forcedEnemyD20Roll = null;
+  } else if (forcedD20Roll !== null) {
+    debugRoll = forcedD20Roll;
+    forcedD20Roll = null;
+  }
+
+  if (debugRoll !== null) {
+    const d20 = debugRoll;
     const modifier = bab + abilityMod;
     const total = d20 + modifier;
-
-    // Clear the forced roll after using it
-    forcedD20Roll = null;
 
     return {
       total,

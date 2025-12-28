@@ -20,13 +20,15 @@ import { calculateConditionModifiers, decrementConditions, applyConditionDamage,
 import { rollLoot, formatLootMessage } from './loot';
 import { selectTaunt, isLowHealth } from './taunts';
 import { applyItemEffect } from './itemEffects';
+import { applyStartingQuirk } from './quirks';
 
 export function performAttack(
   attacker: Character | Creature,
   defender: Character | Creature,
   attackerConditions: Condition[] = [],
   defenderConditions: Condition[] = [],
-  modifiers?: { attackBonus?: number; damageBonus?: number; label?: string }
+  modifiers?: { attackBonus?: number; damageBonus?: number; label?: string },
+  context?: 'player' | 'enemy'
 ): {
   hit: boolean;
   attackRoll: number;
@@ -56,7 +58,7 @@ export function performAttack(
   // Apply attack bonuses from both explicit modifiers AND conditions
   const totalAttackBonus = (modifiers?.attackBonus ?? 0) + (attackerMods.attackBonus ?? 0);
   const totalDamageBonus = (modifiers?.damageBonus ?? 0) + (attackerMods.damageBonus ?? 0);
-  const attack = rollAttack(attacker.bab, abilityMod + totalAttackBonus);
+  const attack = rollAttack(attacker.bab, abilityMod + totalAttackBonus, context);
   const naturalRoll = attack.d20Result;
 
   // CRITICAL FIX: Calculate effective AC with condition bonuses (Dodge, Shielded, etc.)
@@ -152,6 +154,11 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
 
   let playerCharacter = state.playerCharacter;
   let enemy = state.enemy;
+
+  // Quirk tracking
+  let playerAcBonus: number | undefined = state.playerAcBonus;
+  let quirkTriggered = state.quirkTriggered;
+  let autoBlockActive = state.autoBlockActive || false;
 
   // Combat start taunt (only on turn 1)
   if (state.turn === 1) {
@@ -399,7 +406,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         };
       }
 
-      const playerAttack = performAttack(playerCharacter, enemy, playerConditions, enemyConditions, attackModifiers);
+      const playerAttack = performAttack(playerCharacter, enemy, playerConditions, enemyConditions, attackModifiers, 'player');
 
       // Check for Rogue Sneak Attack
       let sneakAttackDamage = 0;
@@ -469,7 +476,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         });
       } else if (fumble.givesFreeAttack) {
         // Opening - enemy gets free attack immediately
-        const freeAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions);
+        const freeAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions, undefined, 'enemy');
         log.push({
           turn: state.turn,
           actor: 'enemy',
@@ -577,8 +584,40 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       delete fumbleEffects.enemy;
     }
   } else {
-    // Enemy attacks normally
-    const enemyAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions);
+    // Apply first-attack quirk if this is turn 1 and quirk hasn't triggered
+    if (state.turn === 1 && !quirkTriggered) {
+      const quirkResult = applyStartingQuirk(playerCharacter, state, 'first-attack');
+      if (quirkResult.log.length > 0) {
+        log.push(...quirkResult.log);
+      }
+      if (quirkResult.acBonus) {
+        playerAcBonus = quirkResult.acBonus;
+        // Apply AC bonus as a temporary condition for this attack
+        playerConditions = applyCondition(playerConditions, 'Guarded', state.turn, 1);
+      }
+      if (quirkResult.autoBlockActive) {
+        autoBlockActive = true;
+      }
+      if (quirkResult.quirkTriggered) {
+        quirkTriggered = true;
+      }
+    }
+
+    // Enemy attacks - check for auto-block first
+    let enemyAttack;
+    if (autoBlockActive) {
+      // Auto-block: Attack automatically misses
+      enemyAttack = {
+        hit: false,
+        attackRoll: 0,
+        attackTotal: 0,
+        output: "Attack automatically blocked!",
+      };
+      autoBlockActive = false; // Clear after use
+    } else {
+      // Normal attack
+      enemyAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions, undefined, 'enemy');
+    }
     log.push({
       turn: state.turn,
       actor: 'enemy',
@@ -611,7 +650,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         });
       } else if (fumble.givesFreeAttack) {
         // Opening - player gets free attack immediately
-        const freeAttack = performAttack(playerCharacter, enemy, playerConditions, enemyConditions);
+        const freeAttack = performAttack(playerCharacter, enemy, playerConditions, enemyConditions, undefined, 'player');
         log.push({
           turn: state.turn,
           actor: 'player',
@@ -662,7 +701,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       message: lootMessage,
     });
 
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions }, quirkTriggered, playerAcBonus, autoBlockActive };
   }
 
   return {
@@ -675,6 +714,9 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     dodgeActive,
     activeBuffs,
     activeConditions: { player: playerConditions, enemy: enemyConditions },
+    quirkTriggered,
+    playerAcBonus,
+    autoBlockActive,
   };
 }
 

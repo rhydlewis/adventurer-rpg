@@ -14,6 +14,8 @@ export type ConditionType =
   | 'Strengthened'
   | 'Enchanted'
   | 'Shielded'
+  | 'Hidden'
+  | 'Guarded'
   // Migrated effects from existing systems
   | 'Dodge'
   | 'Divine Favor'

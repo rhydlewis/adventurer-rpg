@@ -47,16 +47,24 @@ npx cap open android # Open in Android Studio
 
 ## Testing Philosophy
 
+**CRITICAL: Always test BEHAVIOR, not implementation details**
+
 - Test game mechanics in `/utils`, not UI
 - Test edge cases (zero HP, max stats, critical hits)
 - Use descriptive test names
 - Mock dice rolls for deterministic tests
+- **MANDATORY**: Before writing ANY test, read `agent_docs/development/testing-guide.md`
+- **Use TodoWrite** when writing tests for complex features to follow the checklist
+- **Red Flag**: If your test checks flags/internal state instead of observable outcomes (HP changes, attacks missing, log messages), it's wrong
 
 ## Development Workflow
 
 1. **Before making changes**: Check if relevant documentation exists in `agent_docs/`
 2. **Read relevant docs**: Architecture, systems, or workflow guides as needed
 3. **Write tests first**: Especially for game mechanics
+   - **MANDATORY**: Follow `agent_docs/development/testing-guide.md`
+   - Use the behavioral test template from the guide
+   - Create TodoWrite todos for test checklist items
 4. **Extend, don't rewrite**: Never break the walking skeleton
 5. **Verify changes**: Run `npm test` and `npm run lint` before committing
 

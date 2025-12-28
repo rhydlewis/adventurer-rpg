@@ -68,4 +68,9 @@ export interface CombatState {
     narrativeFlag?: string; // "fled_from_skeleton"
     safeNodeId: string; // Where to return after retreat
   };
+  // Quirk system tracking
+  quirkTriggered?: boolean;
+  playerHidden?: boolean;
+  playerAcBonus?: number; // AC bonus from first-attack quirk (deprecated - using autoBlockActive instead)
+  autoBlockActive?: boolean; // Auto-block quirk: next enemy attack auto-misses
 }

@@ -101,6 +101,24 @@ export const CONDITION_DEFINITIONS: Record<ConditionType, ConditionDefinition> =
     },
   },
 
+  Hidden: {
+    type: 'Hidden',
+    category: 'buff',
+    description: '+4 AC (concealed)',
+    modifiers: {
+      acBonus: 4,
+    },
+  },
+
+  Guarded: {
+    type: 'Guarded',
+    category: 'buff',
+    description: '+2 AC (defensive)',
+    modifiers: {
+      acBonus: 2,
+    },
+  },
+
   // === MIGRATED EFFECTS ===
 
   Dodge: {
@@ -157,6 +175,8 @@ export const DEFAULT_DURATIONS: Record<ConditionType, number> = {
   Strengthened: 2,
   Enchanted: 2,
   Shielded: 3,
+  Hidden: 1,
+  Guarded: 1,
 
   // Migrated effects
   Dodge: 1,

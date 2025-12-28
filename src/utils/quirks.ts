@@ -7,6 +7,7 @@ export interface QuirkResult {
   playerExtraAction?: boolean;
   playerHp?: number;
   quirkTriggered?: boolean;
+  autoBlockActive?: boolean; // First attack auto-misses
 }
 
 /**
@@ -37,7 +38,7 @@ export function applyStartingQuirk(
             actor: 'system',
             message: "Your guard training kicks in—you deflect the blow!",
           }],
-          acBonus: 2,
+          autoBlockActive: true,
           quirkTriggered: true,
         };
       }

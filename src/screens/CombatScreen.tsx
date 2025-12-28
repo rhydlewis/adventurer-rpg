@@ -58,8 +58,12 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
     }
   }, [combat?.log]);
 
-  const handleForceRoll = (value: number) => {
-    setForcedD20Roll(value);
+  const handleForceRollPlayer = (value: number) => {
+    setForcedD20Roll(value, 'player');
+  };
+
+  const handleForceRollEnemy = (value: number) => {
+    setForcedD20Roll(value, 'enemy');
   };
 
   if (!combat) {
@@ -322,31 +326,47 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
         {/* Debug Panel - Collapsible */}
         {debugMode && (
           <div className="flex-none px-4 pb-4">
-            <div className="bg-slate-900/90 border border-amber-800/50 rounded-lg p-3">
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <button
-                  onClick={() => handleForceRoll(20)}
-                  className="px-2 py-1.5 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-700/50 hover:bg-emerald-800/50 transition-colors"
+            <div className="bg-slate-900/90 border border-amber-800/50 rounded-lg p-3 space-y-3">
+              <div className="grid grid-cols-4 gap-2 text-xs">
+                <button onClick={()=> handleForceRollPlayer(20)}
+                        className="px-2 py-1.5 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-700/50 hover:bg-emerald-800/50 transition-colors"
                 >
-                  Force Crit (20)
+                  pCrit (20)
                 </button>
-                <button
-                  onClick={() => handleForceRoll(1)}
-                  className="px-2 py-1.5 bg-red-900/50 text-red-300 rounded border border-red-700/50 hover:bg-red-800/50 transition-colors"
+                <button onClick={()=> handleForceRollEnemy(20)}
+                        className="px-2 py-1.5 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-700/50 hover:bg-emerald-800/50 transition-colors"
                 >
-                  Force Fumble (1)
+                  eCrit (20)
                 </button>
-                <button
-                  onClick={() => handleForceRoll(15)}
-                  className="px-2 py-1.5 bg-blue-900/50 text-blue-300 rounded border border-blue-700/50 hover:bg-blue-800/50 transition-colors"
+                <button onClick={()=> handleForceRollPlayer(1)}
+                        className="px-2 py-1.5 bg-red-900/50 text-red-300 rounded border border-red-700/50 hover:bg-red-800/50 transition-colors"
                 >
-                  Force Hit (15)
+                  pFumble (1)
                 </button>
-                <button
-                  onClick={() => handleForceRoll(5)}
-                  className="px-2 py-1.5 bg-slate-700/50 text-slate-300 rounded border border-slate-600/50 hover:bg-slate-600/50 transition-colors"
+                <button onClick={()=> handleForceRollEnemy(1)}
+                        className="px-2 py-1.5 bg-red-900/50 text-red-300 rounded border border-red-700/50 hover:bg-red-800/50 transition-colors"
                 >
-                  Force Miss (5)
+                  eFumble (1)
+                </button>
+                <button onClick={()=> handleForceRollPlayer(19)}
+                        className="px-2 py-1.5 bg-blue-900/50 text-blue-300 rounded border border-blue-700/50 hover:bg-blue-800/50 transition-colors"
+                >
+                  pHit (19)
+                </button>
+                <button onClick={()=> handleForceRollEnemy(19)}
+                        className="px-2 py-1.5 bg-blue-900/50 text-blue-300 rounded border border-blue-700/50 hover:bg-blue-800/50 transition-colors"
+                >
+                  eHit (19)
+                </button>
+                <button onClick={()=> handleForceRollPlayer(5)}
+                        className="px-2 py-1.5 bg-slate-700/50 text-slate-300 rounded border border-slate-600/50 hover:bg-slate-600/50 transition-colors"
+                >
+                  pMiss (5)
+                </button>
+                <button onClick={()=> handleForceRollEnemy(5)}
+                        className="px-2 py-1.5 bg-slate-700/50 text-slate-300 rounded border border-slate-600/50 hover:bg-slate-600/50 transition-colors"
+                >
+                  eMiss (5)
                 </button>
               </div>
             </div>

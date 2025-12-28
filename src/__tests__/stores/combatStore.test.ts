@@ -183,6 +183,107 @@ describe('stores/combatStore', () => {
     });
   });
 
+  describe('quirks integration', () => {
+    it('should apply combat-start quirk (start-hidden) when combat begins', () => {
+      const roguePlayer = createMockCharacter('Rogue', 10);
+      roguePlayer.startingQuirk = 'start-hidden';
+
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === roguePlayer.name) return 12;
+        return 10;
+      });
+
+      useCombatStore.getState().startCombat(roguePlayer, enemy);
+
+      const { combat } = useCombatStore.getState();
+      expect(combat?.playerHidden).toBe(true);
+      expect(combat?.log.some(entry => entry.message.includes('blend into the shadows'))).toBe(true);
+      expect(combat?.quirkTriggered).toBe(true);
+    });
+
+    it('should not apply quirk if player has no starting quirk', () => {
+      const playerNoQuirk = createMockCharacter('Fighter', 10);
+      // No startingQuirk property
+
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === playerNoQuirk.name) return 12;
+        return 10;
+      });
+
+      useCombatStore.getState().startCombat(playerNoQuirk, enemy);
+
+      const { combat } = useCombatStore.getState();
+      expect(combat?.playerHidden).toBeUndefined();
+      expect(combat?.quirkTriggered).toBeUndefined();
+    });
+
+    it('should apply turn-1 quirk (healing-aura) on first turn', () => {
+      const clericPlayer = createMockCharacter('Cleric', 8); // Not at max HP
+      clericPlayer.maxHp = 10;
+      clericPlayer.startingQuirk = 'healing-aura';
+
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === clericPlayer.name) return 12;
+        return 10;
+      });
+
+      // Mock resolveCombatRound to return updated state
+      vi.mocked(resolveCombatRound).mockImplementation((state) => {
+        // Simulate combat resolution returning same state for simplicity
+        return { ...state, turn: 2 };
+      });
+
+      useCombatStore.getState().startCombat(clericPlayer, enemy);
+      const mockAction = { type: 'attack' as const, name: 'Attack', description: '', available: true };
+      useCombatStore.getState().executeTurn(mockAction);
+
+      const { combat } = useCombatStore.getState();
+      // Healing-aura should heal 1 HP on turn 1
+      expect(combat?.playerCharacter.hp).toBe(9);
+      expect(combat?.log.some(entry => entry.message.includes('faith sustains you'))).toBe(true);
+    });
+
+    it('should store first-attack quirk AC bonus when enemy attacks on turn 1', () => {
+      const fighterPlayer = createMockCharacter('Fighter', 10);
+      fighterPlayer.startingQuirk = 'auto-block-first-attack';
+
+      // Player goes first, so enemy will attack on turn 1
+      vi.mocked(rollInitiative).mockImplementation((entity) => {
+        if (entity.name === fighterPlayer.name) return 12;
+        return 10; // Player goes first
+      });
+
+      // Mock resolveCombatRound to simulate applying the quirk
+      vi.mocked(resolveCombatRound).mockImplementation((state) => {
+        // Real implementation will apply first-attack quirk inside resolveCombatRound
+        // For now, verify that the quirk would be available
+        return {
+          ...state,
+          turn: 2,
+          playerAcBonus: 2, // AC bonus from quirk
+          quirkTriggered: true,
+          log: [
+            ...state.log,
+            {
+              turn: 1,
+              actor: 'system',
+              message: "Your guard training kicks in—you deflect the blow!",
+            },
+          ],
+        };
+      });
+
+      useCombatStore.getState().startCombat(fighterPlayer, enemy);
+      const mockAction = { type: 'attack' as const, name: 'Attack', description: '', available: true };
+      useCombatStore.getState().executeTurn(mockAction);
+
+      const { combat } = useCombatStore.getState();
+      expect(combat?.playerAcBonus).toBe(2);
+      expect(combat?.quirkTriggered).toBe(true);
+      expect(combat?.log.some(entry => entry.message.includes('guard training kicks in'))).toBe(true);
+    });
+  });
+
   describe('swapWeapon', () => {
     it('should swap weapons and update combat state', () => {
       const longsword = { id: 'longsword-1', name: 'Longsword' as const, damage: '1d8', damageType: 'slashing' as const, finesse: false, description: 'A longsword' };

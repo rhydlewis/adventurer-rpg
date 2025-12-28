@@ -23,8 +23,8 @@ describe('Starting Quirks System', () => {
       'first-attack'
     );
 
-    // Check that AC bonus was applied
-    expect(result.acBonus).toBe(2);
+    // Check that auto-block flag was set
+    expect(result.autoBlockActive).toBe(true);
 
     // Check that discovery message was added
     const discoveryLog = result.log.find(entry =>

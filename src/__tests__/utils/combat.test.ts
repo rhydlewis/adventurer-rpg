@@ -266,7 +266,7 @@ describe('utils/combat', () => {
       performAttack(attacker, defender);
 
       expect(calculateModifier).toHaveBeenCalledWith(18);
-      expect(rollAttack).toHaveBeenCalledWith(attacker.bab, 4);
+      expect(rollAttack).toHaveBeenCalledWith(attacker.bab, 4, undefined);
       expect(rollDamage).toHaveBeenCalledWith('1d8', 4);
     });
 
@@ -637,6 +637,173 @@ describe('utils/combat', () => {
       expect(result.log[2].actor).toBe('system');
       expect(result.log[2].message).toMatch(/Obtained:|No loot/);
       expect(result.winner).toBe('player');
+    });
+
+    it('applies first-attack quirk (auto-block) when enemy attacks on turn 1', () => {
+      const player = createTestCharacter({
+        startingQuirk: 'auto-block-first-attack',
+        hp: 20,
+      });
+      const enemy = createTestEnemy();
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: player,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: null,
+        currentActor: 'player',
+      };
+
+      vi.mocked(calculateModifier).mockReturnValue(3);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 20,
+        d20Result: 16,
+        output: '1d20+4: [16]+4 = 20',
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 3,
+        output: '1d8+3: [0]+3 = 3',
+      });
+
+      const result = resolveCombatRound(state, attackAction);
+
+      // Quirk should be triggered
+      expect(result.quirkTriggered).toBe(true);
+      // Quirk message should be in log
+      expect(result.log.some(entry => entry.message.includes('guard training kicks in'))).toBe(true);
+      // BEHAVIORAL TEST: Player should take no damage (attack was blocked)
+      expect(result.playerCharacter.hp).toBe(20);
+      expect(result.log.some(entry => entry.message.includes('blocked'))).toBe(true);
+    });
+  });
+
+  describe('Quirks - Behavioral Tests', () => {
+    it('Hidden condition should make enemy attacks miss (+4 AC bonus)', () => {
+      const rogue = createTestCharacter({
+        ac: 14, // Base AC becomes 18 with Hidden
+        hp: 20, // Ensure we can detect if damage is taken
+      });
+      const enemy = createTestEnemy({ hp: 20 });
+
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: rogue,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: null,
+        currentActor: 'player',
+        activeConditions: {
+          player: [
+            {
+              type: 'Hidden',
+              category: 'buff',
+              description: '+4 AC (concealed)',
+              turnsRemaining: 2, // Set to 2 so it lasts through turn 1 (decremented at start of turn)
+              modifiers: { acBonus: 4 },
+              appliedOnTurn: 0, // Applied at combat start, before turn 1 executes
+            },
+          ],
+          enemy: [],
+        },
+      };
+
+      // Mock attack that would hit base AC (16 > 14) but misses with Hidden (+4 AC = 18)
+      vi.mocked(calculateModifier).mockReturnValue(2);
+      vi.mocked(isCriticalHit).mockReturnValue(false);
+      vi.mocked(isCriticalFumble).mockReturnValue(false);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 16,
+        d20Result: 14,
+        output: '1d20+2: [14]+2 = 16',
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 5,
+        output: '1d8+2: [3]+2 = 5',
+      });
+
+      const result = resolveCombatRound(state, attackAction);
+
+      // Player should take NO damage (attack misses: 16 < 18)
+      expect(result.playerCharacter.hp).toBe(20); // No damage taken
+      expect(result.log.some(entry => entry.message.includes('MISS'))).toBe(true);
+    });
+
+    it('auto-block quirk should make first enemy attack automatically miss', () => {
+      const fighter = createTestCharacter({
+        startingQuirk: 'auto-block-first-attack',
+        ac: 16,
+        hp: 20,
+      });
+      const enemy = createTestEnemy({ hp: 20 });
+
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: fighter,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: null,
+        currentActor: 'player',
+        quirkTriggered: false, // Not triggered yet
+      };
+
+      // Mock attack - even a critical hit (20) should be blocked!
+      vi.mocked(calculateModifier).mockReturnValue(2);
+      vi.mocked(isCriticalHit).mockReturnValue(false);
+      vi.mocked(isCriticalFumble).mockReturnValue(false);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 25, // Would normally be a guaranteed hit
+        d20Result: 20, // Natural 20
+        output: '1d20+5: [20]+5 = 25',
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 10,
+        output: '1d8+2: [8]+2 = 10',
+      });
+
+      const result = resolveCombatRound(state, attackAction);
+
+      // Fighter should take NO damage (auto-blocked regardless of roll)
+      expect(result.playerCharacter.hp).toBe(20); // No damage taken
+      expect(result.log.some(entry => entry.message.includes('blocked'))).toBe(true);
+      // Quirk message should appear
+      expect(result.log.some(entry => entry.message.includes('guard training kicks in'))).toBe(true);
+    });
+
+    it('quirk should only trigger once per combat', () => {
+      const fighter = createTestCharacter({
+        startingQuirk: 'auto-block-first-attack',
+      });
+      const enemy = createTestEnemy({ hp: 50 });
+
+      const state: CombatState = {
+        turn: 1,
+        playerCharacter: fighter,
+        enemy,
+        log: [],
+        winner: null,
+        initiative: null,
+        currentActor: 'player',
+        quirkTriggered: true, // Already triggered
+      };
+
+      vi.mocked(calculateModifier).mockReturnValue(2);
+      vi.mocked(isCriticalHit).mockReturnValue(false);
+      vi.mocked(isCriticalFumble).mockReturnValue(false);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 10,
+        d20Result: 8,
+        output: '1d20+2: [8]+2 = 10',
+      });
+
+      const result = resolveCombatRound(state, attackAction);
+
+      // Quirk should NOT trigger again
+      expect(result.log.some(entry => entry.message.includes('guard training'))).toBe(false);
+      // AC bonus should not be updated
+      expect(result.playerAcBonus).toBeUndefined();
     });
   });
 
@@ -1061,6 +1228,16 @@ describe('utils/combat', () => {
         available: true,
         itemId: 'healing-potion',
       };
+
+      // Mock dice rolls for enemy attack (player uses item, enemy attacks back)
+      vi.mocked(calculateModifier).mockReturnValue(1);
+      vi.mocked(isCriticalHit).mockReturnValue(false);
+      vi.mocked(isCriticalFumble).mockReturnValue(false);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 8, // Enemy misses (8 < player AC)
+        d20Result: 7,
+        output: '1d20+1: [7]+1 = 8',
+      });
 
       const result = resolveCombatRound(state, action);
 
