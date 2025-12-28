@@ -61,8 +61,11 @@ export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreat
             </div>
 
             <div className="border-t border-border-default pt-4">
-              <h3 className="heading-secondary mb-3">Background: {background.name}</h3>
-              <p className="body-secondary mb-4 italic">"{background.description}"</p>
+              <h3 className="heading-secondary mb-3">Background</h3>
+              <p className="body-secondary mb-4">
+                <div className="font-bold">{background.name}</div>
+                <div className="italic">{background.description}</div>
+              </p>
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -84,7 +87,7 @@ export function QuickCharacterCreationScreen({ onComplete }: QuickCharacterCreat
               <div className="flex items-start gap-2">
                 <Icon name="Info" size={16} className="text-fg-accent flex-shrink-0 mt-0.5" />
                 <p className="body-secondary text-sm">
-                  <strong>Phase 1:</strong> Your character will use recommended stats based on your background.
+                  Your character will use recommended stats based on your background.
                   You can customize later in the campaign.
                 </p>
               </div>

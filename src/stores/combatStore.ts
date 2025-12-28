@@ -5,6 +5,8 @@ import type { Creature } from "../types/creature";
 import type { Action } from '../types/action';
 import { resolveCombatRound, handleRetreat } from '../utils/combat';
 import { rollInitiative } from '../utils/initiative';
+import { applyStartingQuirk } from '../utils/quirks';
+import { applyCondition } from '../utils/conditions';
 
 interface CombatStore {
   combat: CombatState | null;
@@ -67,20 +69,41 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       },
     ];
 
+    const initialCombatState: CombatState = {
+      turn: 1,
+      playerCharacter: player,
+      enemy: enemy,
+      log: initiativeLog,
+      winner: null,
+      initiative,
+      currentActor: order[0],
+      canRetreat: true, // Allow retreat by default (narrative can disable for boss fights)
+      retreatPenalty: {
+        goldLost: 20,
+        damageOnFlee: 5,
+        safeNodeId: 'home', // Default to home screen for test combats
+      },
+    };
+
+    // Apply combat-start quirks
+    const quirkResult = applyStartingQuirk(player, initialCombatState, 'combat-start');
+
+    // Apply Hidden condition if quirk sets playerHidden
+    // Use turn 0 and duration 2 so it lasts through turn 1 (decremented at start of turn)
+    let playerConditions = initialCombatState.activeConditions?.player || [];
+    if (quirkResult.playerHidden) {
+      playerConditions = applyCondition(playerConditions, 'Hidden', 0, 2);
+    }
+
     set({
       combat: {
-        turn: 1,
-        playerCharacter: player,
-        enemy: enemy,
-        log: initiativeLog,
-        winner: null,
-        initiative,
-        currentActor: order[0],
-        canRetreat: true, // Allow retreat by default (narrative can disable for boss fights)
-        retreatPenalty: {
-          goldLost: 20,
-          damageOnFlee: 5,
-          safeNodeId: 'home', // Default to home screen for test combats
+        ...initialCombatState,
+        log: [...initialCombatState.log, ...quirkResult.log],
+        playerHidden: quirkResult.playerHidden,
+        quirkTriggered: quirkResult.quirkTriggered,
+        activeConditions: {
+          player: playerConditions,
+          enemy: initialCombatState.activeConditions?.enemy || [],
         },
       },
     });
@@ -89,9 +112,29 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
   executeTurn: (playerAction) => {
     set((state) => {
       if (!state.combat) return state;
+
+      // Apply turn-1 quirks before combat resolution
+      let combatState = state.combat;
+      if (combatState.turn === 1 && !combatState.quirkTriggered) {
+        const quirkResult = applyStartingQuirk(
+          combatState.playerCharacter,
+          combatState,
+          'turn-1'
+        );
+
+        combatState = {
+          ...combatState,
+          log: [...combatState.log, ...quirkResult.log],
+          playerCharacter: quirkResult.playerHp
+            ? { ...combatState.playerCharacter, hp: quirkResult.playerHp }
+            : combatState.playerCharacter,
+          quirkTriggered: quirkResult.quirkTriggered || combatState.quirkTriggered,
+        };
+      }
+
       // Phase 1.3: Pass player action to combat resolution
       return {
-        combat: resolveCombatRound(state.combat, playerAction),
+        combat: resolveCombatRound(combatState, playerAction),
       };
     });
   },
