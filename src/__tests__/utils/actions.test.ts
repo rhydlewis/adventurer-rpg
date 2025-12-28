@@ -96,8 +96,9 @@ describe('Actions - Fighter', () => {
     expect(attackAction.available).toBe(true);
   });
 
-  it('should have Power Attack action', () => {
+  it('should have Power Attack action when mechanicsLocked is true', () => {
     const fighter = createFighter();
+    fighter.mechanicsLocked = true;
     const actions = getAvailableActions(fighter);
 
     const powerAttack = actions.find(
@@ -108,6 +109,17 @@ describe('Actions - Fighter', () => {
     expect(powerAttack.attackModifier).toBe(-2);
     expect(powerAttack.damageModifier).toBe(4);
     expect(powerAttack.available).toBe(true);
+  });
+
+  it('should NOT have Power Attack when mechanicsLocked is false (Phase 1)', () => {
+    const fighter = createFighter();
+    fighter.mechanicsLocked = false;
+    const actions = getAvailableActions(fighter);
+
+    const powerAttack = actions.find(
+      (a) => a.type === 'attack' && a.variant === 'power_attack'
+    );
+    expect(powerAttack).toBeUndefined();
   });
 
   it('should have Second Wind ability', () => {

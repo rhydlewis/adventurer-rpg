@@ -18,8 +18,8 @@ export function getAvailableActions(character: Character): Action[] {
     available: true,
   } as AttackAction);
 
-  // 1b. Fighter Power Attack - modified attack option
-  if (character.class === 'Fighter') {
+  // 1b. Fighter Power Attack - modified attack option (requires Phase 2 completion)
+  if (character.class === 'Fighter' && character.mechanicsLocked) {
     actions.push({
       type: 'attack',
       variant: 'power_attack',
