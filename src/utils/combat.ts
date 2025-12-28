@@ -159,6 +159,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   let playerAcBonus: number | undefined = state.playerAcBonus;
   let quirkTriggered = state.quirkTriggered;
   let autoBlockActive = state.autoBlockActive || false;
+  let autoHealActive = state.autoHealActive || false;
 
   // Combat start taunt (only on turn 1)
   if (state.turn === 1) {
@@ -539,7 +540,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       message: lootMessage,
     });
 
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions }, autoHealActive };
   }
 
   // Check if player defeated (could happen from self-damage or free attack)
@@ -549,7 +550,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions }, autoHealActive };
   }
 
   // Clear enemy's Dodge at start of their turn
@@ -650,6 +651,18 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
 
     if (enemyAttack.hit && enemyAttack.damage) {
       playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - enemyAttack.damage };
+
+      // Auto-heal quirk: heal to full HP after first hit
+      if (autoHealActive) {
+        const healedAmount = playerCharacter.maxHp - playerCharacter.hp;
+        playerCharacter = { ...playerCharacter, hp: playerCharacter.maxHp };
+        autoHealActive = false; // Deactivate after use
+        log.push({
+          turn: state.turn,
+          actor: 'system',
+          message: `Divine power restores you (+${healedAmount} HP)!`,
+        });
+      }
     }
 
     // Handle fumble effects
@@ -704,7 +717,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       actor: 'system',
       message: `${playerCharacter.name} has been defeated!`,
     });
-    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions } };
+    return { ...state, playerCharacter, enemy, log, winner: 'enemy', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions }, autoHealActive };
   }
 
   // Check if enemy defeated (could happen from self-damage or free attack)
@@ -724,7 +737,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       message: lootMessage,
     });
 
-    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions }, quirkTriggered, playerAcBonus, autoBlockActive };
+    return { ...state, playerCharacter, enemy, log, winner: 'player', fumbleEffects, dodgeActive, activeBuffs, activeConditions: { player: playerConditions, enemy: enemyConditions }, quirkTriggered, playerAcBonus, autoBlockActive, autoHealActive };
   }
 
   return {
@@ -740,6 +753,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
     quirkTriggered,
     playerAcBonus,
     autoBlockActive,
+    autoHealActive,
   };
 }
 

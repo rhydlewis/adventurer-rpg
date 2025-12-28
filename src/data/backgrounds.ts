@@ -78,7 +78,7 @@ export const BACKGROUNDS: Record<string, Background> = {
       CHA: 12,
     },
     taggedSkills: ['Medicine', 'Perception'],
-    startingQuirk: 'healing-aura',
+    startingQuirk: 'auto-heal-first-hit',
     puzzleAbility: 'sense-corruption',
   },
 };

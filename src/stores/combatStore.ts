@@ -100,6 +100,7 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
         ...initialCombatState,
         log: [...initialCombatState.log, ...quirkResult.log],
         playerHidden: quirkResult.playerHidden,
+        autoHealActive: quirkResult.autoHealActive,
         quirkTriggered: quirkResult.quirkTriggered,
         activeConditions: {
           player: playerConditions,

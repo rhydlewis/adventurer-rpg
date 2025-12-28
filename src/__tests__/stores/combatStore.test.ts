@@ -217,32 +217,22 @@ describe('stores/combatStore', () => {
       expect(combat?.quirkTriggered).toBeUndefined();
     });
 
-    it('should apply turn-1 quirk (healing-aura) on first turn', async () => {
-      const clericPlayer = createMockCharacter('Cleric', 8); // Not at max HP
+    it('should apply combat-start quirk (auto-heal-first-hit) on combat start', () => {
+      const clericPlayer = createMockCharacter('Cleric', 10);
       clericPlayer.maxHp = 10;
-      clericPlayer.startingQuirk = 'healing-aura';
+      clericPlayer.startingQuirk = 'auto-heal-first-hit';
 
       vi.mocked(rollInitiative).mockImplementation((entity) => {
         if (entity.name === clericPlayer.name) return 12;
         return 10;
       });
 
-      // Use real resolveCombatRound to test turn-1 quirk application
-      const { resolveCombatRound: realResolveCombatRound } = await vi.importActual<typeof import('../../utils/combat')>('../../utils/combat');
-      vi.mocked(resolveCombatRound).mockImplementation((state, action) => {
-        const result = realResolveCombatRound(state, action);
-        // Force turn increment for test
-        return { ...result, turn: 2 };
-      });
-
       useCombatStore.getState().startCombat(clericPlayer, enemy);
-      const mockAction = { type: 'attack' as const, name: 'Attack', description: '', available: true };
-      useCombatStore.getState().executeTurn(mockAction);
 
       const { combat } = useCombatStore.getState();
-      // Healing-aura should heal 1 HP on turn 1
-      expect(combat?.playerCharacter.hp).toBe(9);
-      expect(combat?.log.some(entry => entry.message.includes('faith sustains you'))).toBe(true);
+      // Auto-heal quirk should be active at combat start
+      expect(combat?.autoHealActive).toBe(true);
+      expect(combat?.log.some(entry => entry.message.includes('Divine protection'))).toBe(true);
     });
 
     it('should store first-attack quirk AC bonus when enemy attacks on turn 1', () => {

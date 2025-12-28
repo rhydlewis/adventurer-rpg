@@ -8,6 +8,7 @@ export interface QuirkResult {
   playerHp?: number;
   quirkTriggered?: boolean;
   autoBlockActive?: boolean; // First attack auto-misses
+  autoHealActive?: boolean; // First hit taken heals to full HP
 }
 
 /**
@@ -72,16 +73,15 @@ export function applyStartingQuirk(
       }
       break;
 
-    case 'healing-aura':
-      if (trigger === 'turn-1') {
-        const healAmount = Math.min(1, character.maxHp - character.hp);
+    case 'auto-heal-first-hit':
+      if (trigger === 'combat-start') {
         return {
           log: [{
-            turn: combat.turn,
+            turn: 1,
             actor: 'system',
-            message: `Your faith sustains you (+${healAmount} HP)`,
+            message: "Divine protection surrounds you...",
           }],
-          playerHp: Math.min(character.hp + 1, character.maxHp),
+          autoHealActive: true,
           quirkTriggered: true,
         };
       }

@@ -61,11 +61,11 @@ describe('Starting Quirks System', () => {
     );
   });
 
-  it('should apply healing-aura quirk on turn 1', () => {
+  it('should apply auto-heal quirk on combat start', () => {
     const clericPlayer: Partial<Character> = {
       ...mockPlayer,
       class: 'Cleric',
-      startingQuirk: 'healing-aura',
+      startingQuirk: 'auto-heal-first-hit',
       hp: 10,
       maxHp: 15,
     };
@@ -73,12 +73,12 @@ describe('Starting Quirks System', () => {
     const result = applyStartingQuirk(
       clericPlayer as Character,
       mockCombat as CombatState,
-      'turn-1'
+      'combat-start'
     );
 
-    expect(result.playerHp).toBe(11); // 10 + 1
+    expect(result.autoHealActive).toBe(true);
     expect(result.log).toContainEqual(
-      expect.objectContaining({ message: expect.stringContaining('faith sustains') })
+      expect.objectContaining({ message: expect.stringContaining('Divine protection') })
     );
   });
 

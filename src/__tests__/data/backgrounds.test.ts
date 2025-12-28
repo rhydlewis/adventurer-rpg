@@ -23,7 +23,7 @@ describe('Backgrounds Data', () => {
     expect(BACKGROUNDS['border-guard'].startingQuirk).toBe('auto-block-first-attack');
     expect(BACKGROUNDS['street-urchin'].startingQuirk).toBe('start-hidden');
     expect(BACKGROUNDS['academy-dropout'].startingQuirk).toBe('arcane-shield-turn-1');
-    expect(BACKGROUNDS['temple-acolyte'].startingQuirk).toBe('healing-aura');
+    expect(BACKGROUNDS['temple-acolyte'].startingQuirk).toBe('auto-heal-first-hit');
   });
 
   it('should have dialogue tags for narrative gating', () => {

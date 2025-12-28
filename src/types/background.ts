@@ -5,7 +5,7 @@ export type StartingQuirk =
   | 'auto-block-first-attack' // Fighter: Border Guard
   | 'start-hidden' // Rogue: Street Urchin
   | 'arcane-shield-turn-1' // Wizard: Academy Dropout
-  | 'healing-aura'; // Cleric: Temple Acolyte
+  | 'auto-heal-first-hit'; // Cleric: Temple Acolyte
 
 export interface Background {
   name: string;
