@@ -1,0 +1,66 @@
+{
+  "longsword": {
+    "name": "Longsword",
+    "damage": "1d8",
+    "damageType": "slashing",
+    "finesse": false,
+    "description": "A versatile blade favored by warriors",
+    "proficiencyRequired": "martial"
+  },
+  "rapier": {
+    "name": "Rapier",
+    "damage": "1d6",
+    "damageType": "piercing",
+    "finesse": true,
+    "description": "A thin, precise blade perfect for quick strikes",
+    "proficiencyRequired": "martial-finesse"
+  },
+  "dagger": {
+    "name": "Dagger",
+    "damage": "1d4",
+    "damageType": "piercing",
+    "finesse": true,
+    "description": "A small blade useful for close combat",
+    "proficiencyRequired": "simple"
+  },
+  "mace": {
+    "name": "Mace",
+    "damage": "1d6",
+    "damageType": "bludgeoning",
+    "finesse": false,
+    "description": "A heavy club with a metal head",
+    "proficiencyRequired": "simple"
+  },
+  "scimitar": {
+    "name": "Scimitar",
+    "damage": "1d6",
+    "damageType": "slashing",
+    "finesse": false,
+    "description": "A curved blade favored by raiders",
+    "proficiencyRequired": "martial"
+  },
+  "bite": {
+    "name": "Bite",
+    "damage": "1d6",
+    "damageType": "piercing",
+    "finesse": false,
+    "description": "Natural bite attack",
+    "proficiencyRequired": "simple"
+  },
+  "slam": {
+    "name": "Slam",
+    "damage": "1d6",
+    "damageType": "bludgeoning",
+    "finesse": false,
+    "description": "Natural slam attack",
+    "proficiencyRequired": "simple"
+  },
+  "tusk": {
+    "name": "Tusk",
+    "damage": "1d6",
+    "damageType": "slashing",
+    "finesse": false,
+    "description": "Natural tusk attack",
+    "proficiencyRequired": "simple"
+  }
+}

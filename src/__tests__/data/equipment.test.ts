@@ -1,19 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { WEAPONS, ARMORS, STARTING_ITEMS } from '../../data/equipment';
-import type { WeaponType, ArmorType } from '../../types';
+import { WEAPONS, ARMORS, STARTING_ITEMS, getWeapon } from '../../data/equipment';
+import type { ArmorType } from '../../types';
 
 describe('data/equipment', () => {
   describe('WEAPONS constant', () => {
     it('should be defined and contain expected weapons', () => {
       expect(WEAPONS).toBeDefined();
       expect(Object.keys(WEAPONS).length).toBeGreaterThan(0);
-      expect(WEAPONS).toHaveProperty('Longsword');
-      expect(WEAPONS).toHaveProperty('Rapier');
+      expect(WEAPONS).toHaveProperty('longsword');
+      expect(WEAPONS).toHaveProperty('rapier');
     });
 
     it('each weapon definition should have required properties', () => {
-      for (const weaponType in WEAPONS) {
-        const weapon = WEAPONS[weaponType as WeaponType];
+      for (const weaponId in WEAPONS) {
+        const weapon = WEAPONS[weaponId];
         expect(weapon).toHaveProperty('name');
         expect(weapon).toHaveProperty('damage');
         expect(weapon).toHaveProperty('damageType');
@@ -26,6 +26,68 @@ describe('data/equipment', () => {
         expect(typeof weapon.finesse).toBe('boolean');
         expect(typeof weapon.description).toBe('string');
       }
+    });
+  });
+
+  describe('WEAPONS from JSON', () => {
+    it('should load all weapons from JSON', () => {
+      expect(Object.keys(WEAPONS).length).toBeGreaterThan(0);
+    });
+
+    it('should have longsword with correct properties', () => {
+      const longsword = WEAPONS['longsword'];
+      expect(longsword).toBeDefined();
+      expect(longsword.name).toBe('Longsword');
+      expect(longsword.damage).toBe('1d8');
+      expect(longsword.damageType).toBe('slashing');
+      expect(longsword.finesse).toBe(false);
+      expect(longsword.proficiencyRequired).toBe('martial');
+      expect(longsword.id).toBe('longsword');
+    });
+
+    it('should have rapier with correct properties', () => {
+      const rapier = WEAPONS['rapier'];
+      expect(rapier).toBeDefined();
+      expect(rapier.name).toBe('Rapier');
+      expect(rapier.damage).toBe('1d6');
+      expect(rapier.damageType).toBe('piercing');
+      expect(rapier.finesse).toBe(true);
+      expect(rapier.proficiencyRequired).toBe('martial-finesse');
+      expect(rapier.id).toBe('rapier');
+    });
+
+    it('should have dagger with correct properties', () => {
+      const dagger = WEAPONS['dagger'];
+      expect(dagger).toBeDefined();
+      expect(dagger.name).toBe('Dagger');
+      expect(dagger.damage).toBe('1d4');
+      expect(dagger.damageType).toBe('piercing');
+      expect(dagger.finesse).toBe(true);
+      expect(dagger.id).toBe('dagger');
+    });
+
+    it('getWeapon should return weapon by id', () => {
+      const weapon = getWeapon('longsword');
+      expect(weapon).toBeDefined();
+      expect(weapon?.name).toBe('Longsword');
+    });
+
+    it('getWeapon should return null for invalid id', () => {
+      const weapon = getWeapon('nonexistent');
+      expect(weapon).toBeNull();
+    });
+
+    it('all weapons should have valid damage dice format', () => {
+      const damageRegex = /^\d+d\d+(\+\d+)?$/;
+      Object.values(WEAPONS).forEach((weapon) => {
+        expect(weapon.damage).toMatch(damageRegex);
+      });
+    });
+
+    it('all weapons should have id field matching their key', () => {
+      Object.entries(WEAPONS).forEach(([key, weapon]) => {
+        expect(weapon.id).toBe(key);
+      });
     });
   });
 

@@ -1,71 +1,32 @@
-import type { Weapon, Armor, WeaponType, ArmorType, Item } from '../types';
+import type { Weapon, Armor, ArmorType, Item } from '../types';
+import weaponsJson from './weapons.json';
+import { WeaponsSchema } from '../schemas/weapon.schema';
 
-export const WEAPONS: Record<WeaponType, Weapon> = {
-  Longsword: {
-    name: 'Longsword',
-    damage: '1d8',
-    damageType: 'slashing',
-    finesse: false,
-    description: 'A versatile blade favored by warriors',
-    proficiencyRequired: 'martial',
-  },
-  Rapier: {
-    name: 'Rapier',
-    damage: '1d6',
-    damageType: 'piercing',
-    finesse: true, // Can use DEX for attack and damage
-    description: 'A thin, precise blade perfect for quick strikes',
-    proficiencyRequired: 'martial-finesse',
-  },
-  Dagger: {
-    name: 'Dagger',
-    damage: '1d4',
-    damageType: 'piercing',
-    finesse: true,
-    description: 'A small blade useful for close combat',
-    proficiencyRequired: 'simple',
-  },
-  Mace: {
-    name: 'Mace',
-    damage: '1d6',
-    damageType: 'bludgeoning',
-    finesse: false,
-    description: 'A heavy club with a metal head',
-    proficiencyRequired: 'simple',
-  },
-  Scimitar: {
-    name: 'Scimitar',
-    damage: '1d6',
-    damageType: 'slashing',
-    finesse: false,
-    description: 'A curved blade favored by raiders',
-    proficiencyRequired: 'martial',
-  },
-  Bite: {
-    name: 'Bite',
-    damage: '1d6',
-    damageType: 'piercing',
-    finesse: false,
-    description: 'Natural bite attack',
-    proficiencyRequired: 'simple',
-  },
-  Slam: {
-    name: 'Slam',
-    damage: '1d6',
-    damageType: 'bludgeoning',
-    finesse: false,
-    description: 'Natural slam attack',
-    proficiencyRequired: 'simple',
-  },
-  Tusk: {
-    name: 'Tusk',
-    damage: '1d6',
-    damageType: 'slashing',
-    finesse: false,
-    description: 'Natural tusk attack',
-    proficiencyRequired: 'simple',
-  },
-};
+// Validate weapons at build time
+const validatedWeapons = WeaponsSchema.parse(weaponsJson);
+
+/**
+ * All available weapons in the game
+ * Loaded from weapons.json and validated with Zod schema
+ */
+export const WEAPONS: Record<string, Weapon> = Object.fromEntries(
+  Object.entries(validatedWeapons).map(([id, weapon]) => [
+    id,
+    {
+      ...weapon,
+      id, // Add id field for runtime use
+    } as Weapon,
+  ])
+);
+
+/**
+ * Get a weapon by ID
+ * @param id - The weapon ID (e.g., "longsword", "dagger")
+ * @returns The weapon object, or null if not found
+ */
+export function getWeapon(id: string): Weapon | null {
+  return WEAPONS[id] ?? null;
+}
 
 export const ARMORS: Record<ArmorType, Armor> = {
   None: {
