@@ -15,28 +15,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Dagger",
-        "damage": "1d6",
-        "damageType": "piercing",
-        "finesse": true,
-        "description": "A short blade favored by bandits"
-      },
-      "weapons": [
-        {
-          "name": "Dagger",
-          "damage": "1d6",
-          "damageType": "piercing",
-          "finesse": true,
-          "description": "A short blade favored by bandits"
-        }
-      ],
-      "armor": {
-        "name": "leather",
-        "baseAC": 11,
-        "maxDexBonus": null,
-        "description": "Supple leather armor"
-      },
+      "weaponId": "dagger",
+      "armorId": "leather",
       "shield": { "equipped": false, "acBonus": 0 },
       "items": []
     },
@@ -73,23 +53,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Mace",
-        "damage": "1d6",
-        "damageType": "bludgeoning",
-        "finesse": false,
-        "description": "Rusty mace and claw attacks"
-      },
-      "weapons": [
-        {
-          "name": "Mace",
-          "damage": "1d6",
-          "damageType": "bludgeoning",
-          "finesse": false,
-          "description": "Rusty mace and claw attacks"
-        }
-      ],
-      "armor": null,
+      "weaponId": "mace",
+      "armorId": null,
       "shield": { "equipped": true, "acBonus": 2 },
       "items": []
     },
@@ -126,9 +91,8 @@
     },
     "baseClass": "Wizard",
     "equipment": {
-      "weapon": null,
-      "weapons": [],
-      "armor": null,
+      "weaponId": null,
+      "armorId": null,
       "shield": null,
       "items": []
     },
@@ -165,9 +129,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": null,
-      "weapons": [],
-      "armor": null,
+      "weaponId": null,
+      "armorId": null,
       "shield": null,
       "items": []
     },
@@ -217,28 +180,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Longsword",
-        "damage": "1d8",
-        "damageType": "slashing",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage, or 6 (1d10 + 1) slashing damage if used with two hands."
-      },
-      "weapons": [
-        {
-          "name": "Longsword",
-          "damage": "1d8",
-          "damageType": "slashing",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) slashing damage, or 6 (1d10 + 1) slashing damage if used with two hands."
-        }
-      ],
-      "armor": {
-        "name": "chain-mail",
-        "baseAC": 16,
-        "maxDexBonus": null,
-        "description": "Chain Mail armor"
-      },
+      "weaponId": "longsword",
+      "armorId": "chain-mail",
       "shield": {
         "equipped": true,
         "acBonus": 2
@@ -278,28 +221,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Scimitar",
-        "damage": "1d6",
-        "damageType": "slashing",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
-      },
-      "weapons": [
-        {
-          "name": "Scimitar",
-          "damage": "1d6",
-          "damageType": "slashing",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) slashing damage."
-        }
-      ],
-      "armor": {
-        "name": "leather-armor",
-        "baseAC": 13,
-        "maxDexBonus": null,
-        "description": "Light, flexible leather armor"
-      },
+      "weaponId": "scimitar",
+      "armorId": "leather-armor",
       "shield": {
         "equipped": true,
         "acBonus": 2
@@ -339,28 +262,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Scimitar",
-        "damage": "1d6",
-        "damageType": "slashing",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage."
-      },
-      "weapons": [
-        {
-          "name": "Scimitar",
-          "damage": "1d6",
-          "damageType": "slashing",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage."
-        }
-      ],
-      "armor": {
-        "name": "leather-armor",
-        "baseAC": 12,
-        "maxDexBonus": null,
-        "description": "Light, flexible leather armor"
-      },
+      "weaponId": "scimitar",
+      "armorId": "leather-armor",
       "shield": {
         "equipped": false,
         "acBonus": 0
@@ -400,28 +303,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Bite",
-        "damage": "1d8",
-        "damageType": "piercing",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with werewolf lycanthropy."
-      },
-      "weapons": [
-        {
-          "name": "Bite",
-          "damage": "1d8",
-          "damageType": "piercing",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 6 (1d8 + 2) piercing damage. If the target is a humanoid, it must succeed on a DC 12 Constitution saving throw or be cursed with werewolf lycanthropy."
-        }
-      ],
-      "armor": {
-        "name": "natural-armor",
-        "baseAC": 11,
-        "maxDexBonus": null,
-        "description": "Natural protection"
-      },
+      "weaponId": "bite",
+      "armorId": "natural-armor",
       "shield": {
         "equipped": false,
         "acBonus": 0
@@ -461,14 +344,8 @@
     },
     "baseClass": "Wizard",
     "equipment": {
-      "weapon": null,
-      "weapons": [],
-      "armor": {
-        "name": "natural-armor",
-        "baseAC": 17,
-        "maxDexBonus": null,
-        "description": "Natural protection from thick hide or scales"
-      },
+      "weaponId": null,
+      "armorId": "natural-armor",
       "shield": {
         "equipped": false,
         "acBonus": 0
@@ -508,28 +385,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Slam",
-        "damage": "1d6",
-        "damageType": "bludgeoning",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."
-      },
-      "weapons": [
-        {
-          "name": "Slam",
-          "damage": "1d6",
-          "damageType": "bludgeoning",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."
-        }
-      ],
-      "armor": {
-        "name": "natural-armor",
-        "baseAC": 8,
-        "maxDexBonus": null,
-        "description": "Natural protection"
-      },
+      "weaponId": "slam",
+      "armorId": "natural-armor",
       "shield": {
         "equipped": false,
         "acBonus": 0
@@ -569,28 +426,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Bite",
-        "damage": "1d6",
-        "damageType": "piercing",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
-      },
-      "weapons": [
-        {
-          "name": "Bite",
-          "damage": "1d6",
-          "damageType": "piercing",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
-        }
-      ],
-      "armor": {
-        "name": "natural-armor",
-        "baseAC": 10,
-        "maxDexBonus": null,
-        "description": "Natural protection"
-      },
+      "weaponId": "bite",
+      "armorId": "natural-armor",
       "shield": {
         "equipped": false,
         "acBonus": 0
@@ -630,28 +467,8 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weapon": {
-        "name": "Tusk",
-        "damage": "1d6",
-        "damageType": "slashing",
-        "finesse": false,
-        "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
-      },
-      "weapons": [
-        {
-          "name": "Tusk",
-          "damage": "1d6",
-          "damageType": "slashing",
-          "finesse": false,
-          "description": "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
-        }
-      ],
-      "armor": {
-        "name": "natural-armor",
-        "baseAC": 11,
-        "maxDexBonus": null,
-        "description": "Natural protection from thick hide or scales"
-      },
+      "weaponId": "tusk",
+      "armorId": "natural-armor",
       "shield": {
         "equipped": false,
         "acBonus": 0
