@@ -1,11 +1,15 @@
 import type {Campaign, Act, StoryNode} from '../../types';
 
 /**
- * The Spire of the Lich King - Acts 0 & 1
+ * The Spire of the Lich King - Complete Campaign
  *
  * A narrative campaign featuring:
  * - Act 0: First Blood (Tutorial) - Ashford Village & Blackwood Forest
  * - Act 1: The Hook & The Approach - Oakhaven & Tower Entrance
+ * - Act 2: The Upper Levels - Tower Interior & Cellars
+ * - Act 3: The Maze - Underground Catacombs
+ * - Act 4: The Void Sanctum & The Fall - Final Confrontation with Sorath
+ * - Epilogue: The Dawn - Victory and Rewards
  */
 
 const act0Nodes: StoryNode[] = [
@@ -1017,17 +1021,707 @@ const act1Nodes: StoryNode[] = [
     },
     {
         id: 'act_1_complete',
-        title: 'Act 1 Complete',
-        description: '**Congratulations!** You\'ve completed Acts 0 and 1 of The Spire of the Lich King.\n\nYou\'ve:\n- Defeated the bandit leader and uncovered a conspiracy\n- Acquired The Elder companion\n- Investigated the mysterious tower\n- Broken through the magical barrier\n\n**Act 2: The Upper Levels** will continue the story...',
-        flavor: { tone: 'triumphant', icon: 'victory' },
+        title: 'Entering the Tower',
+        description: 'You step through the doorway into darkness. The air inside is cold and still, heavy with the weight of centuries. As your eyes adjust, you see a grand foyer stretching before you, thick with dust and decay.\n\nThe Elder whispers: *"This is where my tale ends... and yours truly begins. Sorath awaits in the depths below."*',
+        locationId: 'old-watchtower',
+        flavor: { tone: 'mysterious', icon: 'exclamation' },
         onEnter: [
             { type: 'giveGold', amount: 200 }
         ],
         choices: [
             {
-                id: 'exit',
-                text: '🚪 End Campaign (for now)',
+                id: 'enter_foyer',
+                text: '→ Enter the foyer',
                 category: 'movement',
+                outcome: { type: 'goto', nodeId: 'tower_foyer' }
+            }
+        ]
+    }
+];
+
+// =============================================================================
+// ACT 2 NODES: THE UPPER LEVELS
+// =============================================================================
+const act2Nodes: StoryNode[] = [
+    {
+        id: 'tower_foyer',
+        title: 'The Foyer of Dust',
+        description: 'The foyer is grand but decayed. Tapestries rot on the walls, their once-vibrant colors faded to dull browns and grays. Dust motes drift through shafts of emerald light filtering from above.\n\nA wide hallway extends deeper into the tower. Statues of ancient warriors line the corridor, their stone faces frozen in eternal vigilance.',
+        locationId: 'old-watchtower',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'search' },
+        companionHint: 'The Elder warns: "Undead servants patrol these halls. The lich\'s magic animates the dead to protect his sanctuary."',
+        choices: [
+            {
+                id: 'explore_foyer',
+                text: '🔍 Search the foyer',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'foyer_search' }
+            },
+            {
+                id: 'proceed_hallway',
+                text: '→ Proceed down the hallway',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'statue_hallway' }
+            }
+        ]
+    },
+    {
+        id: 'foyer_search',
+        title: 'Searching the Foyer',
+        description: 'You search through the debris and find some old coins scattered among the dust. Nothing else of value remains here.',
+        flavor: { tone: 'calm', icon: 'search' },
+        onEnter: [
+            { type: 'giveGold', amount: 30 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: '← Back',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'tower_foyer' }
+            }
+        ]
+    },
+    {
+        id: 'statue_hallway',
+        title: 'The Hall of Statues',
+        description: 'You step into the long hallway lined with stone statues. Each statue depicts a warrior in full plate armor, weapons raised. Their eyes seem to follow your movement.\n\nThe floor is covered in a thick layer of dust. Your footsteps echo loudly in the silence.',
+        locationId: 'old-watchtower',
+        type: 'explore',
+        flavor: { tone: 'tense', icon: 'warning' },
+        companionHint: 'The Elder cautions: "These statues... they\'re not ordinary stone. I sense magic within them. Move quietly."',
+        choices: [
+            {
+                id: 'stealth_through',
+                text: '🎲 Move silently through the hall',
+                displayText: '🎲 Stealth DC 14: Move silently',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Stealth',
+                    dc: 14,
+                    success: { type: 'goto', nodeId: 'stealth_success' },
+                    failure: { type: 'goto', nodeId: 'trap_triggered' }
+                }
+            },
+            {
+                id: 'walk_normally',
+                text: '→ Walk through normally',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'trap_triggered' }
+            }
+        ]
+    },
+    {
+        id: 'stealth_success',
+        title: 'Silent Passage',
+        description: 'You move carefully, placing each foot deliberately and avoiding the loudest debris. The statues remain motionless as you pass safely through the hallway.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'continue',
+                text: '→ Continue to the laboratory',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'laboratory_entrance' }
+            }
+        ]
+    },
+    {
+        id: 'trap_triggered',
+        title: 'The Trap Springs!',
+        description: 'Your footsteps echo through the hall. Suddenly, the statues\' eyes glow red! Poisoned darts shoot from their mouths, filling the air with deadly projectiles!\n\nYou throw yourself to the ground, but several darts graze you. The poison burns in your veins.',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'damage', amount: 6 }
+        ],
+        choices: [
+            {
+                id: 'continue',
+                text: '→ Continue, wounded',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'laboratory_entrance' }
+            }
+        ]
+    },
+    {
+        id: 'laboratory_entrance',
+        title: 'The Alchemist\'s Laboratory',
+        description: 'You enter a vast chamber filled with alchemical equipment. Glass beakers and retorts line wooden shelves, most shattered or corroded. Strange stains mark the stone floor.\n\nIn the center of the room stands a large desk covered in ancient journals and scrolls. Skeletal figures shuffle among the equipment - animated dead, still carrying out their master\'s work.',
+        locationId: 'old-watchtower',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'search' },
+        choices: [
+            {
+                id: 'read_journals',
+                text: '📜 Examine the journals',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'sorath_journals' }
+            },
+            {
+                id: 'fight_skeletons',
+                text: '⚔️ Engage the skeletons',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'skeleton_combat' }
+            }
+        ]
+    },
+    {
+        id: 'sorath_journals',
+        title: 'Sorath\'s Journals',
+        description: 'You carefully open one of the journals. The handwriting starts neat and scholarly, but deteriorates into frantic scrawls:\n\n*"Day 187: The immortality ritual progresses. I have collected 47 souls..."*\n\n*"Day 302: The voices grow louder. They promise me eternal power if I complete the binding..."*\n\n*"Day ???: I am become death itself. This mortal shell is but a vessel. The final artifact eludes me still - the Elder\'s soul would complete the circle..."*\n\nYou realize with horror that The Elder artifact you carry is the final piece Sorath needs for his ritual!',
+        flavor: { tone: 'mysterious', icon: 'search' },
+        onEnter: [
+            { type: 'setFlag', flag: 'read_sorath_journals', value: true }
+        ],
+        choices: [
+            {
+                id: 'fight_skeletons',
+                text: '⚔️ The skeletons notice you!',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'skeleton_combat' }
+            }
+        ]
+    },
+    {
+        id: 'skeleton_combat',
+        title: 'Skeleton Guards',
+        description: 'The skeletal guardians turn toward you, empty eye sockets glowing with necromantic energy. They raise their weapons and attack!',
+        locationId: 'old-watchtower',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'skeleton', onVictoryNodeId: 'after_skeleton_combat' }
+        ],
+        choices: []
+    },
+    {
+        id: 'after_skeleton_combat',
+        title: 'Skeleton Defeated',
+        description: 'The skeletons crumble to dust. You catch your breath and search the laboratory more thoroughly.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'search_lab',
+                text: '🔍 Search the laboratory',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'find_magic_skeleton' }
+            }
+        ]
+    },
+    {
+        id: 'find_magic_skeleton',
+        title: 'The Lich\'s Apprentice',
+        description: 'As you search, a door at the far end of the laboratory bursts open. A skeleton in tattered robes emerges, wielding a staff crackling with dark energy.\n\nThe Elder speaks: *"This was Sorath\'s apprentice. He still guards his master\'s secrets."*\n\nThe skeletal mage raises its staff and begins channeling a spell!',
+        locationId: 'old-watchtower',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'skeleton-mage', onVictoryNodeId: 'after_mage_combat' }
+        ],
+        choices: []
+    },
+    {
+        id: 'after_mage_combat',
+        title: 'The Apprentice Falls',
+        description: 'The skeletal mage collapses in a heap of bones and tattered cloth. Among the remains, you find a beautifully crafted sword that glows with holy light.\n\nThe Elder speaks: *"A blade blessed against the undead. You will need this in the depths below."*',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 75 },
+            { type: 'giveItem', itemId: 'undead-bane-sword' },
+            { type: 'setFlag', flag: 'defeated_apprentice', value: true }
+        ],
+        choices: [
+            {
+                id: 'descend',
+                text: '→ Descend to the catacombs',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'act_2_transition' }
+            }
+        ]
+    },
+    {
+        id: 'act_2_transition',
+        title: 'Into the Depths',
+        description: 'Beyond the laboratory, you find a spiral staircase descending into darkness. The emerald light grows stronger here, pulsing like a heartbeat. The air grows colder with each step.\n\nYou descend into the catacombs beneath the tower.',
+        flavor: { tone: 'mysterious', icon: 'exclamation' },
+        choices: [
+            {
+                id: 'enter_catacombs',
+                text: '→ Enter the catacombs',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'catacombs_entrance' }
+            }
+        ]
+    }
+];
+
+// =============================================================================
+// ACT 3 NODES: THE MAZE
+// =============================================================================
+const act3Nodes: StoryNode[] = [
+    {
+        id: 'catacombs_entrance',
+        title: 'The Underground Catacombs',
+        description: 'You emerge into a vast network of tunnels carved from living rock. Alcoves line the walls, filled with ancient bones. The passages twist and turn in every direction, forming a labyrinth.\n\nThe emerald light pulses from deeper within, guiding you toward the heart of the corruption.',
+        locationId: 'catacombs',
+        type: 'explore',
+        flavor: { tone: 'mysterious', icon: 'compass' },
+        companionHint: 'The Elder warns: "These catacombs are a maze. Follow the light, but beware - wraiths and ghouls haunt these passages."',
+        choices: [
+            {
+                id: 'follow_light',
+                text: '→ Follow the emerald light',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'maze_navigation_1' }
+            },
+            {
+                id: 'search_catacombs',
+                text: '🔍 Search the nearby alcoves',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'catacomb_search' }
+            }
+        ]
+    },
+    {
+        id: 'catacomb_search',
+        title: 'Ancient Remains',
+        description: 'You search through the alcoves and find some old treasures buried with the dead: coins, a few gems, and a healing potion.',
+        flavor: { tone: 'triumphant', icon: 'search' },
+        onEnter: [
+            { type: 'giveGold', amount: 50 },
+            { type: 'giveItem', itemId: 'healing-potion' }
+        ],
+        choices: [
+            {
+                id: 'continue',
+                text: '← Back',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'catacombs_entrance' }
+            }
+        ]
+    },
+    {
+        id: 'maze_navigation_1',
+        title: 'Twisting Passages',
+        description: 'You navigate the twisting passages, following the pulsing light. The tunnels split in multiple directions. You must choose your path carefully.',
+        locationId: 'catacombs',
+        type: 'explore',
+        flavor: { tone: 'tense', icon: 'compass' },
+        choices: [
+            {
+                id: 'perception_check',
+                text: '🎲 Look for signs of passage',
+                displayText: '🎲 Perception DC 13: Find the correct path',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Perception',
+                    dc: 13,
+                    success: { type: 'goto', nodeId: 'correct_path' },
+                    failure: { type: 'goto', nodeId: 'wraith_ambush' }
+                }
+            },
+            {
+                id: 'follow_instinct',
+                text: '→ Trust your instincts',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'wraith_ambush' }
+            }
+        ]
+    },
+    {
+        id: 'wraith_ambush',
+        title: 'Wraith Ambush!',
+        description: 'As you move through the darkness, the temperature plummets. A spectral wraith materializes from the shadows, its ethereal form chilling the air. It reaches for you with ghostly claws!',
+        locationId: 'catacombs',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'wraith', onVictoryNodeId: 'after_wraith_combat' }
+        ],
+        choices: []
+    },
+    {
+        id: 'after_wraith_combat',
+        title: 'Wraith Vanquished',
+        description: 'The wraith dissolves into mist with an anguished wail. You find your way back to the main path.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'continue',
+                text: '→ Continue through the maze',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'correct_path' }
+            }
+        ]
+    },
+    {
+        id: 'correct_path',
+        title: 'The Correct Path',
+        description: 'You navigate the maze successfully, avoiding dead ends and traps. The emerald light grows brighter as you approach the heart of the catacombs.',
+        flavor: { tone: 'calm', icon: 'compass' },
+        choices: [
+            {
+                id: 'continue',
+                text: '→ Continue deeper',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ghoul_chamber' }
+            }
+        ]
+    },
+    {
+        id: 'ghoul_chamber',
+        title: 'The Feeding Chamber',
+        description: 'You enter a large chamber strewn with bones and rotting flesh. Ghouls crouch in the shadows, their eyes glinting with hunger. They notice you and bare their fangs!',
+        locationId: 'catacombs',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'ghoul', onVictoryNodeId: 'after_ghoul_combat' }
+        ],
+        choices: []
+    },
+    {
+        id: 'after_ghoul_combat',
+        title: 'Ghouls Defeated',
+        description: 'The ghouls fall, their bodies dissolving into putrid slime. Beyond their chamber, you notice a section of wall that seems different from the others.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'examine_wall',
+                text: '🔍 Examine the wall',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'secret_wall' }
+            }
+        ]
+    },
+    {
+        id: 'secret_wall',
+        title: 'Secret Wall',
+        description: 'You examine the wall closely. It\'s constructed differently - newer mortar, slightly different stones. This is a hidden passage!',
+        flavor: { tone: 'mysterious', icon: 'search' },
+        choices: [
+            {
+                id: 'search_mechanism',
+                text: '🎲 Search for a mechanism',
+                displayText: '🎲 Perception DC 12: Find the trigger',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Perception',
+                    dc: 12,
+                    success: { type: 'goto', nodeId: 'secret_chamber' },
+                    failure: { type: 'goto', nodeId: 'search_failed' }
+                }
+            },
+            {
+                id: 'push_wall',
+                text: '💪 Try to push the wall',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'secret_chamber' }
+            }
+        ]
+    },
+    {
+        id: 'search_failed',
+        title: 'No Mechanism Found',
+        description: 'You search but can\'t find any mechanism. Perhaps brute force will work?',
+        flavor: { tone: 'calm', icon: 'search' },
+        choices: [
+            {
+                id: 'push_wall',
+                text: '💪 Push the wall',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'secret_chamber' }
+            }
+        ]
+    },
+    {
+        id: 'secret_chamber',
+        title: 'The Secret Chamber',
+        description: 'The wall grinds open, revealing a hidden chamber. On a stone pedestal in the center sits a crystalline shard radiating brilliant golden light - a stark contrast to the sickly emerald glow that permeates the rest of the tower.\n\nThe Elder speaks in awe: *"The Sun-Shard! A fragment of pure radiant energy. This is the key to defeating Sorath. His necromantic powers will wither before its holy light!"*',
+        flavor: { tone: 'triumphant', icon: 'magic' },
+        onEnter: [
+            { type: 'giveItem', itemId: 'sun-shard' },
+            { type: 'setFlag', flag: 'acquired_sun_shard', value: true }
+        ],
+        choices: [
+            {
+                id: 'take_shard',
+                text: '✨ Take the Sun-Shard',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'shard_acquired' }
+            }
+        ]
+    },
+    {
+        id: 'shard_acquired',
+        title: 'Armed for Battle',
+        description: 'You carefully lift the Sun-Shard. Its warmth spreads through you, bolstering your courage and healing your wounds. You are ready for the final confrontation.\n\nThe path ahead leads deeper still, to the very bottom of the tower - the Void Sanctum where Sorath performs his dark ritual.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'heal', amount: 'full' }
+        ],
+        choices: [
+            {
+                id: 'descend',
+                text: '→ Descend to the Void Sanctum',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'void_sanctum_entrance' }
+            },
+            {
+                id: 'prepare',
+                text: '← Prepare before the final battle',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'pre_boss_preparation' }
+            }
+        ]
+    },
+    {
+        id: 'pre_boss_preparation',
+        title: 'Final Preparations',
+        description: 'You take a moment to prepare yourself for the final confrontation. You check your equipment, rest briefly, and steel your resolve.',
+        flavor: { tone: 'calm', icon: 'exclamation' },
+        onEnter: [
+            { type: 'heal', amount: 'full' }
+        ],
+        choices: [
+            {
+                id: 'ready',
+                text: '→ I am ready',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'void_sanctum_entrance' }
+            }
+        ]
+    }
+];
+
+// =============================================================================
+// ACT 4 NODES: THE VOID SANCTUM & THE FALL
+// =============================================================================
+const act4Nodes: StoryNode[] = [
+    {
+        id: 'void_sanctum_entrance',
+        title: 'The Void Sanctum',
+        description: 'You descend the final staircase and emerge into an impossible space. A massive cavern stretches before you, but the floor is fragmented - floating islands of rock suspended over an infinite purple void. The emerald light is blinding here, emanating from a ritual circle in the center.\n\nFloating in the middle of the void, a figure in tattered robes hovers above the ritual circle. His skeletal face turns toward you, eye sockets burning with emerald fire.\n\n**Sorath the Lich** speaks, his voice like grinding bones:\n\n"At last, you arrive. And you bring me... the Elder\'s soul. How convenient."',
+        locationId: 'void-sanctum',
+        type: 'event',
+        speakerName: 'Sorath the Lich',
+        flavor: { tone: 'danger', icon: 'skull' },
+        companionHint: 'The Elder speaks urgently: "He cannot be allowed to complete the ritual! But his phylactery - his soul vessel - must be destroyed or he will simply reform!"',
+        choices: [
+            {
+                id: 'challenge',
+                text: '⚔️ "Your ritual ends here, Sorath!"',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'sorath_response' }
+            },
+            {
+                id: 'ask_phylactery',
+                text: '"Where is your phylactery, lich?"',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'sorath_laughs' }
+            }
+        ]
+    },
+    {
+        id: 'sorath_response',
+        title: 'Sorath\'s Mockery',
+        description: 'The lich laughs, a horrible rattling sound.\n\n"Bold words from one so mortal. You cannot stop what has been centuries in the making. I shall take the Elder artifact from your corpse and complete my ascension to true immortality!"\n\nSorath raises his bony hands and a shimmering shield envelops him. Skeletal warriors begin to rise from the void!',
+        speakerName: 'Sorath the Lich',
+        flavor: { tone: 'danger', icon: 'skull' },
+        choices: [
+            {
+                id: 'fight',
+                text: '⚔️ Fight the minions!',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'phase_1_minions' }
+            }
+        ]
+    },
+    {
+        id: 'sorath_laughs',
+        title: 'Sorath\'s Confidence',
+        description: 'The lich laughs.\n\n"You think to destroy my phylactery? It is beyond your reach, mortal. I have had centuries to perfect its hiding place. Now, die!"\n\nSorath summons skeletal warriors to attack!',
+        speakerName: 'Sorath the Lich',
+        flavor: { tone: 'danger', icon: 'skull' },
+        choices: [
+            {
+                id: 'fight',
+                text: '⚔️ Fight!',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'phase_1_minions' }
+            }
+        ]
+    },
+    {
+        id: 'phase_1_minions',
+        title: 'Phase 1: The Minions',
+        description: 'Waves of skeletal warriors rise from the void, attacking relentlessly. You must survive until Sorath\'s shield lowers!\n\nThe Elder shouts: *"Focus on survival! The shield will not last forever!"*',
+        locationId: 'void-sanctum',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'skeleton', onVictoryNodeId: 'shield_lowered' }
+        ],
+        choices: []
+    },
+    {
+        id: 'shield_lowered',
+        title: 'The Shield Falls',
+        description: 'The final skeleton crumbles to dust. Sorath\'s shield flickers and dies. The lich snarls in fury.\n\n"Impressive. But you have merely scratched the surface of my power. Witness true necromancy!"\n\nSorath begins channeling ice and necrotic magic, preparing to attack directly!',
+        speakerName: 'Sorath the Lich',
+        flavor: { tone: 'danger', icon: 'skull' },
+        choices: [
+            {
+                id: 'fight_sorath',
+                text: '⚔️ Engage Sorath!',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'phase_2_lich_battle' }
+            }
+        ]
+    },
+    {
+        id: 'phase_2_lich_battle',
+        title: 'Phase 2: The Lich',
+        description: 'Sorath descends from his floating position, crackling with dark energy. Ice shards and necrotic bolts fly from his skeletal hands. The battle for your life begins!',
+        locationId: 'void-sanctum',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'sorath-lich', onVictoryNodeId: 'sorath_defeated_temporary' }
+        ],
+        choices: []
+    },
+    {
+        id: 'sorath_defeated_temporary',
+        title: 'The Lich Falls... Or Does He?',
+        description: 'Your blade strikes true, shattering Sorath\'s bones. The lich collapses to the ground, his robes settling in a pile of dust and fragments.\n\nBut then... the bones begin to rattle. The dust swirls. Within moments, Sorath\'s form begins to reconstruct itself!\n\n"Fool!" the lich\'s voice echoes. "I am bound to my phylactery! You cannot kill me unless you destroy it!"\n\nThe Elder cries out: *"The artifact! The Elder artifact that I am bound to - it IS his phylactery! He bound my soul to it when he killed me! You must destroy it to end him!"*',
+        speakerName: 'Sorath the Lich',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'use_sun_shard',
+                text: '✨ Use the Sun-Shard to destroy the phylactery!',
+                category: 'special',
+                requirements: [
+                    { type: 'flag', flag: 'acquired_sun_shard', value: true }
+                ],
+                outcome: { type: 'goto', nodeId: 'destroy_phylactery' }
+            },
+            {
+                id: 'without_shard',
+                text: '⚔️ Try to destroy it without the Sun-Shard',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'phylactery_too_strong' }
+            }
+        ]
+    },
+    {
+        id: 'phylactery_too_strong',
+        title: 'The Phylactery Resists',
+        description: 'You strike at the Elder artifact with your weapon, but the phylactery is protected by powerful magic! Your blade bounces off harmlessly.\n\nSorath\'s reformation continues. You need the Sun-Shard\'s holy power to break through the protection!',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'use_sun_shard',
+                text: '✨ Use the Sun-Shard!',
+                category: 'special',
+                requirements: [
+                    { type: 'flag', flag: 'acquired_sun_shard', value: true }
+                ],
+                outcome: { type: 'goto', nodeId: 'destroy_phylactery' }
+            }
+        ]
+    },
+    {
+        id: 'destroy_phylactery',
+        title: 'The Final Strike',
+        description: 'You raise the Sun-Shard high. Its golden light blazes brilliantly, cutting through the emerald glow like a beacon of hope. You bring it down upon the Elder artifact.\n\nThe phylactery shatters with a sound like thunder. The Elder\'s voice rings out one final time: *"Thank you... for freeing me... at last..."*\n\nSorath\'s reforming body freezes mid-reconstruction. The lich screams in denial and rage as his essence begins to unravel.\n\n"NO! IMPOSSIBLE! I WAS TO BE IMMORTAL!"\n\nThe lich\'s form explodes into dust. The emerald light dies. Silence falls over the Void Sanctum.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'setFlag', flag: 'defeated_sorath', value: true },
+            { type: 'setFlag', flag: 'freed_elder', value: true }
+        ],
+        choices: [
+            {
+                id: 'victory',
+                text: '→ It is done',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'epilogue_start' }
+            }
+        ]
+    }
+];
+
+// =============================================================================
+// EPILOGUE NODES: THE DAWN
+// =============================================================================
+const epilogueNodes: StoryNode[] = [
+    {
+        id: 'epilogue_start',
+        title: 'The Dawn Breaks',
+        description: 'As Sorath\'s essence dissipates, the Void Sanctum begins to crumble. The floating islands of rock settle gently to solid ground. The purple void recedes, replaced by normal stone.\n\nYou make your way back up through the tower. The undead creatures have all collapsed into dust. The corruption is gone. The tower feels... empty, but peaceful.',
+        flavor: { tone: 'calm', icon: 'magic' },
+        choices: [
+            {
+                id: 'continue',
+                text: '→ Return to the surface',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'tower_cleansed' }
+            }
+        ]
+    },
+    {
+        id: 'tower_cleansed',
+        title: 'The Tower Cleansed',
+        description: 'You emerge into the courtyard. The sun is rising, painting the sky in brilliant oranges and golds. The tower no longer glows with emerald light. The thrumming hum has ceased.\n\nThe Blackwood Forest around you is silent, but it\'s a natural silence now - not the oppressive quiet of corruption. Birds begin to sing.',
+        locationId: 'old-watchtower',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'search_tower',
+                text: '🔍 Return to search the tower',
+                category: 'exploration',
+                outcome: { type: 'goto', nodeId: 'sorath_treasury' }
+            }
+        ]
+    },
+    {
+        id: 'sorath_treasury',
+        title: 'Sorath\'s Treasury',
+        description: 'You return to the laboratory and find a hidden vault behind a bookshelf. Inside:\n\n- A massive hoard of **500 gold pieces**\n- **Sorath\'s Grimoire**: An ancient tome of necromantic knowledge (valuable to collectors or wizard scholars)\n- Various other treasures and artifacts collected over centuries\n\nThe tower itself stands cleansed. It could serve as a base of operations, a sanctuary, or even be reconsecrated as a proper watchtower once more.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 500 },
+            { type: 'giveItem', itemId: 'sorath-grimoire' }
+        ],
+        choices: [
+            {
+                id: 'claim_tower',
+                text: '👑 Claim the tower as your own',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'epilogue_ending' }
+            },
+            {
+                id: 'leave_tower',
+                text: '→ Leave the tower behind',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'epilogue_ending' }
+            }
+        ]
+    },
+    {
+        id: 'epilogue_ending',
+        title: 'The End of the Beginning',
+        description: '**Campaign Complete!**\n\nYou have defeated Sorath the Lich and ended his centuries-long quest for immortality. The Elder\'s soul has been freed from its prison. The tower stands cleansed, and the corruption spreading through the Blackwood Forest has been purged.\n\n**Your Achievements:**\n- Survived the burning of Ashford and tracked down the bandits\n- Freed The Elder and uncovered Sorath\'s conspiracy\n- Navigated the tower\'s deadly traps and guardians\n- Claimed the Sun-Shard from the hidden chamber\n- Defeated Sorath and destroyed his phylactery\n- Cleansed the Tower and the Blackwood Forest\n\n**Rewards Claimed:**\n- Sorath\'s treasury of gold and artifacts\n- The Old Watchtower (optional base)\n- Sorath\'s Grimoire\n- Experience and glory\n\nYour legend will be sung in taverns for generations. The people of Ashford and Oakhaven owe you a debt that can never be repaid.\n\nBut this is not the end of your adventures...\n\n**The End**',
+        flavor: { tone: 'triumphant', icon: 'crown' },
+        choices: [
+            {
+                id: 'finish',
+                text: '👑 Finish Campaign',
+                category: 'special',
                 outcome: { type: 'exit' }
             }
         ]
@@ -1076,11 +1770,41 @@ const act1: Act = {
     nodes: [...act0Nodes, ...act1Nodes, deathNode],
 };
 
+const act2: Act = {
+    id: 'act-2-upper-levels',
+    title: 'Act 2: The Upper Levels',
+    description: 'Navigate the decayed halls of the tower, battle undead guardians, and discover Sorath\'s dark secrets in his laboratory.',
+    locationId: 'old-watchtower',
+    startingNodeId: 'tower_foyer',
+    deathNodeId: 'campaign_death',
+    nodes: [...act0Nodes, ...act1Nodes, ...act2Nodes, deathNode],
+};
+
+const act3: Act = {
+    id: 'act-3-the-maze',
+    title: 'Act 3: The Maze',
+    description: 'Descend into the catacombs beneath the tower. Navigate the labyrinth, battle wraiths and ghouls, and claim the Sun-Shard.',
+    locationId: 'catacombs',
+    startingNodeId: 'catacombs_entrance',
+    deathNodeId: 'campaign_death',
+    nodes: [...act0Nodes, ...act1Nodes, ...act2Nodes, ...act3Nodes, deathNode],
+};
+
+const act4: Act = {
+    id: 'act-4-void-sanctum',
+    title: 'Act 4: The Void Sanctum',
+    description: 'Face Sorath the Lich in an epic final battle. Destroy his phylactery and end his quest for immortality.',
+    locationId: 'void-sanctum',
+    startingNodeId: 'void_sanctum_entrance',
+    deathNodeId: 'campaign_death',
+    nodes: [...act0Nodes, ...act1Nodes, ...act2Nodes, ...act3Nodes, ...act4Nodes, ...epilogueNodes, deathNode],
+};
+
 export const spireOfLichKingCampaign: Campaign = {
     id: 'spire-of-lich-king',
     title: 'The Spire of the Lich King',
-    description: 'A dark ritual threatens the land. Journey from a burning village to a tower of necromantic power, uncovering a conspiracy that spans from common bandits to an ancient lich.',
+    description: 'A dark ritual threatens the land. Journey from a burning village to a tower of necromantic power, uncovering a conspiracy that spans from common bandits to an ancient lich. Navigate deadly traps, battle undead horrors, and face Sorath in an epic showdown.',
     companionName: 'The Elder',
     companionDescription: 'A magical artifact containing the wisdom of a scholar who perished in the tower years ago. Provides guidance, lore, and cryptic warnings throughout your journey.',
-    acts: [act0, act1],
+    acts: [act0, act1, act2, act3, act4],
 };

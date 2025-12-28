@@ -1,0 +1,51 @@
+flowchart TD
+    Start([Act 4: The Void Sanctum & Epilogue])
+
+    %% Boss Encounter
+    Start --> void_sanctum_entrance[The Void Sanctum<br/>Sorath the Lich appears]
+
+    void_sanctum_entrance --> sorath_response[Sorath's Mockery<br/>Shield raised, minions summoned]
+    void_sanctum_entrance --> sorath_laughs[Sorath's Confidence<br/>Phylactery unreachable]
+
+    %% Phase 1
+    sorath_response --> phase_1_minions[Phase 1: The Minions<br/>Skeletal warrior waves]
+    sorath_laughs --> phase_1_minions
+
+    phase_1_minions --> shield_lowered[Shield Falls<br/>Sorath prepares to attack]
+
+    %% Phase 2
+    shield_lowered --> phase_2_lich_battle[Phase 2: The Lich<br/>Ice & necrotic magic]
+
+    phase_2_lich_battle --> sorath_defeated_temporary[Lich Falls...<br/>But begins to reform!]
+
+    %% Phylactery Destruction
+    sorath_defeated_temporary -->|Without Sun-Shard| phylactery_too_strong[Phylactery Resists<br/>Magic too strong]
+    sorath_defeated_temporary -->|Use Sun-Shard| destroy_phylactery[The Final Strike<br/>Phylactery shattered!]
+
+    phylactery_too_strong -->|Must use Sun-Shard| destroy_phylactery
+
+    %% Victory
+    destroy_phylactery --> epilogue_start[The Dawn Breaks<br/>Void Sanctum crumbles]
+
+    %% Epilogue
+    epilogue_start --> tower_cleansed[Tower Cleansed<br/>Sun rises, birds sing]
+
+    tower_cleansed --> sorath_treasury[Sorath's Treasury<br/>+500g, Grimoire]
+
+    sorath_treasury --> epilogue_ending[Campaign Complete!<br/>Legend born]
+
+    epilogue_ending --> End([The End])
+
+    %% Styling
+    classDef boss fill:#c92a2a,stroke:#5c0c0c,color:#fff
+    classDef combat fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef climax fill:#ffd43b,stroke:#f08c00,color:#000
+    classDef victory fill:#51cf66,stroke:#2f9e44,color:#fff
+    classDef epilogue fill:#da77f2,stroke:#9c36b5,color:#fff
+    classDef ending fill:#ffd43b,stroke:#f08c00,color:#000
+
+    class void_sanctum_entrance,sorath_response,sorath_laughs boss
+    class phase_1_minions,phase_2_lich_battle,sorath_defeated_temporary combat
+    class phylactery_too_strong,destroy_phylactery climax
+    class shield_lowered,epilogue_start,tower_cleansed victory
+    class sorath_treasury,epilogue_ending ending

@@ -1,0 +1,75 @@
+flowchart TD
+    Start([Act 0: First Blood])
+
+    %% Character Creation
+    Start --> ashford_gates[Ashford Gates<br/>Character Selection]
+    ashford_gates -->|Create Character| burning_village_entrance[Burning Village<br/>Chaos & Destruction]
+    ashford_gates -->|Skip Creation| create_default_character[Default Character<br/>Fighter Lvl 3]
+    create_default_character --> burning_village_entrance
+
+    %% Village Investigation
+    burning_village_entrance --> guard_report[Guard's Report<br/>Bandits fled east]
+    burning_village_entrance -->|Intimidate DC 10| guard_intimidated[Guard Intimidated<br/>Full info revealed]
+    guard_intimidated --> village_investigation_hub
+    guard_report --> guard_injuries_info[Casualties Info]
+    guard_injuries_info --> village_investigation_hub
+
+    %% Investigation Hub
+    village_investigation_hub[Village Square<br/>Investigation Hub]
+    village_investigation_hub --> innkeeper_dialogue[Innkeeper<br/>Scarred leader description]
+    village_investigation_hub --> blacksmith_dialogue[Blacksmith<br/>Gives weapon]
+    village_investigation_hub --> militia_dialogue[Militia<br/>Tactical intel]
+    village_investigation_hub --> mayor_dialogue[Mayor<br/>100g bounty quest]
+
+    innkeeper_dialogue --> village_investigation_hub
+    blacksmith_dialogue --> village_investigation_hub
+    militia_dialogue --> village_investigation_hub
+    mayor_dialogue --> village_investigation_hub
+
+    %% Into Blackwood
+    village_investigation_hub --> blackwood_entrance[Blackwood Entrance<br/>Following tracks]
+
+    blackwood_entrance -->|Perception DC 12 Success| direct_to_bandit[Expert Tracking<br/>+25 gold]
+    blackwood_entrance -->|Perception DC 12 Fail| forest_encounter[Corrupted Wolf<br/>Combat]
+
+    forest_encounter --> after_wolf_combat[Wolf Defeated<br/>Find trail again]
+    after_wolf_combat --> bandit_clearing
+    direct_to_bandit --> bandit_clearing
+
+    %% Bandit Encounter
+    bandit_clearing[Bandit Clearing<br/>Wounded leader found]
+    bandit_clearing --> bandit_abandoned[Abandoned by gang]
+    bandit_clearing --> bandit_loot_info[Camp location revealed]
+    bandit_clearing -->|Intimidate DC 13 Success| bandit_talks[Full Confession<br/>Hired in Oakhaven]
+    bandit_clearing -->|Intimidate DC 13 Fail| bandit_defiant[Defiant]
+
+    bandit_abandoned --> bandit_loot_info
+    bandit_loot_info --> bandit_combat
+    bandit_talks --> bandit_combat
+    bandit_defiant --> bandit_combat
+
+    %% Combat & Aftermath
+    bandit_combat[Bandit Leader Combat<br/>Tutorial Fight]
+    bandit_combat --> after_bandit_combat[Victory<br/>+50 gold, letter, map]
+
+    after_bandit_combat --> mysterious_letter[Mysterious Letter<br/>Tower ritual mentioned]
+    mysterious_letter --> find_the_elder[Find The Elder<br/>Companion acquired]
+
+    %% Companion Introduction
+    find_the_elder --> elder_introduction[Elder's Story<br/>Scholar's artifact]
+    elder_introduction --> journey_to_oakhaven[Journey to Oakhaven<br/>Transition to Act 1]
+
+    journey_to_oakhaven --> End([Continue to Act 1])
+
+    %% Styling
+    classDef combat fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef dialogue fill:#4dabf7,stroke:#1971c2,color:#fff
+    classDef exploration fill:#51cf66,stroke:#2f9e44,color:#fff
+    classDef reward fill:#ffd43b,stroke:#f08c00,color:#000
+    classDef transition fill:#da77f2,stroke:#9c36b5,color:#fff
+
+    class bandit_combat,forest_encounter combat
+    class guard_report,guard_intimidated,innkeeper_dialogue,blacksmith_dialogue,militia_dialogue,mayor_dialogue,bandit_clearing,bandit_abandoned,bandit_loot_info,bandit_talks,bandit_defiant,elder_introduction dialogue
+    class village_investigation_hub,blackwood_entrance,bandit_clearing exploration
+    class after_bandit_combat,direct_to_bandit,after_wolf_combat,find_the_elder reward
+    class journey_to_oakhaven transition

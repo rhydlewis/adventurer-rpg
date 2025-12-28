@@ -1,0 +1,51 @@
+flowchart TD
+    Start([Act 2: The Upper Levels])
+
+    %% Foyer
+    Start --> tower_foyer[Foyer of Dust<br/>Grand but decayed]
+
+    tower_foyer --> foyer_search[Search Foyer<br/>+30 gold]
+    foyer_search --> tower_foyer
+
+    tower_foyer --> statue_hallway[Hall of Statues<br/>Stone warriors line walls]
+
+    %% Statue Trap
+    statue_hallway -->|Stealth DC 14 Success| stealth_success[Silent Passage<br/>Avoided trap]
+    statue_hallway -->|Stealth DC 14 Fail| trap_triggered[Trap Springs!<br/>-6 HP poison darts]
+    statue_hallway -->|Walk Normally| trap_triggered
+
+    %% Laboratory
+    stealth_success --> laboratory_entrance[Alchemist's Laboratory<br/>Skeletal servants working]
+    trap_triggered --> laboratory_entrance
+
+    laboratory_entrance --> sorath_journals[Sorath's Journals<br/>Descent into madness]
+    laboratory_entrance --> skeleton_combat[Skeleton Guards<br/>Combat]
+
+    sorath_journals --> skeleton_combat
+
+    skeleton_combat --> after_skeleton_combat[Skeletons Defeated<br/>Laboratory cleared]
+
+    %% Mini-Boss
+    after_skeleton_combat --> find_magic_skeleton[The Lich's Apprentice<br/>Skeleton Mage appears]
+
+    find_magic_skeleton --> after_mage_combat[Apprentice Falls<br/>+75g, Undead-Bane Sword]
+
+    %% Transition
+    after_mage_combat --> act_2_transition[Into the Depths<br/>Descend to catacombs]
+
+    act_2_transition --> End([Continue to Act 3])
+
+    %% Styling
+    classDef combat fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef exploration fill:#51cf66,stroke:#2f9e44,color:#fff
+    classDef trap fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef lore fill:#748ffc,stroke:#4c6ef5,color:#fff
+    classDef reward fill:#ffd43b,stroke:#f08c00,color:#000
+    classDef transition fill:#da77f2,stroke:#9c36b5,color:#fff
+
+    class skeleton_combat,find_magic_skeleton combat
+    class tower_foyer,statue_hallway,laboratory_entrance exploration
+    class trap_triggered trap
+    class sorath_journals lore
+    class foyer_search,stealth_success,after_skeleton_combat,after_mage_combat reward
+    class act_2_transition transition

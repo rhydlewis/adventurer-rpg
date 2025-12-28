@@ -1,0 +1,75 @@
+flowchart TD
+    Start([Act 1: The Hook & The Approach])
+
+    %% Oakhaven Entrance
+    Start --> oakhaven_entrance[Oakhaven Village<br/>Peaceful town]
+    oakhaven_entrance --> splintered_shield_tavern[The Splintered Shield<br/>Tavern scene]
+    oakhaven_entrance --> oakhaven_exploration_hub[Village Exploration]
+
+    %% Exploration Hub
+    oakhaven_exploration_hub --> rest_in_oakhaven[Rest & Heal<br/>Full HP]
+    rest_in_oakhaven --> oakhaven_exploration_hub
+    oakhaven_exploration_hub --> splintered_shield_tavern
+
+    %% Tavern Scene
+    splintered_shield_tavern --> poacher_rumor[Poacher's Tale<br/>Tower glowing emerald]
+    splintered_shield_tavern --> tavern_barkeep[Barkeep<br/>Strange happenings]
+    tavern_barkeep --> poacher_rumor
+
+    poacher_rumor --> tower_location_info[Tower Location<br/>Northeast in Blackwood]
+    poacher_rumor --> tower_details[More Details<br/>Pulsing light, shadows]
+    tower_details --> tower_location_info
+
+    %% Magistrate Quest
+    tower_location_info --> magistrate_scene[Magistrate's Bounty<br/>200g reward offered]
+    tower_location_info --> oakhaven_exploration_hub
+
+    magistrate_scene --> accepted_tower_quest[Quest Accepted<br/>Investigate tower]
+    magistrate_scene --> oakhaven_exploration_hub
+
+    accepted_tower_quest --> journey_to_tower[Journey to Tower<br/>Unnatural silence]
+    accepted_tower_quest --> oakhaven_exploration_hub
+
+    %% Journey & Encounter
+    journey_to_tower --> corrupted_encounter[Corrupted Vines<br/>Combat]
+    corrupted_encounter --> after_vines_combat[Corruption Spreads<br/>Vines dissolve]
+
+    %% Tower Courtyard
+    after_vines_combat --> tower_courtyard[Tower Courtyard<br/>Magical barrier sealed]
+
+    %% Singing Stones Puzzle
+    tower_courtyard --> search_left_courtyard[Search Left<br/>Stone 1/3 found]
+    tower_courtyard --> search_right_courtyard[Search Right<br/>Stone 2/3 found]
+    tower_courtyard --> search_center_courtyard[Search Center<br/>Stone 3/3 found]
+
+    search_left_courtyard --> courtyard_progress_check[Courtyard<br/>Progress check]
+    search_right_courtyard --> courtyard_progress_check
+    search_center_courtyard --> courtyard_progress_check
+
+    courtyard_progress_check --> search_left_courtyard
+    courtyard_progress_check --> search_right_courtyard
+    courtyard_progress_check --> search_center_courtyard
+
+    %% Barrier Breaking
+    courtyard_progress_check -->|All 3 Stones| barrier_broken[Barrier Shatters<br/>Door opens]
+
+    barrier_broken --> pre_tower_rest[Prepare & Rest<br/>Full heal]
+    barrier_broken --> act_1_complete[Enter the Tower<br/>+200 gold]
+    pre_tower_rest --> act_1_complete
+
+    act_1_complete --> End([Continue to Act 2])
+
+    %% Styling
+    classDef combat fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef dialogue fill:#4dabf7,stroke:#1971c2,color:#fff
+    classDef exploration fill:#51cf66,stroke:#2f9e44,color:#fff
+    classDef puzzle fill:#ff922b,stroke:#e67700,color:#fff
+    classDef reward fill:#ffd43b,stroke:#f08c00,color:#000
+    classDef transition fill:#da77f2,stroke:#9c36b5,color:#fff
+
+    class corrupted_encounter combat
+    class poacher_rumor,tower_details,tower_location_info,magistrate_scene,accepted_tower_quest,tavern_barkeep dialogue
+    class oakhaven_entrance,oakhaven_exploration_hub,tower_courtyard,courtyard_progress_check exploration
+    class search_left_courtyard,search_right_courtyard,search_center_courtyard,barrier_broken puzzle
+    class rest_in_oakhaven,after_vines_combat,pre_tower_rest reward
+    class act_1_complete transition

@@ -1,0 +1,57 @@
+flowchart TD
+    Start([Act 3: The Maze])
+
+    %% Catacombs Entrance
+    Start --> catacombs_entrance[Underground Catacombs<br/>Vast labyrinth]
+
+    catacombs_entrance --> catacomb_search[Search Alcoves<br/>+50g, healing potion]
+    catacomb_search --> catacombs_entrance
+
+    catacombs_entrance --> maze_navigation_1[Twisting Passages<br/>Choose your path]
+
+    %% Maze Navigation
+    maze_navigation_1 -->|Perception DC 13 Success| correct_path[Correct Path<br/>Avoiding dead ends]
+    maze_navigation_1 -->|Perception DC 13 Fail| wraith_ambush[Wraith Ambush!<br/>Spectral combat]
+    maze_navigation_1 -->|Trust Instincts| wraith_ambush
+
+    wraith_ambush --> after_wraith_combat[Wraith Vanquished<br/>Find main path]
+    after_wraith_combat --> correct_path
+
+    %% Ghoul Chamber
+    correct_path --> ghoul_chamber[Feeding Chamber<br/>Ghouls attack]
+
+    ghoul_chamber --> after_ghoul_combat[Ghouls Defeated<br/>Strange wall noticed]
+
+    %% Secret Wall Puzzle
+    after_ghoul_combat --> secret_wall[Secret Wall<br/>Different construction]
+
+    secret_wall -->|Perception DC 12 Success| secret_chamber[Secret Chamber<br/>Sun-Shard found!]
+    secret_wall -->|Perception DC 12 Fail| search_failed[No Mechanism<br/>Try force]
+    secret_wall -->|Push Wall| secret_chamber
+
+    search_failed --> secret_chamber
+
+    %% Sun-Shard
+    secret_chamber --> shard_acquired[Armed for Battle<br/>Full heal, ready]
+
+    shard_acquired --> pre_boss_preparation[Final Preparations<br/>Full heal, check equipment]
+    shard_acquired --> void_sanctum_entrance
+
+    pre_boss_preparation --> void_sanctum_entrance[Descend to Void Sanctum]
+
+    void_sanctum_entrance --> End([Continue to Act 4])
+
+    %% Styling
+    classDef combat fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    classDef exploration fill:#51cf66,stroke:#2f9e44,color:#fff
+    classDef puzzle fill:#ff922b,stroke:#e67700,color:#fff
+    classDef keyitem fill:#ffd43b,stroke:#f08c00,color:#000
+    classDef reward fill:#ffd43b,stroke:#f08c00,color:#000
+    classDef transition fill:#da77f2,stroke:#9c36b5,color:#fff
+
+    class wraith_ambush,ghoul_chamber combat
+    class catacombs_entrance,maze_navigation_1,correct_path exploration
+    class secret_wall,search_failed puzzle
+    class secret_chamber,shard_acquired keyitem
+    class catacomb_search,after_wraith_combat,after_ghoul_combat,pre_boss_preparation reward
+    class void_sanctum_entrance transition
