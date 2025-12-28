@@ -1,4 +1,5 @@
 import type { EnemyTemplate } from '../types/enemyTemplate';
+import type { Equipment } from '../types/equipment';
 import { EnemyTemplatesSchema } from '../schemas/enemyTemplate.schema';
 import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from './creatureAvatars';
 import { getWeapon, getArmor } from './equipment';
@@ -37,9 +38,10 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = Object.fromEntries
       equipment.weapon = weapon;
       equipment.weapons = [weapon]; // Populate weapons array
       delete equipment.weaponId; // Remove reference field
-    } else if (!equipment.weapon) {
-      equipment.weapon = null;
-      equipment.weapons = [];
+    } else {
+      // Ensure weapon and weapons are always set
+      equipment.weapon = equipment.weapon ?? null;
+      equipment.weapons = equipment.weapons ?? [];
     }
 
     // Resolve armorId to armor object
@@ -50,8 +52,9 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = Object.fromEntries
       }
       equipment.armor = armor;
       delete equipment.armorId; // Remove reference field
-    } else if (!equipment.armor) {
-      equipment.armor = null;
+    } else {
+      // Ensure armor is always set
+      equipment.armor = equipment.armor ?? null;
     }
 
     return [
@@ -59,7 +62,7 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = Object.fromEntries
       {
         ...template,
         avatarPaths,
-        equipment,
+        equipment: equipment as Equipment, // Type assertion: equipment is now fully resolved
       },
     ];
   })

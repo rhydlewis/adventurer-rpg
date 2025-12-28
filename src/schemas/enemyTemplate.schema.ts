@@ -13,10 +13,10 @@ const AttributeRangeSchema = z.object({
   message: "min must be <= max"
 });
 
-// Weapon schema
+// Weapon schema (for inline weapon objects - backward compatibility)
 const WeaponSchema = z.object({
   id: z.string().optional(),
-  name: z.enum(['Longsword', 'Rapier', 'Dagger', 'Mace', 'Scimitar', 'Bite', 'Slam', 'Tusk']),
+  name: z.string().min(1), // Changed from enum to string to match Equipment type
   damage: z.string().regex(/^\d+d\d+$/, {
     message: "Damage must be in dice notation format (e.g., '1d6', '2d8')"
   }),
@@ -26,9 +26,9 @@ const WeaponSchema = z.object({
   proficiencyRequired: z.enum(['simple', 'martial', 'martial-finesse']).optional(),
 });
 
-// Armor schema
+// Armor schema (for inline armor objects - backward compatibility)
 const ArmorSchema = z.object({
-  name: z.enum(['none', 'leather', 'chainmail', 'chain-mail', 'leather-armor', 'natural-armor']),
+  name: z.string().min(1), // Changed from enum to string to match Equipment type
   baseAC: z.number().int().min(8).max(20),
   maxDexBonus: z.number().int().nullable(),
   description: z.string(),
