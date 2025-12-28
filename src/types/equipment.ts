@@ -30,7 +30,7 @@ export interface InventoryItem {
   id: string;
   name: string;
   description: string;
-  type: 'consumable' | 'equipment' | 'quest';
+  type: 'consumable' | 'equipment' | 'quest' | 'treasure';
   usableInCombat: boolean;
   effect?: ItemEffect;
   value: number; // Sell price (typically 50% of buy price)

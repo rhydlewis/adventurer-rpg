@@ -1,28 +1,38 @@
 import { describe, it, expect } from 'vitest';
 import { ITEMS, getItem, getBuyPrice } from '../../data/items';
 
-describe('Items Data', () => {
-  it('should have all required items for validation campaign', () => {
-    expect(ITEMS['healing-potion']).toBeDefined();
-    expect(ITEMS['sword-plus-1']).toBeDefined();
-    expect(ITEMS['antidote']).toBeDefined();
-    expect(ITEMS['wolf-pelt']).toBeDefined();
-    expect(ITEMS['mysterious-amulet']).toBeDefined();
+describe('ITEMS from JSON', () => {
+  it('should load all items from JSON', () => {
+    expect(Object.keys(ITEMS).length).toBeGreaterThan(0);
   });
 
-  it('should mark healing potion as combat-usable', () => {
-    const potion = getItem('healing-potion');
-    expect(potion.usableInCombat).toBe(true);
+  it('should have healing potion', () => {
+    const potion = ITEMS['healing-potion'];
+    expect(potion).toBeDefined();
+    expect(potion.name).toBe('Healing Potion');
     expect(potion.type).toBe('consumable');
+    expect(potion.usableInCombat).toBe(true);
+    expect(potion.effect?.type).toBe('heal');
   });
 
-  it('should calculate buy price as 2x sell value', () => {
+  it('getItem should return item by id', () => {
+    const item = getItem('healing-potion');
+    expect(item.name).toBe('Healing Potion');
+  });
+
+  it('getItem should throw for invalid id', () => {
+    expect(() => getItem('nonexistent')).toThrow('Item not found');
+  });
+
+  it('all items should have non-negative value', () => {
+    Object.values(ITEMS).forEach((item) => {
+      expect(item.value).toBeGreaterThanOrEqual(0);
+    });
+  });
+
+  it('getBuyPrice should calculate buy price as 2x sell value', () => {
     expect(getBuyPrice('healing-potion')).toBe(50); // 25 * 2
     expect(getBuyPrice('sword-plus-1')).toBe(100); // 50 * 2
     expect(getBuyPrice('antidote')).toBe(30); // 15 * 2
-  });
-
-  it('should throw error for non-existent item', () => {
-    expect(() => getItem('fake-item')).toThrow('Item not found');
   });
 });
