@@ -181,7 +181,7 @@
     "baseClass": "Fighter",
     "equipment": {
       "weaponId": "longsword",
-      "armorId": "chain-mail",
+      "armorId": "chainmail",
       "shield": {
         "equipped": true,
         "acBonus": 2
@@ -222,7 +222,7 @@
     "baseClass": "Fighter",
     "equipment": {
       "weaponId": "scimitar",
-      "armorId": "leather-armor",
+      "armorId": "leather",
       "shield": {
         "equipped": true,
         "acBonus": 2
@@ -263,7 +263,7 @@
     "baseClass": "Fighter",
     "equipment": {
       "weaponId": "scimitar",
-      "armorId": "leather-armor",
+      "armorId": "leather",
       "shield": {
         "equipped": false,
         "acBonus": 0

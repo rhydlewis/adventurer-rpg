@@ -12,22 +12,8 @@
     "description": "Light, flexible leather armor",
     "proficiencyRequired": "light"
   },
-  "leather-armor": {
-    "name": "Leather Armor",
-    "baseAC": 12,
-    "maxDexBonus": null,
-    "description": "Light, flexible leather armor",
-    "proficiencyRequired": "light"
-  },
   "chainmail": {
     "name": "Chainmail",
-    "baseAC": 16,
-    "maxDexBonus": 2,
-    "description": "Interlocking metal rings providing solid protection",
-    "proficiencyRequired": "medium"
-  },
-  "chain-mail": {
-    "name": "Chain Mail",
     "baseAC": 16,
     "maxDexBonus": 2,
     "description": "Interlocking metal rings providing solid protection",
