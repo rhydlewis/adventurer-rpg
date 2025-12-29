@@ -70,6 +70,27 @@ export const CONDITION_DEFINITIONS: Record<ConditionType, ConditionDefinition> =
     },
   },
 
+  Bleeding: {
+    type: 'Bleeding',
+    category: 'debuff',
+    description: '1d4 bleed/turn',
+    modifiers: {
+      damagePerTurn: {
+        formula: '1d4',
+        type: 'bleed',
+      },
+    },
+  },
+
+  Disrupted: {
+    type: 'Disrupted',
+    category: 'debuff',
+    description: '-4 attack',
+    modifiers: {
+      attackBonus: -4,
+    },
+  },
+
   // === NEW BUFFS ===
 
   Strengthened: {
@@ -116,6 +137,15 @@ export const CONDITION_DEFINITIONS: Record<ConditionType, ConditionDefinition> =
     description: '+2 AC (defensive)',
     modifiers: {
       acBonus: 2,
+    },
+  },
+
+  'Defensive Channel': {
+    type: 'Defensive Channel',
+    category: 'buff',
+    description: '+4 AC (divine protection)',
+    modifiers: {
+      acBonus: 4,
     },
   },
 
@@ -170,6 +200,8 @@ export const DEFAULT_DURATIONS: Record<ConditionType, number> = {
   Weakened: 2,
   Blinded: 2,
   Silenced: 2,
+  Bleeding: 3,
+  Disrupted: 1,
 
   // New buffs
   Strengthened: 2,
@@ -177,6 +209,7 @@ export const DEFAULT_DURATIONS: Record<ConditionType, number> = {
   Shielded: 3,
   Hidden: 1,
   Guarded: 1,
+  'Defensive Channel': 1,
 
   // Migrated effects
   Dodge: 1,

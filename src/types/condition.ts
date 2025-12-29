@@ -10,12 +10,15 @@ export type ConditionType =
   | 'Weakened'
   | 'Blinded'
   | 'Silenced'
+  | 'Bleeding' // NEW - Bloody Assault feat
+  | 'Disrupted' // NEW - Disruptive Spell feat
   // Buffs
   | 'Strengthened'
   | 'Enchanted'
   | 'Shielded'
   | 'Hidden'
   | 'Guarded'
+  | 'Defensive Channel' // NEW - Defensive Channel feat
   // Migrated effects from existing systems
   | 'Dodge'
   | 'Divine Favor'

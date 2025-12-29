@@ -386,6 +386,45 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           message: `Spell not found: ${spellAction.spellId}`,
         });
       } else {
+        // Consume spell slot for non-cantrips (level > 0)
+        if (spell.level > 0) {
+          if (!playerCharacter.resources.spellSlots) {
+            log.push({
+              turn: state.turn,
+              actor: 'system',
+              message: `Cannot cast ${spell.name} - no spell slots available`,
+            });
+            return state; // Early return - spell cannot be cast
+          }
+
+          const slotKey = `level${spell.level}` as keyof typeof playerCharacter.resources.spellSlots;
+          const slot = playerCharacter.resources.spellSlots[slotKey];
+
+          if (!slot || slot.current <= 0) {
+            log.push({
+              turn: state.turn,
+              actor: 'system',
+              message: `Cannot cast ${spell.name} - no level ${spell.level} slots remaining`,
+            });
+            return state; // Early return - no slots available
+          }
+
+          // Decrement spell slot
+          playerCharacter = {
+            ...playerCharacter,
+            resources: {
+              ...playerCharacter.resources,
+              spellSlots: {
+                ...playerCharacter.resources.spellSlots,
+                [slotKey]: {
+                  ...slot,
+                  current: slot.current - 1,
+                },
+              },
+            },
+          };
+        }
+
         // Cast the spell
         const result = castSpell(playerCharacter, enemy, spell);
 
