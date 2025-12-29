@@ -12,12 +12,12 @@ interface Symbol {
 
 const SYMBOLS: Symbol[] = [
   { id: 'sun', iconClass: 'ra ra-sun' },
-  { id: 'moon', iconClass: 'ra ra-moon' },
-  { id: 'star', iconClass: 'ra ra-star' },
+  { id: 'tower', iconClass: 'ra ra-tower' },
+  { id: 'flame', iconClass: 'ra ra-flame-symbol' },
   { id: 'crown', iconClass: 'ra ra-crown' },
   { id: 'skull', iconClass: 'ra ra-skull' },
   { id: 'key', iconClass: 'ra ra-key' },
-  { id: 'heart', iconClass: 'ra ra-heart' },
+  { id: 'hearts', iconClass: 'ra ra-hearts' },
   { id: 'diamond', iconClass: 'ra ra-gem' },
 ];
 
