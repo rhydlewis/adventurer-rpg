@@ -1,6 +1,6 @@
 import type { Creature } from '../types/creature';
-import type { Attributes } from '../types/attributes';
-import type { Resources } from '../types/resource';
+import type { Attributes } from '../types';
+import type { Resources } from '../types';
 import { getEnemyTemplate, ENEMY_TEMPLATES } from '../data/enemyTemplates';
 import { applyCreatureClassEffects } from '../data/creatureClasses';
 import { calculateModifier } from './dice';
@@ -47,24 +47,24 @@ function calculateBaseSaves(
         return {
             fortitude: 2 + conMod,
             reflex: 2 + dexMod,
-            will: 0 + wisMod,
+            will: wisMod,
         };
     }
 
     // Rogue: Good Ref, Poor Fort/Will
     if (baseClass === 'Rogue') {
         return {
-            fortitude: 0 + conMod,
+            fortitude: conMod,
             reflex: 2 + dexMod,
-            will: 0 + wisMod,
+            will: wisMod,
         };
     }
 
     // Wizard: Good Will, Poor Fort/Ref
     if (baseClass === 'Wizard') {
         return {
-            fortitude: 0 + conMod,
-            reflex: 0 + dexMod,
+            fortitude: conMod,
+            reflex: dexMod,
             will: 2 + wisMod,
         };
     }
@@ -73,7 +73,7 @@ function calculateBaseSaves(
     if (baseClass === 'Cleric') {
         return {
             fortitude: 2 + conMod,
-            reflex: 0 + dexMod,
+            reflex: dexMod,
             will: 2 + wisMod,
         };
     }

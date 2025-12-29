@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { GameSaveManager } from '../../utils/gameSaveManager';
-import type { GameSave } from '../../types/gameSave';
+import type { GameSave } from '../../types';
 import { Preferences } from '@capacitor/preferences';
 
 // Mock Capacitor Preferences

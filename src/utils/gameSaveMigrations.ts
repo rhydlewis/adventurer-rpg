@@ -1,4 +1,4 @@
-import type { GameSave } from '../types/gameSave';
+import type { GameSave } from '../types';
 
 export const CURRENT_VERSION = '1.0.0';
 

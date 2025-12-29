@@ -14,14 +14,14 @@ import { useNarrativeStore } from './stores/narrativeStore';
 import { availableCampaigns } from './data/campaigns';
 import type { Screen, Character, Campaign } from './types';
 import { LockPickingScreen } from './screens';
-import { TimingGame } from './screens/puzzles/TimingGame';
+import { TimingGame } from './screens/puzzles';
 import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
 import { LevelUpScreen } from './screens';
 import {TestingScreen} from "./screens/TestingScreen.tsx";
 import { App as CapApp } from '@capacitor/app';
 import { GameSaveManager } from './utils/gameSaveManager';
-import type { GameSave, SaveMetadata } from './types/gameSave';
+import type { GameSave, SaveMetadata } from './types';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>({ type: 'splash' });

@@ -1,5 +1,5 @@
 import { Preferences } from '@capacitor/preferences';
-import type { GameSave, SaveMetadata } from '../types/gameSave';
+import type { GameSave, SaveMetadata } from '../types';
 import { migrateToCurrentVersion, CURRENT_VERSION } from './gameSaveMigrations';
 
 const SAVE_KEY = 'adventurer-rpg:save';

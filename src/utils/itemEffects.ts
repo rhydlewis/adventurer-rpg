@@ -10,7 +10,7 @@ export function applyItemEffect(
 ): { character: Character; logMessage: string } {
   try {
     let updatedCharacter = { ...character };
-    let logMessage = '';
+    let logMessage: string;
 
     switch (effect.type) {
       case 'heal': {

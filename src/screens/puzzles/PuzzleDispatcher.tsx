@@ -1,4 +1,4 @@
-import type { PuzzleType, PuzzleConfig, TimingPuzzleConfig, SlidingPuzzleConfig, RotationPuzzleConfig, TumblerPuzzleConfig, PressurePuzzleConfig } from '../../types/narrative';
+import type { PuzzleType, PuzzleConfig, TimingPuzzleConfig, SlidingPuzzleConfig, RotationPuzzleConfig, TumblerPuzzleConfig, PressurePuzzleConfig } from '../../types';
 import { TimingGame } from './TimingGame';
 import { SlidingSymbolMatch } from './SlidingSymbolMatch';
 import { RuneRotation } from './RuneRotation';

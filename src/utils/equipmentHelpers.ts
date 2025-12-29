@@ -14,11 +14,7 @@ export function hasWeaponProficiency(character: Character, weapon: Weapon): bool
   }
 
   // Martial proficiency includes martial-finesse weapons
-  if (required === 'martial-finesse' && classProficiencies.includes('martial')) {
-    return true;
-  }
-
-  return false;
+  return required === 'martial-finesse' && classProficiencies.includes('martial');
 }
 
 /**

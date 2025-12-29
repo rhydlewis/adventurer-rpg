@@ -1,5 +1,5 @@
 import type { EnemyTemplate } from '../types/enemyTemplate';
-import type { Equipment } from '../types/equipment';
+import type { Equipment } from '../types/';
 import { EnemyTemplatesSchema } from '../schemas/enemyTemplate.schema';
 import { CREATURE_AVATARS, DEFAULT_CREATURE_AVATAR } from './creatureAvatars';
 import { getWeapon, getArmor } from './equipment';

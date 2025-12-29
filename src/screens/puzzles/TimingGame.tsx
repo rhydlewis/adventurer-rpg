@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Button, Card } from '../../components';
-import type { TimingPuzzleConfig } from '../../types/narrative';
+import type { TimingPuzzleConfig } from '../../types';
 
 // =============================================================================
 // Types & Configuration

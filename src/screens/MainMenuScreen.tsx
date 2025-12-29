@@ -1,5 +1,5 @@
 import { Button, Icon } from '../components';
-import type { SaveMetadata } from '../types/gameSave';
+import type { SaveMetadata } from '../types';
 
 interface MainMenuScreenProps {
   onNewGame: () => void;

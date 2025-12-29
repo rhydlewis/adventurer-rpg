@@ -59,11 +59,11 @@ export function applyCondition(
  * Apply a condition with a saving throw to resist.
  *
  * @param target - Entity to apply condition to (Character or Creature)
- * @param type - Type of condition to apply
+ * @param _type - Type of condition to apply
  * @param dc - Difficulty class for the save
  * @param saveType - Type of save ('fortitude', 'reflex', or 'will')
- * @param currentTurn - Current turn number
- * @param duration - Optional override for default duration
+ * @param _currentTurn - Current turn number
+ * @param _duration - Optional override for default duration
  * @returns Object with save result and whether condition was applied
  */
 export function applyConditionWithSave(

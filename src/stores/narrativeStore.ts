@@ -20,7 +20,7 @@ import {
 } from '../utils/narrativeLogic';
 import { useCharacterStore } from './characterStore';
 import { GameSaveManager } from '../utils/gameSaveManager';
-import type { GameSave } from '../types/gameSave';
+import type { GameSave } from '../types';
 
 interface NarrativeStore {
   // Persistent state
