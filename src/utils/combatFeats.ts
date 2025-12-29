@@ -12,6 +12,7 @@ export interface FeatCombatResult {
     attackBonus: number;
     damageBonus: number;
     bonusDamage?: string; // Extra dice like "2d6"
+    acModifier?: number; // AC bonus (e.g., Combat Expertise)
     label: string;
     useWisForAttack?: boolean;
     useDexForAttack?: boolean;
@@ -83,6 +84,7 @@ export function applyAttackFeat(
     attackBonus: feat.effects.attackModifier ?? 0,
     damageBonus: feat.effects.damageModifier ?? 0,
     bonusDamage: feat.effects.bonusDamage,
+    acModifier: feat.effects.acModifier,
     label: feat.name,
     useWisForAttack: feat.effects.useWisdomForAttack,
     useDexForAttack: feat.effects.useDexForAttack,

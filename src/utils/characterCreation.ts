@@ -123,7 +123,18 @@ export function createCharacter(params: CreateCharacterParams): Character {
   // Build feats array
   const feats = [];
   if (selectedFeat) {
-    feats.push(FEATS[selectedFeat]);
+    // Map legacy feat names to new feat IDs
+    const featNameToId: Record<string, string> = {
+      'Power Attack': 'power_attack',
+      'Weapon Focus': 'weapon_focus',
+      'Toughness': 'toughness',
+      'Improved Initiative': 'improved_initiative',
+      'Combat Reflexes': 'combat_reflexes',
+    };
+    const featId = featNameToId[selectedFeat];
+    if (featId && FEATS[featId]) {
+      feats.push(FEATS[featId]);
+    }
   }
 
   // Build resources

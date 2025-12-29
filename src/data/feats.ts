@@ -260,6 +260,59 @@ export const FEATS: Record<string, Feat> = {
       duration: 'nextTurn',
     },
   },
+
+  // ========================================
+  // LEGACY FEATS (Backward Compatibility)
+  // ========================================
+
+  weapon_focus: {
+    id: 'weapon_focus',
+    name: 'Weapon Focus',
+    description: 'Gain +1 attack bonus with your chosen weapon.',
+    category: 'offensive',
+    type: 'passive',
+    prerequisites: {},
+    effects: {
+      attackModifier: 1,
+      duration: 'permanent',
+    },
+  },
+
+  toughness: {
+    id: 'toughness',
+    name: 'Toughness',
+    description: 'Gain +3 HP per level.',
+    category: 'defensive',
+    type: 'passive',
+    prerequisites: {},
+    effects: {
+      duration: 'permanent',
+    },
+  },
+
+  improved_initiative: {
+    id: 'improved_initiative',
+    name: 'Improved Initiative',
+    description: 'Gain +4 bonus to initiative rolls.',
+    category: 'utility',
+    type: 'passive',
+    prerequisites: {},
+    effects: {
+      duration: 'permanent',
+    },
+  },
+
+  combat_reflexes: {
+    id: 'combat_reflexes',
+    name: 'Combat Reflexes',
+    description: 'Gain +2 AC when using Dodge ability.',
+    category: 'defensive',
+    type: 'passive',
+    prerequisites: {},
+    effects: {
+      duration: 'permanent',
+    },
+  },
 };
 
 /**

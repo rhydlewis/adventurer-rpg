@@ -25,7 +25,8 @@ export interface ClassDefinition {
   startingWeapon: string; // Weapon ID (lowercase, e.g., "longsword", "rapier")
   startingArmor: ArmorType;
   hasShield: boolean;
-  startingFeats?: FeatName[]; // Only Fighter gets a feat at level 1
+  startingFeats?: FeatName[]; // Legacy: Only Fighter gets a feat at level 1
+  defaultFeatIds?: string[]; // NEW: Default feat IDs for this class (for quick-start presets)
   proficiencies: {
     weapons: ('simple' | 'martial' | 'martial-finesse')[];
     armor: ('light' | 'medium' | 'heavy')[];
@@ -62,6 +63,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'longsword',
     startingArmor: 'chainmail',
     hasShield: true,
+    defaultFeatIds: ['power_attack', 'bloody_assault', 'combat_expertise', 'weapon_focus'],
     proficiencies: {
       weapons: ['simple', 'martial'],
       armor: ['light', 'medium', 'heavy'],
@@ -96,6 +98,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'rapier',
     startingArmor: 'leather',
     hasShield: false,
+    defaultFeatIds: ['weapon_finesse', 'precision_strike', 'critical_focus', 'combat_reflexes'],
     proficiencies: {
       weapons: ['simple', 'martial-finesse'],
       armor: ['light'],
@@ -130,6 +133,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'dagger',
     startingArmor: 'none',
     hasShield: false,
+    defaultFeatIds: ['arcane_strike', 'empower_spell', 'disruptive_spell', 'improved_initiative'],
     proficiencies: {
       weapons: ['simple'],
       armor: [],
@@ -164,6 +168,7 @@ export const CLASSES: Record<CharacterClass, ClassDefinition> = {
     startingWeapon: 'mace',
     startingArmor: 'chainmail',
     hasShield: true,
+    defaultFeatIds: ['guided_hand', 'channel_smite', 'power_attack', 'toughness'],
     proficiencies: {
       weapons: ['simple'],
       armor: ['light', 'medium'],

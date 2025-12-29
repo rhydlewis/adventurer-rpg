@@ -59,19 +59,40 @@ export function getFeatBonuses(character: Character): {
   let dodgeACBonus = 0;
 
   character.feats.forEach((feat) => {
-    switch (feat.name) {
-      case 'Weapon Focus':
-        attackBonus += 1;
-        break;
-      case 'Improved Initiative':
-        initiativeBonus += 4;
-        break;
-      case 'Toughness':
-        hpBonus += 3 * character.level;
-        break;
-      case 'Combat Reflexes':
-        dodgeACBonus += 2; // Applied when Dodge ability is active
-        break;
+    // Handle both old and new feat structures for backward compatibility
+    if ('id' in feat) {
+      // New structure: feat.id
+      switch (feat.id) {
+        case 'weapon_focus':
+          attackBonus += 1;
+          break;
+        case 'improved_initiative':
+          initiativeBonus += 4;
+          break;
+        case 'toughness':
+          hpBonus += 3 * character.level;
+          break;
+        case 'combat_reflexes':
+          dodgeACBonus += 2; // Applied when Dodge ability is active
+          break;
+      }
+    } else {
+      // Old structure: feat.name (legacy support)
+      const legacyFeat = feat as unknown as { name: string };
+      switch (legacyFeat.name) {
+        case 'Weapon Focus':
+          attackBonus += 1;
+          break;
+        case 'Improved Initiative':
+          initiativeBonus += 4;
+          break;
+        case 'Toughness':
+          hpBonus += 3 * character.level;
+          break;
+        case 'Combat Reflexes':
+          dodgeACBonus += 2; // Applied when Dodge ability is active
+          break;
+      }
     }
   });
 

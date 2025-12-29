@@ -14,6 +14,15 @@ import type { Character } from '../../types';
 import { FEATS } from '../../data/feats';
 import { WEAPONS, ARMORS } from '../../data/equipment';
 
+// Map legacy feat names to new feat IDs
+const featNameToId: Record<string, string> = {
+  'Power Attack': 'power_attack',
+  'Weapon Focus': 'weapon_focus',
+  'Toughness': 'toughness',
+  'Improved Initiative': 'improved_initiative',
+  'Combat Reflexes': 'combat_reflexes',
+};
+
 // Test characters
 const createFighter = (con: number = 14, featNames: string[] = []): Character => ({
   name: 'Test Fighter',
@@ -27,7 +36,7 @@ const createFighter = (con: number = 14, featNames: string[] = []): Character =>
   bab: 1,
   saves: { fortitude: 2, reflex: 0, will: 0 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
-  feats: featNames.map((name) => FEATS[name as keyof typeof FEATS]),
+  feats: featNames.map((name) => FEATS[featNameToId[name]]).filter(Boolean),
   equipment: { weapon: WEAPONS['longsword'], weapons: [WEAPONS['longsword']], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [
