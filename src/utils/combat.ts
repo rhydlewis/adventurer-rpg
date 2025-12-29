@@ -54,7 +54,10 @@ export function performAttack(
     };
   }
 
-  const abilityMod = calculateModifier(attacker.attributes.STR);
+  // Determine which ability modifier to use (Finesse weapons can use DEX)
+  const strMod = calculateModifier(attacker.attributes.STR);
+  const dexMod = calculateModifier(attacker.attributes.DEX);
+  const abilityMod = (attacker.equipment.weapon?.finesse && dexMod > strMod) ? dexMod : strMod;
   // Apply attack bonuses from both explicit modifiers AND conditions
   const totalAttackBonus = (modifiers?.attackBonus ?? 0) + (attackerMods.attackBonus ?? 0);
   const totalDamageBonus = (modifiers?.damageBonus ?? 0) + (attackerMods.damageBonus ?? 0);

@@ -422,6 +422,189 @@ describe('utils/combat', () => {
       // Verify calculateCriticalDamage was called with dagger damage (1d4), not hardcoded 1d8
       expect(calculateCriticalDamage).toHaveBeenCalledWith('1d4+1');
     });
+
+    it('uses DEX modifier for finesse weapon when DEX > STR', () => {
+      // Wizard with low STR, high DEX, using dagger (finesse)
+      const wizard = createTestCharacter({
+        attributes: {
+          STR: 8,  // -1 modifier
+          DEX: 16, // +3 modifier
+          CON: 12,
+          INT: 16,
+          WIS: 10,
+          CHA: 8,
+        },
+        equipment: {
+          weapon: {
+            name: 'Dagger',
+            damage: '1d4',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A small dagger',
+          },
+          weapons: [{
+            name: 'Dagger',
+            damage: '1d4',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A small dagger',
+          }],
+          armor: null,
+          shield: null,
+          items: [],
+        },
+      });
+      const defender = createTestEnemy();
+
+      // Mock calculateModifier to return correct values based on attribute
+      vi.mocked(calculateModifier).mockImplementation((value: number) => {
+        if (value === 8) return -1;  // STR 8 = -1
+        if (value === 16) return 3;  // DEX 16 = +3
+        return 0;
+      });
+
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 18,
+        d20Result: 14,
+        output: '1d20+4: [14]+4 = 18', // BAB 1 + DEX 3 = +4
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 5,
+        output: '1d4+3: [2]+3 = 5', // Should use DEX modifier +3
+      });
+
+      performAttack(wizard, defender);
+
+      // Verify both STR and DEX were checked
+      expect(calculateModifier).toHaveBeenCalledWith(8);  // STR
+      expect(calculateModifier).toHaveBeenCalledWith(16); // DEX
+      // Verify attack roll used DEX modifier (+3, the higher one)
+      expect(rollAttack).toHaveBeenCalledWith(wizard.bab, 3, undefined);
+      // Verify damage roll used DEX modifier (+3)
+      expect(rollDamage).toHaveBeenCalledWith('1d4', 3);
+    });
+
+    it('uses STR modifier for finesse weapon when STR > DEX', () => {
+      // Strong rogue with high STR, low DEX, using dagger (finesse)
+      const strongRogue = createTestCharacter({
+        attributes: {
+          STR: 16, // +3 modifier
+          DEX: 10, // +0 modifier
+          CON: 14,
+          INT: 10,
+          WIS: 12,
+          CHA: 8,
+        },
+        equipment: {
+          weapon: {
+            name: 'Dagger',
+            damage: '1d4',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A small dagger',
+          },
+          weapons: [{
+            name: 'Dagger',
+            damage: '1d4',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A small dagger',
+          }],
+          armor: null,
+          shield: null,
+          items: [],
+        },
+      });
+      const defender = createTestEnemy();
+
+      // Mock calculateModifier to return correct values based on attribute
+      vi.mocked(calculateModifier).mockImplementation((value: number) => {
+        if (value === 16) return 3;  // STR 16 = +3
+        if (value === 10) return 0;  // DEX 10 = +0
+        return 0;
+      });
+
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 18,
+        d20Result: 14,
+        output: '1d20+4: [14]+4 = 18', // BAB 1 + STR 3 = +4
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 6,
+        output: '1d4+3: [3]+3 = 6', // Should use STR modifier +3
+      });
+
+      performAttack(strongRogue, defender);
+
+      // Verify both STR and DEX were checked
+      expect(calculateModifier).toHaveBeenCalledWith(16); // STR
+      expect(calculateModifier).toHaveBeenCalledWith(10); // DEX
+      // Verify attack roll used STR modifier (+3, the higher one)
+      expect(rollAttack).toHaveBeenCalledWith(strongRogue.bab, 3, undefined);
+      // Verify damage roll used STR modifier (+3)
+      expect(rollDamage).toHaveBeenCalledWith('1d4', 3);
+    });
+
+    it('always uses STR modifier for non-finesse weapons', () => {
+      // Character with higher DEX than STR, using longsword (non-finesse)
+      const dexFighter = createTestCharacter({
+        attributes: {
+          STR: 12, // +1 modifier
+          DEX: 16, // +3 modifier
+          CON: 14,
+          INT: 10,
+          WIS: 10,
+          CHA: 8,
+        },
+        equipment: {
+          weapon: {
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false, // Non-finesse
+            description: 'A standard longsword',
+          },
+          weapons: [{
+            name: 'Longsword',
+            damage: '1d8',
+            damageType: 'slashing',
+            finesse: false,
+            description: 'A standard longsword',
+          }],
+          armor: null,
+          shield: null,
+          items: [],
+        },
+      });
+      const defender = createTestEnemy();
+
+      // Mock calculateModifier to return correct values based on attribute
+      vi.mocked(calculateModifier).mockImplementation((value: number) => {
+        if (value === 12) return 1;  // STR 12 = +1
+        if (value === 16) return 3;  // DEX 16 = +3
+        return 0;
+      });
+
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 16,
+        d20Result: 14,
+        output: '1d20+2: [14]+2 = 16', // BAB 1 + STR 1 = +2
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 7,
+        output: '1d8+1: [6]+1 = 7', // Should use STR modifier +1, not DEX +3
+      });
+
+      performAttack(dexFighter, defender);
+
+      // Verify both STR and DEX were checked
+      expect(calculateModifier).toHaveBeenCalledWith(12); // STR
+      expect(calculateModifier).toHaveBeenCalledWith(16); // DEX
+      // Verify attack roll used STR modifier (+1) - non-finesse always uses STR
+      expect(rollAttack).toHaveBeenCalledWith(dexFighter.bab, 1, undefined);
+      // Verify damage roll used STR modifier (+1)
+      expect(rollDamage).toHaveBeenCalledWith('1d8', 1);
+    });
   });
 
   describe('resolveCombatRound', () => {
