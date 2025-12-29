@@ -235,3 +235,47 @@ export function castSpell(
     output: `${spell.name}: Unknown spell type`,
   };
 }
+
+/**
+ * Consume a spell slot for a leveled spell
+ * Returns updated entity with spell slot consumed
+ *
+ * Note: Cantrips (level 0) don't consume slots
+ */
+export function consumeSpellSlot<T extends Entity>(
+  entity: T,
+  spellLevel: number
+): T {
+  // Cantrips don't consume slots
+  if (spellLevel === 0) {
+    return entity;
+  }
+
+  // No spell slots to consume
+  if (!entity.resources?.spellSlots) {
+    return entity;
+  }
+
+  const slotKey = `level${spellLevel}` as keyof typeof entity.resources.spellSlots;
+  const slot = entity.resources.spellSlots[slotKey];
+
+  // No slot at this level or already at 0
+  if (!slot || slot.current <= 0) {
+    return entity;
+  }
+
+  // Consume slot (immutable update)
+  return {
+    ...entity,
+    resources: {
+      ...entity.resources,
+      spellSlots: {
+        ...entity.resources.spellSlots,
+        [slotKey]: {
+          ...slot,
+          current: slot.current - 1,
+        },
+      },
+    },
+  };
+}
