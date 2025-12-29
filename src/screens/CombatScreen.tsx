@@ -9,7 +9,7 @@ import { Icon, OptionsMenu } from '../components';
 import { getEntityDisplayClass } from '../utils/entityHelpers';
 import { ActionPopupButton } from '../components/combat/ActionPopupButton';
 import { PrimaryAttackButton } from '../components/combat/PrimaryAttackButton';
-import { SecondaryAttackButton } from '../components/combat/SecondaryAttackButton';
+import { FeatAttackButton } from '../components/combat/FeatAttackButton';
 
 const formatModifier = (value: number): string => {
   return value >= 0 ? `+${value}` : `${value}`;
@@ -268,12 +268,12 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
                 {/* Row 1: Attack Buttons */}
                 <div className="grid grid-cols-2 gap-2">
                   <PrimaryAttackButton
-                    attack={actions.find(a => a.type === 'attack' && !('variant' in a)) || null}
+                    attack={actions.find(a => a.type === 'attack' && !('featId' in a)) || null}
                     weaponName={combat.playerCharacter.equipment.weapon?.name}
                     onExecute={executeTurn}
                   />
-                  <SecondaryAttackButton
-                    attack={actions.find(a => a.type === 'attack' && 'variant' in a) || null}
+                  <FeatAttackButton
+                    attacks={actions.filter(a => a.type === 'attack' && 'featId' in a) as import('../types/action').AttackAction[]}
                     onExecute={executeTurn}
                   />
                 </div>

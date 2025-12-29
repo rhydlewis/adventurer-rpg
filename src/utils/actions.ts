@@ -1,6 +1,8 @@
 import type { Character } from '../types';
 import type { Action, AttackAction, UseAbilityAction, CastSpellAction } from '../types/action';
 import { getCantripsForClass } from '../data/spells';
+import { meetsPrerequisites } from './feats';
+import { hasResource } from './resources';
 
 /**
  * Get all available actions for a character during combat
@@ -18,17 +20,45 @@ export function getAvailableActions(character: Character): Action[] {
     available: true,
   } as AttackAction);
 
-  // 1b. Fighter Power Attack - modified attack option (requires Phase 2 completion)
-  if (character.class === 'Fighter' && character.mechanicsLocked) {
-    actions.push({
-      type: 'attack',
-      variant: 'power_attack',
-      name: 'Power Attack',
-      description: 'Attack with -2 to hit, +4 damage',
-      available: true,
-      attackModifier: -2,
-      damageModifier: 4,
-    } as AttackAction);
+  // 1b. Attack Variant Feats - dynamic feat-based attacks
+  if (character.feats && character.feats.length > 0) {
+    character.feats.forEach((feat) => {
+      // Only show attack_variant type feats
+      if (feat.type === 'attack_variant') {
+        // Check prerequisites
+        const meetsPrereqs = meetsPrerequisites(feat, character);
+
+        // Check resource availability
+        let hasResources = true;
+        let disabledReason: string | undefined;
+
+        if (feat.effects.consumesResource) {
+          const { type, level } = feat.effects.consumesResource;
+          hasResources = hasResource(character, type, level);
+          if (!hasResources) {
+            disabledReason = `No ${type.replace('_', ' ')} available`;
+          }
+        }
+
+        if (!meetsPrereqs) {
+          disabledReason = 'Prerequisites not met';
+        }
+
+        const isAvailable = meetsPrereqs && hasResources;
+
+        actions.push({
+          type: 'attack',
+          featId: feat.id,
+          name: feat.name,
+          description: feat.description,
+          available: isAvailable,
+          disabled: !isAvailable,
+          disabledReason,
+          attackModifier: feat.effects.attackModifier,
+          damageModifier: feat.effects.damageModifier,
+        } as AttackAction);
+      }
+    });
   }
 
   // 2. Class Abilities - check resources
@@ -46,6 +76,59 @@ export function getAvailableActions(character: Character): Action[] {
       maxUses: ability.maxUses,
     } as UseAbilityAction);
   });
+
+  // 2b. Ability Feats - feats that act like abilities
+  if (character.feats && character.feats.length > 0) {
+    character.feats.forEach((feat) => {
+      // Only show ability type feats
+      if (feat.type === 'ability') {
+        // Check prerequisites
+        const meetsPrereqs = meetsPrerequisites(feat, character);
+
+        // Check resource availability
+        let hasResources = true;
+        let disabledReason: string | undefined;
+        let usesRemaining: number | undefined;
+        let maxUses: number | undefined;
+
+        if (feat.effects.consumesResource) {
+          const { type } = feat.effects.consumesResource;
+          hasResources = hasResource(character, type);
+
+          // Get uses remaining for display
+          if (type === 'channel_energy') {
+            const channelEnergy = character.resources.abilities.find(a => a.name === 'Channel Energy');
+            if (channelEnergy) {
+              usesRemaining = channelEnergy.currentUses;
+              maxUses = channelEnergy.maxUses;
+            }
+          }
+
+          if (!hasResources) {
+            disabledReason = `No ${type.replace('_', ' ')} available`;
+          }
+        }
+
+        if (!meetsPrereqs) {
+          disabledReason = 'Prerequisites not met';
+        }
+
+        const isAvailable = meetsPrereqs && hasResources;
+
+        actions.push({
+          type: 'use_ability',
+          featId: feat.id,
+          name: feat.name,
+          description: feat.description,
+          available: isAvailable,
+          disabled: !isAvailable,
+          disabledReason,
+          usesRemaining,
+          maxUses,
+        } as UseAbilityAction);
+      }
+    });
+  }
 
   // 3. Spell Casting - for Wizard/Cleric
   if (character.resources.spellSlots) {

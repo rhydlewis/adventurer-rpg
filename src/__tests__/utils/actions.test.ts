@@ -18,7 +18,7 @@ const createFighter = (): Character => ({
   bab: 1,
   saves: { fortitude: 2, reflex: 0, will: 0 },
   skills: { Perception: 0, Stealth: 0, Athletics: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
-  feats: [FEATS['Weapon Focus']],
+  feats: [FEATS['weapon_focus']],
   equipment: { weapon: WEAPONS['longsword'], weapons: [WEAPONS['longsword']], armor: ARMORS.Chainmail, shield: { equipped: false, acBonus: 0 }, items: [] },
   resources: {
     abilities: [
@@ -96,13 +96,13 @@ describe('Actions - Fighter', () => {
     expect(attackAction.available).toBe(true);
   });
 
-  it('should have Power Attack action when mechanicsLocked is true', () => {
+  it('should have Power Attack action when character has the feat', () => {
     const fighter = createFighter();
-    fighter.mechanicsLocked = true;
+    fighter.feats = [FEATS['power_attack']];
     const actions = getAvailableActions(fighter);
 
     const powerAttack = actions.find(
-      (a) => a.type === 'attack' && a.variant === 'power_attack'
+      (a) => a.type === 'attack' && 'featId' in a && a.featId === 'power_attack'
     ) as AttackAction;
     expect(powerAttack).toBeDefined();
     expect(powerAttack.name).toBe('Power Attack');
@@ -111,13 +111,13 @@ describe('Actions - Fighter', () => {
     expect(powerAttack.available).toBe(true);
   });
 
-  it('should NOT have Power Attack when mechanicsLocked is false (Phase 1)', () => {
+  it('should NOT have Power Attack when character lacks the feat', () => {
     const fighter = createFighter();
-    fighter.mechanicsLocked = false;
+    fighter.feats = []; // No feats
     const actions = getAvailableActions(fighter);
 
     const powerAttack = actions.find(
-      (a) => a.type === 'attack' && a.variant === 'power_attack'
+      (a) => a.type === 'attack' && 'featId' in a && a.featId === 'power_attack'
     );
     expect(powerAttack).toBeUndefined();
   });
