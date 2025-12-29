@@ -1012,8 +1012,24 @@ const testNodes: StoryNode[] = [
                 }
             },
             {
-                id: 'tumbler_puzzle',
-                text: '🔐 Lock Tumbler - Crack the Lock',
+                id: 'tumbler_puzzle_easy',
+                text: '🔐 Lock Tumbler - Easy (Independent Dials)',
+                category: 'special',
+                outcome: {
+                    type: 'puzzle',
+                    puzzleType: 'tumbler',
+                    config: {
+                        dialCount: 3,
+                        symbolsPerDial: 6,
+                        linkedDials: false
+                    },
+                    successNodeId: 'puzzle_success',
+                    failureNodeId: 'puzzle_failure'
+                }
+            },
+            {
+                id: 'tumbler_puzzle_hard',
+                text: '🔐 Lock Tumbler - Hard (Linked Dials)',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
