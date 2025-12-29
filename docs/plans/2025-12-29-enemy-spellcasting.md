@@ -118,7 +118,612 @@ export const THUNDERWAVE: Spell = {
 
 ## Implementation Plan
 
-### Phase 1: Type System & Data Foundation
+### Phase 0: Migrate Spells to JSON + Zod Schema
+
+**Rationale**: Follow established pattern for game content (enemies, weapons, armor, items). This provides:
+- Build-time validation via Zod schemas
+- Separation of data from code
+- Easier content editing (non-programmers can add spells)
+- Consistent architecture across all game content
+
+#### 0.1 Create Spell Zod Schema
+
+**File**: `src/schemas/spell.schema.ts` (new file)
+
+```typescript
+import { z } from 'zod';
+
+/**
+ * Spell level enum (0 = cantrip, 1-9 = leveled spells)
+ */
+const SpellLevelSchema = z.union([
+  z.literal(0),
+  z.literal(1),
+  z.literal(2),
+  z.literal(3),
+  z.literal(4),
+  z.literal(5),
+  z.literal(6),
+  z.literal(7),
+  z.literal(8),
+  z.literal(9),
+]);
+
+/**
+ * Spell school enum
+ */
+const SpellSchoolSchema = z.enum([
+  'evocation',
+  'conjuration',
+  'enchantment',
+  'abjuration',
+  'transmutation',
+  'necromancy',
+  'divination',
+  'illusion',
+]);
+
+/**
+ * Damage type enum
+ */
+const DamageTypeSchema = z.enum([
+  'cold',
+  'fire',
+  'acid',
+  'radiant',
+  'force',
+  'necrotic',
+  'thunder',
+  'lightning',
+  'poison',
+  'slashing',
+  'piercing',
+  'bludgeoning',
+]);
+
+/**
+ * Spell target enum
+ */
+const SpellTargetSchema = z.enum(['self', 'single', 'area']);
+
+/**
+ * Save type enum
+ */
+const SaveTypeSchema = z.enum(['fortitude', 'reflex', 'will']);
+
+/**
+ * Spell effect schemas (discriminated union based on type)
+ */
+const DamageEffectSchema = z.object({
+  type: z.literal('damage'),
+  damageDice: z.string().regex(/^\d+d\d+(\+\d+)?$/, 'Damage must be dice notation'),
+  damageType: DamageTypeSchema,
+});
+
+const HealEffectSchema = z.object({
+  type: z.literal('heal'),
+  healDice: z.string().regex(/^\d+d\d+(\+\d+)?$/, 'Heal must be dice notation'),
+});
+
+const BuffEffectSchema = z.object({
+  type: z.literal('buff'),
+  buffType: z.enum(['attack', 'save', 'ac', 'damage']),
+  buffAmount: z.number().int(),
+  buffDuration: z.number().int().positive(),
+});
+
+const ConditionEffectSchema = z.object({
+  type: z.literal('condition'),
+  conditionType: z.string().min(1),
+  conditionDuration: z.number().int().positive(),
+});
+
+const SpellEffectSchema = z.discriminatedUnion('type', [
+  DamageEffectSchema,
+  HealEffectSchema,
+  BuffEffectSchema,
+  ConditionEffectSchema,
+]);
+
+/**
+ * Saving throw schema
+ */
+const SavingThrowSchema = z.object({
+  type: SaveTypeSchema,
+  onSuccess: z.enum(['negates', 'half', 'partial']),
+});
+
+/**
+ * Schema for a single spell definition
+ *
+ * Validates:
+ * - All required fields present
+ * - Spell level is valid (0-9)
+ * - School and target are valid enums
+ * - Effect structure matches type
+ * - Saving throw (if present) is valid
+ */
+export const SpellSchema = z.object({
+  id: z.string().min(1, 'Spell ID cannot be empty'),
+  name: z.string().min(1, 'Spell name cannot be empty'),
+  level: SpellLevelSchema,
+  school: SpellSchoolSchema,
+  target: SpellTargetSchema,
+  effect: SpellEffectSchema,
+  savingThrow: SavingThrowSchema.optional(),
+  description: z.string().min(1, 'Description cannot be empty'),
+});
+
+/**
+ * Schema for the spells.json file structure
+ *
+ * Format: Record<spellId, Spell>
+ */
+export const SpellsSchema = z.record(
+  z.string().min(1, 'Spell key cannot be empty'),
+  SpellSchema
+);
+
+/**
+ * TypeScript types inferred from schema
+ */
+export type SpellSchemaType = z.infer<typeof SpellSchema>;
+export type SpellEffectSchemaType = z.infer<typeof SpellEffectSchema>;
+```
+
+#### 0.2 Create Spells JSON Data File
+
+**File**: `src/data/spells.json` (new file)
+
+```json
+{
+  "ray_of_frost": {
+    "id": "ray_of_frost",
+    "name": "Ray of Frost",
+    "level": 0,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d3",
+      "damageType": "cold"
+    },
+    "description": "A ray of freezing air and ice shoots toward your target. Ranged spell attack."
+  },
+  "acid_splash": {
+    "id": "acid_splash",
+    "name": "Acid Splash",
+    "level": 0,
+    "school": "conjuration",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d3",
+      "damageType": "acid"
+    },
+    "description": "You hurl a bubble of acid at your target. Ranged spell attack."
+  },
+  "daze": {
+    "id": "daze",
+    "name": "Daze",
+    "level": 0,
+    "school": "enchantment",
+    "target": "single",
+    "effect": {
+      "type": "condition",
+      "conditionType": "Stunned",
+      "conditionDuration": 1
+    },
+    "savingThrow": {
+      "type": "will",
+      "onSuccess": "negates"
+    },
+    "description": "Daze a creature with 5 HP or less. Will save negates. Stunned for 1 turn."
+  },
+  "divine_favor": {
+    "id": "divine_favor",
+    "name": "Divine Favor",
+    "level": 0,
+    "school": "divination",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "attack",
+      "buffAmount": 1,
+      "buffDuration": 1
+    },
+    "description": "Divine power guides your next attack or saving throw (+1)."
+  },
+  "resistance": {
+    "id": "resistance",
+    "name": "Resistance",
+    "level": 0,
+    "school": "abjuration",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "save",
+      "buffAmount": 1,
+      "buffDuration": 1
+    },
+    "description": "You gain divine protection on your next saving throw (+1)."
+  },
+  "sacred_flame": {
+    "id": "sacred_flame",
+    "name": "Sacred Flame",
+    "level": 0,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d4",
+      "damageType": "radiant"
+    },
+    "savingThrow": {
+      "type": "will",
+      "onSuccess": "negates"
+    },
+    "description": "Flame-like radiance descends on a creature. Will save negates."
+  },
+  "paralyzing_touch": {
+    "id": "paralyzing_touch",
+    "name": "Paralyzing Touch",
+    "level": 0,
+    "school": "necromancy",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d3",
+      "damageType": "necrotic"
+    },
+    "savingThrow": {
+      "type": "fortitude",
+      "onSuccess": "negates"
+    },
+    "description": "A touch of necrotic energy paralyzes your foe. Melee spell attack for 1d3 necrotic damage, Fortitude save or be Stunned for 1 turn."
+  },
+  "thunderwave": {
+    "id": "thunderwave",
+    "name": "Thunderwave",
+    "level": 1,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "2d6",
+      "damageType": "thunder"
+    },
+    "savingThrow": {
+      "type": "fortitude",
+      "onSuccess": "half"
+    },
+    "description": "A wave of thunderous force sweeps out from you. Fortitude save for half damage."
+  }
+}
+```
+
+**Note**: Paralyzing Touch has a condition effect that needs special handling. For now, it's defined with damage + save, and the condition application logic will be in `spellcasting.ts`.
+
+#### 0.3 Create Spell Loader with Validation
+
+**File**: `src/data/spells.ts` (replace existing file)
+
+```typescript
+import spellsJson from './spells.json';
+import { SpellsSchema } from '../schemas/spell.schema';
+import type { Spell } from '../types';
+
+// Validate spells at build time
+const validatedSpells = SpellsSchema.parse(spellsJson);
+
+/**
+ * All available spells in the game
+ * Loaded from spells.json and validated with Zod schema
+ */
+export const SPELLS: Record<string, Spell> = Object.fromEntries(
+  Object.entries(validatedSpells).map(([id, spell]) => [
+    id,
+    spell as Spell,
+  ])
+);
+
+/**
+ * Get a spell by ID
+ * @param id - The spell ID (e.g., "ray_of_frost")
+ * @returns The spell object or undefined if not found
+ */
+export function getSpellById(id: string): Spell | undefined {
+  return SPELLS[id];
+}
+
+/**
+ * Get all spells
+ * @returns Array of all spells
+ */
+export function getAllSpells(): Spell[] {
+  return Object.values(SPELLS);
+}
+
+/**
+ * Wizard Cantrips (Level 0, at-will)
+ */
+export const WIZARD_CANTRIPS: Spell[] = [
+  SPELLS.ray_of_frost,
+  SPELLS.acid_splash,
+  SPELLS.daze,
+];
+
+/**
+ * Cleric Cantrips (Level 0, at-will)
+ */
+export const CLERIC_CANTRIPS: Spell[] = [
+  SPELLS.divine_favor,
+  SPELLS.resistance,
+  SPELLS.sacred_flame,
+];
+
+/**
+ * Get cantrips for a character class
+ */
+export function getCantripsForClass(className: string): Spell[] {
+  switch (className) {
+    case 'Wizard':
+      return WIZARD_CANTRIPS;
+    case 'Cleric':
+      return CLERIC_CANTRIPS;
+    default:
+      return [];
+  }
+}
+```
+
+#### 0.4 Write Schema Tests
+
+**File**: `src/__tests__/schemas/spell.schema.test.ts` (new file)
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { SpellSchema, SpellsSchema } from '../../schemas/spell.schema';
+
+describe('SpellSchema', () => {
+  it('should validate a valid damage spell', () => {
+    const validSpell = {
+      id: 'fireball',
+      name: 'Fireball',
+      level: 3,
+      school: 'evocation',
+      target: 'area',
+      effect: {
+        type: 'damage',
+        damageDice: '8d6',
+        damageType: 'fire',
+      },
+      description: 'A bright streak flashes from your pointing finger.',
+    };
+
+    expect(() => SpellSchema.parse(validSpell)).not.toThrow();
+  });
+
+  it('should validate a spell with saving throw', () => {
+    const spellWithSave = {
+      id: 'thunderwave',
+      name: 'Thunderwave',
+      level: 1,
+      school: 'evocation',
+      target: 'single',
+      effect: {
+        type: 'damage',
+        damageDice: '2d6',
+        damageType: 'thunder',
+      },
+      savingThrow: {
+        type: 'fortitude',
+        onSuccess: 'half',
+      },
+      description: 'A wave of thunderous force.',
+    };
+
+    expect(() => SpellSchema.parse(spellWithSave)).not.toThrow();
+  });
+
+  it('should reject invalid damage dice format', () => {
+    const invalidSpell = {
+      id: 'broken',
+      name: 'Broken Spell',
+      level: 0,
+      school: 'evocation',
+      target: 'single',
+      effect: {
+        type: 'damage',
+        damageDice: 'invalid',
+        damageType: 'fire',
+      },
+      description: 'Broken',
+    };
+
+    expect(() => SpellSchema.parse(invalidSpell)).toThrow();
+  });
+
+  it('should reject invalid spell level', () => {
+    const invalidLevel = {
+      id: 'overpowered',
+      name: 'Overpowered Spell',
+      level: 99,
+      school: 'evocation',
+      target: 'single',
+      effect: {
+        type: 'damage',
+        damageDice: '1d6',
+        damageType: 'fire',
+      },
+      description: 'Too powerful',
+    };
+
+    expect(() => SpellSchema.parse(invalidLevel)).toThrow();
+  });
+
+  it('should validate buff spells', () => {
+    const buffSpell = {
+      id: 'divine_favor',
+      name: 'Divine Favor',
+      level: 0,
+      school: 'divination',
+      target: 'self',
+      effect: {
+        type: 'buff',
+        buffType: 'attack',
+        buffAmount: 1,
+        buffDuration: 1,
+      },
+      description: 'Divine power guides your attack.',
+    };
+
+    expect(() => SpellSchema.parse(buffSpell)).not.toThrow();
+  });
+
+  it('should validate condition spells', () => {
+    const conditionSpell = {
+      id: 'hold_person',
+      name: 'Hold Person',
+      level: 2,
+      school: 'enchantment',
+      target: 'single',
+      effect: {
+        type: 'condition',
+        conditionType: 'Paralyzed',
+        conditionDuration: 3,
+      },
+      savingThrow: {
+        type: 'will',
+        onSuccess: 'negates',
+      },
+      description: 'You attempt to paralyze a humanoid.',
+    };
+
+    expect(() => SpellSchema.parse(conditionSpell)).not.toThrow();
+  });
+});
+
+describe('SpellsSchema', () => {
+  it('should validate a record of spells', () => {
+    const validSpells = {
+      ray_of_frost: {
+        id: 'ray_of_frost',
+        name: 'Ray of Frost',
+        level: 0,
+        school: 'evocation',
+        target: 'single',
+        effect: {
+          type: 'damage',
+          damageDice: '1d3',
+          damageType: 'cold',
+        },
+        description: 'A ray of freezing air.',
+      },
+      fireball: {
+        id: 'fireball',
+        name: 'Fireball',
+        level: 3,
+        school: 'evocation',
+        target: 'area',
+        effect: {
+          type: 'damage',
+          damageDice: '8d6',
+          damageType: 'fire',
+        },
+        description: 'A bright streak flashes.',
+      },
+    };
+
+    expect(() => SpellsSchema.parse(validSpells)).not.toThrow();
+  });
+
+  it('should reject if any spell is invalid', () => {
+    const invalidSpells = {
+      valid: {
+        id: 'valid',
+        name: 'Valid Spell',
+        level: 0,
+        school: 'evocation',
+        target: 'single',
+        effect: {
+          type: 'damage',
+          damageDice: '1d6',
+          damageType: 'fire',
+        },
+        description: 'Valid',
+      },
+      invalid: {
+        id: 'invalid',
+        name: 'Invalid Spell',
+        level: 0,
+        school: 'evocation',
+        target: 'single',
+        effect: {
+          type: 'damage',
+          damageDice: 'broken',
+          damageType: 'fire',
+        },
+        description: 'Invalid',
+      },
+    };
+
+    expect(() => SpellsSchema.parse(invalidSpells)).toThrow();
+  });
+});
+```
+
+#### 0.5 Update Spell Type Definition
+
+**File**: `src/types/spell.ts`
+
+**First**, add missing damage types to `DamageType` enum:
+
+```typescript
+export type DamageType =
+  | 'cold'
+  | 'fire'
+  | 'acid'
+  | 'radiant'
+  | 'force'
+  | 'necrotic'    // NEW - for Paralyzing Touch
+  | 'thunder'     // NEW - for Thunderwave
+  | 'lightning'   // NEW - for future spells
+  | 'poison'      // NEW - for future spells
+  | 'slashing'
+  | 'piercing'
+  | 'bludgeoning';
+```
+
+**Then**, update SpellEffect to handle condition effects that may be applied separately:
+
+```typescript
+/**
+ * Spell effect definition
+ * Different effects based on type
+ */
+export interface SpellEffect {
+  type: SpellEffectType;
+  // Damage effect
+  damageDice?: string; // e.g., "1d3", "1d4"
+  damageType?: DamageType;
+  // Heal effect
+  healDice?: string; // e.g., "1d8+1"
+  // Buff effect
+  buffType?: 'attack' | 'save' | 'ac' | 'damage';
+  buffAmount?: number;
+  buffDuration?: number; // turns
+  // Condition effect
+  conditionType?: string; // e.g., "Stunned", "Blinded"
+  conditionDuration?: number; // turns
+  // Special conditions (e.g., Daze only works on enemies ≤5 HP)
+  targetRestriction?: (target: { hp: number }) => boolean;
+}
+```
+
+**Note**: The `targetRestriction` function is only for runtime validation and won't be in the JSON. We may need to handle Daze's HP restriction separately in the spell casting logic.
+
+### Phase 1: Update Enemy Templates & Types
 
 #### 1.1 Update EnemyTemplate Type
 
@@ -163,74 +768,7 @@ export interface EnemyTemplate {
 - String IDs allow late binding (resolve to Spell objects at runtime)
 - Simple array keeps data structure clean
 
-#### 1.2 Define New Spells
-
-**File**: `src/data/spells.ts`
-
-Add after existing cantrips:
-
-```typescript
-/**
- * Enemy-specific spells
- */
-
-export const PARALYZING_TOUCH: Spell = {
-  id: 'paralyzing_touch',
-  name: 'Paralyzing Touch',
-  level: 0,
-  school: 'necromancy',
-  target: 'single',
-  effect: {
-    type: 'damage',
-    damageDice: '1d3',
-    damageType: 'necrotic',
-  },
-  savingThrow: {
-    type: 'fortitude',
-    onSuccess: 'negates', // TODO: May need to add 'negates_condition' option
-  },
-  description: 'A touch of necrotic energy paralyzes your foe. Melee spell attack for 1d3 necrotic damage, Fortitude save or be Stunned for 1 turn.',
-};
-
-export const THUNDERWAVE: Spell = {
-  id: 'thunderwave',
-  name: 'Thunderwave',
-  level: 1,
-  school: 'evocation',
-  target: 'single',
-  effect: {
-    type: 'damage',
-    damageDice: '2d6',
-    damageType: 'thunder',
-  },
-  savingThrow: {
-    type: 'fortitude',
-    onSuccess: 'half',
-  },
-  description: 'A wave of thunderous force sweeps out from you. Fortitude save for half damage.',
-};
-
-/**
- * Enemy spell collections
- */
-export const ENEMY_SPELLS: Spell[] = [
-  RAY_OF_FROST,
-  PARALYZING_TOUCH,
-  THUNDERWAVE,
-];
-
-/**
- * Get spell by ID
- */
-export function getSpellById(spellId: string): Spell | undefined {
-  const allSpells = [...WIZARD_CANTRIPS, ...CLERIC_CANTRIPS, ...ENEMY_SPELLS];
-  return allSpells.find(spell => spell.id === spellId);
-}
-```
-
-**Note**: May need to update `SpellEffect` type or spell casting logic to handle condition applications separately from damage (for Paralyzing Touch).
-
-#### 1.3 Update Enemy Data
+#### 1.2 Update Enemy Data
 
 **File**: `src/data/enemies.json`
 
@@ -992,20 +1530,38 @@ Ensure all new functions have JSDoc comments explaining:
 
 ## Implementation Order (Batches)
 
-### Batch 1: Foundation (Type System & Spell Data)
-**Goal**: Define new spells and update type system
+### Batch 0: Spell Data Migration to JSON + Zod
+**Goal**: Migrate spell data to JSON with Zod validation (follows established pattern)
+
+1. Update `src/types/spell.ts` - Add missing damage types (necrotic, thunder, lightning, poison)
+2. Create `src/schemas/spell.schema.ts` - Zod schema for spell validation
+3. Write `src/__tests__/schemas/spell.schema.test.ts` - Schema validation tests
+4. Create `src/data/spells.json` - All spells including new ones (Paralyzing Touch, Thunderwave)
+5. Update `src/data/spells.ts` - Replace TypeScript constants with JSON loader
+6. Run tests to verify schema validation works
+7. Update any existing code that imports spells (use `SPELLS.spell_id` instead of constants)
+
+**Verify**:
+- `npm test -- spell.schema.test.ts` passes
+- `npm run build` succeeds (Zod validates JSON at build time)
+- `npm run lint` passes
+- All existing spell references still work
+- New damage types work correctly in combat
+
+### Batch 1: Update Enemy Templates & Types
+**Goal**: Add spell support to enemy data structures
 
 1. Update `src/types/enemyTemplate.ts` - add `spellIds?: string[]`
 2. Update `src/types/creature.ts` - add `spellIds?: string[]`
-3. Add PARALYZING_TOUCH to `src/data/spells.ts`
-4. Add THUNDERWAVE to `src/data/spells.ts`
-5. Add `getSpellById()` helper to `src/data/spells.ts`
-6. Update `src/data/enemies.json` - add spellIds to Wraith and Lich
+3. Update `src/schemas/enemyTemplate.schema.ts` - add spellIds to Zod schema
+4. Update `src/data/enemies.json` - add spellIds to Wraith and Lich
+5. Update `src/utils/enemyGeneration.ts` - copy spellIds from template to creature
 
 **Verify**:
 - `npm run build` succeeds
 - `npm run lint` passes
 - Type errors resolved
+- Enemy schema tests pass
 
 ### Batch 2: Enemy AI Logic
 **Goal**: Implement spell selection and action decision logic
@@ -1056,18 +1612,30 @@ Ensure all new functions have JSDoc comments explaining:
 
 ## Success Criteria
 
-- [x] Wraith can cast Ray of Frost and Paralyzing Touch
-- [x] Lich can cast Ray of Frost, Paralyzing Touch, and Thunderwave
-- [x] Spell slots are consumed correctly for leveled spells
-- [x] Cantrips don't consume spell slots
-- [x] Enemy falls back to attack when out of spell slots
-- [x] Combat log clearly shows which spell was cast
-- [x] Paralyzing Touch applies Stunned condition on failed save
-- [x] Thunderwave deals appropriate damage with save for half
-- [x] No regressions in existing combat mechanics
-- [x] All automated tests pass
-- [x] Manual testing checklist completed
-- [x] Documentation updated
+**Spell Migration**:
+- [ ] All spells migrated to `spells.json`
+- [ ] Zod schema validates all spell data at build time
+- [ ] Schema tests cover all spell types (damage, heal, buff, condition)
+- [ ] `getSpellById()` function works correctly
+- [ ] No regressions in player spell casting
+
+**Enemy Spell Casting**:
+- [ ] Wraith can cast Ray of Frost and Paralyzing Touch
+- [ ] Lich can cast Ray of Frost, Paralyzing Touch, and Thunderwave
+- [ ] Spell slots are consumed correctly for leveled spells
+- [ ] Cantrips don't consume spell slots
+- [ ] Enemy falls back to attack when out of spell slots
+- [ ] Combat log clearly shows which spell was cast
+- [ ] Paralyzing Touch applies Stunned condition on failed save
+- [ ] Thunderwave deals appropriate damage with save for half
+- [ ] Enemy AI makes reasonable spell vs attack decisions
+
+**Quality Assurance**:
+- [ ] No regressions in existing combat mechanics
+- [ ] All automated tests pass
+- [ ] Manual testing checklist completed
+- [ ] Documentation updated
+- [ ] Code follows established patterns (JSON + Zod)
 
 ## Future Enhancements
 
