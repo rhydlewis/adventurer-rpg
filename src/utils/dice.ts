@@ -68,15 +68,18 @@ export function rollAttack(bab: number, abilityMod: number, context?: 'player' |
     const d20 = debugRoll;
     const modifier = bab + abilityMod;
     const total = d20 + modifier;
+    const sign = modifier >= 0 ? '+' : '';
 
     return {
       total,
       d20Result: d20,
-      output: `1d20+${modifier}: [${d20}]+${modifier} = ${total} [DEBUG]`,
+      output: `1d20${sign}${modifier}: [${d20}]${sign}${modifier} = ${total} [DEBUG]`,
     };
   }
 
-  const result = roller.roll(`1d20+${bab + abilityMod}`) as DiceRoll;
+  const modifier = bab + abilityMod;
+  const notation = `1d20${modifier >= 0 ? '+' : ''}${modifier}`;
+  const result = roller.roll(notation) as DiceRoll;
   // Extract the d20 roll from the result for critical hit checking
   // Type assertion needed as DiceRoll doesn't expose rolls structure
   const d20Result = (result.rolls[0] as unknown as { value?: number })?.value ?? result.total;

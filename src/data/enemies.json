@@ -91,7 +91,7 @@
     },
     "baseClass": "Wizard",
     "equipment": {
-      "weaponId": null,
+      "weaponId": "spectral-touch",
       "armorId": null,
       "shield": null,
       "items": []
@@ -129,7 +129,7 @@
     },
     "baseClass": "Fighter",
     "equipment": {
-      "weaponId": null,
+      "weaponId": "bite",
       "armorId": null,
       "shield": null,
       "items": []

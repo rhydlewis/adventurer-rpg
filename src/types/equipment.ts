@@ -1,4 +1,4 @@
-export type WeaponType = 'Longsword' | 'Rapier' | 'Dagger' | 'Mace' | 'Scimitar' | 'Bite' | 'Slam' | 'Tusk';
+export type WeaponType = 'Longsword' | 'Rapier' | 'Dagger' | 'Mace' | 'Scimitar' | 'Bite' | 'Slam' | 'Tusk' | 'Spectral Touch';
 export type ArmorType = 'none' | 'leather' | 'chainmail' | 'chain-mail' | 'leather-armor' | 'natural-armor';
 export type ItemType = 'Healing Potion' | 'Smoke Bomb' | 'Arcane Scroll';
 

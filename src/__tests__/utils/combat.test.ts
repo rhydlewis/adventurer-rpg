@@ -22,7 +22,7 @@ vi.mock('../../utils/criticals', () => ({
 
 import { performAttack, resolveCombatRound, handleRetreat } from '../../utils/combat';
 import { rollAttack, rollDamage, calculateModifier } from '../../utils/dice';
-import { isCriticalHit, isCriticalFumble, rollFumbleEffect } from '../../utils/criticals';
+import { isCriticalHit, isCriticalFumble, rollFumbleEffect, calculateCriticalDamage } from '../../utils/criticals';
 
 // Test fixtures
 const createTestCharacter = (overrides?: Partial<Character>): Character => ({
@@ -288,6 +288,139 @@ describe('utils/combat', () => {
       const result = performAttack(attacker, defender);
 
       expect(result.attackRoll).toBe(20);
+    });
+
+    it('uses wraith spectral-touch weapon damage (1d6)', () => {
+      const wraith = createTestEnemy({
+        name: 'Wraith',
+        equipment: {
+          weapon: {
+            name: 'Spectral Touch',
+            damage: '1d6',
+            damageType: 'piercing',
+            finesse: false,
+            description: 'Ethereal touch attack',
+          },
+          weapons: [{
+            name: 'Spectral Touch',
+            damage: '1d6',
+            damageType: 'piercing',
+            finesse: false,
+            description: 'Ethereal touch attack',
+          }],
+          armor: null,
+          shield: null,
+          items: [],
+        },
+      });
+      const defender = createTestCharacter();
+
+      vi.mocked(calculateModifier).mockReturnValue(1); // STR 12 = +1
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 20,
+        d20Result: 16,
+        output: '1d20+2: [16]+2 = 20',
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 5,
+        output: '1d6+1: [4]+1 = 5',
+      });
+
+      performAttack(wraith, defender);
+
+      // Verify that rollDamage was called with '1d6', not '1d8'
+      expect(rollDamage).toHaveBeenCalledWith('1d6', 1);
+    });
+
+    it('uses giant spider bite weapon damage (1d6)', () => {
+      const spider = createTestEnemy({
+        name: 'Giant Spider',
+        equipment: {
+          weapon: {
+            name: 'Bite',
+            damage: '1d6',
+            damageType: 'piercing',
+            finesse: false,
+            description: 'Natural bite attack',
+          },
+          weapons: [{
+            name: 'Bite',
+            damage: '1d6',
+            damageType: 'piercing',
+            finesse: false,
+            description: 'Natural bite attack',
+          }],
+          armor: null,
+          shield: null,
+          items: [],
+        },
+      });
+      const defender = createTestCharacter();
+
+      vi.mocked(calculateModifier).mockReturnValue(1); // STR 12 = +1
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 20,
+        d20Result: 16,
+        output: '1d20+2: [16]+2 = 20',
+      });
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 4,
+        output: '1d6+1: [3]+1 = 4',
+      });
+
+      performAttack(spider, defender);
+
+      // Verify that rollDamage was called with '1d6', not '1d8'
+      expect(rollDamage).toHaveBeenCalledWith('1d6', 1);
+    });
+
+    it('uses weapon damage for critical hits', () => {
+      const daggerUser = createTestEnemy({
+        equipment: {
+          weapon: {
+            name: 'Dagger',
+            damage: '1d4',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A small dagger',
+          },
+          weapons: [{
+            name: 'Dagger',
+            damage: '1d4',
+            damageType: 'piercing',
+            finesse: true,
+            description: 'A small dagger',
+          }],
+          armor: null,
+          shield: null,
+          items: [],
+        },
+      });
+      const defender = createTestCharacter();
+
+      vi.mocked(calculateModifier).mockReturnValue(1);
+      vi.mocked(isCriticalHit).mockReturnValue(true);
+      vi.mocked(rollAttack).mockReturnValue({
+        total: 21,
+        d20Result: 20, // Natural 20
+        output: '1d20+2: [20]+2 = 21',
+      });
+
+      // Mock calculateCriticalDamage
+      vi.mocked(calculateCriticalDamage).mockReturnValue({
+        formula: '2d4+1',
+        description: 'CRITICAL HIT!',
+      });
+
+      vi.mocked(rollDamage).mockReturnValue({
+        total: 7,
+        output: '2d4+1: [3,3]+1 = 7',
+      });
+
+      performAttack(daggerUser, defender);
+
+      // Verify calculateCriticalDamage was called with dagger damage (1d4), not hardcoded 1d8
+      expect(calculateCriticalDamage).toHaveBeenCalledWith('1d4+1');
     });
   });
 

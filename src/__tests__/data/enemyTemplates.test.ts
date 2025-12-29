@@ -21,13 +21,15 @@ describe('Enemy Templates', () => {
     it('should have wraith template with Wizard class', () => {
         const template = getEnemyTemplate('wraith');
         expect(template?.baseClass).toBe('Wizard');
-        expect(template?.equipment.weapon).toBeNull(); // Natural attack
+        expect(template?.equipment.weapon?.name).toBe('Spectral Touch');
+        expect(template?.equipment.weapon?.damage).toBe('1d6');
     });
 
     it('should have giantSpider template as Beast', () => {
         const template = getEnemyTemplate('giantSpider');
         expect(template?.creatureClass).toBe('Beast');
-        expect(template?.equipment.weapon).toBeNull();
+        expect(template?.equipment.weapon?.name).toBe('Bite');
+        expect(template?.equipment.weapon?.damage).toBe('1d6');
         expect(template?.equipment.armor).toBeNull();
     });
 
@@ -84,10 +86,12 @@ describe('ENEMY_TEMPLATES equipment resolution', () => {
         expect(hobgoblin.equipment.armor?.baseAC).toBe(16);
     });
 
-    it('should handle null weaponId (wraith)', () => {
+    it('should resolve spectral-touch weapon for wraith', () => {
         const wraith = ENEMY_TEMPLATES['wraith'];
         expect(wraith).toBeDefined();
-        expect(wraith.equipment.weapon).toBeNull();
+        expect(wraith.equipment.weapon).toBeDefined();
+        expect(wraith.equipment.weapon?.name).toBe('Spectral Touch');
+        expect(wraith.equipment.weapon?.damage).toBe('1d6');
     });
 
     it('should handle null armorId (skeleton)', () => {

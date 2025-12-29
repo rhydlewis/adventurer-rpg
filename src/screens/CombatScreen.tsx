@@ -551,7 +551,10 @@ function DetailedStatsCompact({ character, variant }: DetailedStatsCompactProps)
             <div className="border-t border-slate-800/50 pt-1.5 mt-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-slate-500 label-secondary text-[10px]">Weapon</span>
-                <span className="text-slate-300 text-[10px] truncate ml-2">{character.equipment.weapon?.name || 'Unarmed'}</span>
+                <span className="text-slate-300 text-[10px] truncate ml-2">
+                  {character.equipment.weapon?.name || 'Unarmed'}&nbsp;
+                  <span className="font-bold">{character.equipment.weapon?.damage || '1d3'}</span>
+                </span>
               </div>
             </div>
           </>

@@ -62,5 +62,13 @@
     "finesse": false,
     "description": "Natural tusk attack",
     "proficiencyRequired": "simple"
+  },
+  "spectral-touch": {
+    "name": "Spectral Touch",
+    "damage": "1d6",
+    "damageType": "piercing",
+    "finesse": false,
+    "description": "Ethereal touch attack that drains life force",
+    "proficiencyRequired": "simple"
   }
 }

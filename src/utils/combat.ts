@@ -67,7 +67,7 @@ export function performAttack(
   // Check for critical hit (natural 20)
   if (isCriticalHit(naturalRoll)) {
     // Crits always hit
-    const baseDamage = '1d8'; // For walking skeleton, assume 1d8 weapon
+    const baseDamage = attacker.equipment.weapon?.damage ?? '1d3'; // Use equipped weapon damage, fallback to unarmed (1d3)
     const totalMod = abilityMod + totalDamageBonus;
     const baseDamageWithMod = totalMod >= 0 ? `${baseDamage}+${totalMod}` : `${baseDamage}${totalMod}`;
     const critResult = calculateCriticalDamage(baseDamageWithMod);
@@ -114,8 +114,9 @@ export function performAttack(
   const label = modifiers?.label ? ` (${modifiers.label})` : '';
 
   if (hit) {
-    // For walking skeleton, assume 1d8 weapon
-    const dmg = rollDamage('1d8', abilityMod + totalDamageBonus);
+    // Use equipped weapon damage, fallback to unarmed (1d3)
+    const weaponDamage = attacker.equipment.weapon?.damage ?? '1d3';
+    const dmg = rollDamage(weaponDamage, abilityMod + totalDamageBonus);
 
     // Determine taunt: if attacker is a Creature and hit, use onEnemyHit taunt
     const taunt = 'taunts' in attacker ? selectTaunt(attacker, 'onEnemyHit') : undefined;

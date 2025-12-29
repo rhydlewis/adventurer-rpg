@@ -33,7 +33,8 @@ describe('Enemy Generation', () => {
     it('should generate spider with Beast natural armor', () => {
         const enemy = generateEnemy('giantSpider');
         expect(enemy?.creatureClass).toBe('Beast');
-        expect(enemy?.equipment.weapon).toBeNull();
+        expect(enemy?.equipment.weapon?.name).toBe('Bite');
+        expect(enemy?.equipment.weapon?.damage).toBe('1d6');
         expect(enemy?.equipment.armor).toBeNull();
         // Beast gets +2 natural armor (base 10 + 2 DEX mod minimum + 2 natural = 14 minimum)
         expect(enemy?.ac).toBeGreaterThanOrEqual(12);
