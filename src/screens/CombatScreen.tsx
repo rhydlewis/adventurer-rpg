@@ -233,7 +233,7 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
                     {/* Display taunt if present */}
                     {entry.taunt && (
                       <div className="mt-1 pl-2 text-[9px] border-l border-gray-600">
-                        🌀 {entry.taunt}
+                        🌀 <span className="font-semibold">{combat.enemy.name.split(' ')[0]}:</span> {entry.taunt}
                       </div>
                     )}
                   </div>
