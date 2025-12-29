@@ -60,14 +60,3 @@ export interface UseItemAction extends CombatAction {
  * Union type for all action types
  */
 export type Action = AttackAction | CastSpellAction | UseAbilityAction | UseItemAction;
-
-/**
- * Result of executing a combat action
- */
-export interface ActionResult {
-  success: boolean;
-  logs: string[];
-  damageDealt?: number;
-  healingDone?: number;
-  error?: string;
-}

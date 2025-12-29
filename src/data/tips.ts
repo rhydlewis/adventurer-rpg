@@ -60,11 +60,3 @@ export const TIPS: Tip[] = [
 export function getRandomTip(): Tip {
   return TIPS[Math.floor(Math.random() * TIPS.length)];
 }
-
-/**
- * Get a random tip of a specific category
- */
-export function getRandomTipByCategory(category: 'gameplay' | 'lore'): Tip {
-  const filtered = TIPS.filter((tip) => tip.category === category);
-  return filtered[Math.floor(Math.random() * filtered.length)];
-}

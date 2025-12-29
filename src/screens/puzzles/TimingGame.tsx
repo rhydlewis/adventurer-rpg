@@ -104,8 +104,7 @@ export function TimingGame({ config: configOverride, onSuccess, onFailure }: Tim
     if (!allLocked) return false;
 
     const firstSymbol = currentButtons[0].symbol;
-    const allMatch = currentButtons.every(btn => btn.symbol.id === firstSymbol.id);
-    return allMatch;
+    return currentButtons.every(btn => btn.symbol.id === firstSymbol.id);
   }, []);
 
   // ==========================================================================

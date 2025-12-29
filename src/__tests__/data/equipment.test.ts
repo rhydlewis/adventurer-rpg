@@ -109,7 +109,7 @@ describe('data/equipment', () => {
 
         expect(typeof armor.name).toBe('string');
         expect(typeof armor.baseAC).toBe('number');
-        expect(armor.maxDexBonus === null || typeof armor.maxDexBonus === 'number').toBe(true);
+        expect(armor.maxDexBonus === null || Number.isFinite(armor.maxDexBonus)).toBe(true);
         expect(typeof armor.description).toBe('string');
       }
     });

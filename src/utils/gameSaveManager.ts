@@ -45,9 +45,7 @@ export class GameSaveManager {
       const save = JSON.parse(value);
 
       // Run migrations if needed
-      const migratedSave = migrateToCurrentVersion(save);
-
-      return migratedSave;
+      return migrateToCurrentVersion(save);
     } catch (error) {
       console.error('[GameSave] Load failed:', error);
       return null; // Treat as no save exists

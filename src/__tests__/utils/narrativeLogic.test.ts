@@ -320,7 +320,6 @@ describe('utils/narrativeLogic', () => {
       });
 
       // Run multiple times to test both outcomes
-      const results: boolean[] = [];
       for (let i = 0; i < 20; i++) {
         const result = resolveSkillCheck(player, 'Intimidate', 10);
 
@@ -331,12 +330,7 @@ describe('utils/narrativeLogic', () => {
         expect(result.modifier).toBeGreaterThanOrEqual(0);
         expect(result.total).toBe(result.roll + result.modifier);
         expect(result.success).toBe(result.total >= result.dc);
-
-        results.push(result.success);
       }
-
-      // With enough rolls, we should see both outcomes
-      // (This is probabilistic but very likely with 20 rolls)
     });
 
     it('uses correct skill modifier', () => {

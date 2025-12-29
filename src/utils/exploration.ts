@@ -22,22 +22,6 @@ export function rollExplorationTable(table: ExplorationTable): ExplorationOutcom
 }
 
 /**
- * Resolve exploration by table ID
- * Looks up table, rolls for outcome
- */
-export function resolveExploration(
-  tableId: string,
-  tables: Record<string, ExplorationTable>
-): ExplorationOutcome {
-  const table = tables[tableId];
-  if (!table) {
-    throw new Error(`Exploration table not found: ${tableId}`);
-  }
-
-  return rollExplorationTable(table);
-}
-
-/**
  * Validate exploration table weights sum to 100
  */
 export function validateExplorationTable(table: ExplorationTable): boolean {
