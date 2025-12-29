@@ -2,7 +2,7 @@ import { rollAttack, rollDamage, calculateModifier } from './dice';
 import type { CombatState } from '../types';
 import type { Character } from '../types';
 import type { Creature } from "../types/creature";
-import type { Action, CastSpellAction } from '../types/action';
+import type { Action, CastSpellAction, AttackAction, UseAbilityAction } from '../types/action';
 import type { Condition } from '../types';
 import { isCriticalHit, isCriticalFumble, calculateCriticalDamage, rollFumbleEffect } from './criticals';
 import {
@@ -21,6 +21,7 @@ import { rollLoot, formatLootMessage } from './loot';
 import { selectTaunt, isLowHealth } from './taunts';
 import { applyItemEffect } from './itemEffects';
 import { applyStartingQuirk } from './quirks';
+import { applyAttackFeat, applyAbilityFeat } from './combatFeats';
 
 export function performAttack(
   attacker: Character | Creature,
@@ -254,10 +255,39 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
   } else {
     // Player action - Phase 1.3: Handle different action types
     if (playerAction.type === 'use_ability') {
-      // Handle class abilities
-      const abilityId = playerAction.abilityId;
+      // Handle class abilities and feat abilities
+      const abilityAction = playerAction as UseAbilityAction;
+      const abilityId = abilityAction.abilityId;
+      const featId = abilityAction.featId;
 
-      if (abilityId === 'Second Wind') {
+      // NEW: Handle feat-based abilities (e.g., Empower Spell, Defensive Channel)
+      if (featId) {
+        const featResult = applyAbilityFeat(playerCharacter, featId, playerConditions, state.turn);
+
+        if (featResult.success) {
+          playerCharacter = featResult.character;
+          playerConditions = featResult.conditions || playerConditions;
+
+          // Log feat usage
+          featResult.log.forEach((msg) => {
+            log.push({
+              turn: state.turn,
+              actor: 'player',
+              message: `${playerCharacter.name} uses ${msg}`,
+            });
+          });
+
+          // TODO: For feats like Empower Spell, we need to track state for "nextSpell" duration
+          // This would require adding feat state tracking to CombatState
+        } else {
+          // Feat failed (insufficient resources, etc.)
+          log.push({
+            turn: state.turn,
+            actor: 'system',
+            message: featResult.error || 'Failed to use feat ability',
+          });
+        }
+      } else if (abilityId === 'Second Wind') {
         const check = canUseAbility(playerCharacter, 'Second Wind');
         if (!check.canUse) {
           log.push({
@@ -460,13 +490,49 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         // TODO: Apply conditions (Daze -> Stunned) in Phase 1.4
       }
     } else {
-      // Attack action (normal or Power Attack)
+      // Attack action (normal or feat-enhanced attack)
       let attackModifiers: { attackBonus?: number; damageBonus?: number; label?: string } | undefined;
+      let bonusDamageFormula: string | undefined;
+      let conditionsToApplyOnHit: { type: string; duration: number }[] = [];
 
-      if (playerAction.type === 'attack' && playerAction.variant === 'power_attack') {
+      // Check for feat-based attack
+      const attackAction = playerAction as AttackAction;
+      if (attackAction.featId) {
+        // NEW: Dynamic feat handling
+        const featResult = applyAttackFeat(playerCharacter, attackAction.featId, playerConditions, state.turn);
+
+        if (featResult.success && featResult.attackModifiers) {
+          playerCharacter = featResult.character;
+          attackModifiers = {
+            attackBonus: featResult.attackModifiers.attackBonus,
+            damageBonus: featResult.attackModifiers.damageBonus,
+            label: featResult.attackModifiers.label,
+          };
+          bonusDamageFormula = featResult.attackModifiers.bonusDamage;
+          conditionsToApplyOnHit = featResult.conditionsToApply || [];
+
+          // Log feat usage
+          featResult.log.forEach((msg) => {
+            log.push({
+              turn: state.turn,
+              actor: 'system',
+              message: msg,
+            });
+          });
+        } else {
+          // Feat failed (insufficient resources, etc.)
+          log.push({
+            turn: state.turn,
+            actor: 'system',
+            message: featResult.error || 'Failed to use feat',
+          });
+          // Continue with normal attack (feat failed but can still attack)
+        }
+      } else if (attackAction.variant === 'power_attack') {
+        // LEGACY: Hardcoded Power Attack support for backward compatibility
         attackModifiers = {
-          attackBonus: playerAction.attackModifier ?? -2,
-          damageBonus: playerAction.damageModifier ?? 4,
+          attackBonus: attackAction.attackModifier ?? -2,
+          damageBonus: attackAction.damageModifier ?? 4,
           label: 'Power Attack',
         };
       }
@@ -503,8 +569,33 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       }
 
       if (playerAttack.hit && playerAttack.damage) {
-        const totalDamage = playerAttack.damage + sneakAttackDamage;
+        // Calculate total damage: base + sneak attack + feat bonus damage
+        let totalDamage = playerAttack.damage + sneakAttackDamage;
+
+        // Apply bonus damage from feats (e.g., Channel Smite +2d6)
+        if (bonusDamageFormula) {
+          const bonusDamageRoll = rollDamage(bonusDamageFormula, 0);
+          totalDamage += bonusDamageRoll.total;
+          log.push({
+            turn: state.turn,
+            actor: 'system',
+            message: `Bonus damage: ${bonusDamageRoll.output}`,
+          });
+        }
+
         enemy = { ...enemy, hp: enemy.hp - totalDamage };
+
+        // Apply conditions from feats (e.g., Bloody Assault applies Bleeding)
+        if (conditionsToApplyOnHit.length > 0) {
+          conditionsToApplyOnHit.forEach(({ type, duration }) => {
+            enemyConditions = applyCondition(enemyConditions, type as import('../types/condition').ConditionType, state.turn, duration);
+            log.push({
+              turn: state.turn,
+              actor: 'system',
+              message: `${enemy.name} is now ${type}!`,
+            });
+          });
+        }
 
         // Check for low health taunt after damage
         if (isLowHealth(enemy)) {

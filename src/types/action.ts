@@ -20,7 +20,8 @@ export interface CombatAction {
  */
 export interface AttackAction extends CombatAction {
   type: 'attack';
-  variant?: 'power_attack'; // Fighter-specific attack variant
+  variant?: 'power_attack'; // Legacy: Fighter-specific attack variant
+  featId?: string; // NEW: ID of feat being used (e.g., 'power_attack', 'guided_hand', 'channel_smite')
   attackModifier?: number;
   damageModifier?: number;
 }
@@ -43,6 +44,7 @@ export interface CastSpellAction extends CombatAction {
 export interface UseAbilityAction extends CombatAction {
   type: 'use_ability';
   abilityId?: string;
+  featId?: string; // NEW: ID of feat ability being used (e.g., 'empower_spell', 'defensive_channel')
   usesRemaining?: number;
   maxUses?: number;
 }
