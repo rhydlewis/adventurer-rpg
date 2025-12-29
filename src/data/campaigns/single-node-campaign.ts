@@ -990,8 +990,8 @@ const testNodes: StoryNode[] = [
                     type: 'puzzle',
                     puzzleType: 'sliding',
                     config: {
-                        gridSize: 3,
-                        targetLength: 3
+                        gridSize: 4,
+                        targetLength: 4
                     },
                     successNodeId: 'puzzle_success',
                     failureNodeId: 'puzzle_failure'

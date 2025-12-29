@@ -18,7 +18,7 @@ const SYMBOLS: Symbol[] = [
   { id: 'blaster', iconClass: 'ra ra-blaster' },
   { id: 'fire', iconClass: 'ra ra-fire' },
   { id: 'burst', iconClass: 'ra ra-burst-blob' },
-  { id: 'crystal', iconClass: 'ra ra-crystal-shine' },
+  { id: 'crystal', iconClass: 'ra ra-crystal-ball' },
   { id: 'sword', iconClass: 'ra ra-sword' },
 ];
 
@@ -50,16 +50,97 @@ function getRandomSymbol(symbols: Symbol[]): Symbol {
   return symbols[Math.floor(Math.random() * symbols.length)];
 }
 
-function createInitialGrid(config: GameConfig): Symbol[][] {
+function createSolvedGrid(config: GameConfig): Symbol[][] {
   const grid: Symbol[][] = [];
-  for (let row = 0; row < config.gridSize; row++) {
-    const rowData: Symbol[] = [];
-    for (let col = 0; col < config.gridSize; col++) {
-      rowData.push(getRandomSymbol(config.symbolPool));
+
+  // Pick a random symbol for the winning line
+  const winningSymbol = getRandomSymbol(config.symbolPool);
+
+  // Decide randomly whether to create a horizontal or vertical winning line
+  const useHorizontal = Math.random() < 0.5;
+
+  if (useHorizontal) {
+    // Create winning horizontal line in a random row
+    const winningRow = Math.floor(Math.random() * config.gridSize);
+
+    for (let row = 0; row < config.gridSize; row++) {
+      const rowData: Symbol[] = [];
+      for (let col = 0; col < config.gridSize; col++) {
+        if (row === winningRow && col < config.targetLength) {
+          // Place winning symbols
+          rowData.push(winningSymbol);
+        } else {
+          // Place random symbols
+          rowData.push(getRandomSymbol(config.symbolPool));
+        }
+      }
+      grid.push(rowData);
     }
-    grid.push(rowData);
+  } else {
+    // Create winning vertical line in a random column
+    const winningCol = Math.floor(Math.random() * config.gridSize);
+
+    for (let row = 0; row < config.gridSize; row++) {
+      const rowData: Symbol[] = [];
+      for (let col = 0; col < config.gridSize; col++) {
+        if (col === winningCol && row < config.targetLength) {
+          // Place winning symbols
+          rowData.push(winningSymbol);
+        } else {
+          // Place random symbols
+          rowData.push(getRandomSymbol(config.symbolPool));
+        }
+      }
+      grid.push(rowData);
+    }
   }
+
   return grid;
+}
+
+function scrambleGrid(grid: Symbol[][], config: GameConfig, moves: number): Symbol[][] {
+  let scrambled = grid.map(row => [...row]);
+
+  const operations = [
+    (g: Symbol[][], idx: number) => slideRowLeft(g, idx),
+    (g: Symbol[][], idx: number) => slideRowRight(g, idx),
+    (g: Symbol[][], idx: number) => slideColumnUp(g, idx),
+    (g: Symbol[][], idx: number) => slideColumnDown(g, idx),
+  ];
+
+  for (let i = 0; i < moves; i++) {
+    // Pick random operation
+    const operation = operations[Math.floor(Math.random() * operations.length)];
+    // Pick random row or column
+    const index = Math.floor(Math.random() * config.gridSize);
+    // Apply operation
+    scrambled = operation(scrambled, index);
+  }
+
+  return scrambled;
+}
+
+function createInitialGrid(config: GameConfig): Symbol[][] {
+  const maxAttempts = 10;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    // Create a solved grid
+    const solved = createSolvedGrid(config);
+
+    // Scramble it with random moves (more moves = harder puzzle)
+    const scrambleMoves = config.gridSize * 10;
+    const scrambled = scrambleGrid(solved, config, scrambleMoves);
+
+    // Verify it's not still solved
+    if (!checkWinCondition(scrambled, config.targetLength)) {
+      return scrambled;
+    }
+  }
+
+  // Fallback: if all attempts resulted in solved grids, return the last scrambled one
+  // This is extremely unlikely but ensures we always return something
+  const solved = createSolvedGrid(config);
+  return scrambleGrid(solved, config, config.gridSize * 15);
 }
 
 function slideRowLeft(grid: Symbol[][], rowIndex: number): Symbol[][] {
