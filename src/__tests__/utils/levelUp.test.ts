@@ -23,9 +23,17 @@ describe('Level-Up System', () => {
   };
 
   const mockFeat: Feat = {
+    id: 'power_attack',
     name: 'Power Attack',
     description: 'Trade attack for damage',
-    effect: { type: 'toggle', name: 'powerAttack' },
+    category: 'offensive',
+    type: 'attack_variant',
+    prerequisites: {},
+    effects: {
+      attackModifier: -2,
+      damageModifier: 4,
+      duration: 'turn',
+    },
   };
 
   it('should increase level from 1 to 2', () => {

@@ -20,7 +20,7 @@ const validatedData = EnemyTemplatesSchema.parse(enemiesJson);
 
 // Transform: resolve avatar keys and equipment references
 export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = Object.fromEntries(
-  Object.entries(validatedData).map(([id, template]) => {
+  Object.entries(validatedData).map(([id, template]): [string, EnemyTemplate] => {
     // Resolve avatars
     const avatarPaths = template.avatarPaths.map(
       (key) => CREATURE_AVATARS[key as keyof typeof CREATURE_AVATARS] || DEFAULT_CREATURE_AVATAR
@@ -63,7 +63,7 @@ export const ENEMY_TEMPLATES: Record<string, EnemyTemplate> = Object.fromEntries
         ...template,
         avatarPaths,
         equipment: equipment as Equipment, // Type assertion: equipment is now fully resolved
-      },
+      } as EnemyTemplate, // Type assertion: template may contain legacy feat structures
     ];
   })
 );

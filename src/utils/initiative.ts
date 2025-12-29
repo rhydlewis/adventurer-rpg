@@ -30,9 +30,17 @@ export function calculateInitiativeBonus(entity: Entity): InitiativeResult {
   // Feat bonuses (Improved Initiative)
   let featBonus = 0;
   for (const feat of entity.feats) {
-    const effect = feat.effect;
-    if (effect.type === 'passive' && effect.stat === 'initiative') {
-      featBonus += effect.bonus;
+    // Handle both old and new feat structures for backward compatibility
+    if ('effect' in feat) {
+      // Old structure: feat.effect (legacy support)
+      const legacyFeat = feat as unknown as { effect: { type: string; stat?: string; bonus?: number } };
+      if (legacyFeat.effect.type === 'passive' && legacyFeat.effect.stat === 'initiative' && legacyFeat.effect.bonus) {
+        featBonus += legacyFeat.effect.bonus;
+      }
+    } else if ('effects' in feat) {
+      // New structure: feat.effects (not used for initiative yet, but prepared for future)
+      // Initiative bonuses would be in effects.attackModifier or a dedicated initiativeBonus field
+      // For now, no new feats grant initiative bonuses
     }
   }
 

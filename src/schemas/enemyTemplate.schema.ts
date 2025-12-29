@@ -126,19 +126,66 @@ const SkillRanksSchema = z.object({
   Intimidate: z.number().int().min(0),
 });
 
-// Feat effect schema
-const FeatEffectSchema = z.discriminatedUnion('type', [
+// Legacy feat effect schema (for backward compatibility)
+const LegacyFeatEffectSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('toggle'), name: z.enum(['powerAttack']) }),
   z.object({ type: z.literal('passive'), stat: z.enum(['attack', 'hp', 'initiative']), bonus: z.number() }),
   z.object({ type: z.literal('conditional'), condition: z.enum(['dodge']), stat: z.enum(['ac']), bonus: z.number() }),
 ]);
 
-// Feat schema
-const FeatSchema = z.object({
-  name: z.enum(['Power Attack', 'Weapon Focus', 'Toughness', 'Improved Initiative', 'Combat Reflexes']),
-  description: z.string(),
-  effect: FeatEffectSchema,
+// New feat effects schema
+const FeatEffectsSchema = z.object({
+  attackModifier: z.number().optional(),
+  damageModifier: z.number().optional(),
+  acModifier: z.number().optional(),
+  bonusDamage: z.string().optional(),
+  damageType: z.string().optional(),
+  bleedDamage: z.string().optional(),
+  useWisdomForAttack: z.boolean().optional(),
+  useDexForAttack: z.boolean().optional(),
+  addDexToDamage: z.boolean().optional(),
+  damageMultiplier: z.number().optional(),
+  spellDamageMultiplier: z.number().optional(),
+  criticalThreatRangeBonus: z.number().optional(),
+  appliesCondition: z.string().optional(),
+  conditionDuration: z.number().optional(),
+  conditionEffect: z.object({
+    attackPenalty: z.number().optional(),
+    damagePerTurn: z.string().optional(),
+  }).optional(),
+  consumesResource: z.object({
+    type: z.enum(['channel_energy', 'spell_slot']),
+    amount: z.number(),
+    level: z.number().optional(),
+  }).optional(),
+  setsState: z.enum(['empowered', 'disruptiveSpell']).optional(),
+  duration: z.enum(['turn', 'nextTurn', 'nextSpell', 'nextAttack', 'permanent']),
 });
+
+// Feat schema - supports both old and new structures
+const FeatSchema = z.union([
+  // Old structure (for backward compatibility)
+  z.object({
+    name: z.enum(['Power Attack', 'Weapon Focus', 'Toughness', 'Improved Initiative', 'Combat Reflexes']),
+    description: z.string(),
+    effect: LegacyFeatEffectSchema,
+  }),
+  // New structure
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    description: z.string(),
+    category: z.enum(['offensive', 'defensive', 'utility']),
+    type: z.enum(['attack_variant', 'passive', 'ability']),
+    prerequisites: z.object({
+      bab: z.number().optional(),
+      attributes: z.record(z.string(), z.number()).optional(),
+      feats: z.array(z.string()).optional(),
+      classRestrictions: z.array(z.enum(['Fighter', 'Rogue', 'Wizard', 'Cleric'])).optional(),
+    }),
+    effects: FeatEffectsSchema,
+  }),
+]);
 
 // Taunts schema (all fields optional)
 const TauntsSchema = z.object({

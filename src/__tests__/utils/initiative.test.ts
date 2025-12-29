@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { calculateInitiativeBonus } from '../../utils/initiative';
-import type { Character } from '../../types';
+import type { Character, Feat } from '../../types';
 
 const createTestCharacter = (overrides?: Partial<Character>): Character => ({
   name: 'Test Hero',
@@ -87,7 +87,7 @@ describe('Initiative System', () => {
             name: 'Improved Initiative',
             description: '+4 initiative',
             effect: { type: 'passive', stat: 'initiative', bonus: 4 },
-          },
+          } as unknown as Feat, // Using legacy structure for backward compatibility test
         ],
       });
       const result = calculateInitiativeBonus(character);
@@ -190,7 +190,7 @@ describe('Initiative System', () => {
             name: 'Improved Initiative',
             description: '+4 initiative',
             effect: { type: 'passive', stat: 'initiative', bonus: 4 },
-          },
+          } as unknown as Feat, // Using legacy structure for backward compatibility test
         ],
       });
       const result = calculateInitiativeBonus(character);

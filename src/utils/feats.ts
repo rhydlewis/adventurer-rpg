@@ -23,11 +23,11 @@ export function meetsPrerequisites(feat: Feat, character: Character): boolean {
     }
   }
 
-  // Check required feats (will need to update once we have feat storage on character)
+  // Check required feats
   if (prerequisites.feats) {
-    // For now, assume feats are stored as an array of IDs
-    // This will need to be updated based on the actual character.feats structure
-    const knownFeats = (character as any).feats?.known || [];
+    // Check if character has the required feat IDs
+    const characterWithFeats = character as Character & { feats?: { known?: string[] } };
+    const knownFeats = characterWithFeats.feats?.known || [];
     for (const requiredFeat of prerequisites.feats) {
       if (!knownFeats.includes(requiredFeat)) {
         return false;
@@ -67,8 +67,9 @@ export function canUseFeat(feat: Feat, character: Character): boolean {
  * Get all passive bonuses from character's feats
  */
 export function getPassiveBonuses(character: Character) {
-  // Get feat IDs from character (will need to adjust based on actual character structure)
-  const knownFeatIds = (character as any).feats?.known || [];
+  // Get feat IDs from character
+  const characterWithFeats = character as Character & { feats?: { known?: string[] } };
+  const knownFeatIds = characterWithFeats.feats?.known || [];
 
   const passives = knownFeatIds
     .map((id: string) => FEATS[id])

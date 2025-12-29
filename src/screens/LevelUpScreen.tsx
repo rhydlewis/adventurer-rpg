@@ -7,19 +7,41 @@ import { Icon } from '../components';
 // TODO: Import from data/feats when implemented
 const MOCK_FEATS: Record<string, Feat> = {
     'power-attack': {
+        id: 'power-attack',
         name: 'Power Attack',
         description: 'You can take a -2 penalty on attack rolls to gain a +4 bonus on damage rolls.',
-        effect: { type: 'toggle', name: 'powerAttack' },
+        category: 'offensive',
+        type: 'attack_variant',
+        prerequisites: {},
+        effects: {
+            attackModifier: -2,
+            damageModifier: 4,
+            duration: 'turn',
+        },
     },
     'improved-initiative': {
+        id: 'improved-initiative',
         name: 'Improved Initiative',
         description: 'You get a +4 bonus on initiative checks. This helps you act sooner in combat.',
-        effect: { type: 'passive', stat: 'initiative', bonus: 4 },
+        category: 'utility',
+        type: 'passive',
+        prerequisites: {},
+        effects: {
+            // Note: Initiative bonus not yet supported in new effects, but structure is ready
+            duration: 'permanent',
+        },
     },
     'weapon-focus': {
+        id: 'weapon-focus',
         name: 'Weapon Focus',
         description: 'You get a +1 bonus on all attack rolls with a specific weapon (longsword by default).',
-        effect: { type: 'passive', stat: 'attack', bonus: 1 },
+        category: 'offensive',
+        type: 'passive',
+        prerequisites: {},
+        effects: {
+            attackModifier: 1,
+            duration: 'permanent',
+        },
     },
 };
 
