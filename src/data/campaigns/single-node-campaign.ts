@@ -961,14 +961,14 @@ const testNodes: StoryNode[] = [
     {
         id: 'puzzle_hub',
         title: 'Puzzle Tests',
-        description: 'Test puzzle mini-games: player-initiated (choice) and auto-triggered (effect).',
+        description: 'Test all 5 puzzle mini-game types. Each puzzle routes to success or failure based on performance.',
         type: 'explore',
         flavor: { tone: 'mysterious', icon: 'magic' },
-        companionHint: 'Puzzles can be triggered by player choice or automatically when entering a node. They route to different nodes based on success or failure!',
+        companionHint: 'Test all available puzzle types! Each has unique mechanics and difficulty configurations.',
         choices: [
             {
-                id: 'choice_puzzle_easy',
-                text: '🧩 Easy Puzzle (Player Choice)',
+                id: 'timing_puzzle',
+                text: '⏱️ Timing Puzzle - Synchronize the Grid',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -983,16 +983,60 @@ const testNodes: StoryNode[] = [
                 }
             },
             {
-                id: 'choice_puzzle_hard',
-                text: '🧩 Hard Puzzle (Player Choice)',
+                id: 'sliding_puzzle',
+                text: '🔄 Sliding Puzzle - Match the Symbols',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
-                    puzzleType: 'timing',
+                    puzzleType: 'sliding',
                     config: {
                         gridSize: 3,
-                        tickInterval: 1000,
-                        lockDuration: 3000
+                        targetLength: 3
+                    },
+                    successNodeId: 'puzzle_success',
+                    failureNodeId: 'puzzle_failure'
+                }
+            },
+            {
+                id: 'rotation_puzzle',
+                text: '🔁 Rotation Puzzle - Align the Runes',
+                category: 'special',
+                outcome: {
+                    type: 'puzzle',
+                    puzzleType: 'rotation',
+                    config: {
+                        gridSize: 3
+                    },
+                    successNodeId: 'puzzle_success',
+                    failureNodeId: 'puzzle_failure'
+                }
+            },
+            {
+                id: 'tumbler_puzzle',
+                text: '🔐 Lock Tumbler - Crack the Lock',
+                category: 'special',
+                outcome: {
+                    type: 'puzzle',
+                    puzzleType: 'tumbler',
+                    config: {
+                        dialCount: 3,
+                        symbolsPerDial: 6,
+                        linkedDials: true
+                    },
+                    successNodeId: 'puzzle_success',
+                    failureNodeId: 'puzzle_failure'
+                }
+            },
+            {
+                id: 'pressure_puzzle',
+                text: '⚡ Pressure Plates - Step in Sequence',
+                category: 'special',
+                outcome: {
+                    type: 'puzzle',
+                    puzzleType: 'pressure',
+                    config: {
+                        gridSize: 3,
+                        togglePattern: 'cross'
                     },
                     successNodeId: 'puzzle_success',
                     failureNodeId: 'puzzle_failure'
@@ -1000,7 +1044,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'auto_puzzle',
-                text: '⚡ Auto-Trigger Puzzle (Node Effect)',
+                text: '⚠️ Auto-Trigger Timing Puzzle (Node Effect)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'auto_puzzle_node' }
             },

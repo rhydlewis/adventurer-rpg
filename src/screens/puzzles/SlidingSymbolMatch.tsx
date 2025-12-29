@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { ArrowBigUp, ArrowBigDown, ArrowBigLeft, ArrowBigRight } from 'lucide-react';
 import { Button, Card } from '../../components';
 
 // =============================================================================
@@ -263,76 +264,91 @@ export function SlidingSymbolMatch({ config: configOverride, onSuccess, onFailur
 
         {/* Game Grid */}
         <Card variant="neutral" padding="default" className="mb-4">
-          <div className="flex flex-col items-center gap-2">
+          <div
+            className="grid gap-2 justify-center"
+            style={{
+              gridTemplateColumns: `40px repeat(${config.gridSize}, 40px) 40px`,
+              gridTemplateRows: `40px repeat(${config.gridSize}, 40px) 40px`,
+            }}
+          >
+            {/* Top-left corner (empty) */}
+            <div />
+
             {/* Top column controls */}
-            <div className="flex gap-2" style={{ marginLeft: '52px' }}>
-              {Array.from({ length: config.gridSize }).map((_, colIndex) => (
-                <button
-                  key={`up-${colIndex}`}
-                  onClick={() => handleSlide('up', colIndex)}
-                  disabled={gameState === 'won'}
-                  className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-primary disabled:opacity-50 flex items-center justify-center"
-                  aria-label={`Slide column ${colIndex + 1} up`}
-                >
-                  <i className="ra ra-arrow-up" />
-                </button>
-              ))}
-            </div>
+            {Array.from({ length: config.gridSize }).map((_, colIndex) => (
+              <button
+                key={`up-${colIndex}`}
+                onClick={() => handleSlide('up', colIndex)}
+                disabled={gameState === 'won'}
+                className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-accent disabled:opacity-50 flex items-center justify-center"
+                aria-label={`Slide column ${colIndex + 1} up`}
+              >
+                <ArrowBigUp size={20} />
+              </button>
+            ))}
+
+            {/* Top-right corner (empty) */}
+            <div />
 
             {/* Grid rows with side controls */}
             {grid.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex items-center gap-2">
+              <>
                 {/* Left arrow */}
                 <button
+                  key={`left-${rowIndex}`}
                   onClick={() => handleSlide('left', rowIndex)}
                   disabled={gameState === 'won'}
-                  className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-primary disabled:opacity-50 flex items-center justify-center"
+                  className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-accent disabled:opacity-50 flex items-center justify-center"
                   aria-label={`Slide row ${rowIndex + 1} left`}
                 >
-                  <i className="ra ra-arrow-left" />
+                  <ArrowBigLeft size={20} />
                 </button>
 
                 {/* Grid cells */}
-                <div className="flex gap-2">
-                  {row.map((symbol, colIndex) => (
-                    <div
-                      key={`${rowIndex}-${colIndex}`}
-                      className={`
-                        w-10 h-10 rounded flex items-center justify-center text-[24px]
-                        ${gameState === 'won' ? 'bg-success' : 'bg-tertiary'}
-                      `}
-                    >
-                      <i className={symbol.iconClass} aria-hidden="true" />
-                    </div>
-                  ))}
-                </div>
+                {row.map((symbol, colIndex) => (
+                  <div
+                    key={`${rowIndex}-${colIndex}`}
+                    className={`
+                      w-10 h-10 rounded flex items-center justify-center text-[24px]
+                      border border-fg-primary
+                      ${gameState === 'won' ? 'bg-success' : 'bg-tertiary'}
+                    `}
+                  >
+                    <i className={symbol.iconClass} aria-hidden="true" />
+                  </div>
+                ))}
 
                 {/* Right arrow */}
                 <button
+                  key={`right-${rowIndex}`}
                   onClick={() => handleSlide('right', rowIndex)}
                   disabled={gameState === 'won'}
-                  className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-primary disabled:opacity-50 flex items-center justify-center"
+                  className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-accent disabled:opacity-50 flex items-center justify-center"
                   aria-label={`Slide row ${rowIndex + 1} right`}
                 >
-                  <i className="ra ra-arrow-right" />
+                  <ArrowBigRight size={20} />
                 </button>
-              </div>
+              </>
             ))}
 
+            {/* Bottom-left corner (empty) */}
+            <div />
+
             {/* Bottom column controls */}
-            <div className="flex gap-2" style={{ marginLeft: '52px' }}>
-              {Array.from({ length: config.gridSize }).map((_, colIndex) => (
-                <button
-                  key={`down-${colIndex}`}
-                  onClick={() => handleSlide('down', colIndex)}
-                  disabled={gameState === 'won'}
-                  className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-primary disabled:opacity-50 flex items-center justify-center"
-                  aria-label={`Slide column ${colIndex + 1} down`}
-                >
-                  <i className="ra ra-arrow-down" />
-                </button>
-              ))}
-            </div>
+            {Array.from({ length: config.gridSize }).map((_, colIndex) => (
+              <button
+                key={`down-${colIndex}`}
+                onClick={() => handleSlide('down', colIndex)}
+                disabled={gameState === 'won'}
+                className="w-10 h-10 bg-secondary hover:bg-secondary-hover rounded text-fg-accent disabled:opacity-50 flex items-center justify-center"
+                aria-label={`Slide column ${colIndex + 1} down`}
+              >
+                <ArrowBigDown size={20} />
+              </button>
+            ))}
+
+            {/* Bottom-right corner (empty) */}
+            <div />
           </div>
 
           {/* Instructions */}
