@@ -21,6 +21,10 @@ export type DamageType =
   | 'acid'
   | 'radiant'
   | 'force'
+  | 'necrotic'
+  | 'thunder'
+  | 'lightning'
+  | 'poison'
   | 'slashing'
   | 'piercing'
   | 'bludgeoning';

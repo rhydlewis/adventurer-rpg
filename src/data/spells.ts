@@ -1,115 +1,67 @@
+import spellsJson from './spells.json';
+import { SpellsSchema } from '../schemas/spell.schema';
 import type { Spell } from '../types';
+
+// Validate spells at build time
+const validatedSpells = SpellsSchema.parse(spellsJson);
+
+/**
+ * All available spells in the game
+ * Loaded from spells.json and validated with Zod schema
+ */
+export const SPELLS: Record<string, Spell> = Object.fromEntries(
+  Object.entries(validatedSpells).map(([id, spell]) => {
+    // Add targetRestriction for Daze spell (can't be serialized in JSON)
+    if (id === 'daze') {
+      return [
+        id,
+        {
+          ...spell,
+          effect: {
+            ...spell.effect,
+            targetRestriction: (target: { hp: number }) => target.hp <= 5,
+          },
+        } as Spell,
+      ];
+    }
+    return [id, spell as Spell];
+  })
+);
+
+/**
+ * Get a spell by ID
+ * @param id - The spell ID (e.g., "ray_of_frost")
+ * @returns The spell object or undefined if not found
+ */
+export function getSpellById(id: string): Spell | undefined {
+  return SPELLS[id];
+}
+
+/**
+ * Get all spells
+ * @returns Array of all spells
+ */
+export function getAllSpells(): Spell[] {
+  return Object.values(SPELLS);
+}
 
 /**
  * Wizard Cantrips (Level 0, at-will)
  */
-
-export const RAY_OF_FROST: Spell = {
-  id: 'ray_of_frost',
-  name: 'Ray of Frost',
-  level: 0,
-  school: 'evocation',
-  target: 'single',
-  effect: {
-    type: 'damage',
-    damageDice: '1d3',
-    damageType: 'cold',
-  },
-  description: 'A ray of freezing air and ice shoots toward your target. Ranged spell attack.',
-};
-
-export const ACID_SPLASH: Spell = {
-  id: 'acid_splash',
-  name: 'Acid Splash',
-  level: 0,
-  school: 'conjuration',
-  target: 'single',
-  effect: {
-    type: 'damage',
-    damageDice: '1d3',
-    damageType: 'acid',
-  },
-  description: 'You hurl a bubble of acid at your target. Ranged spell attack.',
-};
-
-export const DAZE: Spell = {
-  id: 'daze',
-  name: 'Daze',
-  level: 0,
-  school: 'enchantment',
-  target: 'single',
-  effect: {
-    type: 'condition',
-    conditionType: 'Stunned',
-    conditionDuration: 1,
-    targetRestriction: (target) => target.hp <= 5,
-  },
-  savingThrow: {
-    type: 'will',
-    onSuccess: 'negates',
-  },
-  description: 'Daze a creature with 5 HP or less. Will save negates. Stunned for 1 turn.',
-};
+export const WIZARD_CANTRIPS: Spell[] = [
+  SPELLS.ray_of_frost,
+  SPELLS.acid_splash,
+  SPELLS.daze,
+];
 
 /**
  * Cleric Cantrips (Level 0, at-will)
  */
-
-export const DIVINE_FAVOR: Spell = {
-  id: 'divine_favor',
-  name: 'Divine Favor',
-  level: 0,
-  school: 'divination',
-  target: 'self',
-  effect: {
-    type: 'buff',
-    buffType: 'attack',
-    buffAmount: 1,
-    buffDuration: 1, // Next attack or save
-  },
-  description: 'Divine power guides your next attack or saving throw (+1).',
-};
-
-export const RESISTANCE: Spell = {
-  id: 'resistance',
-  name: 'Resistance',
-  level: 0,
-  school: 'abjuration',
-  target: 'self',
-  effect: {
-    type: 'buff',
-    buffType: 'save',
-    buffAmount: 1,
-    buffDuration: 1, // Next save
-  },
-  description: 'You gain divine protection on your next saving throw (+1).',
-};
-
-export const SACRED_FLAME: Spell = {
-  id: 'sacred_flame',
-  name: 'Sacred Flame',
-  level: 0,
-  school: 'evocation',
-  target: 'single',
-  effect: {
-    type: 'damage',
-    damageDice: '1d4',
-    damageType: 'radiant',
-  },
-  savingThrow: {
-    type: 'will',
-    onSuccess: 'negates',
-  },
-  description: 'Flame-like radiance descends on a creature. Will save negates.',
-};
-
-/**
- * Cantrip collections by class
- */
-
-export const WIZARD_CANTRIPS: Spell[] = [RAY_OF_FROST, ACID_SPLASH, DAZE];
-
-export const CLERIC_CANTRIPS: Spell[] = [DIVINE_FAVOR, RESISTANCE, SACRED_FLAME];
+export const CLERIC_CANTRIPS: Spell[] = [
+  SPELLS.divine_favor,
+  SPELLS.resistance,
+  SPELLS.sacred_flame,
+];
 
 /**
  * Get cantrips for a character class
@@ -124,3 +76,11 @@ export function getCantripsForClass(className: string): Spell[] {
       return [];
   }
 }
+
+// Legacy exports for backward compatibility
+export const RAY_OF_FROST = SPELLS.ray_of_frost;
+export const ACID_SPLASH = SPELLS.acid_splash;
+export const DAZE = SPELLS.daze;
+export const DIVINE_FAVOR = SPELLS.divine_favor;
+export const RESISTANCE = SPELLS.resistance;
+export const SACRED_FLAME = SPELLS.sacred_flame;
