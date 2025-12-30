@@ -25,7 +25,7 @@ interface CombatScreenProps {
 }
 
 export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, onViewCharacterSheet, onExitToMainMenu }: CombatScreenProps) {
-  const { combat, startCombat, executeTurn, resetCombat, retreat, swapWeapon } = useCombatStore();
+  const { combat, startCombat, executeTurn, resetCombat, retreat, swapWeapon, toggleForceEnemySpellCast } = useCombatStore();
   const { character, setCharacter } = useCharacterStore();
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [debugMode, setDebugMode] = useState(false);
@@ -368,6 +368,24 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
                 >
                   eMiss (5)
                 </button>
+              </div>
+
+              {/* Enemy Spell Casting Toggle */}
+              <div className="mt-2 pt-2 border-t border-amber-800/30">
+                <button
+                  onClick={toggleForceEnemySpellCast}
+                  className={`w-full px-3 py-2 rounded border text-xs font-medium transition-colors ${
+                    combat?.forceEnemySpellCast
+                      ? 'bg-violet-900/60 text-violet-200 border-violet-700/60 hover:bg-violet-800/60'
+                      : 'bg-slate-800/50 text-slate-300 border-slate-600/50 hover:bg-slate-700/50'
+                  }`}
+                >
+                  <span className="mr-2">✨</span>
+                  Force Enemy Spell Cast: {combat?.forceEnemySpellCast ? 'ON' : 'OFF'}
+                </button>
+                <p className="text-[10px] text-slate-500 mt-1 text-center">
+                  Enemy will cast a spell on their next turn (if able)
+                </p>
               </div>
             </div>
           </div>

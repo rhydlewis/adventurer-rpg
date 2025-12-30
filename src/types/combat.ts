@@ -74,4 +74,6 @@ export interface CombatState {
   playerAcBonus?: number; // AC bonus from first-attack quirk (deprecated - using autoBlockActive instead)
   autoBlockActive?: boolean; // Auto-block quirk: next enemy attack auto-misses
   autoHealActive?: boolean; // Auto-heal quirk: first hit taken heals to full HP
+  // Debug options
+  forceEnemySpellCast?: boolean; // Force enemy to cast spell on next turn
 }

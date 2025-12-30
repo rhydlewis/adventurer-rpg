@@ -19,12 +19,20 @@ export type EnemyActionType = 'attack' | 'cast_spell';
  * - Tactical decision making (player HP, enemy HP, conditions)
  * - Spell type awareness (buff when full HP, damage when player low)
  * - Difficulty scaling (higher difficulty = smarter AI)
+ *
+ * @param forceSpellCast - Debug flag to force enemy to cast spell (if available)
  */
 export function selectEnemyAction(
   enemy: Creature,
   _player: Character,
-  availableSpells: Spell[]
+  availableSpells: Spell[],
+  forceSpellCast?: boolean
 ): EnemyActionType {
+  // Debug: Force spell casting if flag is set
+  if (forceSpellCast && availableSpells && availableSpells.length > 0) {
+    return 'cast_spell';
+  }
+
   // No spells available - must attack
   if (!availableSpells || availableSpells.length === 0) {
     return 'attack';

@@ -19,6 +19,8 @@ interface CombatStore {
     retreatFlag?: string;
     safeNodeId: string;
   } | null;
+  // Debug methods
+  toggleForceEnemySpellCast: () => void;
 }
 
 export const useCombatStore = create<CombatStore>((set, get) => ({
@@ -194,5 +196,18 @@ export const useCombatStore = create<CombatStore>((set, get) => ({
       retreatFlag: result.retreatFlag,
       safeNodeId: result.safeNodeId,
     };
+  },
+
+  toggleForceEnemySpellCast: () => {
+    set((state) => {
+      if (!state.combat) return state;
+
+      return {
+        combat: {
+          ...state.combat,
+          forceEnemySpellCast: !state.combat.forceEnemySpellCast,
+        },
+      };
+    });
   },
 }));
