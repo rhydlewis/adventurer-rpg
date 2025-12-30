@@ -1,4 +1,4 @@
-import type { Creature } from '../types';
+import type { Creature } from '../types/creature';
 import type { Character } from '../types';
 import type { Spell } from '../types';
 import { getSpellById } from '../data/spells';
@@ -22,7 +22,7 @@ export type EnemyActionType = 'attack' | 'cast_spell';
  */
 export function selectEnemyAction(
   enemy: Creature,
-  player: Character,
+  _player: Character,
   availableSpells: Spell[]
 ): EnemyActionType {
   // No spells available - must attack
@@ -31,11 +31,8 @@ export function selectEnemyAction(
   }
 
   // Check if enemy has any spell slots for non-cantrips
-  const hasSpellSlots = enemy.resources?.spellSlots && (
-    (enemy.resources.spellSlots.level1?.current ?? 0) > 0 ||
-    (enemy.resources.spellSlots.level2?.current ?? 0) > 0 ||
-    (enemy.resources.spellSlots.level3?.current ?? 0) > 0
-  );
+  const hasSpellSlots = enemy.resources?.spellSlots &&
+    (enemy.resources.spellSlots.level1?.current ?? 0) > 0;
 
   // Has cantrips available - can always cast
   const hasCantrips = availableSpells.some(spell => spell.level === 0);
@@ -64,7 +61,7 @@ export function selectEnemyAction(
  */
 export function selectSpell(
   enemy: Creature,
-  player: Character,
+  _player: Character,
   availableSpells: Spell[]
 ): Spell {
   // Filter to spells enemy can cast

@@ -96,11 +96,13 @@
     "effect": {
       "type": "damage",
       "damageDice": "1d3",
-      "damageType": "necrotic"
+      "damageType": "necrotic",
+      "conditionType": "stunned",
+      "conditionDuration": 1
     },
     "savingThrow": {
       "type": "fortitude",
-      "onSuccess": "negates"
+      "onSuccess": "partial"
     },
     "description": "A touch of necrotic energy paralyzes your foe. Melee spell attack for 1d3 necrotic damage, Fortitude save or be Stunned for 1 turn."
   },

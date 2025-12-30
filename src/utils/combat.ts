@@ -15,7 +15,7 @@ import {
   calculateSneakAttackDamage,
 } from './classAbilities';
 import { castSpell, consumeSpellSlot } from './spellcasting';
-import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
+import { getSpellById } from '../data/spells';
 import { selectEnemyAction, selectSpell, getEnemySpells } from './enemyAI';
 import { calculateConditionModifiers, decrementConditions, applyConditionDamage, applyCondition } from './conditions';
 import { rollLoot, formatLootMessage } from './loot';
@@ -373,12 +373,11 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         }
       }
     } else if (playerAction.type === 'cast_spell') {
-      // Cast spell action (Wizard/Cleric cantrips)
+      // Cast spell action
       const spellAction = playerAction as CastSpellAction;
 
       // Find the spell
-      const allCantrips = [...WIZARD_CANTRIPS, ...CLERIC_CANTRIPS];
-      const spell = allCantrips.find((s) => s.id === spellAction.spellId);
+      const spell = getSpellById(spellAction.spellId);
 
       if (!spell) {
         log.push({
@@ -420,6 +419,11 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         }
 
         // TODO: Apply conditions (Daze -> Stunned) in Phase 1.4
+
+        // Consume spell slot if leveled spell (cantrips are level 0)
+        if (result.success && spell.level > 0) {
+          playerCharacter = consumeSpellSlot(playerCharacter, spell.level);
+        }
       }
     } else {
       // Attack action (normal or Power Attack)
@@ -651,7 +655,6 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         turn: state.turn,
         actor: 'enemy',
         message: enemyAttack.output,
-        taunt: enemyAttack.taunt,
       });
     } else if (enemyAction === 'cast_spell' && enemySpells.length > 0) {
       // Enemy casts spell
@@ -673,7 +676,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       // Apply conditions if successful
       if (spellResult.success && spellResult.conditionApplied) {
         // Parse condition type and duration from spell effect
-        const conditionType = spell.effect.conditionType;
+        const conditionType = spell.effect.conditionType as import('../types/condition').ConditionType;
         const duration = spell.effect.conditionDuration ?? 1;
 
         if (conditionType) {

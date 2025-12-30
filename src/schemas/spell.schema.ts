@@ -65,6 +65,9 @@ const DamageEffectSchema = z.object({
   type: z.literal('damage'),
   damageDice: z.string().regex(/^\d+d\d+(\+\d+)?$/, 'Damage must be dice notation'),
   damageType: DamageTypeSchema,
+  // Optional condition application (e.g., Paralyzing Touch does damage + stun)
+  conditionType: z.string().min(1).optional(),
+  conditionDuration: z.number().int().positive().optional(),
 });
 
 const HealEffectSchema = z.object({

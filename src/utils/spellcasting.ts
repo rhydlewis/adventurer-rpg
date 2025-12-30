@@ -153,6 +153,18 @@ ${spell.effect.damageDice}: ${fullDamage} → ${damage} ${spell.effect.damageTyp
     };
   }
 
+  // If save succeeds and spell is "partial" (damage applies, condition negated)
+  if (saveResult.success && spell.savingThrow.onSuccess === 'partial' && spell.effect.type === 'damage' && spell.effect.damageDice) {
+    const damage = roll(spell.effect.damageDice);
+    return {
+      success: true,
+      output: `${spell.name}: ${saveOutput} - Condition negated!
+${spell.effect.damageDice}: ${damage} ${spell.effect.damageType} damage`,
+      damage,
+      saveMade: true,
+    };
+  }
+
   // Save failed - apply full effect
   if (spell.effect.type === 'condition') {
     return {
@@ -165,11 +177,14 @@ ${spell.effect.damageDice}: ${fullDamage} → ${damage} ${spell.effect.damageTyp
 
   if (spell.effect.type === 'damage' && spell.effect.damageDice) {
     const damage = roll(spell.effect.damageDice);
+    const hasCondition = spell.effect.conditionType && spell.effect.conditionDuration;
+    const conditionDuration = spell.effect.conditionDuration ?? 1;
     return {
       success: true,
       output: `${spell.name}: ${saveOutput}
-${spell.effect.damageDice}: ${damage} ${spell.effect.damageType} damage`,
+${spell.effect.damageDice}: ${damage} ${spell.effect.damageType} damage${hasCondition ? ` + ${spell.effect.conditionType} (${conditionDuration} turn${conditionDuration > 1 ? 's' : ''})` : ''}`,
       damage,
+      conditionApplied: hasCondition ? spell.effect.conditionType : undefined,
       saveMade: false,
     };
   }
