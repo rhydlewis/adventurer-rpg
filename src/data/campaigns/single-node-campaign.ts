@@ -282,6 +282,12 @@ const testNodes: StoryNode[] = [
                 outcome: { type: 'goto', nodeId: 'wraith_combat' }
             },
             {
+                id: 'fight_lich',
+                text: '🕷️ Fight a Lich',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'lich_combat' }
+            },
+            {
                 id: 'fight_spider',
                 text: '🕷️ Fight a Giant Spider',
                 category: 'combat',
@@ -336,6 +342,17 @@ const testNodes: StoryNode[] = [
         flavor: { tone: 'danger', icon: 'skull' },
         onEnter: [
             { type: 'startCombat', enemyId: 'wraith', onVictoryNodeId: 'combat_victory' }
+        ],
+        choices: []
+    },
+    {
+        id: 'lich_combat',
+        title: 'Lich Encounter',
+        description: 'The air turns to frostbite bloom and your bones know death has just stepped into the room—a lich unravels reality with a single, silent breath of eternal cold.',
+        type: 'combat',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'lich', onVictoryNodeId: 'combat_victory' }
         ],
         choices: []
     },
