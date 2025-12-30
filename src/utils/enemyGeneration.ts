@@ -212,6 +212,7 @@ export function generateEnemy(
         resources,
         taunts: template.taunts,
         lootTableId: template.lootTableId,
+        spellIds: template.spellIds,
     };
 
     // Debug logging to verify randomization

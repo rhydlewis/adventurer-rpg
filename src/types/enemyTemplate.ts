@@ -40,4 +40,7 @@ export interface EnemyTemplate {
         onLowHealth?: string[];
     };
     lootTableId: string;
+
+    // Spell casting
+    spellIds?: string[]; // Array of spell IDs for spellcasting enemies
 }

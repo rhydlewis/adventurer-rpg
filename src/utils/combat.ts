@@ -14,8 +14,9 @@ import {
   canSneakAttack,
   calculateSneakAttackDamage,
 } from './classAbilities';
-import { castSpell } from './spellcasting';
+import { castSpell, consumeSpellSlot } from './spellcasting';
 import { WIZARD_CANTRIPS, CLERIC_CANTRIPS } from '../data/spells';
+import { selectEnemyAction, selectSpell, getEnemySpells } from './enemyAI';
 import { calculateConditionModifiers, decrementConditions, applyConditionDamage, applyCondition } from './conditions';
 import { rollLoot, formatLootMessage } from './loot';
 import { selectTaunt, isLowHealth } from './taunts';
@@ -761,7 +762,10 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
       }
     }
 
-    // Enemy attacks - check for auto-block first
+    // Enemy turn - decide between attack or cast spell
+    const enemySpells = getEnemySpells(enemy.spellIds);
+    const enemyAction = autoBlockActive ? 'attack' : selectEnemyAction(enemy, playerCharacter, enemySpells);
+
     let enemyAttack;
     if (autoBlockActive) {
       // Auto-block: Attack automatically misses
@@ -772,35 +776,80 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
         output: "Attack automatically blocked!",
       };
       autoBlockActive = false; // Clear after use
+
+      log.push({
+        turn: state.turn,
+        actor: 'enemy',
+        message: enemyAttack.output,
+        taunt: enemyAttack.taunt,
+      });
+    } else if (enemyAction === 'cast_spell' && enemySpells.length > 0) {
+      // Enemy casts spell
+      const spell = selectSpell(enemy, playerCharacter, enemySpells);
+      const spellResult = castSpell(enemy, playerCharacter, spell);
+
+      // Log spell casting
+      log.push({
+        turn: state.turn,
+        actor: 'enemy',
+        message: spellResult.output,
+      });
+
+      // Apply damage if successful
+      if (spellResult.success && spellResult.damage) {
+        playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - spellResult.damage };
+      }
+
+      // Apply conditions if successful
+      if (spellResult.success && spellResult.conditionApplied) {
+        // Parse condition type and duration from spell effect
+        const conditionType = spell.effect.conditionType;
+        const duration = spell.effect.conditionDuration ?? 1;
+
+        if (conditionType) {
+          playerConditions = applyCondition(playerConditions, conditionType, state.turn, duration);
+          log.push({
+            turn: state.turn,
+            actor: 'system',
+            message: `You are ${conditionType}!`,
+          });
+        }
+      }
+
+      // Consume spell slot if leveled spell
+      if (spell.level > 0) {
+        enemy = consumeSpellSlot(enemy, spell.level);
+      }
     } else {
       // Normal attack
       enemyAttack = performAttack(enemy, playerCharacter, enemyConditions, playerConditions, undefined, 'enemy');
-    }
-    log.push({
-      turn: state.turn,
-      actor: 'enemy',
-      message: enemyAttack.output,
-      taunt: enemyAttack.taunt,
-    });
 
-    if (enemyAttack.hit && enemyAttack.damage) {
-      playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - enemyAttack.damage };
+      log.push({
+        turn: state.turn,
+        actor: 'enemy',
+        message: enemyAttack.output,
+        taunt: enemyAttack.taunt,
+      });
 
-      // Auto-heal quirk: heal to full HP after first hit
-      if (autoHealActive) {
-        const healedAmount = playerCharacter.maxHp - playerCharacter.hp;
-        playerCharacter = { ...playerCharacter, hp: playerCharacter.maxHp };
-        autoHealActive = false; // Deactivate after use
-        log.push({
-          turn: state.turn,
-          actor: 'system',
-          message: `Divine power restores you (+${healedAmount} HP)!`,
-        });
+      if (enemyAttack.hit && enemyAttack.damage) {
+        playerCharacter = { ...playerCharacter, hp: playerCharacter.hp - enemyAttack.damage };
+
+        // Auto-heal quirk: heal to full HP after first hit
+        if (autoHealActive) {
+          const healedAmount = playerCharacter.maxHp - playerCharacter.hp;
+          playerCharacter = { ...playerCharacter, hp: playerCharacter.maxHp };
+          autoHealActive = false; // Deactivate after use
+          log.push({
+            turn: state.turn,
+            actor: 'system',
+            message: `Divine power restores you (+${healedAmount} HP)!`,
+          });
+        }
       }
     }
 
-    // Handle fumble effects
-    if (enemyAttack.isFumble && enemyAttack.fumbleEffect) {
+    // Handle fumble effects (only applies to attacks, not spells)
+    if (enemyAttack && enemyAttack.isFumble && enemyAttack.fumbleEffect) {
       const fumble = enemyAttack.fumbleEffect;
 
       if (fumble.loseTurn) {

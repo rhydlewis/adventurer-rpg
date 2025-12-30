@@ -223,6 +223,7 @@ const EnemyTemplateSchema = z.object({
   feats: z.array(FeatSchema),
   taunts: TauntsSchema,
   lootTableId: z.string().min(1),
+  spellIds: z.array(z.string().min(1)).optional(),
 });
 
 // Export the schema for a record of enemy templates

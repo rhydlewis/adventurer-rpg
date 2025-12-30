@@ -1,0 +1,124 @@
+{
+  "ray_of_frost": {
+    "id": "ray_of_frost",
+    "name": "Ray of Frost",
+    "level": 0,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d3",
+      "damageType": "cold"
+    },
+    "description": "A ray of freezing air and ice shoots toward your target. Ranged spell attack."
+  },
+  "acid_splash": {
+    "id": "acid_splash",
+    "name": "Acid Splash",
+    "level": 0,
+    "school": "conjuration",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d3",
+      "damageType": "acid"
+    },
+    "description": "You hurl a bubble of acid at your target. Ranged spell attack."
+  },
+  "daze": {
+    "id": "daze",
+    "name": "Daze",
+    "level": 0,
+    "school": "enchantment",
+    "target": "single",
+    "effect": {
+      "type": "condition",
+      "conditionType": "Stunned",
+      "conditionDuration": 1
+    },
+    "savingThrow": {
+      "type": "will",
+      "onSuccess": "negates"
+    },
+    "description": "Daze a creature with 5 HP or less. Will save negates. Stunned for 1 turn."
+  },
+  "divine_favor": {
+    "id": "divine_favor",
+    "name": "Divine Favor",
+    "level": 0,
+    "school": "divination",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "attack",
+      "buffAmount": 1,
+      "buffDuration": 1
+    },
+    "description": "Divine power guides your next attack or saving throw (+1)."
+  },
+  "resistance": {
+    "id": "resistance",
+    "name": "Resistance",
+    "level": 0,
+    "school": "abjuration",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "save",
+      "buffAmount": 1,
+      "buffDuration": 1
+    },
+    "description": "You gain divine protection on your next saving throw (+1)."
+  },
+  "sacred_flame": {
+    "id": "sacred_flame",
+    "name": "Sacred Flame",
+    "level": 0,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d4",
+      "damageType": "radiant"
+    },
+    "savingThrow": {
+      "type": "will",
+      "onSuccess": "negates"
+    },
+    "description": "Flame-like radiance descends on a creature. Will save negates."
+  },
+  "paralyzing_touch": {
+    "id": "paralyzing_touch",
+    "name": "Paralyzing Touch",
+    "level": 0,
+    "school": "necromancy",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d3",
+      "damageType": "necrotic"
+    },
+    "savingThrow": {
+      "type": "fortitude",
+      "onSuccess": "negates"
+    },
+    "description": "A touch of necrotic energy paralyzes your foe. Melee spell attack for 1d3 necrotic damage, Fortitude save or be Stunned for 1 turn."
+  },
+  "thunderwave": {
+    "id": "thunderwave",
+    "name": "Thunderwave",
+    "level": 1,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "2d6",
+      "damageType": "thunder"
+    },
+    "savingThrow": {
+      "type": "fortitude",
+      "onSuccess": "half"
+    },
+    "description": "A wave of thunderous force sweeps out from you. Fortitude save for half damage."
+  }
+}

@@ -11,4 +11,5 @@ export interface Creature extends Entity {
         onLowHealth?: string[];
     };
     lootTableId: string; // Links to loot table for drops
+    spellIds?: string[]; // Array of spell IDs for spellcasting creatures
 }
