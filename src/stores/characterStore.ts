@@ -4,7 +4,7 @@ import type { Attributes } from '../types';
 import type { SkillRanks } from '../types';
 import type { FeatName } from '../types';
 import type { NodeEffect } from '../types';
-import { createCharacter, createDefaultTestCharacter } from '../utils/characterCreation';
+import { createCharacter, createDefaultTestCharacter, createWizardTestCharacter, createClericTestCharacter } from '../utils/characterCreation';
 import { CLASSES } from '../data/classes';
 import { DEFAULT_AVATAR } from '../data/avatars';
 import { getBackgroundByClass } from '../data/backgrounds';
@@ -302,10 +302,20 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
   processNarrativeEffects: (effects) => {
     let { character } = get();
 
-    // Check if we need to create a default character first
+    // Check if we need to create a character first
     for (const effect of effects) {
       if (effect.type === 'createDefaultCharacter' && !character) {
         character = createDefaultTestCharacter();
+        set({ character });
+        return; // Character created, exit early
+      }
+      if (effect.type === 'createWizard' && !character) {
+        character = createWizardTestCharacter();
+        set({ character });
+        return; // Character created, exit early
+      }
+      if (effect.type === 'createCleric' && !character) {
+        character = createClericTestCharacter();
         set({ character });
         return; // Character created, exit early
       }
@@ -338,6 +348,8 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
           break;
 
         case 'createDefaultCharacter':
+        case 'createWizard':
+        case 'createCleric':
           // Already handled above
           break;
 

@@ -77,16 +77,28 @@ export function CombatScreen({ enemyId, onVictoryNodeId, onVictory, onDefeat, on
   }
 
   const handleVictory = () => {
+    // Save character changes (HP, spell slots, etc.) before resetting combat
+    if (combat) {
+      setCharacter(combat.playerCharacter);
+    }
     resetCombat();
     onVictory(onVictoryNodeId);
   };
 
   const handleDefeat = () => {
+    // Save character changes even on defeat (HP loss, spell slots used, etc.)
+    if (combat) {
+      setCharacter(combat.playerCharacter);
+    }
     resetCombat();
     onDefeat();
   };
 
   const handleEndCombat = () => {
+    // Save character changes before exiting combat
+    if (combat) {
+      setCharacter(combat.playerCharacter);
+    }
     // Exit to main menu if handler provided, otherwise treat as defeat
     resetCombat();
     if (onExitToMainMenu) {
@@ -470,6 +482,32 @@ function CompactCombatant({ character, conditions, variant, onSwapWeapon }: Comp
           />
         </div>
       </div>
+
+      {/* Spell Slots (for spellcasters) */}
+      {character.resources?.spellSlots && (
+        <div className="mb-2">
+          <div className="flex justify-between items-center mb-0.5">
+            <span className="text-[9px] label-secondary text-slate-500 tracking-wide">SPELL SLOTS</span>
+            <span className={`text-xs stat-small ${
+              variant === 'player' ? 'text-violet-300' : 'text-violet-400'
+            }`}>
+              Lv1: {character.resources.spellSlots.level1.current}/{character.resources.spellSlots.level1.max}
+            </span>
+          </div>
+          <div className="w-full bg-slate-900/70 rounded-full h-1.5 border border-slate-800/50">
+            <div
+              className={`h-full rounded-full transition-all ${
+                variant === 'player'
+                  ? 'bg-gradient-to-r from-violet-600 to-violet-500'
+                  : 'bg-gradient-to-r from-violet-600 to-violet-500'
+              }`}
+              style={{
+                width: `${Math.max(0, (character.resources.spellSlots.level1.current / character.resources.spellSlots.level1.max) * 100)}%`
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Stats Row */}
       <div className="flex space-x-1.5">

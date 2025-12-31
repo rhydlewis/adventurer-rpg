@@ -191,6 +191,8 @@ export type NodeEffect =
   | { type: 'showCompanionHint'; hint: string }
   | { type: 'levelUp'; newLevel: number; featChoices: string[] }
   | { type: 'createDefaultCharacter' }
+  | { type: 'createWizard' }
+  | { type: 'createCleric' }
   | {
       type: 'startPuzzle';
       puzzleType: PuzzleType;

@@ -64,6 +64,23 @@ export const CLERIC_CANTRIPS: Spell[] = [
 ];
 
 /**
+ * Wizard Level 1 Spells (requires spell slots)
+ */
+export const WIZARD_LEVEL1_SPELLS: Spell[] = [
+  SPELLS.magic_missile,
+  SPELLS.shield,
+];
+
+/**
+ * Cleric Level 1 Spells (requires spell slots)
+ */
+export const CLERIC_LEVEL1_SPELLS: Spell[] = [
+  SPELLS.cure_wounds,
+  SPELLS.aid,
+  SPELLS.bless_weapon,
+];
+
+/**
  * Get cantrips for a character class
  */
 export function getCantripsForClass(className: string): Spell[] {
@@ -72,6 +89,20 @@ export function getCantripsForClass(className: string): Spell[] {
       return WIZARD_CANTRIPS;
     case 'Cleric':
       return CLERIC_CANTRIPS;
+    default:
+      return [];
+  }
+}
+
+/**
+ * Get level 1 spells for a character class
+ */
+export function getLevel1SpellsForClass(className: string): Spell[] {
+  switch (className) {
+    case 'Wizard':
+      return WIZARD_LEVEL1_SPELLS;
+    case 'Cleric':
+      return CLERIC_LEVEL1_SPELLS;
     default:
       return [];
   }

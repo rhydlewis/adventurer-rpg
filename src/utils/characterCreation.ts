@@ -268,3 +268,73 @@ export function createDefaultTestCharacter(): Character {
     bab: 3, // Level 3 BAB for Fighter
   };
 }
+
+/**
+ * Create Eldric Starweave - Level 1 Wizard for spell testing
+ */
+export function createWizardTestCharacter(): Character {
+  // High INT and DEX for wizard
+  const attributes: Attributes = {
+    STR: 8,
+    DEX: 14,
+    CON: 12,
+    INT: 16,
+    WIS: 10,
+    CHA: 10,
+  };
+
+  // Wizard skill ranks
+  const skillRanks: SkillRanks = {
+    Athletics: 0,
+    Stealth: 2,
+    Perception: 2,
+    Arcana: 4,
+    Medicine: 1,
+    Intimidate: 0,
+  };
+
+  // Create base wizard character
+  return createCharacter({
+    name: 'Eldric Starweave',
+    avatarPath: '/portraits/wizard-test.png',
+    class: 'Wizard',
+    attributes,
+    skillRanks,
+    selectedFeat: 'Improved Initiative',
+  });
+}
+
+/**
+ * Create Brother Bosnod - Level 1 Cleric for spell testing
+ */
+export function createClericTestCharacter(): Character {
+  // High WIS and CON for cleric
+  const attributes: Attributes = {
+    STR: 10,
+    DEX: 10,
+    CON: 14,
+    INT: 10,
+    WIS: 16,
+    CHA: 12,
+  };
+
+  // Cleric skill ranks
+  const skillRanks: SkillRanks = {
+    Athletics: 1,
+    Stealth: 0,
+    Perception: 3,
+    Arcana: 1,
+    Medicine: 4,
+    Intimidate: 1,
+  };
+
+  // Create base cleric character
+  return createCharacter({
+    name: 'Brother Bosnod',
+    avatarPath: '/portraits/cleric-test.png',
+    class: 'Cleric',
+    attributes,
+    skillRanks,
+    selectedFeat: 'Toughness',
+  });
+}

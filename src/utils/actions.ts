@@ -1,6 +1,6 @@
 import type { Character } from '../types';
 import type { Action, AttackAction, UseAbilityAction, CastSpellAction } from '../types/action';
-import { getCantripsForClass } from '../data/spells';
+import { getCantripsForClass, getLevel1SpellsForClass } from '../data/spells';
 import { meetsPrerequisites } from './feats';
 import { hasResource } from './resources';
 
@@ -148,17 +148,20 @@ export function getAvailableActions(character: Character): Action[] {
       } as CastSpellAction);
     });
 
-    // Level 1 spells (TODO: Phase 1.3+ - implement specific spell selection UI)
+    // Level 1 spells - create an action for each available spell
     if (slots.level1.current > 0) {
-      actions.push({
-        type: 'cast_spell',
-        spellId: 'placeholder_level1',
-        name: 'Cast Spell (Level 1)',
-        description: `Cast a level 1 spell (${slots.level1.current}/${slots.level1.max} slots remaining)`,
-        available: true,
-        spellLevel: 1,
-        requiresSlot: true,
-      } as CastSpellAction);
+      const level1Spells = getLevel1SpellsForClass(character.class);
+      level1Spells.forEach((spell) => {
+        actions.push({
+          type: 'cast_spell',
+          spellId: spell.id,
+          name: `${spell.name} (Lv1)`,
+          description: `${spell.description} [${slots.level1.current}/${slots.level1.max} slots]`,
+          available: true,
+          spellLevel: 1,
+          requiresSlot: true,
+        } as CastSpellAction);
+      });
     }
   }
 

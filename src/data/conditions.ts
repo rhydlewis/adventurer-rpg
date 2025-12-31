@@ -187,6 +187,35 @@ export const CONDITION_DEFINITIONS: Record<ConditionType, ConditionDefinition> =
       attackBonus: -2,
     },
   },
+
+  // === LEVEL 1 SPELL BUFFS ===
+
+  Shield: {
+    type: 'Shield',
+    category: 'buff',
+    description: '+5 AC (magical barrier)',
+    modifiers: {
+      acBonus: 5,
+    },
+  },
+
+  Aid: {
+    type: 'Aid',
+    category: 'buff',
+    description: '+2 AC (divine toughness)',
+    modifiers: {
+      acBonus: 2,
+    },
+  },
+
+  'Bless Weapon': {
+    type: 'Bless Weapon',
+    category: 'buff',
+    description: '+2 damage (blessed weapon)',
+    modifiers: {
+      damageBonus: 2,
+    },
+  },
 };
 
 /**
@@ -216,4 +245,9 @@ export const DEFAULT_DURATIONS: Record<ConditionType, number> = {
   'Divine Favor': 1,
   Resistance: 1,
   'Off-Balance': 1,
+
+  // Level 1 Spell Buffs
+  Shield: 1,
+  Aid: 3,
+  'Bless Weapon': 3,
 };

@@ -416,7 +416,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           message: `Spell not found: ${spellAction.spellId}`,
         });
       } else {
-        // Consume spell slot for non-cantrips (level > 0)
+        // Check spell slot availability for non-cantrips (level > 0)
         if (spell.level > 0) {
           if (!playerCharacter.resources.spellSlots) {
             log.push({
@@ -438,21 +438,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
             });
             return state; // Early return - no slots available
           }
-
-          // Decrement spell slot
-          playerCharacter = {
-            ...playerCharacter,
-            resources: {
-              ...playerCharacter.resources,
-              spellSlots: {
-                ...playerCharacter.resources.spellSlots,
-                [slotKey]: {
-                  ...slot,
-                  current: slot.current - 1,
-                },
-              },
-            },
-          };
+          // Note: Spell slot will be consumed after successful cast (see below)
         }
 
         // Cast the spell
@@ -463,6 +449,14 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           enemy = {
             ...enemy,
             hp: enemy.hp - result.damage,
+          };
+        }
+
+        // Apply healing if successful
+        if (result.success && result.healing) {
+          playerCharacter = {
+            ...playerCharacter,
+            hp: Math.min(playerCharacter.hp + result.healing, playerCharacter.maxHp),
           };
         }
 
@@ -479,11 +473,15 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
           const conditionTypeMap: Record<string, import('../types/condition').ConditionType> = {
             'Divine Favor': 'Divine Favor',
             'Resistance': 'Resistance',
+            'Shield': 'Shield',
+            'Aid': 'Aid',
+            'Bless Weapon': 'Bless Weapon',
           };
 
           const conditionType = conditionTypeMap[spell.name];
+          const duration = spell.effect.buffDuration || 1;
           if (conditionType) {
-            playerConditions = applyCondition(playerConditions, conditionType, state.turn, 1);
+            playerConditions = applyCondition(playerConditions, conditionType, state.turn, duration);
           }
         }
 

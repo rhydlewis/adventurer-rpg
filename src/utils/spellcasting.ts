@@ -209,10 +209,33 @@ export function castBuffSpell(caster: Entity, spell: Spell): SpellCastResult {
 
   const buffType = spell.effect.buffType || 'attack';
   const amount = spell.effect.buffAmount || 1;
+  const duration = spell.effect.buffDuration || 1;
 
   return {
     success: true,
-    output: `${caster.name} casts ${spell.name}: +${amount} to next ${buffType}`,
+    output: `${caster.name} casts ${spell.name}: +${amount} ${buffType} for ${duration} turn${duration > 1 ? 's' : ''}`,
+  };
+}
+
+/**
+ * Cast a heal spell (self-target)
+ * Restores hit points
+ */
+export function castHealSpell(caster: Entity, spell: Spell): SpellCastResult {
+  if (spell.effect.type !== 'heal' || !spell.effect.healDice) {
+    return {
+      success: false,
+      output: `${spell.name}: Not a heal spell`,
+    };
+  }
+
+  const healing = roll(spell.effect.healDice);
+
+  return {
+    success: true,
+    output: `${caster.name} casts ${spell.name}:
+${spell.effect.healDice}: ${healing} HP restored`,
+    healing,
   };
 }
 
@@ -225,12 +248,17 @@ export function castSpell(
   target: Entity,
   spell: Spell
 ): SpellCastResult {
-  // Buff spells (self-target)
+  // Self-target spells
   if (spell.target === 'self') {
-    return castBuffSpell(caster, spell);
+    if (spell.effect.type === 'heal') {
+      return castHealSpell(caster, spell);
+    }
+    if (spell.effect.type === 'buff') {
+      return castBuffSpell(caster, spell);
+    }
   }
 
-  // Damage spells with saving throws (Sacred Flame, Daze)
+  // Damage spells with saving throws (Sacred Flame, Daze, Magic Missile)
   if (spell.savingThrow && spell.effect.type === 'damage') {
     return castSpellWithSave(caster, target, spell);
   }
@@ -241,7 +269,18 @@ export function castSpell(
   }
 
   // Damage spells with attack rolls (Ray of Frost, Acid Splash)
+  // Note: Magic Missile has no save or attack roll, it auto-hits
   if (spell.effect.type === 'damage') {
+    // Auto-hit spells (Magic Missile)
+    if (!spell.savingThrow && spell.effect.damageDice) {
+      const damage = roll(spell.effect.damageDice);
+      return {
+        success: true,
+        output: `${spell.name}: Auto-hit!
+${spell.effect.damageDice}: ${damage} ${spell.effect.damageType} damage`,
+        damage,
+      };
+    }
     return castDamageSpell(caster, target, spell);
   }
 

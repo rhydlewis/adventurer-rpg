@@ -23,7 +23,11 @@ export type ConditionType =
   | 'Dodge'
   | 'Divine Favor'
   | 'Resistance'
-  | 'Off-Balance';
+  | 'Off-Balance'
+  // Level 1 Spell Buffs
+  | 'Shield' // +5 AC from Shield spell
+  | 'Aid' // +2 AC from Aid spell
+  | 'Bless Weapon'; // +2 damage from Bless Weapon spell
 
 export interface ConditionModifiers {
   attackBonus?: number;           // Added to attack rolls

@@ -456,7 +456,9 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     // Enter the next node
     // Check if the target node will create a character
     const targetNode = findNode(campaign, resolution.nextNodeId);
-    const willCreateCharacter = targetNode?.onEnter?.some(e => e.type === 'createDefaultCharacter');
+    const willCreateCharacter = targetNode?.onEnter?.some(e =>
+      e.type === 'createDefaultCharacter' || e.type === 'createWizard' || e.type === 'createCleric'
+    );
 
     // Player should exist at this point, unless the next node creates one
     if (!player && !willCreateCharacter) {

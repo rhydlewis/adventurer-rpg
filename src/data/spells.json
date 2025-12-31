@@ -122,5 +122,72 @@
       "onSuccess": "half"
     },
     "description": "A wave of thunderous force sweeps out from you. Fortitude save for half damage."
+  },
+  "magic_missile": {
+    "id": "magic_missile",
+    "name": "Magic Missile",
+    "level": 1,
+    "school": "evocation",
+    "target": "single",
+    "effect": {
+      "type": "damage",
+      "damageDice": "1d4+1",
+      "damageType": "force"
+    },
+    "description": "A glowing dart of magical force unerringly strikes your target. Automatically hits for 1d4+1 force damage."
+  },
+  "shield": {
+    "id": "shield",
+    "name": "Shield",
+    "level": 1,
+    "school": "abjuration",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "ac",
+      "buffAmount": 5,
+      "buffDuration": 1
+    },
+    "description": "An invisible barrier of magical force protects you. +5 AC for 1 turn."
+  },
+  "cure_wounds": {
+    "id": "cure_wounds",
+    "name": "Cure Wounds",
+    "level": 1,
+    "school": "evocation",
+    "target": "self",
+    "effect": {
+      "type": "heal",
+      "healDice": "1d8+1"
+    },
+    "description": "A creature you touch regains hit points. Heals 1d8+1 HP."
+  },
+  "aid": {
+    "id": "aid",
+    "name": "Aid",
+    "level": 1,
+    "school": "abjuration",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "ac",
+      "buffAmount": 2,
+      "buffDuration": 3
+    },
+    "description": "Your spell bolsters your allies with toughness. +2 AC for 3 turns."
+  },
+  "bless_weapon": {
+    "id": "bless_weapon",
+    "name": "Bless Weapon",
+    "level": 1,
+    "school": "transmutation",
+    "target": "self",
+    "effect": {
+      "type": "buff",
+      "buffType": "damage",
+      "buffAmount": 2,
+      "buffDuration": 3
+    },
+    "description": "Your weapon glows with divine power. +2 damage for 3 turns."
   }
 }

@@ -37,6 +37,24 @@ const testNodes: StoryNode[] = [
                     type: 'goto',
                     nodeId: 'create_default_character',
                 },
+            },
+            {
+                id: 'wizard_character',
+                text: '🔮 Eldric Starweave - Level 1 Wizard',
+                category: 'special',
+                outcome: {
+                    type: 'goto',
+                    nodeId: 'create_wizard_character',
+                },
+            },
+            {
+                id: 'cleric_character',
+                text: '✨ Brother Bosnod - Level 1 Cleric',
+                category: 'special',
+                outcome: {
+                    type: 'goto',
+                    nodeId: 'create_cleric_character',
+                },
             }
         ]
     },
@@ -47,6 +65,40 @@ const testNodes: StoryNode[] = [
         flavor: { tone: 'triumphant', icon: 'crown' },
         onEnter: [
             { type: 'createDefaultCharacter' }
+        ],
+        choices: [
+            {
+                id: 'begin_testing',
+                text: '→ Begin Testing',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'create_wizard_character',
+        title: 'Eldric Starweave - Wizard',
+        description: 'You are now **Eldric Starweave**, a brilliant elven wizard!\n\n**Level 1 Wizard**\n- High INT (16) and DEX (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Ray of Frost, Acid Splash\n- Level 1 Spells: Magic Missile, Shield\n\nPerfect for testing wizard spellcasting!',
+        flavor: { tone: 'triumphant', icon: 'magic' },
+        onEnter: [
+            { type: 'createWizard' }
+        ],
+        choices: [
+            {
+                id: 'begin_testing',
+                text: '→ Begin Testing',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'create_cleric_character',
+        title: 'Brother Bosnod - Cleric',
+        description: 'You are now **Brother Bosnod**, a devout dwarf cleric of the light!\n\n**Level 1 Cleric**\n- High WIS (16) and CON (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Sacred Flame, Light\n- Level 1 Spells: Cure Wounds, Aid, Bless Weapon\n\nPerfect for testing cleric spellcasting and healing!',
+        flavor: { tone: 'triumphant', icon: 'magic' },
+        onEnter: [
+            { type: 'createCleric' }
         ],
         choices: [
             {
@@ -379,7 +431,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back_to_combat_hub',
-                text: '← Fight another enemy',
+                text: 'Fight another enemy',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'combat_hub' }
             },
