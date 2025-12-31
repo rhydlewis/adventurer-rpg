@@ -1,5 +1,5 @@
 import type { Character } from '../types/character';
-import type { LevelProgression, LevelUpResult } from '../types/levelProgression';
+import type { LevelUpResult } from '../types/levelProgression';
 import { getClassProgression } from '../data/progression/classProgressionTables';
 
 /**

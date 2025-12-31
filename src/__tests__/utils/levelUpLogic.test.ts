@@ -39,15 +39,20 @@ describe('calculateHpGain', () => {
 
 describe('calculateLevelUp', () => {
   const mockFighter: Character = {
-    id: 'test',
     name: 'Test Fighter',
+    avatarPath: 'avatar.png',
     class: 'Fighter',
     level: 1,
     maxHp: 14,
     hp: 14,
+    ac: 15,
     bab: 1,
     saves: { fortitude: 2, reflex: 0, will: 0 },
     attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: 10, CHA: 10 },
+    skills: { Athletics: 0, Stealth: 0, Perception: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
+    feats: [],
+    equipment: { weapon: null, weapons: [], armor: null, shield: null, items: [] },
+    resources: { abilities: [] },
   } as Character;
 
   it('should calculate level 1 -> 2 progression', () => {
@@ -80,14 +85,20 @@ describe('calculateLevelUp', () => {
 describe('applyLevelUp', () => {
   it('should return new character with updated stats', () => {
     const original: Character = {
-      id: 'test',
       name: 'Test',
+      avatarPath: 'avatar.png',
       class: 'Fighter',
       level: 1,
       maxHp: 14,
       hp: 14,
+      ac: 15,
       bab: 1,
       saves: { fortitude: 2, reflex: 0, will: 0 },
+      attributes: { STR: 14, DEX: 10, CON: 14, INT: 10, WIS: 10, CHA: 10 },
+      skills: { Athletics: 0, Stealth: 0, Perception: 0, Arcana: 0, Medicine: 0, Intimidate: 0 },
+      feats: [],
+      equipment: { weapon: null, weapons: [], armor: null, shield: null, items: [] },
+      resources: { abilities: [] },
     } as Character;
 
     const levelUpResult = {
