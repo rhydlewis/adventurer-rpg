@@ -46,9 +46,9 @@ export const useRestStore = create<RestStore>((set, get) => ({
     if (!character) return;
 
     // Apply recovery
-    characterStore.updateCharacter({
+    characterStore.setCharacter({
+      ...character,
       hp: recovery.newHp,
-      mana: recovery.newMana,
     });
   },
 

@@ -270,7 +270,7 @@ export function createDefaultTestCharacter(): Character {
 }
 
 /**
- * Create Eldric Starweave - Level 1 Wizard for spell testing
+ * Create Eldric Starweave - Level 3 Wizard for spell testing
  */
 export function createWizardTestCharacter(): Character {
   // High INT and DEX for wizard
@@ -294,7 +294,7 @@ export function createWizardTestCharacter(): Character {
   };
 
   // Create base wizard character
-  return createCharacter({
+  const baseCharacter = createCharacter({
     name: 'Eldric Starweave',
     avatarPath: '/portraits/wizard-test.png',
     class: 'Wizard',
@@ -302,15 +302,31 @@ export function createWizardTestCharacter(): Character {
     skillRanks,
     selectedFeat: 'Improved Initiative',
   });
+
+  // Boost to level 3 and add wizard feats for testing
+  return {
+    ...baseCharacter,
+    level: 3,
+    maxHp: 18, // Wizard d6 HD: 6 + (2 × 4) + (3 × CON mod +1) = 6 + 8 + 3 = 17, round up to 18
+    hp: 18,
+    bab: 1, // Wizard has slow BAB progression (0.5 per level)
+    feats: [
+      FEATS['improved_initiative'], // Starting feat
+      FEATS['arcane_strike'], // Passive: +1 damage, weapons count as magic
+      FEATS['empower_spell'], // Ability: +50% spell damage, consumes spell slot
+      FEATS['disruptive_spell'], // Ability: applies -4 attack penalty, consumes spell slot (requires BAB 3, but we're allowing it for testing)
+    ],
+  };
 }
 
 /**
- * Create Brother Bosnod - Level 1 Cleric for spell testing
+ * Create Brother Bosnod - Level 4 Cleric for spell and feat testing
+ * Level 4 gives BAB 3, which unlocks Channel Smite and Defensive Channel
  */
 export function createClericTestCharacter(): Character {
-  // High WIS and CON for cleric
+  // High WIS and CON for cleric, boosted STR for Power Attack
   const attributes: Attributes = {
-    STR: 10,
+    STR: 14, // Boosted to 14 to meet Power Attack prerequisite (STR 13)
     DEX: 10,
     CON: 14,
     INT: 10,
@@ -329,7 +345,7 @@ export function createClericTestCharacter(): Character {
   };
 
   // Create base cleric character
-  return createCharacter({
+  const baseCharacter = createCharacter({
     name: 'Brother Bosnod',
     avatarPath: '/portraits/cleric-test.png',
     class: 'Cleric',
@@ -337,4 +353,20 @@ export function createClericTestCharacter(): Character {
     skillRanks,
     selectedFeat: 'Toughness',
   });
+
+  // Boost to level 4 to get BAB 3 (required for Channel Smite and Defensive Channel)
+  return {
+    ...baseCharacter,
+    level: 4,
+    maxHp: 32, // Cleric d8 HD: 8 + (3 × 5) + (4 × CON mod +2) = 8 + 15 + 8 = 31, round up to 32
+    hp: 32,
+    bab: 3, // Cleric has medium BAB progression (0.75 per level), level 4 = BAB 3
+    feats: [
+      FEATS['toughness'], // Starting feat: +3 HP per level
+      FEATS['power_attack'], // Attack variant: -2 ATK, +4 DMG (requires STR 13)
+      FEATS['guided_hand'], // Attack variant: Use WIS for attack rolls
+      FEATS['channel_smite'], // Attack variant: +2d6 holy damage, consumes Channel Energy (requires BAB 3)
+      FEATS['defensive_channel'], // Ability: +4 AC, consumes Channel Energy (requires BAB 3)
+    ],
+  };
 }

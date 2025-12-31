@@ -40,7 +40,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'wizard_character',
-                text: '🔮 Eldric Starweave - Level 1 Wizard',
+                text: '🔮 Eldric Starweave - Level 3 Wizard',
                 category: 'special',
                 outcome: {
                     type: 'goto',
@@ -49,7 +49,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'cleric_character',
-                text: '✨ Brother Bosnod - Level 1 Cleric',
+                text: '✨ Brother Bosnod - Level 4 Cleric',
                 category: 'special',
                 outcome: {
                     type: 'goto',
@@ -78,7 +78,7 @@ const testNodes: StoryNode[] = [
     {
         id: 'create_wizard_character',
         title: 'Eldric Starweave - Wizard',
-        description: 'You are now **Eldric Starweave**, a brilliant elven wizard!\n\n**Level 1 Wizard**\n- High INT (16) and DEX (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Ray of Frost, Acid Splash\n- Level 1 Spells: Magic Missile, Shield\n\nPerfect for testing wizard spellcasting!',
+        description: 'You are now **Eldric Starweave**, a brilliant elven wizard!\n\n**Level 3 Wizard**\n- High INT (16) and DEX (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Ray of Frost, Acid Splash\n- Level 1 Spells: Magic Missile, Shield\n\nPerfect for testing wizard spellcasting!',
         flavor: { tone: 'triumphant', icon: 'magic' },
         onEnter: [
             { type: 'createWizard' }
@@ -95,7 +95,7 @@ const testNodes: StoryNode[] = [
     {
         id: 'create_cleric_character',
         title: 'Brother Bosnod - Cleric',
-        description: 'You are now **Brother Bosnod**, a devout dwarf cleric of the light!\n\n**Level 1 Cleric**\n- High WIS (16) and CON (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Sacred Flame, Light\n- Level 1 Spells: Cure Wounds, Aid, Bless Weapon\n\nPerfect for testing cleric spellcasting and healing!',
+        description: 'You are now **Brother Bosnod**, a devout dwarf cleric of the light!\n\n**Level 4 Cleric**\n- High WIS (16) and CON (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Sacred Flame, Light\n- Level 1 Spells: Cure Wounds, Aid, Bless Weapon\n\nPerfect for testing cleric spellcasting and healing!',
         flavor: { tone: 'triumphant', icon: 'magic' },
         onEnter: [
             { type: 'createCleric' }

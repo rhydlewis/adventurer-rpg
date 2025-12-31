@@ -2,8 +2,8 @@ export type RestType = 'short' | 'long' | 'safe_haven';
 
 export interface RestRecovery {
   hpPercent: number;        // 0-100, percentage of max HP to restore
-  manaPercent: number;      // 0-100, percentage of max mana to restore
-  restoreLimitedAbilities: boolean;  // Restore daily/encounter abilities
+  manaPercent: number;      // 0-100, percentage of max mana to restore (TODO: not yet implemented)
+  restoreLimitedAbilities: boolean;  // Restore daily/encounter abilities (TODO: not yet implemented)
   guaranteed: boolean;      // If false, random encounter possible
 }
 

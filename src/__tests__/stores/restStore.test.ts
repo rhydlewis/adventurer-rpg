@@ -20,14 +20,11 @@ vi.mock('../../stores/narrativeStore', () => ({
 }));
 
 describe('RestStore', () => {
-  const mockCharacter: Partial<Character> = {
-    id: 'test',
+  const mockCharacter = {
     name: 'Test',
     hp: 10,
     maxHp: 30,
-    mana: 4,
-    maxMana: 12,
-  };
+  } as Character;
 
   beforeEach(() => {
     // Reset store
@@ -35,8 +32,8 @@ describe('RestStore', () => {
 
     // Mock character store
     vi.mocked(useCharacterStore.getState).mockReturnValue({
-      character: mockCharacter as Character,
-      updateCharacter: vi.fn(),
+      character: mockCharacter,
+      setCharacter: vi.fn(),
     } as any);
   });
 
@@ -70,20 +67,19 @@ describe('RestStore', () => {
     expect(state.canRestAtLocation('any-node')).toBe(true);
   });
 
-  it('should update character HP and mana on completeRest', () => {
+  it('should update character HP on completeRest', () => {
     const recovery = {
       hpRestored: 15,
-      manaRestored: 6,
       newHp: 25,
-      newMana: 10,
       abilitiesRestored: false,
     };
 
     useRestStore.getState().completeRest(recovery);
 
-    expect(useCharacterStore.getState().updateCharacter).toHaveBeenCalledWith({
-      hp: 25,
-      mana: 10,
-    });
+    expect(useCharacterStore.getState().setCharacter).toHaveBeenCalledWith(
+      expect.objectContaining({
+        hp: 25,
+      })
+    );
   });
 });
