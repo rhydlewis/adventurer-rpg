@@ -1,4 +1,5 @@
 import type { LogEntry } from '../../types';
+import ReactMarkdown from 'react-markdown';
 
 interface NarrativeLogProps {
   /**
@@ -45,7 +46,9 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
                   {entry.speaker}:
                 </div>
               )}
-              <div>{entry.text}</div>
+              <div className="prose prose-invert prose-sm max-w-none">
+                <ReactMarkdown>{entry.text}</ReactMarkdown>
+              </div>
             </div>
           )}
 
@@ -75,8 +78,8 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
           )}
 
           {entry.type === 'effect' && (
-            <div className="text-fg-muted font-inter text-sm italic pl-4 border-l-2 border-border-default">
-              {entry.message}
+            <div className="text-fg-muted font-inter text-sm italic pl-4 border-l-2 border-border-default prose prose-invert prose-sm max-w-none">
+              <ReactMarkdown>{entry.message}</ReactMarkdown>
             </div>
           )}
 
@@ -85,8 +88,8 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
               <div className="text-hint font-semibold text-sm mb-1 font-inter">
                 Companion Hint:
               </div>
-              <div className="text-fg-secondary text-sm font-inter">
-                {entry.hint}
+              <div className="text-fg-secondary text-sm font-inter prose prose-invert prose-sm max-w-none">
+                <ReactMarkdown>{entry.hint}</ReactMarkdown>
               </div>
             </div>
           )}
