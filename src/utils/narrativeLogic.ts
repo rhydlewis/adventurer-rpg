@@ -357,6 +357,14 @@ export function processNodeEffects(
         });
         break;
 
+      case 'restoreSpellSlots':
+        // Will be handled by character store
+        logEntries.push({
+          type: 'effect',
+          message: 'All spell slots restored!',
+        });
+        break;
+
       case 'showCompanionHint':
         logEntries.push({
           type: 'companion',

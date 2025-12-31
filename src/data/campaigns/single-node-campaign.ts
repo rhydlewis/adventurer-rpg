@@ -1,4 +1,8 @@
 import type {Campaign, Act, StoryNode} from '../../types';
+import type { CampEventTable } from '../../types/campEvents';
+import type { SafeHaven, SanctuaryRoom } from '../../types/safeHaven';
+import { useSafeHavenStore } from '../../stores/safeHavenStore';
+import { useCampEventStore } from '../../stores/campEventStore';
 
 /**
  * Single Node Campaign - Comprehensive Testing Suite
@@ -6,6 +10,165 @@ import type {Campaign, Act, StoryNode} from '../../types';
  * A test campaign with a central hub that branches to different test scenarios.
  * Tests all supported encounter types, node flavors, choice outcomes, and mechanics.
  */
+
+// =============================================================================
+// PHASE 3: REST & RESOURCE MANAGEMENT DATA
+// =============================================================================
+
+/**
+ * Camp Event Tables - Random encounters during long rests
+ */
+const campEventTables: CampEventTable[] = [
+    {
+        locationId: 'wilderness',
+        rollChance: 60, // 60% chance of event
+        events: [
+            {
+                id: 'wolf_howl',
+                type: 'story',
+                weight: 30,
+                repeatable: true,
+                title: 'Distant Howls',
+                description: 'As you settle in for the night, you hear wolves howling in the distance. The sound is unsettling, but they don\'t seem to be approaching.',
+                choices: [
+                    {
+                        id: 'stay_alert',
+                        text: 'Stay alert and keep watch',
+                        requirements: [],
+                        outcome: { type: 'continue' }
+                    },
+                    {
+                        id: 'ignore',
+                        text: 'Ignore it and rest',
+                        requirements: [],
+                        outcome: { type: 'continue' }
+                    }
+                ]
+            },
+            {
+                id: 'bandit_ambush',
+                type: 'ambush',
+                weight: 20,
+                repeatable: true,
+                title: 'Bandit Ambush!',
+                description: 'You wake to the sound of footsteps! Bandits have found your camp!',
+                choices: [
+                    {
+                        id: 'fight',
+                        text: 'Fight them off!',
+                        requirements: [],
+                        outcome: {
+                            type: 'combat',
+                            enemyId: 'bandit',
+                            onVictoryReturn: 'rest'
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'mysterious_trader',
+                type: 'discovery',
+                weight: 25,
+                repeatable: false,
+                title: 'Mysterious Trader',
+                description: 'A hooded figure approaches your camp. "Care to trade?" they ask, revealing a collection of potions.',
+                choices: [
+                    {
+                        id: 'trade',
+                        text: 'See what they have',
+                        requirements: [],
+                        outcome: {
+                            type: 'interrupt',
+                            effect: [
+                                { type: 'giveItem', itemId: 'healing-potion' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'decline',
+                        text: 'Politely decline',
+                        requirements: [],
+                        outcome: { type: 'continue' }
+                    }
+                ]
+            },
+            {
+                id: 'strange_lights',
+                type: 'story',
+                weight: 25,
+                repeatable: true,
+                title: 'Strange Lights',
+                description: 'Eerie lights dance in the distance. They seem almost magical...',
+                choices: [
+                    {
+                        id: 'investigate',
+                        text: 'Investigate the lights',
+                        requirements: [],
+                        outcome: {
+                            type: 'interrupt',
+                            effect: [
+                                { type: 'giveGold', amount: 25 }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'ignore',
+                        text: 'Ignore them',
+                        requirements: [],
+                        outcome: { type: 'continue' }
+                    }
+                ]
+            }
+        ]
+    }
+];
+
+/**
+ * Safe Haven Definitions - Towns and sanctuary rooms
+ */
+const safeHavens: (SafeHaven | SanctuaryRoom)[] = [
+    {
+        id: 'test-hub-town',
+        type: 'town',
+        name: 'Testing Hub Town',
+        locationId: 'test_hub',
+        merchantId: 'test-merchant',
+        merchantAvailable: true,
+        questGiverPresent: false,
+        levelUpAllowed: true,
+        description: 'The central testing hub, now designated as a safe town.'
+    } as SafeHaven,
+    {
+        id: 'sanctuary-room',
+        type: 'sanctuary',
+        name: 'Blessed Sanctuary',
+        locationId: 'test_sanctuary',
+        merchantAvailable: false,
+        questGiverPresent: false,
+        levelUpAllowed: false,
+        oneTimeUse: true,
+        description: 'A one-time safe haven room for testing.'
+    } as SanctuaryRoom
+];
+
+// TODO: Merchant inventories will be used when we integrate merchant data persistence
+// For now, merchant data is defined directly in story nodes
+
+/**
+ * Initialize Phase 3 data
+ * Call this when the campaign loads to register safe havens and camp events
+ */
+export function initializePhase3Data() {
+    // Register all safe havens
+    safeHavens.forEach(haven => {
+        useSafeHavenStore.getState().registerSafeHaven(haven);
+    });
+
+    // Register all camp event tables
+    campEventTables.forEach(table => {
+        useCampEventStore.getState().loadEventTable(table);
+    });
+}
 
 const testNodes: StoryNode[] = [
     // =============================================================================
@@ -182,6 +345,12 @@ const testNodes: StoryNode[] = [
                 text: 'Test Puzzles',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'puzzle_hub' }
+            },
+            {
+                id: 'test_rest_system',
+                text: 'Test Rest System',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
             },
             {
                 id: 'test_death_system',
@@ -1268,6 +1437,236 @@ const testNodes: StoryNode[] = [
                 text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // REST SYSTEM TESTING
+    // =============================================================================
+    {
+        id: 'rest_test_hub',
+        title: 'Rest System Tests',
+        description: 'Test the rest system with different scenarios: safe havens, wilderness camps, and resource recovery.',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'map' },
+        companionHint: 'Test short rests (50% HP), long rests (100% HP + abilities), safe havens (guaranteed), and wilderness camps (possible events).',
+        choices: [
+            {
+                id: 'test_safe_rest',
+                text: '🏠 Rest in Safe Haven (test_hub)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'safe_haven_rest' }
+            },
+            {
+                id: 'test_wilderness_rest',
+                text: '🌲 Rest in Wilderness (camp events possible)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'wilderness_rest' }
+            },
+            {
+                id: 'test_sanctuary',
+                text: '✨ Rest in Sanctuary (one-time use)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'sanctuary_rest' }
+            },
+            {
+                id: 'take_damage_first',
+                text: '💥 Take Damage First (to test recovery)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'damage_before_rest' }
+            },
+            {
+                id: 'back_to_hub',
+                text: 'Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'damage_before_rest',
+        title: 'Preparation',
+        description: 'You take some damage to test the recovery mechanics.',
+        flavor: { tone: 'tense', icon: 'warning' },
+        onEnter: [
+            { type: 'damage', amount: 15 }
+        ],
+        choices: [
+            {
+                id: 'now_rest',
+                text: 'Now try resting',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'safe_haven_rest',
+        title: 'Testing Hub - Safe Haven',
+        description: 'You are in the Testing Hub, a safe town. Here you can rest with guaranteed safety, visit the merchant, or continue your adventure.',
+        locationId: 'test_hub',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'location' },
+        choices: [
+            {
+                id: 'short_rest',
+                text: '☕ Short Rest (50% HP recovery, instant)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'short_rest_recovery' }
+            },
+            {
+                id: 'long_rest',
+                text: '🌙 Long Rest (100% HP + abilities, safe)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'long_rest_recovery' }
+            },
+            {
+                id: 'visit_merchant',
+                text: '🏪 Visit Merchant',
+                category: 'merchant',
+                outcome: {
+                    type: 'merchant',
+                    shopInventory: ['healing-potion', 'antidote', 'sword-plus-1'],
+                    buyPrices: {
+                        'healing-potion': 50,
+                        'antidote': 25,
+                        'sword-plus-1': 300
+                    }
+                }
+            },
+            {
+                id: 'back',
+                text: 'Back to Rest Tests',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'wilderness_rest',
+        title: 'Wilderness Camp',
+        description: 'You make camp in the wilderness. The area seems relatively safe, but you never know what might happen during the night...',
+        locationId: 'wilderness',
+        type: 'explore',
+        flavor: { tone: 'tense', icon: 'location' },
+        companionHint: 'Long rests in the wilderness have a chance of triggering camp events!',
+        choices: [
+            {
+                id: 'short_rest',
+                text: '☕ Short Rest (50% HP, no events)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'short_rest_recovery' }
+            },
+            {
+                id: 'long_rest',
+                text: '🌙 Long Rest (100% HP, possible camp events)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'wilderness_long_rest' }
+            },
+            {
+                id: 'back',
+                text: 'Back to Rest Tests',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'sanctuary_rest',
+        title: 'Blessed Sanctuary',
+        description: 'You discover a small sanctuary room, its walls covered in holy symbols. This is a one-time safe haven - once you rest here, its power will be spent.',
+        locationId: 'test_sanctuary',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'magic' },
+        companionHint: 'Sanctuary rooms provide guaranteed safety but can only be used once!',
+        choices: [
+            {
+                id: 'use_sanctuary',
+                text: '✨ Rest in Sanctuary (one-time use)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'sanctuary_rest_recovery' }
+            },
+            {
+                id: 'save_for_later',
+                text: 'Save it for later',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'short_rest_recovery',
+        title: 'Short Rest Complete',
+        description: 'You take a brief rest, tending to your wounds and catching your breath. You recover 50% of your HP.',
+        flavor: { tone: 'calm', icon: 'reward' },
+        onEnter: [
+            // TODO: Implement short rest effect
+            { type: 'heal', amount: 10 }
+        ],
+        choices: [
+            {
+                id: 'continue',
+                text: 'Continue',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'long_rest_recovery',
+        title: 'Long Rest Complete',
+        description: 'You sleep through the night peacefully. You wake refreshed, with all your HP and abilities restored!',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'heal', amount: 'full' },
+            { type: 'restoreSpellSlots' }
+        ],
+        choices: [
+            {
+                id: 'continue',
+                text: 'Continue',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'wilderness_long_rest',
+        title: 'Wilderness Long Rest',
+        description: 'You settle in for a long rest in the wilderness. Roll for camp events...',
+        locationId: 'wilderness',
+        flavor: { tone: 'tense', icon: 'location' },
+        onEnter: [
+            { type: 'heal', amount: 'full' },
+            { type: 'restoreSpellSlots' }
+            // TODO: Trigger camp event check
+        ],
+        choices: [
+            {
+                id: 'continue',
+                text: 'Continue',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
+            }
+        ]
+    },
+    {
+        id: 'sanctuary_rest_recovery',
+        title: 'Sanctuary Rest Complete',
+        description: 'Divine energy washes over you as you rest in the sanctuary. You are fully healed and restored. The holy symbols on the walls fade - this sanctuary has served its purpose.',
+        flavor: { tone: 'triumphant', icon: 'magic' },
+        onEnter: [
+            { type: 'heal', amount: 'full' },
+            { type: 'restoreSpellSlots' }
+            // TODO: Mark sanctuary as used
+        ],
+        choices: [
+            {
+                id: 'continue',
+                text: 'Continue',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'rest_test_hub' }
             }
         ]
     },

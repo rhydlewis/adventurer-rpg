@@ -188,6 +188,7 @@ export type NodeEffect =
   | { type: 'startCombat'; enemyId: string; onVictoryNodeId: string }
   | { type: 'heal'; amount: number | 'full' }
   | { type: 'damage'; amount: number }
+  | { type: 'restoreSpellSlots' }  // Restore all spell slots to maximum
   | { type: 'showCompanionHint'; hint: string }
   | { type: 'levelUp'; newLevel: number; featChoices: string[] }
   | { type: 'createDefaultCharacter' }

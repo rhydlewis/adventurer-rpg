@@ -347,6 +347,17 @@ export const useCharacterStore = create<CharacterStore>((set, get) => ({
           updatedCharacter.hp = Math.max(0, updatedCharacter.hp - effect.amount);
           break;
 
+        case 'restoreSpellSlots':
+          // Restore all spell slots to maximum
+          if (updatedCharacter.resources?.spellSlots) {
+            const slots = updatedCharacter.resources.spellSlots;
+            updatedCharacter.resources.spellSlots = {
+              level0: { max: slots.level0.max, current: slots.level0.max },
+              level1: { max: slots.level1.max, current: slots.level1.max },
+            };
+          }
+          break;
+
         case 'createDefaultCharacter':
         case 'createWizard':
         case 'createCleric':

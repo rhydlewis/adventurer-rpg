@@ -26,7 +26,7 @@ export function CampEventModal({ onClose }: CampEventModalProps) {
   const eventTypeConfig = {
     encounter: { color: 'text-warning', icon: 'Swords' as const, bgColor: 'bg-warning/10' },
     story: { color: 'text-fg-accent', icon: 'BookOpen' as const, bgColor: 'bg-fg-accent/10' },
-    ambush: { color: 'text-enemy', icon: 'AlertTriangle' as const, bgColor: 'bg-enemy/10' },
+    ambush: { color: 'text-enemy', icon: 'TriangleAlert' as const, bgColor: 'bg-enemy/10' },
     discovery: { color: 'text-success', icon: 'Sparkles' as const, bgColor: 'bg-success/10' },
   };
 
