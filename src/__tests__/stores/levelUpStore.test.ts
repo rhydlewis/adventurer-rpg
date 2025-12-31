@@ -33,7 +33,7 @@ describe('LevelUpStore', () => {
     vi.mocked(useCharacterStore.getState).mockReturnValue({
       character: mockFighter,
       setCharacter: vi.fn(),
-    } as ReturnType<typeof useCharacterStore.getState>);
+    } as Partial<ReturnType<typeof useCharacterStore.getState>> as ReturnType<typeof useCharacterStore.getState>);
   });
 
   it('should calculate level-up on triggerLevelUp', () => {
