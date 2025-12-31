@@ -80,7 +80,7 @@ Transform from a simple combat simulator into a narrative-driven single-player R
 
 ---
 
-### 2. IN PROGRESS Narrative System
+### 2. DONE Narrative System
 
 #### Core Concept
 Story node-based narrative with **linear main story and optional side paths**, limited branching to avoid exponential complexity
@@ -108,93 +108,23 @@ Story Nodes
 
 #### Components
 ```
-[ ] Story Node System
+[x] Story Node System
     - Node definitions (text, choices, outcomes)
     - Choice requirements and validation
     - Branching logic
 
-[ ] Campaign Structure
+[x] Campaign Structure
     - Multiple campaigns (starter, advanced, custom)
     - Chapter/act organization
     - Progress tracking
 
-[ ] Dialogue System
+[x] Dialogue System
     - NPC conversations
     - Character reactions
     - Flavor text and atmosphere
-
-[ ] Quest System
-    - Quest objectives and tracking
-    - Rewards and completion
-    - Side quests vs main story
-
-[ ] Lore & Journal
-    - Story recap/summary
-    - Discovered lore entries
-    - Character notes
 ```
 
----
-
-### 3. World & Exploration System
-
-#### Core Concept
-**5 interconnected locations** with **gated progression** (unlocked as story advances)
-
-**Travel:** Instant travel (no survival mechanics)
-**Content Mix:** Hand-crafted story locations + random encounters within them
-
-#### First Campaign Locations
-```
-1. Oakhaven (Village) - Safe zone, tavern, magistrate
-2. Blackwood Forest - Wilderness, corrupted nature enemies
-3. Tower Upper Levels - 2 floors (Foyer, Alchemist's Lab)
-4. Underground Catacombs - Maze, wraiths, ghouls, hidden treasures
-5. Void Sanctum - Final boss arena
-```
-
-#### Structure
-```
-World Map
-├── Locations (5 per campaign)
-│   ├── Villages/Towns (safe zones)
-│   ├── Wilderness Areas (random encounters)
-│   ├── Dungeons (structured challenges)
-│   └── Points of Interest (events, treasures)
-├── Travel System
-│   ├── Instant travel between unlocked locations
-│   └── Gated progression (story unlocks new areas)
-└── Fog of War
-    └── Reveal as explored
-```
-
-#### Components
-```
-[ ] Location System
-    - Location definitions (name, description, image)
-    - Connected locations (graph structure)
-    - Location states (explored, cleared, etc.)
-
-[ ] Random Encounters
-    - Encounter tables per location
-    - Scaling difficulty
-    - Creature variety
-
-[ ] Points of Interest
-    - Landmarks
-    - Hidden treasures
-    - Optional challenges
-
-[ ] Map UI
-    - Visual world map
-    - Click-to-travel interface
-    - Show available paths
-    - Mark quest locations
-```
-
----
-
-### 4. Rest & Resource Management
+### 3. Rest & Resource Management
 
 #### Core Concept
 Downtime between challenges for recovery, preparation, and story moments
@@ -251,7 +181,7 @@ Town/Safe Haven
 
 ---
 
-### 5. Character Progression
+### 4. Character Progression
 
 #### Core Concept
 Meaningful advancement through levels, abilities, and choices
@@ -301,6 +231,75 @@ Spells & Abilities
 └── Class features
 ```
 
+### 5. World & Exploration System
+
+#### Core Concept
+**5 interconnected locations** with **gated progression** (unlocked as story advances)
+
+**Travel:** Instant travel (no survival mechanics)
+**Content Mix:** Hand-crafted story locations + random encounters within them
+
+#### First Campaign Locations
+```
+1. Oakhaven (Village) - Safe zone, tavern, magistrate
+2. Blackwood Forest - Wilderness, corrupted nature enemies
+3. Tower Upper Levels - 2 floors (Foyer, Alchemist's Lab)
+4. Underground Catacombs - Maze, wraiths, ghouls, hidden treasures
+5. Void Sanctum - Final boss arena
+```
+
+#### Structure
+```
+World Map
+├── Locations (5 per campaign)
+│   ├── Villages/Towns (safe zones)
+│   ├── Wilderness Areas (random encounters)
+│   ├── Dungeons (structured challenges)
+│   └── Points of Interest (events, treasures)
+├── Travel System
+│   ├── Instant travel between unlocked locations
+│   └── Gated progression (story unlocks new areas)
+└── Fog of War
+    └── Reveal as explored
+```
+
+#### Components
+```
+[ ] Location System
+    - Location definitions (name, description, image)
+    - Connected locations (graph structure)
+    - Location states (explored, cleared, etc.)
+
+[ ] Random Encounters
+    - Encounter tables per location
+    - Scaling difficulty
+    - Creature variety
+
+[ ] Points of Interest
+    - Landmarks
+    - Hidden treasures
+    - Optional challenges
+
+[ ] Map UI
+    - Visual world map
+    - Click-to-travel interface
+    - Show available paths
+    - Mark quest locations
+```
+
+## FUTURE DEVELOPMENT
+
+```
+[ ] Quest System
+- Quest objectives and tracking
+- Rewards and completion
+- Side quests vs main story
+
+[ ] Lore & Journal
+- Story recap/summary
+- Discovered lore entries
+- Character notes
+```
 
 ---
 
@@ -317,17 +316,17 @@ Spells & Abilities
 **Goal:** Replace Fighting Fantasy with streamlined d20 combat
 
 ```
-[ ] New type definitions (attributes, character, creature)
-[ ] Dice utilities (d4, d6, d8, d10, d12, d20)
-[ ] Attribute modifier calculations
-[ ] d20 attack roll vs AC system
-[ ] Variable damage rolls
-[ ] Saving throws (Fort/Reflex/Will)
-[ ] Critical hits
-[ ] Basic condition system (4 conditions)
-[ ] Class presets (Fighter, Rogue, Wizard, Cleric) with hybrid abilities
-[ ] Solo balance adjustments (HP buff, one-on-one combat)
-[ ] Update all UI to show new stats
+[x] New type definitions (attributes, character, creature)
+[x] Dice utilities (d4, d6, d8, d10, d12, d20)
+[x] Attribute modifier calculations
+[x] d20 attack roll vs AC system
+[x] Variable damage rolls
+[x] Saving throws (Fort/Reflex/Will)
+[x] Critical hits
+[x] Basic condition system (4 conditions)
+[x] Class presets (Fighter, Rogue, Wizard, Cleric) with hybrid abilities
+[x] Solo balance adjustments (HP buff, one-on-one combat)
+[x] Update all UI to show new stats
 ```
 
 **Deliverable:** Game functions with d20 combat (no story yet)
@@ -336,34 +335,19 @@ Spells & Abilities
 **Goal:** Add basic story structure and first campaign
 
 ```
-[ ] Story node system (linear with optional paths)
-[ ] Campaign data structure
-[ ] "The Spire of the Lich King" campaign implementation
-[ ] Story UI components
-[ ] Choice selection interface
-[ ] Companion system ("The Elder")
-[ ] Victory/defeat narrative scenes
-[ ] Permadeath handling
+[x] Story node system (linear with optional paths)
+[x] Campaign data structure
+[x] "The Spire of the Lich King" campaign implementation
+[x] Story UI components
+[x] Choice selection interface
+[x] Companion system ("The Elder")
+[x] Victory/defeat narrative scenes
+[x] Permadeath handling
 ```
 
 **Deliverable:** Playable first campaign (1-2 hours) with combat and story
 
-### Phase 3: Exploration & World Map
-**Goal:** Add 5-location world with gated progression
-
-```
-[ ] Location system (5 locations)
-[ ] World map UI
-[ ] Gated progression (story unlocks)
-[ ] Instant travel mechanics
-[ ] Random encounters (mixed with hand-crafted)
-[ ] Points of interest
-[ ] Location-specific events
-```
-
-**Deliverable:** Explorable world with 5 locations
-
-### Phase 4: Rest & Resource Management
+### Phase 3: Rest & Resource Management
 **Goal:** Add downtime gameplay loop
 
 ```
@@ -377,7 +361,7 @@ Spells & Abilities
 
 **Deliverable:** Complete gameplay loop (explore → combat → rest → repeat)
 
-### Phase 5: Character Progression
+### Phase 4: Character Progression
 **Goal:** Levels 1-5 advancement system
 
 ```
@@ -391,6 +375,21 @@ Spells & Abilities
 ```
 
 **Deliverable:** Full character advancement system (levels 1-5)
+
+### Phase 5: Exploration & World Map
+**Goal:** Add 5-location world with gated progression
+
+```
+[ ] Location system (5 locations)
+[ ] World map UI
+[ ] Gated progression (story unlocks)
+[ ] Instant travel mechanics
+[ ] Random encounters (mixed with hand-crafted)
+[ ] Points of interest
+[ ] Location-specific events
+```
+
+**Deliverable:** Explorable world with 5 locations
 
 ### Phase 6: Mobile & Polish
 **Goal:** Capacitor deployment and polish
