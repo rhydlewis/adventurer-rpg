@@ -21,7 +21,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'create_character',
-                text: '⚔️ Create Character (Full Process)',
+                text: 'Create Character (Full Process)',
                 category: 'special',
                 outcome: {
                     type: 'characterCreation',
@@ -31,7 +31,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'quick_character',
-                text: '⚡ Use Default Test Character (Instant)',
+                text: 'Use Default Test Character (Instant)',
                 category: 'special',
                 outcome: {
                     type: 'goto',
@@ -40,7 +40,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'wizard_character',
-                text: '🔮 Eldric Starweave - Level 3 Wizard',
+                text: 'Eldric Starweave - Level 3 Wizard',
                 category: 'special',
                 outcome: {
                     type: 'goto',
@@ -49,7 +49,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'cleric_character',
-                text: '✨ Brother Bosnod - Level 4 Cleric',
+                text: 'Brother Bosnod - Level 4 Cleric',
                 category: 'special',
                 outcome: {
                     type: 'goto',
@@ -69,7 +69,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'begin_testing',
-                text: '→ Begin Testing',
+                text: 'Begin Testing',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -86,7 +86,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'begin_testing',
-                text: '→ Begin Testing',
+                text: 'Begin Testing',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -103,7 +103,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'begin_testing',
-                text: '→ Begin Testing',
+                text: 'Begin Testing',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -123,49 +123,49 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'test_skill_checks',
-                text: '🎲 Test Skill Checks',
+                text: 'Test Skill Checks',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'skill_check_hub' }
             },
             {
                 id: 'test_combat',
-                text: '⚔️ Test Combat',
+                text: 'Test Combat',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'combat_hub' }
             },
             {
                 id: 'test_nested_outcomes',
-                text: '🔄 Test Nested Outcomes',
+                text: 'Test Nested Outcomes',
                 category: 'skillCheck',
                 outcome: { type: 'goto', nodeId: 'nested_outcomes_hub' }
             },
             {
                 id: 'test_node_effects',
-                text: '✨ Test Node Effects',
+                text: 'Test Node Effects',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             },
             {
                 id: 'test_exploration',
-                text: '🗺️ Test Exploration Tables',
+                text: 'Test Exploration Tables',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'exploration_hub' }
             },
             {
                 id: 'test_dialogue',
-                text: '💬 Test Dialogue & Speakers',
+                text: 'Test Dialogue & Speakers',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             },
             {
                 id: 'test_requirements',
-                text: '🔒 Test Requirements',
+                text: 'Test Requirements',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
             },
             {
                 id: 'test_merchant',
-                text: '🏪 Test Merchant',
+                text: 'Test Merchant',
                 category: 'merchant',
                 outcome: {
                     type: 'merchant',
@@ -179,19 +179,19 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'test_puzzles',
-                text: '🧩 Test Puzzles',
+                text: 'Test Puzzles',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'puzzle_hub' }
             },
             {
                 id: 'test_death_system',
-                text: '💀 Test Death System',
+                text: 'Test Death System',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'death_test_node' }
             },
             {
                 id: 'exit_tests',
-                text: '🚪 Exit',
+                text: 'Exit',
                 category: 'movement',
                 outcome: { type: 'exit' }
             }
@@ -249,7 +249,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -266,13 +266,13 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back_to_skill_hub',
-                text: '← Try another check',
+                text: 'Try another check',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'skill_check_hub' }
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -286,13 +286,13 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back_to_skill_hub',
-                text: '← Try another check',
+                text: 'Try another check',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'skill_check_hub' }
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -311,43 +311,43 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'fight_random',
-                text: '🎲 Fight Random Enemy',
+                text: 'Fight Random Enemy',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'random_enemy_combat' }
             },
             {
                 id: 'fight_bandit',
-                text: '⚔️ Fight a Bandit',
+                text: 'Fight a Bandit',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
             },
             {
                 id: 'fight_skeleton',
-                text: '💀 Fight a Skeleton',
+                text: 'Fight a Skeleton',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'skeleton_combat' }
             },
             {
                 id: 'fight_wraith',
-                text: '👻 Fight a Wraith',
+                text: 'Fight a Wraith',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'wraith_combat' }
             },
             {
                 id: 'fight_lich',
-                text: '🕷️ Fight a Lich',
+                text: 'Fight a Lich',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'lich_combat' }
             },
             {
                 id: 'fight_spider',
-                text: '🕷️ Fight a Giant Spider',
+                text: 'Fight a Giant Spider',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'giantSpider_combat' }
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -437,7 +437,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -476,7 +476,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -499,7 +499,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -522,7 +522,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -545,7 +545,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -564,43 +564,43 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'test_damage',
-                text: '💔 Test Damage (8 HP)',
+                text: 'Test Damage (-8 HP)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'damage_node' }
             },
             {
                 id: 'test_healing',
-                text: '💚 Test Healing (10 HP)',
+                text: 'Test Healing (+10 HP)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'healing_node' }
             },
             {
                 id: 'test_full_heal',
-                text: '✨ Test Full Heal',
+                text: 'Test Full Heal',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'full_heal_node' }
             },
             {
                 id: 'test_gold',
-                text: '💰 Test Gold (75g)',
+                text: 'Test Gold (+75g)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'gold_node' }
             },
             {
                 id: 'test_items',
-                text: '🎁 Test Items (potion + antidote)',
+                text: 'Test Items (potion + antidote)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'items_node' }
             },
             {
                 id: 'test_flags',
-                text: '🚩 Test Flags',
+                text: 'Test Flags',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'flags_node' }
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -616,7 +616,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             }
         ]
@@ -631,7 +631,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             }
         ]
@@ -646,7 +646,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             }
         ]
@@ -661,7 +661,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             }
         ]
@@ -677,7 +677,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             }
         ]
@@ -692,7 +692,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'node_effects_hub' }
             }
         ]
@@ -720,7 +720,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -752,7 +752,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -793,7 +793,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             }
@@ -811,7 +811,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             }
         ]
@@ -825,7 +825,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             }
         ]
@@ -842,7 +842,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             }
         ]
@@ -856,7 +856,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             }
         ]
@@ -890,7 +890,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'dialogue_hub' }
             }
@@ -952,7 +952,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -966,7 +966,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
             }
         ]
@@ -979,7 +979,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
             }
         ]
@@ -992,7 +992,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
             }
         ]
@@ -1005,7 +1005,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
             }
         ]
@@ -1018,7 +1018,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 outcome: { type: 'goto', nodeId: 'requirements_hub' }
             }
         ]
@@ -1037,7 +1037,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'timing_puzzle',
-                text: '⏱️ Timing Puzzle - Synchronize the Grid',
+                text: 'Timing Puzzle - Synchronize the Grid',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -1053,7 +1053,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'sliding_puzzle',
-                text: '🔄 Sliding Puzzle - Match the Symbols',
+                text: 'Sliding Puzzle - Match the Symbols',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -1068,7 +1068,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'rotation_puzzle',
-                text: '🔁 Rotation Puzzle - Align the Runes',
+                text: 'Rotation Puzzle - Align the Runes',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -1082,7 +1082,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'tumbler_puzzle_easy',
-                text: '🔐 Lock Tumbler - Easy (Independent Dials)',
+                text: 'Lock Tumbler - Easy (Independent Dials)',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -1098,7 +1098,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'tumbler_puzzle_hard',
-                text: '🔐 Lock Tumbler - Hard (Linked Dials)',
+                text: 'Lock Tumbler - Hard (Linked Dials)',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -1114,7 +1114,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'pressure_puzzle',
-                text: '⚡ Pressure Plates - Step in Sequence',
+                text: 'Pressure Plates - Step in Sequence',
                 category: 'special',
                 outcome: {
                     type: 'puzzle',
@@ -1129,13 +1129,13 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'auto_puzzle',
-                text: '⚠️ Auto-Trigger Timing Puzzle (Node Effect)',
+                text: 'Auto-Trigger Timing Puzzle (Node Effect)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'auto_puzzle_node' }
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -1174,13 +1174,13 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back_to_puzzle_hub',
-                text: '← Try another puzzle',
+                text: 'Try another puzzle',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'puzzle_hub' }
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -1194,13 +1194,13 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back_to_puzzle_hub',
-                text: '← Try another puzzle',
+                text: 'Try another puzzle',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'puzzle_hub' }
             },
             {
                 id: 'back_to_main',
-                text: '← Back to Main Hub',
+                text: 'Back to Main Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -1238,7 +1238,7 @@ const testNodes: StoryNode[] = [
             },
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub (safe)',
+                text: 'Back to Hub (safe)',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
@@ -1265,7 +1265,7 @@ const testNodes: StoryNode[] = [
         choices: [
             {
                 id: 'back_to_hub',
-                text: '← Back to Hub',
+                text: 'Back to Hub',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'test_hub' }
             }
