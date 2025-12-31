@@ -15,6 +15,7 @@ vi.mock('../../data/feats', () => ({
     {
       id: 'power_attack',
       name: 'Power Attack',
+      description: 'Trade accuracy for damage',
       category: 'offensive',
       type: 'attack_variant',
       prerequisites: { attributes: { STR: 13 }, classRestrictions: ['Fighter'] },
@@ -23,6 +24,7 @@ vi.mock('../../data/feats', () => ({
     {
       id: 'weapon_focus',
       name: 'Weapon Focus',
+      description: 'Gain +1 attack bonus',
       category: 'offensive',
       type: 'passive',
       prerequisites: {},
