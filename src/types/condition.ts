@@ -26,7 +26,7 @@ export type ConditionType =
   | 'Off-Balance'
   // Level 1 Spell Buffs
   | 'Shield' // +5 AC from Shield spell
-  | 'Aid' // +2 AC from Aid spell
+  | 'Shield of Faith' // +2 AC from Shield of Faith spell
   | 'Bless Weapon'; // +2 damage from Bless Weapon spell
 
 export interface ConditionModifiers {

@@ -474,7 +474,7 @@ export function resolveCombatRound(state: CombatState, playerAction: Action): Co
             'Divine Favor': 'Divine Favor',
             'Resistance': 'Resistance',
             'Shield': 'Shield',
-            'Aid': 'Aid',
+            'Shield of Faith': 'Shield of Faith',
             'Bless Weapon': 'Bless Weapon',
           };
 

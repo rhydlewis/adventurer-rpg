@@ -199,10 +199,10 @@ export const CONDITION_DEFINITIONS: Record<ConditionType, ConditionDefinition> =
     },
   },
 
-  Aid: {
-    type: 'Aid',
+  'Shield of Faith': {
+    type: 'Shield of Faith',
     category: 'buff',
-    description: '+2 AC (divine toughness)',
+    description: '+2 AC (divine protection)',
     modifiers: {
       acBonus: 2,
     },
@@ -248,6 +248,6 @@ export const DEFAULT_DURATIONS: Record<ConditionType, number> = {
 
   // Level 1 Spell Buffs
   Shield: 1,
-  Aid: 3,
+  'Shield of Faith': 3,
   'Bless Weapon': 3,
 };

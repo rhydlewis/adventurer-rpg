@@ -76,7 +76,7 @@ export const WIZARD_LEVEL1_SPELLS: Spell[] = [
  */
 export const CLERIC_LEVEL1_SPELLS: Spell[] = [
   SPELLS.cure_wounds,
-  SPELLS.aid,
+  SPELLS.shield_of_faith,
   SPELLS.bless_weapon,
 ];
 

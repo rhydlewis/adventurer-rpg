@@ -95,7 +95,7 @@ const testNodes: StoryNode[] = [
     {
         id: 'create_cleric_character',
         title: 'Brother Bosnod - Cleric',
-        description: 'You are now **Brother Bosnod**, a devout dwarf cleric of the light!\n\n**Level 4 Cleric**\n- High WIS (16) and CON (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Sacred Flame, Light\n- Level 1 Spells: Cure Wounds, Aid, Bless Weapon\n\nPerfect for testing cleric spellcasting and healing!',
+        description: 'You are now **Brother Bosnod**, a devout dwarf cleric of the light!\n\n**Level 4 Cleric**\n- High WIS (16) and CON (14)\n- Spell Slots: 2 Level 1 slots\n- Cantrips: Sacred Flame, Light\n- Level 1 Spells: Cure Wounds, Shield of Faith, Bless Weapon\n\nPerfect for testing cleric spellcasting and healing!',
         flavor: { tone: 'triumphant', icon: 'magic' },
         onEnter: [
             { type: 'createCleric' }

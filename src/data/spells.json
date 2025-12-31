@@ -162,9 +162,9 @@
     },
     "description": "A creature you touch regains hit points. Heals 1d8+1 HP."
   },
-  "aid": {
-    "id": "aid",
-    "name": "Aid",
+  "shield_of_faith": {
+    "id": "shield_of_faith",
+    "name": "Shield of Faith",
     "level": 1,
     "school": "abjuration",
     "target": "self",
@@ -174,7 +174,7 @@
       "buffAmount": 2,
       "buffDuration": 3
     },
-    "description": "Your spell bolsters your allies with toughness. +2 AC for 3 turns."
+    "description": "A shimmering field of divine energy surrounds you. +2 AC for 3 turns."
   },
   "bless_weapon": {
     "id": "bless_weapon",
