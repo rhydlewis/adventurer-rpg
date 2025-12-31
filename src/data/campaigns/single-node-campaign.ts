@@ -1448,10 +1448,17 @@ const testNodes: StoryNode[] = [
         id: 'rest_test_hub',
         title: 'Rest System Tests',
         description: 'Test the rest system with different scenarios: safe havens, wilderness camps, and resource recovery.',
+        locationId: 'wilderness', // Use wilderness for camp event testing
         type: 'explore',
         flavor: { tone: 'calm', icon: 'map' },
         companionHint: 'Test short rests (50% HP), long rests (100% HP + abilities), safe havens (guaranteed), and wilderness camps (possible events).',
         choices: [
+            {
+                id: 'test_dedicated_rest_screen',
+                text: '🛏️ Open Rest Screen (dedicated UI with camp events)',
+                category: 'special',
+                outcome: { type: 'rest' }
+            },
             {
                 id: 'test_safe_rest',
                 text: '🏠 Rest in Safe Haven (test_hub)',

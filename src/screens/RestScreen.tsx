@@ -5,6 +5,7 @@ import { useSafeHavenStore } from '../stores/safeHavenStore';
 import { useCampEventStore } from '../stores/campEventStore';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { BackButton, Button, Card, Icon } from '../components';
+import { CampEventModal } from '../components/rest/CampEventModal';
 import type { RestType } from '../types/rest';
 import type { RecoveryResult } from '../utils/restLogic';
 
@@ -16,6 +17,9 @@ interface RestScreenProps {
 export function RestScreen({ onClose, onOpenMerchant }: RestScreenProps) {
   const character = useCharacterStore(state => state.character);
   const currentNodeId = useNarrativeStore(state => state.world?.currentNodeId);
+  const currentNode = useNarrativeStore(state => state.getCurrentNode());
+  const currentAct = useNarrativeStore(state => state.getCurrentAct());
+  const onNavigate = useNarrativeStore(state => state.onNavigate);
   const isSafeHaven = useSafeHavenStore(state =>
     currentNodeId ? state.isSafeHaven(currentNodeId) : false
   );
@@ -25,29 +29,47 @@ export function RestScreen({ onClose, onOpenMerchant }: RestScreenProps) {
 
   const [showRecovery, setShowRecovery] = useState(false);
   const [recovery, setRecovery] = useState<RecoveryResult | null>(null);
+  const [showCampEvent, setShowCampEvent] = useState(false);
+  const [pendingRecovery, setPendingRecovery] = useState<RecoveryResult | null>(null);
 
   const handleRest = (restType: RestType) => {
     const result = useRestStore.getState().initiateRest(restType);
     if (!result) return;
 
     // Check for camp events if long rest and not safe haven
-    if (restType === 'long' && !isSafeHaven && currentNodeId) {
-      const event = useCampEventStore.getState().triggerCampEvent(currentNodeId);
+    if (restType === 'long' && !isSafeHaven) {
+      // Get the location ID from the current node or fall back to the act's location
+      const locationId = currentNode?.locationId || currentAct?.locationId || 'unknown';
+      console.log('[RestScreen] Checking for camp event at location:', locationId, '(node:', currentNodeId, ')');
+      const event = useCampEventStore.getState().triggerCampEvent(locationId);
 
       if (event) {
-        // TODO: Show camp event modal
-        // For now, just complete the rest
-        useRestStore.getState().completeRest(result);
-        setRecovery(result);
-        setShowRecovery(true);
+        console.log('[RestScreen] Camp event triggered:', event.title, '(id:', event.id, ')');
+        // Show camp event modal and store recovery for later
+        setPendingRecovery(result);
+        setShowCampEvent(true);
         return;
+      } else {
+        console.log('[RestScreen] No camp event triggered (either no roll, failed roll, or no eligible events)');
       }
     }
 
-    // No event, complete rest
+    // No event, complete rest immediately
     useRestStore.getState().completeRest(result);
     setRecovery(result);
     setShowRecovery(true);
+  };
+
+  const handleCampEventClose = () => {
+    setShowCampEvent(false);
+
+    // Complete the rest after camp event resolves
+    if (pendingRecovery) {
+      useRestStore.getState().completeRest(pendingRecovery);
+      setRecovery(pendingRecovery);
+      setShowRecovery(true);
+      setPendingRecovery(null);
+    }
   };
 
   if (!character) {
@@ -224,11 +246,23 @@ export function RestScreen({ onClose, onOpenMerchant }: RestScreenProps) {
         </div>
 
         {/* Continue Button */}
-        <Button onClick={onClose} variant="secondary" fullWidth>
-          <Icon name="ArrowLeft" size={16} />
-          <span>Continue Adventure</span>
+        <Button
+          onClick={onClose}
+          variant="secondary"
+          fullWidth
+          icon={<Icon name="ArrowLeft" size={16} />}
+        >
+          Continue Adventure
         </Button>
       </div>
+
+      {/* Camp Event Modal */}
+      {showCampEvent && onNavigate && (
+        <CampEventModal
+          onClose={handleCampEventClose}
+          onNavigate={onNavigate}
+        />
+      )}
     </div>
   );
 }

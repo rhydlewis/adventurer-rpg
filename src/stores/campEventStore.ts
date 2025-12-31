@@ -30,13 +30,24 @@ export const useCampEventStore = create<CampEventStore>((set, get) => ({
 
   triggerCampEvent: (locationId: string) => {
     const table = get().eventTables[locationId];
-    if (!table) return null;
+    console.log('[CampEventStore] Trigger check for location:', locationId);
+    console.log('[CampEventStore] Available tables:', Object.keys(get().eventTables));
 
+    if (!table) {
+      console.log('[CampEventStore] No event table found for location:', locationId);
+      return null;
+    }
+
+    console.log('[CampEventStore] Event table found, rollChance:', table.rollChance + '%');
     const character = useCharacterStore.getState().character;
     const world = useNarrativeStore.getState().world;
-    if (!character || !world) return null;
+    if (!character || !world) {
+      console.log('[CampEventStore] Missing character or world state');
+      return null;
+    }
 
     const event = rollForCampEvent(table, world, character);
+    console.log('[CampEventStore] Roll result:', event ? `Event: ${event.title}` : 'No event');
     set({ currentEvent: event });
     return event;
   },

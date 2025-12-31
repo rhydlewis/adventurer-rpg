@@ -331,6 +331,15 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       return; // Don't process navigation yet, wait for exploration to complete
     }
 
+    // Handle rest trigger
+    if (resolution.restTrigger) {
+      const { onNavigate } = get();
+      if (onNavigate) {
+        onNavigate({ type: 'rest' });
+      }
+      return; // Don't process navigation yet, rest screen will handle return
+    }
+
     // Handle merchant trigger
     if (resolution.merchantTrigger) {
       const { onNavigate } = get();

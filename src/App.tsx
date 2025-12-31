@@ -12,12 +12,14 @@ import { WorldMapScreen } from './screens';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 import { availableCampaigns } from './data/campaigns';
+import { initializePhase3Data } from './data/campaigns/single-node-campaign';
 import type { Screen, Character, Campaign } from './types';
 import { LockPickingScreen } from './screens';
 import { TimingGame } from './screens/puzzles';
 import { MerchantScreen } from './screens';
 import { ExplorationScreen } from './screens';
 import { LevelUpScreen } from './screens';
+import { RestScreen } from './screens';
 import {TestingScreen} from "./screens/TestingScreen.tsx";
 import { App as CapApp } from '@capacitor/app';
 import { GameSaveManager } from './utils/gameSaveManager';
@@ -308,6 +310,12 @@ function App() {
     console.log('[App] Loading campaign:', campaign.title);
     loadCampaign(campaign);
 
+    // Initialize Phase 3 data for single-node-campaign
+    if (campaign.id === 'single-node-campaign') {
+      initializePhase3Data();
+      console.log('[App] Phase 3 data initialized for single-node-campaign (from save)');
+    }
+
     console.log('[App] Restoring narrative state...', {
       world: save.narrative.world,
       conversation: save.narrative.conversation,
@@ -377,6 +385,13 @@ function App() {
     // Load and start the selected campaign
     const { loadCampaign, startCampaign } = useNarrativeStore.getState();
     loadCampaign(campaign);
+
+    // Initialize Phase 3 data for single-node-campaign
+    if (campaign.id === 'single-node-campaign') {
+      initializePhase3Data();
+      console.log('[App] Phase 3 data initialized for single-node-campaign');
+    }
+
     startCampaign();
     setCurrentScreen({ type: 'story' });
   };
@@ -496,6 +511,11 @@ function App() {
               onceOnly={currentScreen.onceOnly}
               onComplete={currentScreen.onComplete}
               onNavigate={setCurrentScreen}
+          />
+      )}
+      {currentScreen.type === 'rest' && (
+          <RestScreen
+              onClose={() => setCurrentScreen({ type: 'story' })}
           />
       )}
       {currentScreen.type === 'testing' && (

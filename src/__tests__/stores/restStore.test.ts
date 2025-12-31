@@ -34,7 +34,7 @@ describe('RestStore', () => {
     vi.mocked(useCharacterStore.getState).mockReturnValue({
       character: mockCharacter,
       setCharacter: vi.fn(),
-    } as any);
+    } as unknown as ReturnType<typeof useCharacterStore.getState>);
   });
 
   it('should calculate recovery on initiateRest', () => {

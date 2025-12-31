@@ -10,5 +10,6 @@ export { LockPickingScreen } from './LockPickingScreen';
 export { MerchantScreen } from './MerchantScreen';
 export { LevelUpScreen } from './LevelUpScreen';
 export { ExplorationScreen } from './ExplorationScreen';
+export { RestScreen } from './RestScreen';
 export { ChooseCampaignScreen } from './ChooseCampaignScreen';
 export { WorldMapScreen } from './WorldMapScreen';

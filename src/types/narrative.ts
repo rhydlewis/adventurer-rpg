@@ -143,6 +143,7 @@ export type ChoiceOutcome =
       failure: ChoiceOutcome;
     }
   | { type: 'explore'; tableId: string; onceOnly: boolean }
+  | { type: 'rest' } // Open rest screen with camp event system
   | { type: 'merchant'; shopInventory: string[]; buyPrices: Record<string, number> }
   | { type: 'characterCreation'; phase: 1 | 2; nextNodeId: string }
   | {
@@ -329,6 +330,7 @@ export interface OutcomeResolution {
     tableId: string;
     onceOnly: boolean;
   };
+  restTrigger?: boolean; // Trigger rest screen
   merchantTrigger?: {
     shopInventory: string[];
     buyPrices: Record<string, number>;

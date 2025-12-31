@@ -227,6 +227,15 @@ export function resolveOutcome(
         },
       };
 
+    case 'rest':
+      // Trigger rest screen with camp event system
+      return {
+        nextNodeId: currentNodeId, // Stay on current node until rest completes
+        logEntries: [],
+        worldUpdates: {},
+        restTrigger: true,
+      };
+
     case 'merchant':
       // Trigger merchant UI
       return {

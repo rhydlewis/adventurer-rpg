@@ -3,12 +3,14 @@ import { useCharacterStore } from '../../stores/characterStore';
 import { useNarrativeStore } from '../../stores/narrativeStore';
 import { getAvailableCampChoices } from '../../utils/campEventLogic';
 import { Button, Card, Icon } from '../index';
+import type { Screen } from '../../types';
 
 interface CampEventModalProps {
   onClose: () => void;
+  onNavigate: (screen: Screen) => void;
 }
 
-export function CampEventModal({ onClose }: CampEventModalProps) {
+export function CampEventModal({ onClose, onNavigate }: CampEventModalProps) {
   const currentEvent = useCampEventStore(state => state.currentEvent);
   const character = useCharacterStore(state => state.character);
   const world = useNarrativeStore(state => state.world);
@@ -18,8 +20,30 @@ export function CampEventModal({ onClose }: CampEventModalProps) {
   const availableChoices = getAvailableCampChoices(currentEvent, world, character);
 
   const handleChoice = (choiceId: string) => {
-    useCampEventStore.getState().selectChoice(choiceId);
-    onClose();
+    const choice = currentEvent.choices.find(c => c.id === choiceId);
+    if (!choice) return;
+
+    console.log('[CampEventModal] Choice selected:', choice.text, 'outcome:', choice.outcome.type);
+
+    // Handle different outcome types
+    if (choice.outcome.type === 'combat') {
+      console.log('[CampEventModal] Triggering combat with enemy:', choice.outcome.enemyId);
+      // Clear the event and close modal
+      useCampEventStore.getState().clearEvent();
+      onClose();
+
+      // Navigate to combat - use current node as victory node since we return to rest after
+      const currentNodeId = world.currentNodeId;
+      onNavigate({
+        type: 'combat',
+        enemyId: choice.outcome.enemyId,
+        onVictoryNodeId: currentNodeId,
+      });
+    } else {
+      // For other outcomes (continue, interrupt), just close
+      useCampEventStore.getState().selectChoice(choiceId);
+      onClose();
+    }
   };
 
   // Map event types to colors and icons
@@ -66,10 +90,9 @@ export function CampEventModal({ onClose }: CampEventModalProps) {
                 onClick={() => handleChoice(choice.id)}
                 variant="primary"
                 fullWidth
-                className="text-left justify-start py-4"
+                className="py-4"
               >
-                <Icon name="ChevronRight" size={16} />
-                <span>{choice.text}</span>
+                {choice.text}
               </Button>
             ))}
 

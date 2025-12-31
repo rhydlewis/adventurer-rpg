@@ -1,6 +1,6 @@
 import type { CampEvent, CampEventTable, CampEventOutcome } from '../types/campEvents';
 import type { Character } from '../types/character';
-import type { WorldState } from '../types/narrative';
+import type { WorldState, NodeEffect } from '../types/narrative';
 import { checkAllRequirements } from './narrativeLogic';
 
 /**
@@ -14,9 +14,14 @@ export function rollForCampEvent(
 ): CampEvent | null {
   // First, check if any event happens at all
   const eventRoll = Math.random() * 100;
+  console.log('[CampEventLogic] Event roll:', eventRoll.toFixed(1), '/ needs <=', table.rollChance);
+
   if (eventRoll > table.rollChance) {
+    console.log('[CampEventLogic] Roll failed, no event occurs');
     return null; // No event
   }
+
+  console.log('[CampEventLogic] Roll succeeded! Selecting from', table.events.length, 'total events');
 
   // Filter events by requirements
   const availableEvents = table.events.filter(event => {
@@ -24,15 +29,21 @@ export function rollForCampEvent(
     return checkAllRequirements(event.requirements, world, character);
   });
 
-  if (availableEvents.length === 0) return null;
+  console.log('[CampEventLogic] Available events after filtering:', availableEvents.length);
+  if (availableEvents.length === 0) {
+    console.log('[CampEventLogic] No eligible events after requirement filtering');
+    return null;
+  }
 
   // Weighted random selection
   const totalWeight = availableEvents.reduce((sum, e) => sum + e.weight, 0);
   let roll = Math.random() * totalWeight;
+  console.log('[CampEventLogic] Weighted selection - total weight:', totalWeight, 'roll:', roll.toFixed(1));
 
   for (const event of availableEvents) {
     roll -= event.weight;
     if (roll <= 0) {
+      console.log('[CampEventLogic] Selected event:', event.title, '(weight:', event.weight, ')');
       return event;
     }
   }
@@ -62,7 +73,7 @@ export function resolveCampOutcome(
 ): {
   continueRest: boolean;
   combatTriggered: boolean;
-  effects: any[];
+  effects: NodeEffect[];
 } {
   switch (outcome.type) {
     case 'continue':
