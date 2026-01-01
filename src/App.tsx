@@ -498,13 +498,7 @@ function App() {
               onClose={currentScreen.onClose}
           />
       )}
-      {currentScreen.type === 'levelUp' && (
-          <LevelUpScreen
-              newLevel={currentScreen.newLevel}
-              featChoices={currentScreen.featChoices}
-              onComplete={currentScreen.onComplete}
-          />
-      )}
+      {currentScreen.type === 'levelUp' && <LevelUpScreen />}
       {currentScreen.type === 'exploration' && (
           <ExplorationScreen
               tableId={currentScreen.tableId}

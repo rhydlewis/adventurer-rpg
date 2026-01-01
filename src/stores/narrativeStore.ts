@@ -229,22 +229,15 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       }
     }
 
-    // Handle level-up trigger
+    // Handle level-up trigger (deprecated - use Phase 4 triggerLevelUp utility instead)
     if (levelUpTrigger) {
+      console.warn(
+        'Level-up trigger via narrative effects is deprecated. Use triggerLevelUp() from levelUpTrigger utility instead.'
+      );
       const { onNavigate } = get();
       if (onNavigate) {
-        onNavigate({
-          type: 'levelUp',
-          newLevel: levelUpTrigger.newLevel,
-          featChoices: levelUpTrigger.featChoices,
-          onComplete: () => {
-            // Return to story after level-up completes
-            const nav = get().onNavigate;
-            if (nav) {
-              nav({ type: 'story' });
-            }
-          },
-        });
+        // Navigate to level-up screen (Phase 4: state managed by useLevelUpStore)
+        onNavigate({ type: 'levelUp' });
       }
     }
 
