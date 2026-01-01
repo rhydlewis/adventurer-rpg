@@ -145,4 +145,86 @@ describe('LevelUpStore', () => {
       expect(useLevelUpStore.getState().availableFeats).toEqual([]);
     });
   });
+
+  describe('Skill Point Allocation', () => {
+    it('should initialize skill points on triggerLevelUp', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+
+      expect(useLevelUpStore.getState().skillPointsToAllocate).toBe(2); // Fighter gets 2 skill points
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({});
+    });
+
+    it('should allocate skill points', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({ Athletics: 2 });
+    });
+
+    it('should not allocate more points than available', () => {
+      useLevelUpStore.getState().triggerLevelUp(2); // 2 skill points for Fighter
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().allocateSkillPoint('Intimidate');
+      useLevelUpStore.getState().allocateSkillPoint('Perception'); // Should be ignored
+
+      const allocated = useLevelUpStore.getState().allocatedSkillPoints;
+      const total = Object.values(allocated).reduce((sum, points) => sum + (points || 0), 0);
+      expect(total).toBe(2); // Can't exceed available points
+    });
+
+    it('should deallocate skill points', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().deallocateSkillPoint('Athletics');
+
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({ Athletics: 1 });
+    });
+
+    it('should remove skill from allocatedSkillPoints when deallocating to zero', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().deallocateSkillPoint('Athletics');
+
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({});
+    });
+
+    it('should not deallocate below zero', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().deallocateSkillPoint('Athletics'); // No points allocated yet
+
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({});
+    });
+
+    it('should apply allocated skill points on completeLevelUp', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().allocateSkillPoint('Intimidate');
+      useLevelUpStore.getState().completeLevelUp();
+
+      const setCharacterCall = vi.mocked(useCharacterStore.getState().setCharacter);
+      const updatedCharacter = setCharacterCall.mock.calls[0][0];
+      expect(updatedCharacter.skills.Athletics).toBe(1); // 0 + 1
+      expect(updatedCharacter.skills.Intimidate).toBe(1); // 0 + 1
+    });
+
+    it('should clear skill point allocation after completing level-up', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().completeLevelUp();
+
+      expect(useLevelUpStore.getState().skillPointsToAllocate).toBe(0);
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({});
+    });
+
+    it('should clear skill point allocation on cancelLevelUp', () => {
+      useLevelUpStore.getState().triggerLevelUp(2);
+      useLevelUpStore.getState().allocateSkillPoint('Athletics');
+      useLevelUpStore.getState().cancelLevelUp();
+
+      expect(useLevelUpStore.getState().skillPointsToAllocate).toBe(0);
+      expect(useLevelUpStore.getState().allocatedSkillPoints).toEqual({});
+    });
+  });
 });
