@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLevelUpStore } from '../stores/levelUpStore';
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { completeLevelUp } from '../utils/levelUpTrigger';
 import { Icon } from '../components';
+import { FeatSelectionModal } from '../components/levelup/FeatSelectionModal';
+import { SkillAllocationModal } from '../components/levelup/SkillAllocationModal';
+import { SpellSelectionModal } from '../components/levelup/SpellSelectionModal';
 
 export function LevelUpScreen() {
     const onNavigate = useNarrativeStore((state) => state.onNavigate);
@@ -12,9 +15,15 @@ export function LevelUpScreen() {
         availableFeats,
         selectedFeat,
         skillPointsToAllocate,
+        spellsToSelect,
+        selectedSpells,
         loadAvailableFeats,
-        selectFeat,
+        loadAvailableSpells,
     } = useLevelUpStore();
+
+    const [showFeatModal, setShowFeatModal] = useState(false);
+    const [showSkillModal, setShowSkillModal] = useState(false);
+    const [showSpellModal, setShowSpellModal] = useState(false);
 
     // Redirect if no level-up in progress
     useEffect(() => {
@@ -30,6 +39,13 @@ export function LevelUpScreen() {
         }
     }, [pendingLevelUp, availableFeats.length, loadAvailableFeats]);
 
+    // Load available spells if spells need to be selected
+    useEffect(() => {
+        if (spellsToSelect > 0) {
+            loadAvailableSpells();
+        }
+    }, [spellsToSelect, loadAvailableSpells]);
+
     if (!pendingLevelUp || !levelUpInProgress) {
         return null;
     }
@@ -44,6 +60,10 @@ export function LevelUpScreen() {
             return; // Skill points not allocated
         }
 
+        if (spellsToSelect > 0 && selectedSpells.length < spellsToSelect) {
+            return; // Spells not selected
+        }
+
         // Complete the level-up and navigate back
         completeLevelUp();
         onNavigate?.({ type: 'story' });
@@ -51,7 +71,8 @@ export function LevelUpScreen() {
 
     const canComplete =
         (!pendingLevelUp.featGained || selectedFeat !== null) &&
-        skillPointsToAllocate === 0;
+        skillPointsToAllocate === 0 &&
+        (spellsToSelect === 0 || selectedSpells.length === spellsToSelect);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-fg-primary p-6">
@@ -164,76 +185,93 @@ export function LevelUpScreen() {
                 {/* Feat Selection */}
                 {pendingLevelUp.featGained && (
                     <div className="bg-gradient-to-br from-secondary to-secondary/50 p-6 rounded-xl border-2 border-magic/30 mb-6">
-                        <h2 className="heading-secondary mb-4 flex items-center gap-2">
-                            <Icon name="Star" size={24} className="text-magic" />
-                            Choose a Feat
-                        </h2>
-                        {availableFeats.length === 0 ? (
-                            <div className="text-center py-4 text-fg-muted">
-                                <Icon name="Loader" size={24} className="animate-spin mx-auto mb-2" />
-                                <p className="body-secondary">Loading available feats...</p>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="heading-secondary flex items-center gap-2">
+                                <Icon name="Star" size={24} className="text-magic" />
+                                Feat Selection
+                            </h2>
+                            {selectedFeat && (
+                                <div className="flex items-center gap-2 text-sm text-success">
+                                    <Icon name="Check" size={16} />
+                                    <span>Selected</span>
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => setShowFeatModal(true)}
+                            className="w-full p-4 rounded-lg border-2 border-border-default hover:border-magic/50 hover:bg-secondary/50 transition-all text-left"
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="body-primary text-fg-primary">
+                                    {selectedFeat
+                                        ? availableFeats.find((f) => f.id === selectedFeat)?.name || 'Select a Feat'
+                                        : 'Choose a feat to enhance your abilities'}
+                                </span>
+                                <Icon name="ChevronRight" size={20} className="text-fg-muted" />
                             </div>
-                        ) : (
-                            <div className="space-y-3">
-                                {availableFeats.map((feat) => {
-                                    const isSelected = selectedFeat === feat.id;
-
-                                    return (
-                                        <button
-                                            key={feat.id}
-                                            className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                                                isSelected
-                                                    ? 'border-magic bg-magic/20 shadow-lg shadow-magic/20 scale-[1.02]'
-                                                    : 'border-border-default hover:border-magic/50 hover:bg-secondary/50'
-                                            }`}
-                                            onClick={() => selectFeat(feat.id)}
-                                        >
-                                            <div className="flex items-start gap-3">
-                                                <div
-                                                    className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                                                        isSelected
-                                                            ? 'bg-magic/30 border border-magic'
-                                                            : 'bg-secondary border border-border-default'
-                                                    }`}
-                                                >
-                                                    <Icon
-                                                        name="Zap"
-                                                        size={20}
-                                                        className={isSelected ? 'text-magic' : 'text-fg-muted'}
-                                                    />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <h3 className="feat-name text-fg-accent mb-1 flex items-center gap-2">
-                                                        {feat.name}
-                                                        {isSelected && <Icon name="Check" size={16} className="text-magic" />}
-                                                    </h3>
-                                                    <p className="body-secondary text-sm text-fg-muted">{feat.description}</p>
-                                                </div>
-                                            </div>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        )}
+                        </button>
                     </div>
                 )}
 
-                {/* Skill Points Section - TODO: Add SkillAllocationModal */}
-                {pendingLevelUp.skillPoints > 0 && skillPointsToAllocate > 0 && (
+                {/* Skill Points Section */}
+                {pendingLevelUp.skillPoints > 0 && (
                     <div className="bg-gradient-to-br from-secondary to-secondary/50 p-6 rounded-xl border-2 border-warning/30 mb-6">
-                        <h2 className="heading-secondary mb-4 flex items-center gap-2">
-                            <Icon name="BookOpen" size={24} className="text-warning" />
-                            Allocate Skill Points
-                        </h2>
-                        <div className="text-center py-4">
-                            <p className="body-primary text-fg-muted mb-2">
-                                You have {skillPointsToAllocate} skill point{skillPointsToAllocate > 1 ? 's' : ''} to
-                                allocate
-                            </p>
-                            <p className="body-secondary text-sm text-fg-muted">
-                                Skill allocation modal coming soon
-                            </p>
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="heading-secondary flex items-center gap-2">
+                                <Icon name="BookOpen" size={24} className="text-warning" />
+                                Skill Points
+                            </h2>
+                            {skillPointsToAllocate === 0 && (
+                                <div className="flex items-center gap-2 text-sm text-success">
+                                    <Icon name="Check" size={16} />
+                                    <span>Allocated</span>
+                                </div>
+                            )}
                         </div>
+                        <button
+                            onClick={() => setShowSkillModal(true)}
+                            className="w-full p-4 rounded-lg border-2 border-border-default hover:border-warning/50 hover:bg-secondary/50 transition-all text-left"
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="body-primary text-fg-primary">
+                                    {skillPointsToAllocate === 0
+                                        ? `All ${pendingLevelUp.skillPoints} points allocated`
+                                        : `Allocate ${skillPointsToAllocate} skill point${skillPointsToAllocate > 1 ? 's' : ''}`}
+                                </span>
+                                <Icon name="ChevronRight" size={20} className="text-fg-muted" />
+                            </div>
+                        </button>
+                    </div>
+                )}
+
+                {/* Spell Selection Section */}
+                {spellsToSelect > 0 && (
+                    <div className="bg-gradient-to-br from-secondary to-secondary/50 p-6 rounded-xl border-2 border-magic/30 mb-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="heading-secondary flex items-center gap-2">
+                                <Icon name="Sparkles" size={24} className="text-magic" />
+                                Spell Selection
+                            </h2>
+                            {selectedSpells.length === spellsToSelect && (
+                                <div className="flex items-center gap-2 text-sm text-success">
+                                    <Icon name="Check" size={16} />
+                                    <span>Selected</span>
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => setShowSpellModal(true)}
+                            className="w-full p-4 rounded-lg border-2 border-border-default hover:border-magic/50 hover:bg-secondary/50 transition-all text-left"
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="body-primary text-fg-primary">
+                                    {selectedSpells.length === spellsToSelect
+                                        ? `Selected ${selectedSpells.length} spell${selectedSpells.length > 1 ? 's' : ''}`
+                                        : `Learn ${spellsToSelect - selectedSpells.length} more spell${spellsToSelect - selectedSpells.length > 1 ? 's' : ''}`}
+                                </span>
+                                <Icon name="ChevronRight" size={20} className="text-fg-muted" />
+                            </div>
+                        </button>
                     </div>
                 )}
 
@@ -260,12 +298,19 @@ export function LevelUpScreen() {
                                     ? 'Select a Feat'
                                     : skillPointsToAllocate > 0
                                       ? 'Allocate Skill Points'
-                                      : 'Complete Requirements'}
+                                      : spellsToSelect > 0 && selectedSpells.length < spellsToSelect
+                                        ? 'Select Spells'
+                                        : 'Complete Requirements'}
                             </span>
                         </>
                     )}
                 </button>
             </div>
+
+            {/* Modals */}
+            <FeatSelectionModal isOpen={showFeatModal} onClose={() => setShowFeatModal(false)} />
+            <SkillAllocationModal isOpen={showSkillModal} onClose={() => setShowSkillModal(false)} />
+            <SpellSelectionModal isOpen={showSpellModal} onClose={() => setShowSpellModal(false)} />
         </div>
     );
 }
