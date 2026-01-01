@@ -15,11 +15,16 @@ export function LevelUpScreen() {
         availableFeats,
         selectedFeat,
         skillPointsToAllocate,
+        allocatedSkillPoints,
         spellsToSelect,
         selectedSpells,
         loadAvailableFeats,
         loadAvailableSpells,
     } = useLevelUpStore();
+
+    // Calculate actual remaining skill points
+    const totalAllocated = Object.values(allocatedSkillPoints).reduce((sum, points) => sum + (points || 0), 0);
+    const skillPointsRemaining = skillPointsToAllocate - totalAllocated;
 
     const [showFeatModal, setShowFeatModal] = useState(false);
     const [showSkillModal, setShowSkillModal] = useState(false);
@@ -56,7 +61,7 @@ export function LevelUpScreen() {
             return; // Feat selection required
         }
 
-        if (skillPointsToAllocate > 0) {
+        if (skillPointsRemaining > 0) {
             return; // Skill points not allocated
         }
 
@@ -71,7 +76,7 @@ export function LevelUpScreen() {
 
     const canComplete =
         (!pendingLevelUp.featGained || selectedFeat !== null) &&
-        skillPointsToAllocate === 0 &&
+        skillPointsRemaining === 0 &&
         (spellsToSelect === 0 || selectedSpells.length === spellsToSelect);
 
     return (
@@ -221,7 +226,7 @@ export function LevelUpScreen() {
                                 <Icon name="BookOpen" size={24} className="text-warning" />
                                 Skill Points
                             </h2>
-                            {skillPointsToAllocate === 0 && (
+                            {skillPointsRemaining === 0 && (
                                 <div className="flex items-center gap-2 text-sm text-success">
                                     <Icon name="Check" size={16} />
                                     <span>Allocated</span>
@@ -234,9 +239,9 @@ export function LevelUpScreen() {
                         >
                             <div className="flex items-center justify-between">
                                 <span className="body-primary text-fg-primary">
-                                    {skillPointsToAllocate === 0
+                                    {skillPointsRemaining === 0
                                         ? `All ${pendingLevelUp.skillPoints} points allocated`
-                                        : `Allocate ${skillPointsToAllocate} skill point${skillPointsToAllocate > 1 ? 's' : ''}`}
+                                        : `Allocate ${skillPointsRemaining} skill point${skillPointsRemaining > 1 ? 's' : ''}`}
                                 </span>
                                 <Icon name="ChevronRight" size={20} className="text-fg-muted" />
                             </div>
@@ -296,7 +301,7 @@ export function LevelUpScreen() {
                             <span>
                                 {pendingLevelUp.featGained && !selectedFeat
                                     ? 'Select a Feat'
-                                    : skillPointsToAllocate > 0
+                                    : skillPointsRemaining > 0
                                       ? 'Allocate Skill Points'
                                       : spellsToSelect > 0 && selectedSpells.length < spellsToSelect
                                         ? 'Select Spells'
