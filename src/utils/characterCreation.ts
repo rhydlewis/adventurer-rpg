@@ -52,6 +52,11 @@ export function calculateAC(className: CharacterClass, attributes: Attributes): 
 
   let ac = armor.baseAC + effectiveDexMod;
 
+  // Add armor enchantment bonus
+  if (armor.enchantmentBonus) {
+    ac += armor.enchantmentBonus;
+  }
+
   // Add shield bonus if class has shield
   if (classDef.hasShield) {
     ac += 2; // Standard shield bonus

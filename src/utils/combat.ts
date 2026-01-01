@@ -60,9 +60,13 @@ export function performAttack(
   const strMod = calculateModifier(attacker.attributes.STR);
   const dexMod = calculateModifier(attacker.attributes.DEX);
   const abilityMod = (attacker.equipment.weapon?.finesse && dexMod > strMod) ? dexMod : strMod;
-  // Apply attack bonuses from both explicit modifiers AND conditions
-  const totalAttackBonus = (modifiers?.attackBonus ?? 0) + (attackerMods.attackBonus ?? 0);
-  const totalDamageBonus = (modifiers?.damageBonus ?? 0) + (attackerMods.damageBonus ?? 0);
+
+  // Apply weapon enchantment bonus to attack and damage
+  const weaponEnchantment = attacker.equipment.weapon?.enchantmentBonus ?? 0;
+
+  // Apply attack bonuses from explicit modifiers, conditions, AND weapon enchantment
+  const totalAttackBonus = (modifiers?.attackBonus ?? 0) + (attackerMods.attackBonus ?? 0) + weaponEnchantment;
+  const totalDamageBonus = (modifiers?.damageBonus ?? 0) + (attackerMods.damageBonus ?? 0) + weaponEnchantment;
   const attack = rollAttack(attacker.bab, abilityMod + totalAttackBonus, context);
   const naturalRoll = attack.d20Result;
 
