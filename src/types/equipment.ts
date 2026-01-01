@@ -9,6 +9,7 @@ export interface Weapon {
   finesse: boolean; // If true, can use DEX for attack/damage instead of STR
   description: string;
   proficiencyRequired?: 'simple' | 'martial' | 'martial-finesse';
+  enchantmentBonus?: number; // Magical enhancement (+1, +2, +3)
 }
 
 export interface Armor {
@@ -17,6 +18,7 @@ export interface Armor {
   maxDexBonus: number | null; // null = unlimited DEX bonus
   description: string;
   proficiencyRequired?: 'light' | 'medium' | 'heavy';
+  enchantmentBonus?: number; // Magical enhancement (+1, +2, +3)
 }
 
 export interface Shield {
