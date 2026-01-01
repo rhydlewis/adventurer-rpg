@@ -311,16 +311,139 @@ function onQuestComplete() {
 }
 ```
 
-## UI Considerations
+## UI Implementation
 
-While Phase 4 provides the backend mechanics, UI implementation for level-up screens is planned for a future phase. For now, you can:
+Phase 4 includes a complete UI implementation for level-up screens with modal-based selection:
 
-1. **Auto-complete with defaults**: Use `autoLevelUp()` for testing
-2. **Manual console interaction**: Use store methods directly for development
-3. **Build custom UI**: Create your own screens using the level-up store
+### LevelUpScreen
 
-## Next Steps
+The main level-up screen displays:
+- Level progression summary (old level → new level)
+- HP, BAB, and saving throw gains
+- Class features unlocked
+- Skill points available
+- Interactive buttons for feat/skill/spell selection
 
-- **Phase 5**: Full UI implementation for level-up screens
-- **Phase 6**: Enhanced campaign integration with visual level-up flow
-- **Phase 7**: Character sheet enhancements to display progression data
+**Navigation:**
+```typescript
+// From campaign narrative:
+onNavigate({ type: 'levelUp' });
+
+// LevelUpScreen automatically redirects back to story when complete
+```
+
+### Modal Components
+
+**FeatSelectionModal** (`src/components/levelup/FeatSelectionModal.tsx`)
+- Displays all available feats
+- Shows feat descriptions and effects
+- Selects feat on click and closes modal
+- Integrates with `useLevelUpStore().selectFeat()`
+
+**SkillAllocationModal** (`src/components/levelup/SkillAllocationModal.tsx`)
+- Shows all character skills
+- +/- buttons to allocate/deallocate points
+- Real-time point tracking (allocated vs. remaining)
+- Visual feedback for current ranks vs. new ranks
+- Integrates with `useLevelUpStore().allocateSkillPoint()` and `deallocateSkillPoint()`
+
+**SpellSelectionModal** (`src/components/levelup/SpellSelectionModal.tsx`)
+- Displays available spells for caster classes
+- Shows spell level, school, and description
+- Multi-select interface (select/deselect spells)
+- Tracks selected vs. required spell count
+- Integrates with `useLevelUpStore().selectSpell()` and `deselectSpell()`
+
+### UI Flow
+
+1. **Trigger Level-Up**: Call `triggerLevelUp(newLevel)` from campaign node
+2. **Navigate to Screen**: `onNavigate({ type: 'levelUp' })`
+3. **LevelUpScreen Loads**: Displays summary and requirement buttons
+4. **User Makes Selections**: Opens modals to select feats, allocate skills, learn spells
+5. **Complete Level-Up**: When all requirements met, "Complete Level Up" button activates
+6. **Return to Story**: Calls `completeLevelUp()` and navigates back to story
+
+### Example Integration
+
+```typescript
+// In a campaign node:
+export const VICTORY_NODE: NarrativeNode = {
+  id: 'boss-defeated',
+  type: 'story',
+  text: 'You have defeated the dragon! You feel your power growing...',
+  onEnter: [
+    {
+      type: 'trigger-level-up',
+      execute: () => {
+        // Trigger the level-up
+        const success = triggerLevelUp(2);
+        if (success) {
+          // Navigate to level-up screen
+          const nav = useNarrativeStore.getState().onNavigate;
+          if (nav) {
+            nav({ type: 'levelUp' });
+          }
+        }
+      },
+    },
+  ],
+};
+```
+
+### Testing the UI
+
+For automated testing or quick level-ups:
+
+```typescript
+// Auto-complete level-up with default choices
+autoLevelUp(2);
+```
+
+This bypasses the UI and:
+- Selects the first available feat
+- Allocates skill points evenly
+- Selects the first available spells
+- Applies all changes immediately
+
+## Complete Integration Example
+
+Here's a full example showing both backend and UI integration:
+
+```typescript
+import { triggerLevelUp } from '../utils/levelUpTrigger';
+import { useNarrativeStore } from '../stores/narrativeStore';
+
+// In your campaign node:
+const CHAPTER_END_NODE: NarrativeNode = {
+  id: 'chapter-1-complete',
+  type: 'story',
+  text: 'Chapter 1 Complete! You have grown stronger from your experiences.',
+  choices: [
+    {
+      text: 'Review your improvements',
+      nextNodeId: null, // Special case: navigation handled by onSelect
+      onSelect: () => {
+        // Trigger level-up to level 2
+        const success = triggerLevelUp(2);
+
+        if (success) {
+          // Navigate to level-up screen
+          const nav = useNarrativeStore.getState().onNavigate;
+          if (nav) {
+            nav({ type: 'levelUp' });
+          }
+          // When user completes level-up, they'll automatically return to story
+        }
+      },
+    },
+    {
+      text: 'Continue to Chapter 2',
+      nextNodeId: 'chapter-2-start',
+      onSelect: () => {
+        // Auto-level if they skip the UI
+        autoLevelUp(2);
+      },
+    },
+  ],
+};
+```
