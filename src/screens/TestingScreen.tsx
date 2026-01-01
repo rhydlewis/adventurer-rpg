@@ -5,6 +5,8 @@ import {CLASSES} from "../data/classes.ts";
 import {createCharacter} from "../utils/characterCreation.ts";
 import {DEFAULT_AVATAR} from "../data/avatars.ts";
 import {generateEnemy} from "../utils/enemyGeneration.ts";
+import {triggerLevelUp} from "../utils/levelUpTrigger.ts";
+import {useCharacterStore} from "../stores/characterStore.ts";
 
 interface TestingScreenProps {
   onStartCombat: () => void;
@@ -71,6 +73,40 @@ export function TestingScreen({ onStartCombat, onCreateCharacter, onViewCharacte
         onNavigate({ type: 'home' });
       },
     });
+  };
+
+  const handleTestLevelUp = (className: CharacterClass, level: number) => {
+    if (!onNavigate) return;
+
+    // Create a test character at level 1
+    const classDef = CLASSES[className];
+    const testChar = createCharacter({
+      name: `Test ${className}`,
+      avatarPath: DEFAULT_AVATAR,
+      class: className,
+      attributes: classDef.recommendedAttributes,
+      skillRanks: {
+        Athletics: 1,
+        Stealth: 0,
+        Perception: 1,
+        Arcana: 0,
+        Medicine: 0,
+        Intimidate: 0,
+      },
+      selectedFeat: className === 'Fighter' ? 'Weapon Focus' : undefined,
+    });
+
+    // Set as current character
+    useCharacterStore.getState().setCharacter(testChar);
+
+    // Trigger level-up
+    const success = triggerLevelUp(level);
+    if (success) {
+      console.log(`Level-up to ${level} triggered for ${className}`);
+      onNavigate({ type: 'levelUp' });
+    } else {
+      console.error('Failed to trigger level-up');
+    }
   };
 
   return (
@@ -246,6 +282,45 @@ export function TestingScreen({ onStartCombat, onCreateCharacter, onViewCharacte
                 >
                   Play Timing Game
                 </button>
+              </Card>
+          )}
+
+          {/* Test Level-Up System */}
+          {onNavigate && (
+              <Card variant="neutral" padding="compact" className="mt-3 border-success">
+                <p className="text-caption text-fg-primary label-primary mb-2 text-center">
+                  ⬆️ Test: Level-Up System (Phase 4)
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                      onClick={() => handleTestLevelUp('Fighter', 2)}
+                      className="px-2 py-2 bg-enemy text-white button-text text-caption rounded-lg hover:bg-red-700 active:bg-red-800 transition-all duration-200 active:scale-[0.98]"
+                  >
+                    Fighter → L2
+                    <div className="text-[10px] opacity-75 mt-1">Feat + Skills</div>
+                  </button>
+                  <button
+                      onClick={() => handleTestLevelUp('Rogue', 2)}
+                      className="px-2 py-2 bg-magic text-white button-text text-caption rounded-lg hover:bg-purple-700 active:bg-purple-800 transition-all duration-200 active:scale-[0.98]"
+                  >
+                    Rogue → L2
+                    <div className="text-[10px] opacity-75 mt-1">Skills</div>
+                  </button>
+                  <button
+                      onClick={() => handleTestLevelUp('Wizard', 2)}
+                      className="px-2 py-2 bg-player text-white button-text text-caption rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-all duration-200 active:scale-[0.98]"
+                  >
+                    Wizard → L2
+                    <div className="text-[10px] opacity-75 mt-1">Spells + Skills</div>
+                  </button>
+                  <button
+                      onClick={() => handleTestLevelUp('Cleric', 2)}
+                      className="px-2 py-2 bg-success text-white button-text text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
+                  >
+                    Cleric → L2
+                    <div className="text-[10px] opacity-75 mt-1">Spells + Skills</div>
+                  </button>
+                </div>
               </Card>
           )}
         </div>
