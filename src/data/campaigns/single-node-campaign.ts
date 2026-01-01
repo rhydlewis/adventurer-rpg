@@ -285,6 +285,12 @@ const testNodes: StoryNode[] = [
         flavor: { tone: 'calm', icon: 'map' },
         choices: [
             {
+                id: 'test_ability_scores',
+                text: 'Test Ability Scores',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            },
+            {
                 id: 'test_skill_checks',
                 text: 'Test Skill Checks',
                 category: 'exploration',
@@ -363,6 +369,567 @@ const testNodes: StoryNode[] = [
                 text: 'Exit',
                 category: 'movement',
                 outcome: { type: 'exit' }
+            }
+        ]
+    },
+
+    // =============================================================================
+    // ABILITY SCORES DEMONSTRATION
+    // =============================================================================
+    {
+        id: 'ability_scores_hub',
+        title: 'Ability Scores Demonstration',
+        description: 'Learn how each of the six ability scores affects your character in combat, skill checks, and narrative choices. Each test shows practical examples of how abilities work.',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'question' },
+        companionHint: 'Each ability score has a specific role: STR (melee power), DEX (AC/initiative), CON (HP), INT (wizardry), WIS (perception/divine), CHA (social).',
+        choices: [
+            {
+                id: 'test_strength',
+                text: '💪 Strength (STR) - Melee Power',
+                displayText: '💪 Strength: Melee attacks, damage, Athletics',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'strength_demo' }
+            },
+            {
+                id: 'test_dexterity',
+                text: '🏃 Dexterity (DEX) - Defense & Agility',
+                displayText: '🏃 Dexterity: AC, initiative, Stealth, finesse weapons',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'dexterity_demo' }
+            },
+            {
+                id: 'test_constitution',
+                text: '❤️ Constitution (CON) - Survivability',
+                displayText: '❤️ Constitution: Hit points, Fortitude saves',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'constitution_demo' }
+            },
+            {
+                id: 'test_intelligence',
+                text: '📚 Intelligence (INT) - Arcane Knowledge',
+                displayText: '📚 Intelligence: Arcana, Wizard spells',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'intelligence_demo' }
+            },
+            {
+                id: 'test_wisdom',
+                text: '👁️ Wisdom (WIS) - Awareness & Divine',
+                displayText: '👁️ Wisdom: Perception, Medicine, Cleric spells',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'wisdom_demo' }
+            },
+            {
+                id: 'test_charisma',
+                text: '💬 Charisma (CHA) - Social Influence',
+                displayText: '💬 Charisma: Intimidate, social interactions',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'charisma_demo' }
+            },
+            {
+                id: 'back_to_hub',
+                text: 'Back to Hub',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'test_hub' }
+            }
+        ]
+    },
+
+    // STR Demonstration
+    {
+        id: 'strength_demo',
+        title: 'Strength (STR) Demonstration',
+        description: 'Strength determines your melee attack power and damage. It also governs Athletics checks for physical feats like climbing, jumping, and breaking objects.\n\n**Your STR modifier affects:**\n• Melee attack rolls (d20 + BAB + STR)\n• Melee damage (weapon dice + STR)\n• Athletics skill checks',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'sword' },
+        companionHint: 'High STR is essential for Fighters and Clerics. Rogues and Wizards typically have low STR.',
+        choices: [
+            {
+                id: 'athletics_climb',
+                text: '🧗 Athletics Check: Climb the cliff',
+                displayText: '🎲 Athletics DC 15: Climb the steep cliff face',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Athletics',
+                    dc: 15,
+                    success: { type: 'goto', nodeId: 'str_athletics_success' },
+                    failure: { type: 'goto', nodeId: 'str_athletics_failure' }
+                }
+            },
+            {
+                id: 'melee_combat',
+                text: '⚔️ Melee Combat: Fight with STR-based attacks',
+                category: 'combat',
+                outcome: { type: 'goto', nodeId: 'str_combat_demo' }
+            },
+            {
+                id: 'back',
+                text: 'Back to Ability Scores',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            }
+        ]
+    },
+    {
+        id: 'str_athletics_success',
+        title: 'Athletic Success!',
+        description: 'Your strength serves you well! You pull yourself up the cliff face with powerful, confident movements. Your high Athletics skill (STR-based) made this climb much easier.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 50 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'strength_demo' }
+            }
+        ]
+    },
+    {
+        id: 'str_athletics_failure',
+        title: 'Difficult Climb',
+        description: 'The cliff face proves challenging. Your muscles strain as you struggle to find handholds. With low STR or insufficient Athletics ranks, this climb is much harder.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        onEnter: [
+            { type: 'damage', amount: 3 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'strength_demo' }
+            }
+        ]
+    },
+    {
+        id: 'str_combat_demo',
+        title: 'Strength in Combat',
+        description: 'A bandit blocks your path! This combat will demonstrate how STR affects:\n\n• **Attack rolls**: d20 + BAB + STR modifier\n• **Damage**: Weapon damage + STR modifier\n\nHigher STR = hit more often and deal more damage!',
+        type: 'combat',
+        flavor: { tone: 'tense', icon: 'sword' },
+        onEnter: [
+            { type: 'startCombat', enemyId: 'bandit', onVictoryNodeId: 'str_combat_victory' }
+        ],
+        choices: []
+    },
+    {
+        id: 'str_combat_victory',
+        title: 'Victory Through Strength!',
+        description: 'Your powerful strikes defeat the bandit! Notice how your STR modifier was added to both your attack rolls and damage.\n\n**High STR characters** (Fighter, Cleric) excel at melee combat.\n**Low STR characters** (Wizard, Rogue) should avoid direct melee or use finesse weapons.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Back to STR Demo',
+                outcome: { type: 'goto', nodeId: 'strength_demo' }
+            }
+        ]
+    },
+
+    // DEX Demonstration
+    {
+        id: 'dexterity_demo',
+        title: 'Dexterity (DEX) Demonstration',
+        description: 'Dexterity governs your agility, reflexes, and coordination. It affects your defense (AC), turn order (initiative), and stealth.\n\n**Your DEX modifier affects:**\n• Armor Class (AC = armor + DEX)\n• Initiative rolls (who acts first)\n• Stealth skill checks\n• Finesse weapon attacks (rapier, dagger)\n• Reflex saving throws',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'shield' },
+        companionHint: 'High DEX is critical for Rogues and helps all classes avoid damage. DEX ≥16 gives +3 to AC!',
+        choices: [
+            {
+                id: 'stealth_check',
+                text: '🥷 Stealth Check: Sneak past guards',
+                displayText: '🎲 Stealth DC 14: Sneak past the patrolling guards',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Stealth',
+                    dc: 14,
+                    success: { type: 'goto', nodeId: 'dex_stealth_success' },
+                    failure: { type: 'goto', nodeId: 'dex_stealth_failure' }
+                }
+            },
+            {
+                id: 'ac_demonstration',
+                text: '🛡️ View Your AC (DEX affects defense)',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'dex_ac_demo' }
+            },
+            {
+                id: 'back',
+                text: 'Back to Ability Scores',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            }
+        ]
+    },
+    {
+        id: 'dex_stealth_success',
+        title: 'Silent as Shadow',
+        description: 'Your nimble movements carry you past the guards undetected! High DEX and good Stealth ranks make infiltration much easier.\n\n**Bonus**: Stealth total ≥5 also gives you +2 to initiative in combat!',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 50 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'dexterity_demo' }
+            }
+        ]
+    },
+    {
+        id: 'dex_stealth_failure',
+        title: 'Spotted!',
+        description: 'A twig snaps under your foot! The guards hear you and raise the alarm. Low DEX or poor Stealth makes sneaking very risky.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'dexterity_demo' }
+            }
+        ]
+    },
+    {
+        id: 'dex_ac_demo',
+        title: 'Armor Class (AC) Explained',
+        description: 'Your AC determines how hard you are to hit in combat:\n\n**AC Formula**: 10 + armor bonus + DEX modifier + shield\n\n**Examples:**\n• Wizard (no armor): AC 10 + 0 (no armor) + 3 (DEX 16) = **13 AC**\n• Rogue (leather): AC 10 + 2 (leather) + 3 (DEX 16) = **15 AC**\n• Fighter (chainmail + shield): AC 10 + 6 (chainmail) + 0 (DEX 10) + 2 (shield) = **18 AC**\n\nHigher DEX = harder to hit = take less damage!',
+        flavor: { tone: 'calm', icon: 'question' },
+        companionHint: 'Every +1 to AC reduces enemy hit chance by 5%. DEX is your best defense if you can\'t wear heavy armor!',
+        choices: [
+            {
+                id: 'back',
+                text: 'Back to DEX Demo',
+                outcome: { type: 'goto', nodeId: 'dexterity_demo' }
+            }
+        ]
+    },
+
+    // CON Demonstration
+    {
+        id: 'constitution_demo',
+        title: 'Constitution (CON) Demonstration',
+        description: 'Constitution represents your health, stamina, and physical resilience. It directly determines how much damage you can take.\n\n**Your CON modifier affects:**\n• Hit Points (HP = base HP + CON modifier × level)\n• Fortitude saving throws (resist poison, disease, death effects)\n\n**Example**: A Fighter with CON 14 (+2) gains +2 HP per level compared to CON 10 (+0).',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'shield' },
+        companionHint: 'Every character needs decent CON. It\'s the difference between surviving combat and dying!',
+        choices: [
+            {
+                id: 'hp_demonstration',
+                text: '❤️ View HP Impact',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'con_hp_demo' }
+            },
+            {
+                id: 'fortitude_save',
+                text: '🧪 Resist Poison (Fortitude save)',
+                displayText: 'Fortitude Save: Resist deadly poison',
+                category: 'skillCheck',
+                outcome: { type: 'goto', nodeId: 'con_poison_test' }
+            },
+            {
+                id: 'back',
+                text: 'Back to Ability Scores',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            }
+        ]
+    },
+    {
+        id: 'con_hp_demo',
+        title: 'Hit Points by Constitution',
+        description: 'Constitution directly affects your survivability:\n\n**Level 1 Fighter Examples:**\n• CON 10 (+0): 15 HP\n• CON 12 (+1): 16 HP\n• CON 14 (+2): 17 HP\n• CON 16 (+3): 18 HP\n\n**At Level 5:**\n• CON 10 (+0): ~45 HP\n• CON 14 (+2): ~55 HP (+10 HP total!)\n\nHigh CON means surviving more hits in combat. It\'s especially important for frontline fighters but valuable for everyone.',
+        flavor: { tone: 'calm', icon: 'question' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Back to CON Demo',
+                outcome: { type: 'goto', nodeId: 'constitution_demo' }
+            }
+        ]
+    },
+    {
+        id: 'con_poison_test',
+        title: 'Poison Dart Trap!',
+        description: 'A dart flies from the wall, dripping with poison! You must make a Fortitude save (d20 + Fort save + CON modifier) to resist.\n\nHigh CON helps you resist physical threats like poison, disease, and death effects.',
+        flavor: { tone: 'danger', icon: 'skull' },
+        onEnter: [
+            { type: 'damage', amount: 5 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue (you took some damage)',
+                outcome: { type: 'goto', nodeId: 'constitution_demo' }
+            }
+        ]
+    },
+
+    // INT Demonstration
+    {
+        id: 'intelligence_demo',
+        title: 'Intelligence (INT) Demonstration',
+        description: 'Intelligence represents knowledge, reasoning, and arcane power. It\'s the primary stat for Wizards.\n\n**Your INT modifier affects:**\n• Arcana skill checks (magical knowledge)\n• Wizard spell DCs (harder to resist)\n• Wizard bonus spell slots (not yet implemented)\n\nHigh INT makes your spells more powerful and helps you solve magical mysteries.',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'magic' },
+        companionHint: 'INT is essential for Wizards, useful for Rogues (skill points), but a dump stat for Fighters/Clerics.',
+        choices: [
+            {
+                id: 'arcana_check',
+                text: '📖 Arcana Check: Identify magical rune',
+                displayText: '🎲 Arcana DC 18: Decipher the ancient magical rune',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Arcana',
+                    dc: 18,
+                    success: { type: 'goto', nodeId: 'int_arcana_success' },
+                    failure: { type: 'goto', nodeId: 'int_arcana_failure' }
+                }
+            },
+            {
+                id: 'spell_dc_demo',
+                text: '🔮 Wizard Spell DC Explanation',
+                category: 'special',
+                outcome: { type: 'goto', nodeId: 'int_spell_dc_demo' }
+            },
+            {
+                id: 'back',
+                text: 'Back to Ability Scores',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            }
+        ]
+    },
+    {
+        id: 'int_arcana_success',
+        title: 'Arcane Knowledge',
+        description: 'Your knowledge of magic serves you well! You recognize the rune as an ancient warding sigil and understand its power.\n\nHigh INT and Arcana ranks let you identify magical threats, understand spells, and recall arcane lore.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 75 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'intelligence_demo' }
+            }
+        ]
+    },
+    {
+        id: 'int_arcana_failure',
+        title: 'Magical Mystery',
+        description: 'The rune\'s meaning eludes you. Its magical nature is clear, but without sufficient INT and Arcana knowledge, you can\'t decipher it.',
+        flavor: { tone: 'calm', icon: 'question' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'intelligence_demo' }
+            }
+        ]
+    },
+    {
+        id: 'int_spell_dc_demo',
+        title: 'Wizard Spell DCs',
+        description: 'For Wizards, INT determines how hard your spells are to resist:\n\n**Spell DC Formula**: 10 + spell level + INT modifier\n\n**Examples (Fireball, level 3 spell):**\n• INT 12 (+1): DC 14 (easy to dodge)\n• INT 16 (+3): DC 16 (moderate)\n• INT 18 (+4): DC 17 (hard to dodge)\n\nEnemies roll d20 + save bonus vs your DC. Higher INT = more enemies fail their saves = more damage dealt!\n\nThis applies to all Wizard spells with saves (Fireball, Sleep, Daze, etc.)',
+        flavor: { tone: 'calm', icon: 'question' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Back to INT Demo',
+                outcome: { type: 'goto', nodeId: 'intelligence_demo' }
+            }
+        ]
+    },
+
+    // WIS Demonstration
+    {
+        id: 'wisdom_demo',
+        title: 'Wisdom (WIS) Demonstration',
+        description: 'Wisdom represents awareness, intuition, and divine connection. It governs perception and divine magic.\n\n**Your WIS modifier affects:**\n• Perception skill checks (spot traps, notice details)\n• Medicine skill checks (heal wounds, diagnose illness)\n• Cleric spell DCs (harder to resist)\n• Will saving throws (resist mind control, fear)\n\n**Bonus**: Perception ≥3 ranks gives +2 initiative!',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'search' },
+        companionHint: 'WIS is essential for Clerics, important for Rogues (Perception), and helps everyone with Will saves.',
+        choices: [
+            {
+                id: 'perception_check',
+                text: '👁️ Perception Check: Spot hidden trap',
+                displayText: '🎲 Perception DC 13: Spot the hidden pressure plate',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Perception',
+                    dc: 13,
+                    success: { type: 'goto', nodeId: 'wis_perception_success' },
+                    failure: { type: 'goto', nodeId: 'wis_perception_failure' }
+                }
+            },
+            {
+                id: 'medicine_check',
+                text: '🏥 Medicine Check: Treat wounds',
+                displayText: '🎲 Medicine DC 12: Treat battle wounds',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Medicine',
+                    dc: 12,
+                    success: { type: 'goto', nodeId: 'wis_medicine_success' },
+                    failure: { type: 'goto', nodeId: 'wis_medicine_failure' }
+                }
+            },
+            {
+                id: 'back',
+                text: 'Back to Ability Scores',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            }
+        ]
+    },
+    {
+        id: 'wis_perception_success',
+        title: 'Sharp Eyes!',
+        description: 'Your keen senses spot the trap before you step on it! A pressure plate is barely visible beneath the dust.\n\nHigh WIS and Perception let you:\n• Spot traps and ambushes\n• Notice hidden details\n• Get +2 initiative (if Perception ≥3)',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 50 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'wisdom_demo' }
+            }
+        ]
+    },
+    {
+        id: 'wis_perception_failure',
+        title: 'Trap Triggered!',
+        description: 'You fail to notice the trap! Darts shoot from the walls as you step on a hidden pressure plate.\n\nLow WIS and poor Perception make you vulnerable to ambushes and traps.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        onEnter: [
+            { type: 'damage', amount: 6 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'wisdom_demo' }
+            }
+        ]
+    },
+    {
+        id: 'wis_medicine_success',
+        title: 'Skilled Healer',
+        description: 'Your knowledge of healing serves you well! You expertly treat the wounds, applying herbs and bandages with precision.\n\nHigh WIS and Medicine ranks help you heal outside combat and diagnose ailments.',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'heal', amount: 5 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'wisdom_demo' }
+            }
+        ]
+    },
+    {
+        id: 'wis_medicine_failure',
+        title: 'Makeshift Treatment',
+        description: 'You do your best with limited medical knowledge, but the treatment is less effective than it could be.\n\nLow WIS and poor Medicine make healing difficult.',
+        flavor: { tone: 'calm', icon: 'warning' },
+        onEnter: [
+            { type: 'heal', amount: 2 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'wisdom_demo' }
+            }
+        ]
+    },
+
+    // CHA Demonstration
+    {
+        id: 'charisma_demo',
+        title: 'Charisma (CHA) Demonstration',
+        description: 'Charisma represents force of personality, leadership, and social influence.\n\n**Your CHA modifier affects:**\n• Intimidate skill checks (threaten, coerce)\n• Social interactions in dialogue\n• Future features (persuasion, deception)\n\nCHA is currently the least impactful combat stat but important for narrative choices.',
+        type: 'explore',
+        flavor: { tone: 'calm', icon: 'speech' },
+        companionHint: 'CHA is useful for Fighters (Intimidate is a class skill) but a dump stat for most other classes currently.',
+        choices: [
+            {
+                id: 'intimidate_check',
+                text: '😠 Intimidate Check: Threaten the bandit',
+                displayText: '🎲 Intimidate DC 14: Force the bandit to surrender',
+                category: 'skillCheck',
+                outcome: {
+                    type: 'check',
+                    skill: 'Intimidate',
+                    dc: 14,
+                    success: { type: 'goto', nodeId: 'cha_intimidate_success' },
+                    failure: { type: 'goto', nodeId: 'cha_intimidate_failure' }
+                }
+            },
+            {
+                id: 'social_interaction',
+                text: '💬 Social Dialogue Example',
+                category: 'dialogue',
+                outcome: { type: 'goto', nodeId: 'cha_social_demo' }
+            },
+            {
+                id: 'back',
+                text: 'Back to Ability Scores',
+                category: 'movement',
+                outcome: { type: 'goto', nodeId: 'ability_scores_hub' }
+            }
+        ]
+    },
+    {
+        id: 'cha_intimidate_success',
+        title: 'Intimidating Presence!',
+        description: 'Your forceful demeanor terrifies the bandit! \"I-I surrender! Take everything, just don\'t hurt me!\"\n\nHigh CHA and Intimidate ranks let you:\n• Avoid combat through fear\n• Extract information from NPCs\n• Command respect and obedience',
+        flavor: { tone: 'triumphant', icon: 'victory' },
+        onEnter: [
+            { type: 'giveGold', amount: 50 }
+        ],
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'charisma_demo' }
+            }
+        ]
+    },
+    {
+        id: 'cha_intimidate_failure',
+        title: 'Defiant!',
+        description: 'The bandit laughs at your attempt. \"You\'ll have to do better than that!\"\n\nLow CHA and poor Intimidate make social manipulation difficult. Combat or other approaches may be necessary.',
+        flavor: { tone: 'danger', icon: 'warning' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Continue',
+                outcome: { type: 'goto', nodeId: 'charisma_demo' }
+            }
+        ]
+    },
+    {
+        id: 'cha_social_demo',
+        title: 'Charisma in Dialogue',
+        description: 'While CHA doesn\'t affect combat directly, it opens up social options:\n\n**High CHA characters can:**\n• Persuade NPCs to help them\n• Deceive guards to gain entry\n• Intimidate enemies into fleeing\n• Lead and inspire allies\n\n**In many RPGs, CHA affects:**\n• Merchant prices (not yet implemented)\n• Quest rewards and outcomes\n• Companion loyalty\n• Faction reputation\n\nEven if combat-focused, some CHA helps with narrative choices!',
+        flavor: { tone: 'calm', icon: 'question' },
+        choices: [
+            {
+                id: 'back',
+                text: 'Back to CHA Demo',
+                outcome: { type: 'goto', nodeId: 'charisma_demo' }
             }
         ]
     },
