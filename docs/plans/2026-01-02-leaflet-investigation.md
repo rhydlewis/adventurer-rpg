@@ -198,37 +198,72 @@ import { Polyline } from 'react-leaflet';
 
 ## Recommendation
 
-**Use Custom Canvas + HTML for the POC**
+**Use Custom Canvas + HTML for POC, migrate to Leaflet.js for production**
 
-### Reasoning
+### Two-Phase Approach
 
-1. **Simplicity for POC:** We're building a proof-of-concept with 3-5 locations. Custom implementation is straightforward for this scale.
+**Phase 1: POC with Custom Canvas**
+Build proof-of-concept with custom implementation to:
+- Understand the exact mechanics and requirements
+- Test coordinate placement and navigation flow
+- Validate the abstract node map concept
+- Learn what features we actually need
 
-2. **Learning opportunity:** Building pan/zoom gives us deeper understanding of the mechanics, useful for debugging and future enhancements.
+**Phase 2: Migrate to Leaflet.js for Production**
+Once POC validates the approach, migrate to Leaflet.js for:
+- Battle-tested mobile gestures (pinch-zoom, inertia)
+- Performance optimization at scale (50+ locations)
+- Professional pan/zoom feel
+- Reduced maintenance burden
 
-3. **Perfect fit:** Our needs are simpler than Leaflet's feature set. We want abstract nodes, not geographic maps.
+### Reasoning for Custom POC First
 
-4. **Native coordinates:** No need to adapt between lat/lng and x/y systems.
+1. **Requirements clarity:** Building it ourselves reveals exactly what we need from Leaflet
+2. **Learning value:** Understand pan/zoom mechanics deeply before using library abstractions
+3. **Native coordinates:** Test with simple x/y before adapting to Leaflet's CRS.Simple
+4. **Faster POC iteration:** No time spent learning Leaflet API upfront
+5. **Informed migration:** Know which Leaflet features to use when we switch
 
-5. **Smaller scope:** For a POC testing coordinate placement and navigation, custom code is faster to write and understand.
+### Reasoning for Leaflet Production Implementation
 
-6. **Future flexibility:** If we later need Leaflet's features (tile layers, GeoJSON, complex layers), we can migrate. Starting simple makes sense.
+1. **Mobile optimization:** Leaflet's gestures are battle-tested on millions of devices
+2. **Performance:** Handles viewport culling, layer management, hardware acceleration automatically
+3. **Maintenance:** Less code to maintain, more time for game features
+4. **Edge cases:** Leaflet handles zoom bounds, viewport limits, orientation changes
+5. **Future features:** Easy to add tile backgrounds, minimap, advanced interactions
 
-### When to reconsider Leaflet
+### Migration Path
 
-- **Post-POC:** If the POC succeeds and we want to add tile-based backgrounds, complex interactions, or geographic features
-- **Mobile issues:** If our custom touch gestures don't feel smooth enough
-- **Performance:** If rendering 50+ locations with connections causes lag
-- **Time constraints:** If custom implementation takes longer than expected
+The POC will naturally map to Leaflet concepts:
+
+| Custom POC | Leaflet.js Equivalent |
+|------------|----------------------|
+| Viewport state (x, y, zoom) | `MapContainer` with `center` and `zoom` |
+| HTML positioned nodes | `Marker` with `DivIcon` |
+| Canvas connection lines | `Polyline` components |
+| Pan/zoom handlers | Built-in (zero code) |
+| Touch gestures | Built-in (zero code) |
+| Recenter button | `map.setView()` method |
 
 ### Implementation Plan
 
-Start with custom canvas approach as designed:
+**POC Phase (Custom Canvas):**
 1. Implement basic pan/zoom (mouse/wheel)
 2. Test with 3-5 locations
 3. Add touch gestures (pinch, drag)
-4. Evaluate feel and performance
-5. **Decision checkpoint:** Keep custom or migrate to Leaflet based on results
+4. Validate coordinate system and navigation flow
+5. Document lessons learned
+
+**Migration Phase (To Leaflet.js):**
+1. Install `leaflet`, `react-leaflet`, `@types/leaflet`
+2. Replace viewport state with `<MapContainer crs={L.CRS.Simple}>`
+3. Convert HTML nodes to `<Marker>` with `DivIcon`
+4. Convert canvas lines to `<Polyline>` components
+5. Remove custom pan/zoom code (Leaflet handles it)
+6. Test mobile gestures feel natural
+7. Compare bundle size impact (~70kb)
+
+**Timeline:** POC first, then migrate once validated
 
 ---
 
