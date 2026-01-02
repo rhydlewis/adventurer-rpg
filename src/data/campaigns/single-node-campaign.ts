@@ -2293,7 +2293,27 @@ export const singleNodeCampaign: Campaign = {
     acts: [testAct],
 
     // Phase 5: World & Exploration
-    locations: Object.values(LOCATIONS),
+    locations: [
+        // Starting location
+        LOCATIONS['crossroads'],
+
+        // Towns
+        LOCATIONS['rusty-tavern'],
+        LOCATIONS['town-square'],
+        LOCATIONS['village-market'],
+        LOCATIONS['victory-hall'],
+
+        // Wilderness
+        LOCATIONS['forest-path'],
+        LOCATIONS['bandit-camp'],
+        LOCATIONS['darkwood-forest'],
+        LOCATIONS['character-reflection'],
+
+        // Dungeons
+        LOCATIONS['crypt'],
+        LOCATIONS['void-sanctum'],
+        LOCATIONS['shadowed-end'],
+    ],
     startingLocationId: 'crossroads',
     initialUnlockedLocations: ['crossroads'],
 };

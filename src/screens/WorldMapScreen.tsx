@@ -101,17 +101,23 @@ export function WorldMapScreen({ onNavigate }: WorldMapScreenProps) {
 
                 {/* Location Name */}
                 <h3 className={`text-xl font-bold mb-2 ${isUnlocked ? 'text-white' : 'text-gray-600'}`}>
-                  {location.name}
+                  {isUnlocked ? location.name : '???'}
                 </h3>
 
                 {/* Location Type Badge */}
-                <div className={`inline-block px-3 py-1 rounded text-xs font-medium mb-2 ${
-                  location.locationType === 'town' ? 'bg-green-500/20 text-green-400' :
-                  location.locationType === 'wilderness' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-red-500/20 text-red-400'
-                }`}>
-                  {location.locationType}
-                </div>
+                {isUnlocked ? (
+                  <div className={`inline-block px-3 py-1 rounded text-xs font-medium mb-2 ${
+                    location.locationType === 'town' ? 'bg-green-500/20 text-green-400' :
+                    location.locationType === 'wilderness' ? 'bg-yellow-500/20 text-yellow-400' :
+                    'bg-red-500/20 text-red-400'
+                  }`}>
+                    {location.locationType}
+                  </div>
+                ) : (
+                  <div className="inline-block px-3 py-1 rounded text-xs font-medium mb-2 bg-gray-500/20 text-gray-500">
+                    unknown
+                  </div>
+                )}
 
                 {/* Location Description */}
                 {isUnlocked && location.description && (
