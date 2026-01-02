@@ -274,11 +274,16 @@ export interface Act {
 
 export interface Campaign {
   id: string;
-  title: string; // "The Spire of the Lich King"
+  title: string;
   description: string;
-  companionName: string; // "The Elder"
+  companionName: string;
   companionDescription: string; // For UI display
   acts: Act[];
+
+  // Phase 5: World map configuration
+  locations: Location[];                  // All locations in campaign
+  startingLocationId: string;             // Where player begins
+  initialUnlockedLocations: string[];     // Available at campaign start
 }
 
 // =============================================================================
