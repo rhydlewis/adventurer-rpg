@@ -8,7 +8,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 **WHY**: Create an accessible, story-driven RPG experience that works seamlessly across platforms.
 
-**CURRENT STATUS**: Phase 1 complete (4 character classes, spell system, combat mechanics). Phase 2 in progress: narrative campaign and character customization.
+**CURRENT STATUS**: Phase 5 in progress: world map and exploration system. Phases 1-4 complete (character classes, narrative system, rest/resource management, level-up system).
 
 ## Essential Commands
 
