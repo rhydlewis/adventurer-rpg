@@ -1,6 +1,7 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { getLocationHubOptions, type HubOption } from '../utils/worldMap';
 import { LOCATIONS } from '../data/locations';
+import { Icon } from '../components';
 
 interface LocationHubScreenProps {
   locationId: string;
@@ -97,16 +98,16 @@ export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenP
     }
   };
 
-  const getOptionIcon = (option: HubOption): string => {
+  const getOptionIcon = (option: HubOption) => {
     switch (option) {
-      case 'continue-story': return '📖';
-      case 'visit-merchant': return '🏪';
-      case 'rest-inn': return '🛏️';
-      case 'rest-sanctuary': return '⛪';
-      case 'explore-area': return '🔍';
-      case 'make-camp': return '🏕️';
-      case 'leave-location': return '🗺️';
-      default: return '•';
+      case 'continue-story': return 'Book' as const;
+      case 'visit-merchant': return 'ShoppingBag' as const;
+      case 'rest-inn': return 'House' as const;
+      case 'rest-sanctuary': return 'Heart' as const;
+      case 'explore-area': return 'Search' as const;
+      case 'make-camp': return 'Tent' as const;
+      case 'leave-location': return 'Map' as const;
+      default: return 'Circle' as const;
     }
   };
 
@@ -114,18 +115,18 @@ export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenP
     <div
       className="min-h-screen bg-cover bg-center p-8"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(/assets/${location.image})`,
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url(/assets/locations/${location.image})`,
       }}
     >
       <div className="max-w-4xl mx-auto">
         {/* Location Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{location.name}</h1>
+          <h1 className="heading-primary text-h1 text-fg-primary mb-2">{location.name}</h1>
           {location.description && (
-            <p className="text-lg text-gray-300 mb-4">{location.description}</p>
+            <p className="body-primary text-fg-primary mb-4">{location.description}</p>
           )}
           {location.ambience && (
-            <p className="text-sm text-gray-400 italic">{location.ambience}</p>
+            <p className="body-secondary text-fg-muted italic">{location.ambience}</p>
           )}
         </div>
 
@@ -135,16 +136,25 @@ export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenP
             <button
               key={option}
               onClick={() => handleOptionClick(option)}
-              className="w-full p-6 bg-gray-800/90 hover:bg-gray-700/90 border border-gray-600 hover:border-blue-500 rounded-lg transition-all text-left group"
+              className="w-full text-left p-4 rounded-lg border-2 border-border-default hover:border-accent bg-secondary/90 hover:bg-secondary/80 transition-all"
             >
-              <div className="flex items-center space-x-4">
-                <span className="text-3xl">{getOptionIcon(option)}</span>
-                <div>
-                  <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+              <div className="flex items-center gap-4">
+                {/* Option Icon */}
+                <div className="w-12 h-12 rounded-lg bg-fg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Icon
+                    name={getOptionIcon(option)}
+                    size={24}
+                    className="text-fg-primary"
+                  />
+                </div>
+
+                {/* Option Details */}
+                <div className="flex-1">
+                  <h3 className="heading-secondary text-fg-primary">
                     {getOptionLabel(option)}
                   </h3>
                   {option === 'explore-area' && location.explorationTableId && (
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="body-secondary text-sm text-fg-muted">
                       Search for treasure and encounters
                     </p>
                   )}
