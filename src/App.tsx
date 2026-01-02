@@ -9,6 +9,7 @@ import { CharacterSheetScreen } from './screens';
 import { StoryScreen } from './screens';
 import { ChooseCampaignScreen } from './screens';
 import { WorldMapScreen } from './screens';
+import { LocationHubScreen } from './screens/LocationHubScreen';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
 import { availableCampaigns } from './data/campaigns';
@@ -474,6 +475,12 @@ function App() {
       )}
       {currentScreen.type === 'worldMap' && (
         <WorldMapScreen
+          onNavigate={(screen) => setCurrentScreen(screen as Screen)}
+        />
+      )}
+      {currentScreen.type === 'locationHub' && (
+        <LocationHubScreen
+          locationId={currentScreen.locationId}
           onNavigate={(screen) => setCurrentScreen(screen as Screen)}
         />
       )}
