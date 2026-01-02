@@ -15,7 +15,8 @@ export type Screen =
   | { type: 'gameOver'; deathNodeId?: string }
   | { type: 'victory' }
   | { type: 'characterSheet' }
-  | { type: 'worldMap' } // Phase 3
+  | { type: 'worldMap' } // Phase 5
+  | { type: 'locationHub'; locationId: string } // Phase 5
   | { type: 'rest' } // Phase 4
   | { type: 'lockPicking'; difficulty: 'easy' | 'medium' | 'hard'; onSuccess: () => void; onFailure: () => void }
   | { type: 'timingGame'; onSuccess: () => void; onFailure: () => void }
