@@ -9,6 +9,8 @@ export const LOCATIONS: Record<string, Location> = {
     description: 'A weathered establishment on the edge of town',
     locationType: 'town',
     hasMerchant: false,
+    coordinates: { x: -120, y: -80 },  // Northwest of crossroads
+    connections: ['crossroads', 'town-square']
   },
   'town-square': {
     id: 'town-square',
@@ -18,6 +20,8 @@ export const LOCATIONS: Record<string, Location> = {
     description: 'The bustling heart of the settlement',
     locationType: 'town',
     hasMerchant: true,
+    coordinates: { x: -180, y: -120 },  // West of tavern
+    connections: ['rusty-tavern']
   },
   'forest-path': {
     id: 'forest-path',
@@ -26,6 +30,8 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'Ancient trees loom overhead, their branches filtering the sunlight',
     description: 'A winding trail through dense woodland',
     locationType: 'wilderness',
+    coordinates: { x: 100, y: 60 },  // Southeast of crossroads
+    connections: ['crossroads']
   },
   'crossroads': {
     id: 'crossroads',
@@ -34,6 +40,8 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'The Crossroads - Where your journey begins',
     description: 'A weathered signpost marks the intersection of three paths',
     locationType: 'wilderness',
+    coordinates: { x: 0, y: 0 },  // Center of map
+    connections: ['rusty-tavern', 'forest-path', 'bandit-camp']
   },
   'bandit-camp': {
     id: 'bandit-camp',
@@ -42,6 +50,8 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'A crude camp in a forest clearing, abandoned and eerily quiet',
     description: 'Makeshift tents and dying embers mark this temporary refuge',
     locationType: 'wilderness',
+    coordinates: { x: 80, y: -100 },  // Northeast of crossroads
+    connections: ['crossroads']
   },
   // Validation Campaign Locations
   'darkwood-forest': {
