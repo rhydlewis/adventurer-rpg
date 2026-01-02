@@ -105,8 +105,16 @@ src/data/
 └── locations.ts                 (add coordinates & connections)
 ```
 
-### Rendering Approach: Hybrid Canvas + HTML
+### Rendering Approach Options
 
+**Note:** Phase 0 will investigate using Leaflet.js vs. custom implementation.
+
+#### Option A: Leaflet.js (Under Investigation)
+- **Pros:** Mature library, handles pan/zoom/gestures out of the box, well-tested, mobile-optimized
+- **Cons:** Additional dependency (~150kb), some styling limitations, learning curve
+- **Reference:** https://github.com/TaylorHo/rpg-interactive-map
+
+#### Option B: Hybrid Canvas + HTML (Original Design)
 **HTML5 Canvas** for drawing connection lines and background
 **Positioned HTML elements** for location nodes (better for interactive buttons, icons, and text)
 
@@ -114,6 +122,7 @@ src/data/
 - Canvas excels at drawing many lines efficiently
 - HTML elements provide natural hover states, click handlers, icons, and text with CSS/React
 - Best of both worlds: performance + interactivity
+- Full control over rendering and styling
 
 ### Component Structure
 
@@ -303,8 +312,20 @@ LocationHubScreen OR StoryScreen (first visit)
 
 ## POC Implementation Plan
 
-### Phase 1: Basic Canvas Setup
-1. Create `WorldMapCanvasScreen.tsx` with canvas element
+### Phase 0: Technology Investigation
+1. Research Leaflet.js as map renderer
+   - Review https://github.com/TaylorHo/rpg-interactive-map example
+   - Evaluate if Leaflet.js fits our needs (pan/zoom, markers, custom styling)
+   - Compare with custom canvas approach (complexity, bundle size, flexibility)
+   - Decision: Use Leaflet.js vs. custom implementation
+2. If using Leaflet.js:
+   - Install `leaflet` and `@types/leaflet`
+   - Explore React integration (`react-leaflet` or custom hooks)
+   - Test basic map setup with markers
+3. Document findings and update implementation approach
+
+### Phase 1: Basic Canvas/Map Setup
+1. Create `WorldMapCanvasScreen.tsx` with chosen renderer (Leaflet or canvas)
 2. Implement viewport state (x, y, zoom)
 3. Add pan with mouse drag
 4. Add zoom with mouse wheel
