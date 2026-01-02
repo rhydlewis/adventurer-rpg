@@ -734,3 +734,53 @@ describe('getNodeType', () => {
     expect(getNodeType(node)).toBe('dialogue');
   });
 });
+
+describe('processNodeEffects - Phase 5', () => {
+  const createTestWorldState = (): WorldState => ({
+    campaignId: 'test',
+    currentActId: 'act-1',
+    currentNodeId: 'node-1',
+    flags: {},
+    visitedNodeIds: [],
+    inventory: [],
+    currentLocationId: 'ashford',
+    unlockedLocations: ['ashford'],
+    visitedLocations: ['ashford'],
+    unlockedSanctuaries: [],
+  });
+
+  it('should unlock location when processing unlockLocation effect', () => {
+    const effects: NodeEffect[] = [
+      { type: 'unlockLocation', locationId: 'oakhaven' },
+    ];
+    const worldState = createTestWorldState();
+
+    const result = processNodeEffects(effects, worldState);
+
+    expect(result.worldUpdates.unlockedLocations).toContain('oakhaven');
+  });
+
+  it('should unlock sanctuary when processing unlockSanctuary effect', () => {
+    const effects: NodeEffect[] = [
+      { type: 'unlockSanctuary', locationId: 'tower-interior' },
+    ];
+    const worldState = createTestWorldState();
+
+    const result = processNodeEffects(effects, worldState);
+
+    expect(result.worldUpdates.unlockedSanctuaries).toContain('tower-interior');
+  });
+
+  it('should add log entry when unlocking location', () => {
+    const effects: NodeEffect[] = [
+      { type: 'unlockLocation', locationId: 'oakhaven' },
+    ];
+    const worldState = createTestWorldState();
+
+    const result = processNodeEffects(effects, worldState);
+
+    expect(result.logEntries.some(entry =>
+      entry.type === 'effect' && entry.message.includes('oakhaven')
+    )).toBe(true);
+  });
+});

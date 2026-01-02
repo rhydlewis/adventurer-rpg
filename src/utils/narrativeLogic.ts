@@ -15,6 +15,7 @@ import type {
   StoryNode,
 } from '../types';
 import { getTotalSkillBonus } from './skills';
+import { unlockLocation, unlockSanctuary } from './worldMap';
 
 const roller = new DiceRoller();
 
@@ -303,6 +304,8 @@ export function processNodeEffects(
   // Clone arrays to avoid mutating original
   const newFlags = { ...world.flags };
   const newInventory = [...world.inventory];
+  const newUnlockedLocations = [...world.unlockedLocations];
+  const newUnlockedSanctuaries = [...world.unlockedSanctuaries];
 
   for (const effect of effects) {
     switch (effect.type) {
@@ -400,6 +403,26 @@ export function processNodeEffects(
           failureNodeId: effect.failureNodeId,
         };
         break;
+
+      case 'unlockLocation':
+        if (!newUnlockedLocations.includes(effect.locationId)) {
+          newUnlockedLocations.push(effect.locationId);
+          logEntries.push({
+            type: 'effect',
+            message: `New location unlocked: ${effect.locationId}`,
+          });
+        }
+        break;
+
+      case 'unlockSanctuary':
+        if (!newUnlockedSanctuaries.includes(effect.locationId)) {
+          newUnlockedSanctuaries.push(effect.locationId);
+          logEntries.push({
+            type: 'effect',
+            message: `Safe sanctuary discovered in ${effect.locationId}`,
+          });
+        }
+        break;
     }
   }
 
@@ -412,6 +435,16 @@ export function processNodeEffects(
   if (newInventory.length !== world.inventory.length ||
       newInventory.some((item, i) => item !== world.inventory[i])) {
     worldUpdates.inventory = newInventory;
+  }
+
+  if (newUnlockedLocations.length !== world.unlockedLocations.length ||
+      newUnlockedLocations.some((loc, i) => loc !== world.unlockedLocations[i])) {
+    worldUpdates.unlockedLocations = newUnlockedLocations;
+  }
+
+  if (newUnlockedSanctuaries.length !== world.unlockedSanctuaries.length ||
+      newUnlockedSanctuaries.some((loc, i) => loc !== world.unlockedSanctuaries[i])) {
+    worldUpdates.unlockedSanctuaries = newUnlockedSanctuaries;
   }
 
   return {
