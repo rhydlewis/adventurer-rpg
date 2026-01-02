@@ -1,5 +1,6 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { OptionsMenu } from '../components';
+import { useState, useRef, useEffect } from 'react';
 
 interface WorldMapCanvasScreenProps {
   onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
@@ -12,6 +13,87 @@ export function WorldMapCanvasScreen({
   onExit,
 }: WorldMapCanvasScreenProps) {
   const { world, campaign } = useNarrativeStore();
+
+  // Viewport state
+  const [viewport, setViewport] = useState({
+    x: 0,      // Camera offset X (pixels)
+    y: 0,      // Camera offset Y (pixels)
+    zoom: 1.0  // Zoom level (0.5 to 2.0)
+  });
+
+  // Pan state
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+
+  // Canvas ref
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Resize canvas to fill container
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    const resizeCanvas = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = container.getBoundingClientRect();
+
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(dpr, dpr);
+      }
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    return () => window.removeEventListener('resize', resizeCanvas);
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsPanning(true);
+    setPanStart({ x: e.clientX - viewport.x, y: e.clientY - viewport.y });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isPanning) return;
+
+    setViewport(prev => ({
+      ...prev,
+      x: e.clientX - panStart.x,
+      y: e.clientY - panStart.y
+    }));
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPanning(false);
+  };
+
+  // Debug: Draw viewport info
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw viewport info
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '14px monospace';
+    ctx.fillText(`Viewport: x=${viewport.x.toFixed(0)}, y=${viewport.y.toFixed(0)}, zoom=${viewport.zoom.toFixed(2)}`, 10, 20);
+  }, [viewport]);
 
   if (!world || !campaign) {
     return (
@@ -38,9 +120,20 @@ export function WorldMapCanvasScreen({
         />
       </div>
 
-      {/* Canvas container - to be implemented */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <p className="text-fg-muted">Canvas map coming soon...</p>
+      {/* Canvas container */}
+      <div
+        ref={containerRef}
+        className="absolute inset-0 cursor-grab active:cursor-grabbing"
+        style={{ top: '80px' }} // Space for header
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
+      >
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0"
+        />
       </div>
     </div>
   );
