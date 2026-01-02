@@ -383,6 +383,14 @@ describe('utils/narrativeLogic', () => {
       expect(result.nextNodeId).toBeNull();
     });
 
+    it('should return special marker for exitToHub outcome', () => {
+      const outcome: ChoiceOutcome = { type: 'exitToHub' };
+      const result = resolveOutcome(outcome, player, 'current-node');
+
+      // exitToHub should set a special nextNodeId that LocationHub can detect
+      expect(result.nextNodeId).toBe('__EXIT_TO_HUB__');
+    });
+
     it('handles skill check outcome and creates log entry', () => {
       const outcome: ChoiceOutcome = {
         type: 'check',

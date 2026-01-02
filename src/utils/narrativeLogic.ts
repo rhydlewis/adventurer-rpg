@@ -275,6 +275,14 @@ export function resolveOutcome(
         },
       };
 
+    case 'exitToHub':
+      // Special marker for LocationHubScreen to detect
+      return {
+        nextNodeId: '__EXIT_TO_HUB__',
+        logEntries: [],
+        worldUpdates: {},
+      };
+
     default:
       return {
         nextNodeId: null,
