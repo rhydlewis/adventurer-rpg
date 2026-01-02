@@ -135,6 +135,7 @@ export type ChoiceOutcome =
   | { type: 'goto'; nodeId: string }
   | { type: 'loop' } // Return to current node (for questions)
   | { type: 'exit' } // End conversation, return to exploration
+  | { type: 'exitToHub' }  // Phase 5: Return to current location hub
   | {
       type: 'check';
       skill: SkillName;
