@@ -1,6 +1,6 @@
 import type { GameSave } from '../types';
 
-export const CURRENT_VERSION = '1.0.0';
+export const CURRENT_VERSION = '1.1.0';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MigrationFunction = (save: any) => any;
@@ -15,6 +15,25 @@ const migrations: Record<string, MigrationFunction> = {
       metadata: {
         ...save.metadata,
         playTimeSeconds: save.metadata?.playTimeSeconds ?? 0,
+      },
+    };
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  '1.1.0': (save: any): GameSave => {
+    // Migration from 1.0.0 to 1.1.0 - Add Phase 5 location fields
+    return {
+      ...save,
+      version: '1.1.0',
+      narrative: {
+        ...save.narrative,
+        world: {
+          ...save.narrative.world,
+          // Add Phase 5 fields if missing
+          currentLocationId: save.narrative.world.currentLocationId ?? null,
+          unlockedLocations: save.narrative.world.unlockedLocations ?? [],
+          visitedLocations: save.narrative.world.visitedLocations ?? [],
+          unlockedSanctuaries: save.narrative.world.unlockedSanctuaries ?? [],
+        },
       },
     };
   },
