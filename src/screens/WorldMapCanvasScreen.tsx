@@ -1,6 +1,7 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
-import { OptionsMenu } from '../components';
+import { OptionsMenu, Icon } from '../components';
 import { useState, useRef, useEffect } from 'react';
+import { canTravelToLocation } from '../utils/worldMap';
 
 interface WorldMapCanvasScreenProps {
   onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
@@ -114,6 +115,25 @@ export function WorldMapCanvasScreen({
     );
   }
 
+  // Get campaign locations with coordinates
+  const campaignLocations = campaign.locations || [];
+  const locationsWithCoords = campaignLocations.filter(loc => loc.coordinates);
+
+  // Transform world coordinates to screen coordinates
+  const worldToScreen = (worldX: number, worldY: number) => {
+    const container = containerRef.current;
+    if (!container) return { x: 0, y: 0 };
+
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    return {
+      x: centerX + (worldX * viewport.zoom) + viewport.x,
+      y: centerY + (worldY * viewport.zoom) + viewport.y
+    };
+  };
+
   return (
     <div className="relative min-h-screen bg-primary overflow-hidden">
       {/* Header with Options Menu */}
@@ -146,6 +166,56 @@ export function WorldMapCanvasScreen({
           ref={canvasRef}
           className="absolute inset-0"
         />
+
+        {/* Location nodes */}
+        {locationsWithCoords.map((location) => {
+          const screenPos = worldToScreen(
+            location.coordinates!.x,
+            location.coordinates!.y
+          );
+
+          const isUnlocked = canTravelToLocation(world, location.id);
+          const isCurrent = world.currentLocationId === location.id;
+
+          return (
+            <div
+              key={location.id}
+              className="absolute"
+              style={{
+                left: `${screenPos.x}px`,
+                top: `${screenPos.y}px`,
+                transform: 'translate(-50%, -50%)', // Center on coordinates
+                pointerEvents: isUnlocked ? 'auto' : 'none',
+              }}
+            >
+              {/* Location button */}
+              <button
+                className={`
+                  flex flex-col items-center gap-2 p-3 rounded-lg
+                  min-w-[44px] min-h-[44px]
+                  transition-transform hover:scale-110
+                  ${isUnlocked ? 'bg-secondary border-2 border-border-default hover:border-accent' : 'bg-secondary/50 border-2 border-border-default opacity-50'}
+                  ${isCurrent ? 'border-accent shadow-lg shadow-blue-500/50' : ''}
+                `}
+                disabled={!isUnlocked}
+              >
+                {/* Icon */}
+                <div className="w-8 h-8 flex items-center justify-center">
+                  <Icon
+                    name={isUnlocked ? 'MapPin' : 'Lock'}
+                    size={20}
+                    className="text-fg-primary"
+                  />
+                </div>
+
+                {/* Location name */}
+                <span className="text-xs text-fg-primary whitespace-nowrap">
+                  {isUnlocked ? location.name : '???'}
+                </span>
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
