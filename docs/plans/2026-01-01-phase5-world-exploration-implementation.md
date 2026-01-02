@@ -1839,37 +1839,11 @@ git commit -m "feat(app): add Phase 5 screen routing for worldMap and locationHu
 ## Task 18: Update Campaign with Phase 5 Fields (Minimal Test)
 
 **Files:**
-- Modify: `src/data/campaigns/test-campaign.ts`
+- Modify: `src/data/campaigns/single-node-campaign.ts`
 
 **Step 1: Add Phase 5 fields to test campaign**
 
-Modify `src/data/campaigns/test-campaign.ts`:
-
-```typescript
-import type { Campaign } from '../../types';
-import { LOCATIONS } from '../locations';
-
-export const testCampaign: Campaign = {
-  id: 'test-campaign',
-  title: 'Test Campaign',
-  description: 'A simple campaign for testing Phase 5',
-  companionName: 'Test Companion',
-  companionDescription: 'A helpful guide for testing',
-
-  // Phase 5: Location configuration
-  locations: [
-    LOCATIONS['ashford'],
-    LOCATIONS['blackwood-forest'],
-    LOCATIONS['oakhaven'],
-  ],
-  startingLocationId: 'ashford',
-  initialUnlockedLocations: ['ashford'],
-
-  acts: [
-    // ... existing act structure
-  ],
-};
-```
+Modify `src/data/campaigns/single-node-campaign.ts`
 
 **Step 2: Verify TypeScript compiles**
 
