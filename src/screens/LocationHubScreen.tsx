@@ -71,7 +71,7 @@ export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenP
         }
         break;
 
-      case 'leave-location':
+      case 'leave-location': {
         // Return to world map
         const updatedWorld = {
           ...world,
@@ -80,6 +80,7 @@ export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenP
         useNarrativeStore.setState({ world: updatedWorld });
         onNavigate({ type: 'worldMap' });
         break;
+      }
     }
   };
 

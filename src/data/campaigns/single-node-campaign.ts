@@ -895,7 +895,7 @@ const testNodes: StoryNode[] = [
     {
         id: 'cha_intimidate_success',
         title: 'Intimidating Presence!',
-        description: 'Your forceful demeanor terrifies the bandit! \"I-I surrender! Take everything, just don\'t hurt me!\"\n\nHigh CHA and Intimidate ranks let you:\n• Avoid combat through fear\n• Extract information from NPCs\n• Command respect and obedience',
+        description: 'Your forceful demeanor terrifies the bandit! "I-I surrender! Take everything, just don\'t hurt me!"\n\nHigh CHA and Intimidate ranks let you:\n• Avoid combat through fear\n• Extract information from NPCs\n• Command respect and obedience',
         flavor: { tone: 'triumphant', icon: 'victory' },
         onEnter: [
             { type: 'giveGold', amount: 50 }
@@ -911,7 +911,7 @@ const testNodes: StoryNode[] = [
     {
         id: 'cha_intimidate_failure',
         title: 'Defiant!',
-        description: 'The bandit laughs at your attempt. \"You\'ll have to do better than that!\"\n\nLow CHA and poor Intimidate make social manipulation difficult. Combat or other approaches may be necessary.',
+        description: 'The bandit laughs at your attempt. "You\'ll have to do better than that!"\n\nLow CHA and poor Intimidate make social manipulation difficult. Combat or other approaches may be necessary.',
         flavor: { tone: 'danger', icon: 'warning' },
         choices: [
             {

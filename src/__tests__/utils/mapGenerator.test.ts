@@ -308,6 +308,9 @@ describe('mapGenerator', () => {
         companionName: 'Guide',
         companionDescription: 'Helper',
         acts: [act1, act2],
+        locations: [],
+        startingLocationId: 'crossroads',
+        initialUnlockedLocations: ['crossroads'],
       };
 
       const map = generateCampaignMap(campaign);

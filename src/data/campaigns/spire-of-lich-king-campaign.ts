@@ -1,4 +1,5 @@
 import type {Campaign, Act, StoryNode} from '../../types';
+import { LOCATIONS } from '../locations';
 
 /**
  * The Spire of the Lich King - Complete Campaign
@@ -1807,4 +1808,9 @@ export const spireOfLichKingCampaign: Campaign = {
     companionName: 'The Elder',
     companionDescription: 'A magical artifact containing the wisdom of a scholar who perished in the tower years ago. Provides guidance, lore, and cryptic warnings throughout your journey.',
     acts: [act0, act1, act2, act3, act4],
+
+    // Phase 5: World & Exploration
+    locations: Object.values(LOCATIONS),
+    startingLocationId: 'crossroads',
+    initialUnlockedLocations: ['crossroads'],
 };

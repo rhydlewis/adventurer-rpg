@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { GameSaveManager } from '../../utils/gameSaveManager';
+import { CURRENT_VERSION } from '../../utils/gameSaveMigrations';
 import type { GameSave } from '../../types';
 import { Preferences } from '@capacitor/preferences';
 
@@ -51,7 +52,7 @@ describe('GameSaveManager', () => {
 
     // Parse the saved value to check structure (timestamp will be updated)
     const savedData = JSON.parse(callArgs.value);
-    expect(savedData.version).toBe('1.0.0');
+    expect(savedData.version).toBe(CURRENT_VERSION);
     expect(savedData.character).toEqual(mockSave.character);
     expect(savedData.narrative).toEqual(mockSave.narrative);
   });
@@ -66,7 +67,19 @@ describe('GameSaveManager', () => {
     expect(Preferences.get).toHaveBeenCalledWith({
       key: 'adventurer-rpg:save',
     });
-    expect(result).toEqual(mockSave);
+
+    // Migration should upgrade to current version and add Phase 5 fields
+    expect(result?.version).toBe(CURRENT_VERSION);
+    expect(result?.character).toEqual(mockSave.character);
+    expect(result?.narrative.world).toMatchObject({
+      flags: {},
+      visitedNodes: [],
+      // Phase 5 fields added by migration
+      currentLocationId: null,
+      unlockedLocations: [],
+      visitedLocations: [],
+      unlockedSanctuaries: [],
+    });
   });
 
   it('should return null if no save exists', async () => {

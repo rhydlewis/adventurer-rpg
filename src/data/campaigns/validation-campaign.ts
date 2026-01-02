@@ -12,6 +12,7 @@
  */
 
 import type { Campaign, Act, StoryNode } from '../../types';
+import { LOCATIONS } from '../locations';
 
 const validationNodes: StoryNode[] = [
     // === NODE 1: Character Creation Entry Point ===
@@ -430,4 +431,9 @@ export const validationCampaign: Campaign = {
     companionName: 'The Guide',
     companionDescription: 'A mysterious voice offering tactical advice',
     acts: [validationAct],
+
+    // Phase 5: World & Exploration
+    locations: Object.values(LOCATIONS),
+    startingLocationId: 'crossroads',
+    initialUnlockedLocations: ['crossroads'],
 };

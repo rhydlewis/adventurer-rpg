@@ -12,6 +12,7 @@
  */
 
 import type { Campaign, Act, StoryNode } from '../../types';
+import { LOCATIONS } from '../locations';
 
 const testNodes: StoryNode[] = [
   // === NODE 1: Opening scene ===
@@ -553,4 +554,9 @@ export const testCampaign: Campaign = {
   companionName: 'The Guide',
   companionDescription: 'A mysterious voice that offers helpful hints.',
   acts: [testAct],
+
+  // Phase 5: World & Exploration
+  locations: Object.values(LOCATIONS),
+  startingLocationId: 'crossroads',
+  initialUnlockedLocations: ['crossroads'],
 };

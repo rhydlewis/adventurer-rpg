@@ -13,15 +13,14 @@ describe('Phase 5: World Map Integration Flow', () => {
 
     // Create mock character
     mockCharacter = {
-      id: 'test-char',
       name: 'Test Hero',
+      avatarPath: '/avatars/default.png',
       class: 'Fighter',
       level: 3,
-      experience: 0,
       hp: 30,
       maxHp: 30,
-      gold: 150,
-      inventory: [],
+      ac: 16,
+      bab: 3,
       attributes: {
         STR: 14,
         DEX: 12,
@@ -39,22 +38,23 @@ describe('Phase 5: World Map Integration Flow', () => {
         Intimidate: 2,
       },
       saves: {
-        Fortitude: 5,
-        Reflex: 3,
-        Will: 2,
+        fortitude: 5,
+        reflex: 3,
+        will: 2,
       },
-      combat: {
-        baseAttackBonus: 3,
-        armorClass: 16,
-        initiative: 1,
+      feats: [],
+      equipment: {
+        weapon: null,
+        weapons: [],
+        armor: null,
+        shield: null,
+        items: [],
       },
-      spells: {
-        knownSpells: [],
-        preparedSpells: [],
+      resources: {
+        abilities: [],
         spellSlots: {
+          level0: { max: 0, current: 0 },
           level1: { max: 0, current: 0 },
-          level2: { max: 0, current: 0 },
-          level3: { max: 0, current: 0 },
         },
       },
     };
