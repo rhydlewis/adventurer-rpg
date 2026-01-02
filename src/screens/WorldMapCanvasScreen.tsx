@@ -78,6 +78,17 @@ export function WorldMapCanvasScreen({
     setIsPanning(false);
   };
 
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+
+    const zoomDelta = e.deltaY > 0 ? -0.1 : 0.1;
+
+    setViewport(prev => ({
+      ...prev,
+      zoom: Math.min(2.0, Math.max(0.5, prev.zoom + zoomDelta))
+    }));
+  };
+
   // Debug: Draw viewport info
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -129,6 +140,7 @@ export function WorldMapCanvasScreen({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
+        onWheel={handleWheel}
       >
         <canvas
           ref={canvasRef}
