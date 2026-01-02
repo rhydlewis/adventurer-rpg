@@ -1,332 +1,137 @@
-import { useState, useMemo } from 'react';
 import { useNarrativeStore } from '../stores/narrativeStore';
-import { generateCampaignMap, getNodeTitle } from '../utils/mapGenerator';
-import { BackButton, Card, Button, Icon } from '../components';
-import type { StoryNode, MapGraph } from '../types';
+import { useCharacterStore } from '../stores/characterStore';
+import { canTravelToLocation, isFirstVisit, markLocationVisited } from '../utils/worldMap';
+import { LOCATIONS } from '../data/locations';
+import type { Location } from '../types';
 
 interface WorldMapScreenProps {
-  /**
-   * Callback to return to the story
-   */
-  onReturnToStory: () => void;
+  onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
 }
 
-/**
- * WorldMapScreen - Visual representation of the campaign's story node graph
- *
- * Features:
- * - Auto-generated node graph from campaign structure
- * - Current position highlighted
- * - Visited nodes shown in full color
- * - Unvisited nodes dimmed
- * - Click nodes to see details
- * - Act-based views (one graph per act)
- *
- * @example
- * <WorldMapScreen onReturnToStory={() => setScreen('story')} />
- */
-export function WorldMapScreen({ onReturnToStory }: WorldMapScreenProps) {
-  const { campaign, world, conversation } = useNarrativeStore();
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [selectedActIndex, setSelectedActIndex] = useState<number>(0);
+export function WorldMapScreen({ onNavigate }: WorldMapScreenProps) {
+  const { world, campaign, enterNode } = useNarrativeStore();
+  const { character } = useCharacterStore();
 
-  // Generate map from campaign
-  const campaignMap = useMemo(() => {
-    if (!campaign) return null;
-    return generateCampaignMap(campaign);
-  }, [campaign]);
-
-  if (!campaign || !world || !conversation || !campaignMap) {
+  if (!world || !campaign) {
     return (
-      <div className="min-h-screen bg-primary flex items-center justify-center p-4">
-        <Card variant="neutral" padding="spacious">
-          <p className="text-fg-primary body-primary text-center">
-            No active campaign. Cannot display map.
-          </p>
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={onReturnToStory}
-            className="mt-4"
-          >
-            Return
-          </Button>
-        </Card>
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-white">No campaign loaded</p>
       </div>
     );
   }
 
-  // Get current act map
-  const currentActMap = campaignMap.acts[selectedActIndex];
-  if (!currentActMap) {
-    return (
-      <div className="min-h-screen bg-primary flex items-center justify-center p-4">
-        <Card variant="neutral" padding="spacious">
-          <p className="text-fg-primary body-primary text-center">
-            Act not found. This is a bug.
-          </p>
-        </Card>
-      </div>
-    );
-  }
+  const handleLocationClick = (location: Location) => {
+    if (!canTravelToLocation(world, location.id)) {
+      return; // Location locked
+    }
 
-  // Find selected node details
-  const selectedNode = selectedNodeId
-    ? campaign.acts
-        .flatMap((act) => act.nodes)
-        .find((node) => node.id === selectedNodeId)
-    : null;
+    // Check if first visit
+    if (isFirstVisit(world, location.id) && location.firstVisitNodeId) {
+      // Mark as visited
+      const updatedWorld = markLocationVisited(world, location.id);
+      useNarrativeStore.setState({ world: updatedWorld });
+
+      // Enter first visit story node
+      if (character) {
+        enterNode(location.firstVisitNodeId, character);
+      }
+      onNavigate({ type: 'story' });
+    } else {
+      // Return visit - go to location hub
+      const updatedWorld = {
+        ...world,
+        currentLocationId: location.id,
+      };
+      useNarrativeStore.setState({ world: updatedWorld });
+      onNavigate({ type: 'locationHub', locationId: location.id });
+    }
+  };
+
+  const campaignLocations = campaign.locations || [];
 
   return (
-    <div className="min-h-screen bg-primary flex flex-col p-4">
-      {/* Back Button */}
-      <div className="mb-4">
-        <BackButton onBack={onReturnToStory} label="Back to Story" />
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-white mb-2">{campaign.title}</h1>
+        <p className="text-gray-400 mb-8">World Map</p>
 
-      {/* Header */}
-      <div className="mb-4">
-        <Card variant="neutral" padding="compact">
-          <div className="flex items-center gap-2">
-            <Icon name="Map" className="text-player" />
-            <div>
-              <h1 className="heading-primary text-h1 text-fg-primary">
-                World Map
-              </h1>
-              <p className="text-xs text-fg-muted label-secondary">
-                {campaign.title}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </div>
+        {/* Location Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          {campaignLocations.map((location) => {
+            const isUnlocked = canTravelToLocation(world, location.id);
+            const isCurrent = world.currentLocationId === location.id;
+            const hasVisited = world.visitedLocations.includes(location.id);
 
-      {/* Act Selector (if multiple acts) */}
-      {campaignMap.acts.length > 1 && (
-        <div className="mb-4">
-          <Card variant="neutral" padding="compact">
-            <div className="flex gap-2 overflow-x-auto">
-              {campaignMap.acts.map((act, index) => (
-                <Button
-                  key={act.actId}
-                  variant={index === selectedActIndex ? 'primary' : 'secondary'}
-                  onClick={() => setSelectedActIndex(index)}
-                >
-                  {act.actTitle}
-                </Button>
-              ))}
-            </div>
-          </Card>
+            return (
+              <button
+                key={location.id}
+                onClick={() => handleLocationClick(location)}
+                disabled={!isUnlocked}
+                className={`
+                  relative p-6 rounded-lg border-2 transition-all
+                  ${isCurrent ? 'border-blue-500 bg-blue-500/20' : 'border-gray-600'}
+                  ${isUnlocked ? 'hover:border-blue-400 cursor-pointer' : 'opacity-50 cursor-not-allowed'}
+                  ${hasVisited ? 'bg-gray-800' : 'bg-gray-900'}
+                `}
+              >
+                {/* Lock Icon for Locked Locations */}
+                {!isUnlocked && (
+                  <div className="absolute top-2 right-2 text-gray-500">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Current Location Indicator */}
+                {isCurrent && (
+                  <div className="absolute top-2 left-2 w-3 h-3 bg-blue-500 rounded-full animate-pulse" />
+                )}
+
+                {/* Location Name */}
+                <h3 className={`text-xl font-bold mb-2 ${isUnlocked ? 'text-white' : 'text-gray-600'}`}>
+                  {location.name}
+                </h3>
+
+                {/* Location Type Badge */}
+                <div className={`inline-block px-3 py-1 rounded text-xs font-medium mb-2 ${
+                  location.locationType === 'town' ? 'bg-green-500/20 text-green-400' :
+                  location.locationType === 'wilderness' ? 'bg-yellow-500/20 text-yellow-400' :
+                  'bg-red-500/20 text-red-400'
+                }`}>
+                  {location.locationType}
+                </div>
+
+                {/* Location Description */}
+                {isUnlocked && location.description && (
+                  <p className="text-sm text-gray-400 mt-2">{location.description}</p>
+                )}
+              </button>
+            );
+          })}
         </div>
-      )}
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex gap-4 overflow-hidden">
-        {/* Map Visualization */}
-        <Card variant="neutral" className="flex-1 overflow-auto">
-          <MapVisualization
-            mapGraph={currentActMap}
-            currentNodeId={conversation.currentNodeId}
-            visitedNodeIds={world.visitedNodeIds}
-            onNodeClick={setSelectedNodeId}
-            selectedNodeId={selectedNodeId}
-          />
-        </Card>
-
-        {/* Node Details Sidebar */}
-        {selectedNode && (
-          <Card variant="neutral" padding="spacious" className="w-80 overflow-auto">
-            <NodeDetails node={selectedNode} onClose={() => setSelectedNodeId(null)} />
-          </Card>
+        {/* Current Location Info */}
+        {world.currentLocationId && (
+          <div className="mt-8 p-6 bg-gray-800 rounded-lg border border-gray-700">
+            <h2 className="text-lg font-bold text-white mb-2">Current Location</h2>
+            <p className="text-gray-300">
+              {LOCATIONS[world.currentLocationId]?.name || 'Unknown'}
+            </p>
+          </div>
         )}
       </div>
-    </div>
-  );
-}
-
-/**
- * SVG visualization of the node graph
- */
-function MapVisualization({
-  mapGraph,
-  currentNodeId,
-  visitedNodeIds,
-  onNodeClick,
-  selectedNodeId,
-}: {
-  mapGraph: MapGraph;
-  currentNodeId: string;
-  visitedNodeIds: string[];
-  onNodeClick: (nodeId: string) => void;
-  selectedNodeId: string | null;
-}) {
-  return (
-    <svg
-      viewBox="0 0 1000 1000"
-      className="w-full h-full"
-      style={{ minHeight: '600px' }}
-    >
-      {/* Draw connections first (background) */}
-      {mapGraph.connections.map((conn, index) => {
-        const fromPos = mapGraph.nodes.find((n) => n.nodeId === conn.from);
-        const toPos = mapGraph.nodes.find((n) => n.nodeId === conn.to);
-
-        if (!fromPos || !toPos) return null;
-
-        const isVisited =
-          visitedNodeIds.includes(conn.from) && visitedNodeIds.includes(conn.to);
-
-        return (
-          <line
-            key={`${conn.from}-${conn.to}-${index}`}
-            x1={fromPos.x}
-            y1={fromPos.y}
-            x2={toPos.x}
-            y2={toPos.y}
-            stroke={isVisited ? '#4a5568' : '#2d3748'}
-            strokeWidth="2"
-            opacity={isVisited ? 0.6 : 0.3}
-            markerEnd="url(#arrowhead)"
-          />
-        );
-      })}
-
-      {/* Arrow marker definition */}
-      <defs>
-        <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="10"
-          refX="9"
-          refY="3"
-          orient="auto"
-          fill="#4a5568"
-        >
-          <polygon points="0 0, 10 3, 0 6" />
-        </marker>
-      </defs>
-
-      {/* Draw nodes */}
-      {mapGraph.nodes.map((pos) => {
-        const isCurrent = pos.nodeId === currentNodeId;
-        const isVisited = visitedNodeIds.includes(pos.nodeId);
-        const isSelected = pos.nodeId === selectedNodeId;
-
-        // Color scheme
-        let fillColor = '#2d3748'; // Unvisited (dark gray)
-        let strokeColor = '#4a5568'; // Default border
-        let strokeWidth = 2;
-
-        if (isCurrent) {
-          fillColor = '#3182ce'; // Current (blue)
-          strokeColor = '#63b3ed';
-          strokeWidth = 4;
-        } else if (isVisited) {
-          fillColor = '#4a5568'; // Visited (gray)
-          strokeColor = '#718096';
-        }
-
-        if (isSelected) {
-          strokeColor = '#f6e05e'; // Selected (yellow border)
-          strokeWidth = 4;
-        }
-
-        return (
-          <g
-            key={pos.nodeId}
-            onClick={() => onNodeClick(pos.nodeId)}
-            style={{ cursor: 'pointer' }}
-          >
-            {/* Node circle */}
-            <circle
-              cx={pos.x}
-              cy={pos.y}
-              r={isCurrent ? 20 : 15}
-              fill={fillColor}
-              stroke={strokeColor}
-              strokeWidth={strokeWidth}
-              opacity={isVisited || isCurrent ? 1 : 0.4}
-            >
-              {isCurrent && (
-                <animate
-                  attributeName="r"
-                  values={`${isCurrent ? 20 : 15};${isCurrent ? 24 : 18};${isCurrent ? 20 : 15}`}
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              )}
-            </circle>
-
-            {/* Node ID label (simplified) */}
-            <text
-              x={pos.x}
-              y={pos.y - 25}
-              textAnchor="middle"
-              fill="#e2e8f0"
-              fontSize="12"
-              opacity={isVisited || isCurrent ? 0.8 : 0.4}
-              pointerEvents="none"
-            >
-              {pos.nodeId.split('-').pop()?.substring(0, 8)}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
-/**
- * Node details panel
- */
-function NodeDetails({ node, onClose }: { node: StoryNode; onClose: () => void }) {
-  return (
-    <div className="space-y-4">
-      <div className="flex items-start justify-between">
-        <h2 className="heading-secondary text-fg-primary">
-          {getNodeTitle(node)}
-        </h2>
-        <button
-          onClick={onClose}
-          className="text-fg-muted hover:text-fg-primary"
-          aria-label="Close"
-        >
-          <Icon name="X" />
-        </button>
-      </div>
-
-      {node.locationHint && (
-        <p className="text-xs text-fg-muted label-secondary italic">
-          {node.locationHint}
-        </p>
-      )}
-
-      <div className="body-primary text-fg-secondary">
-        {node.description}
-      </div>
-
-      {node.speakerName && (
-        <div className="border-t border-border pt-2">
-          <p className="text-sm text-fg-muted label-secondary">
-            Speaker: {node.speakerName}
-          </p>
-        </div>
-      )}
-
-      {node.choices.length > 0 && (
-        <div className="border-t border-border pt-2">
-          <p className="text-sm text-fg-muted label-secondary mb-2">
-            Choices ({node.choices.length}):
-          </p>
-          <ul className="space-y-1">
-            {node.choices.map((choice) => (
-              <li key={choice.id} className="text-xs text-fg-secondary body-secondary">
-                • {choice.text}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }

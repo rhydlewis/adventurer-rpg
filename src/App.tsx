@@ -474,7 +474,7 @@ function App() {
       )}
       {currentScreen.type === 'worldMap' && (
         <WorldMapScreen
-          onReturnToStory={navigateBack}
+          onNavigate={(screen) => setCurrentScreen(screen as Screen)}
         />
       )}
       {currentScreen.type === 'lockPicking' && (
