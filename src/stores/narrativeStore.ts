@@ -126,8 +126,8 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       visitedNodeIds: [],
       inventory: [],
       // Phase 5: Location state
-      currentLocationId: null,
-      unlockedLocations: [],
+      currentLocationId: campaign.startingLocationId,
+      unlockedLocations: [...campaign.initialUnlockedLocations],
       visitedLocations: [],
       unlockedSanctuaries: [],
     };

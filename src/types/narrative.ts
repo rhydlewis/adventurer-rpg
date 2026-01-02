@@ -281,9 +281,9 @@ export interface Campaign {
   acts: Act[];
 
   // Phase 5: World map configuration
-  locations?: Location[];                  // All locations in campaign
-  startingLocationId?: string;             // Where player begins
-  initialUnlockedLocations?: string[];     // Available at campaign start
+  locations: Location[];                  // All locations in campaign
+  startingLocationId: string;             // Where player begins
+  initialUnlockedLocations: string[];     // Available at campaign start
 }
 
 // =============================================================================

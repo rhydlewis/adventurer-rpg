@@ -3,6 +3,7 @@ import type { CampEventTable } from '../../types/campEvents';
 import type { SafeHaven, SanctuaryRoom } from '../../types/safeHaven';
 import { useSafeHavenStore } from '../../stores/safeHavenStore';
 import { useCampEventStore } from '../../stores/campEventStore';
+import { LOCATIONS } from '../locations';
 
 /**
  * Single Node Campaign - Comprehensive Testing Suite
@@ -2290,4 +2291,9 @@ export const singleNodeCampaign: Campaign = {
     companionName: 'Test Guide',
     companionDescription: 'Your guide through the testing suite. Use the companion hint button (?) for helpful information about each test.',
     acts: [testAct],
+
+    // Phase 5: World & Exploration
+    locations: Object.values(LOCATIONS),
+    startingLocationId: 'crossroads',
+    initialUnlockedLocations: ['crossroads'],
 };
