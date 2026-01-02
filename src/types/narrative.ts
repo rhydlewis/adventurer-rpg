@@ -317,6 +317,12 @@ export interface WorldState {
   flags: Record<string, boolean>; // Story flags
   visitedNodeIds: string[]; // All nodes ever visited
   inventory: string[]; // Item IDs
+
+  // Phase 5: World map and location state
+  currentLocationId: string | null;      // Where player is now (null = world map)
+  unlockedLocations: string[];           // Available locations
+  visitedLocations: string[];            // Track first visits (for hub logic)
+  unlockedSanctuaries: string[];         // Dungeon safe rest points
 }
 
 // =============================================================================

@@ -79,6 +79,10 @@ const createTestWorldState = (
   flags: {},
   visitedNodeIds: ['test-start'],
   inventory: [],
+  currentLocationId: null,
+  unlockedLocations: [],
+  visitedLocations: [],
+  unlockedSanctuaries: [],
   ...overrides,
 });
 

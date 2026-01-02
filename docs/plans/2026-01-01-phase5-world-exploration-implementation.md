@@ -883,6 +883,8 @@ git commit -m "fix(store): initialize Phase 5 location fields in narrativeStore"
 
 ## Task 11: Update Locations Data with Phase 5 Fields
 
+**NOTE: We made locationType optional temporarily in Task 1**. We need to make it required in this Task.
+
 **Files:**
 - Modify: `src/data/locations.ts`
 

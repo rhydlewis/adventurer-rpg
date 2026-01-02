@@ -12,6 +12,10 @@ describe('rollForCampEvent', () => {
     flags: {},
     visitedNodeIds: [],
     inventory: [],
+    currentLocationId: null,
+    unlockedLocations: [],
+    visitedLocations: [],
+    unlockedSanctuaries: [],
   };
 
   const mockCharacter = {
@@ -108,6 +112,10 @@ describe('getAvailableCampChoices', () => {
     flags: { has_item: true },
     visitedNodeIds: [],
     inventory: [],
+    currentLocationId: null,
+    unlockedLocations: [],
+    visitedLocations: [],
+    unlockedSanctuaries: [],
   };
 
   const mockCharacter = {

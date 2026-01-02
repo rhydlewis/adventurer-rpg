@@ -125,6 +125,11 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       flags: {},
       visitedNodeIds: [],
       inventory: [],
+      // Phase 5: Location state
+      currentLocationId: null,
+      unlockedLocations: [],
+      visitedLocations: [],
+      unlockedSanctuaries: [],
     };
 
     // Initialize conversation state
