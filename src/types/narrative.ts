@@ -233,12 +233,26 @@ export interface StoryNode {
 // Locations - Physical settings for narrative scenes
 // =============================================================================
 
+// Phase 5: Location types for context-sensitive hubs
+export type LocationType = 'town' | 'wilderness' | 'dungeon';
+
 export interface Location {
   id: string;
   name: string;
   image: string;
   ambience?: string;
   description?: string;
+
+  // Phase 5: Location type and configuration
+  locationType?: LocationType;
+  hasMerchant?: boolean;
+
+  // Phase 5: Story integration
+  firstVisitNodeId?: string;  // Story node for first arrival
+  hubNodeId?: string;          // Optional custom hub node
+
+  // Phase 5: Exploration
+  explorationTableId?: string; // Link to encounter table
 }
 
 // =============================================================================
