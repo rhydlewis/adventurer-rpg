@@ -1,14 +1,16 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { getLocationHubOptions, type HubOption } from '../utils/worldMap';
 import { LOCATIONS } from '../data/locations';
-import { Icon } from '../components';
+import { Icon, OptionsMenu } from '../components';
 
 interface LocationHubScreenProps {
   locationId: string;
   onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
+  onViewCharacterSheet?: () => void;
+  onExit: () => void;
 }
 
-export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenProps) {
+export function LocationHubScreen({ locationId, onNavigate, onViewCharacterSheet, onExit }: LocationHubScreenProps) {
   const { world, campaign } = useNarrativeStore();
 
   if (!world || !campaign) {
@@ -119,15 +121,22 @@ export function LocationHubScreen({ locationId, onNavigate }: LocationHubScreenP
       }}
     >
       <div className="max-w-4xl mx-auto">
-        {/* Location Header */}
-        <div className="mb-8">
-          <h1 className="heading-primary text-h1 text-fg-primary mb-2">{location.name}</h1>
-          {location.description && (
-            <p className="body-primary text-fg-primary mb-4">{location.description}</p>
-          )}
-          {location.ambience && (
-            <p className="body-secondary text-fg-muted italic">{location.ambience}</p>
-          )}
+        {/* Location Header with Options Menu */}
+        <div className="flex items-start justify-between mb-8">
+          <div className="flex-1">
+            <h1 className="heading-primary text-h1 text-fg-primary mb-2">{location.name}</h1>
+            {location.description && (
+              <p className="body-primary text-fg-primary mb-4">{location.description}</p>
+            )}
+            {location.ambience && (
+              <p className="body-secondary text-fg-muted italic">{location.ambience}</p>
+            )}
+          </div>
+          <OptionsMenu
+            onViewCharacterSheet={onViewCharacterSheet}
+            onViewMap={() => onNavigate({ type: 'worldMap' })}
+            onExit={onExit}
+          />
         </div>
 
         {/* Hub Options */}

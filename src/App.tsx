@@ -476,12 +476,16 @@ function App() {
       {currentScreen.type === 'worldMap' && (
         <WorldMapScreen
           onNavigate={(screen) => setCurrentScreen(screen as Screen)}
+          onViewCharacterSheet={character ? handleViewSheet : undefined}
+          onExit={() => setCurrentScreen({ type: 'mainMenu' })}
         />
       )}
       {currentScreen.type === 'locationHub' && (
         <LocationHubScreen
           locationId={currentScreen.locationId}
           onNavigate={(screen) => setCurrentScreen(screen as Screen)}
+          onViewCharacterSheet={character ? handleViewSheet : undefined}
+          onExit={() => setCurrentScreen({ type: 'mainMenu' })}
         />
       )}
       {currentScreen.type === 'lockPicking' && (

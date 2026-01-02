@@ -2,13 +2,16 @@ import { useNarrativeStore } from '../stores/narrativeStore';
 import { useCharacterStore } from '../stores/characterStore';
 import { canTravelToLocation, isFirstVisit, markLocationVisited } from '../utils/worldMap';
 import { LOCATIONS } from '../data/locations';
+import { OptionsMenu } from '../components';
 import type { Location } from '../types';
 
 interface WorldMapScreenProps {
   onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
+  onViewCharacterSheet?: () => void;
+  onExit: () => void;
 }
 
-export function WorldMapScreen({ onNavigate }: WorldMapScreenProps) {
+export function WorldMapScreen({ onNavigate, onViewCharacterSheet, onExit }: WorldMapScreenProps) {
   const { world, campaign, enterNode } = useNarrativeStore();
   const { character } = useCharacterStore();
 
@@ -52,8 +55,17 @@ export function WorldMapScreen({ onNavigate }: WorldMapScreenProps) {
   return (
     <div className="min-h-screen bg-primary p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="heading-primary text-h1 text-fg-primary mb-2">{campaign.title}</h1>
-        <p className="body-secondary text-fg-muted mb-8">World Map</p>
+        {/* Header with Options Menu */}
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="heading-primary text-h1 text-fg-primary mb-2">{campaign.title}</h1>
+            <p className="body-secondary text-fg-muted">World Map</p>
+          </div>
+          <OptionsMenu
+            onViewCharacterSheet={onViewCharacterSheet}
+            onExit={onExit}
+          />
+        </div>
 
         {/* Location Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
