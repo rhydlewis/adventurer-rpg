@@ -15,7 +15,6 @@ import type {
   StoryNode,
 } from '../types';
 import { getTotalSkillBonus } from './skills';
-import { unlockLocation, unlockSanctuary } from './worldMap';
 
 const roller = new DiceRoller();
 

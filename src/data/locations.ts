@@ -7,6 +7,8 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00015.png',
     ambience: 'The air is thick with pipe smoke and the smell of ale',
     description: 'A weathered establishment on the edge of town',
+    locationType: 'town',
+    hasMerchant: false,
   },
   'town-square': {
     id: 'town-square',
@@ -14,6 +16,8 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00020.png',
     ambience: 'Merchants call out their wares as townsfolk hurry about their business',
     description: 'The bustling heart of the settlement',
+    locationType: 'town',
+    hasMerchant: true,
   },
   'forest-path': {
     id: 'forest-path',
@@ -21,6 +25,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00035.png',
     ambience: 'Ancient trees loom overhead, their branches filtering the sunlight',
     description: 'A winding trail through dense woodland',
+    locationType: 'wilderness',
   },
   'crossroads': {
     id: 'crossroads',
@@ -28,6 +33,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_signpost.png',
     ambience: 'The Crossroads - Where your journey begins',
     description: 'A weathered signpost marks the intersection of three paths',
+    locationType: 'wilderness',
   },
   'bandit-camp': {
     id: 'bandit-camp',
@@ -35,6 +41,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_camp.jpg',
     ambience: 'A crude camp in a forest clearing, abandoned and eerily quiet',
     description: 'Makeshift tents and dying embers mark this temporary refuge',
+    locationType: 'wilderness',
   },
   // Validation Campaign Locations
   'darkwood-forest': {
@@ -43,6 +50,8 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00015.png',
     ambience: 'Ancient trees loom overhead, their branches filtering the dappled sunlight',
     description: 'A dense woodland with winding game trails and shadowed paths',
+    locationType: 'wilderness',
+    explorationTableId: 'forest-exploration',
   },
   'village-market': {
     id: 'village-market',
@@ -50,6 +59,8 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_merchant.png',
     ambience: 'The smell of fresh bread and leather mingles with the chatter of merchants',
     description: 'A bustling market square with wooden carts and weathered traders',
+    locationType: 'town',
+    hasMerchant: true,
   },
   'crypt': {
     id: 'crypt',
@@ -57,6 +68,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00014.png',
     ambience: 'Cold stone walls echo with whispers of the long dead',
     description: 'A forgotten tomb beneath the earth, its air thick with dust and decay',
+    locationType: 'dungeon',
   },
   'void-sanctum': {
     id: 'void-sanctum',
@@ -64,6 +76,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00031.png',
     ambience: 'Reality itself seems to flicker and warp in this ethereal chamber',
     description: 'A place between worlds, where shadows dance with otherworldly light',
+    locationType: 'dungeon',
   },
   'character-reflection': {
     id: 'character-reflection',
@@ -71,6 +84,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00036.png',
     ambience: 'Time seems to slow as you contemplate your journey and growth',
     description: 'A space of inner reflection where potential becomes power',
+    locationType: 'wilderness',
   },
   'victory-hall': {
     id: 'victory-hall',
@@ -78,6 +92,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00049.png',
     ambience: 'Golden light cascades through ancient windows, celebrating your victory',
     description: 'A sacred place where heroes are forged and legends are born',
+    locationType: 'town',
   },
   'shadowed-end': {
     id: 'shadowed-end',
@@ -85,6 +100,7 @@ export const LOCATIONS: Record<string, Location> = {
     image: 'card_location_exterior_00046.png',
     ambience: 'All light fades as consciousness slips away into endless shadow',
     description: 'The cold embrace of defeat, where all journeys end',
+    locationType: 'dungeon',
   },
 } as const;
 
