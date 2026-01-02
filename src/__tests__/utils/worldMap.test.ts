@@ -4,8 +4,8 @@ import {
   unlockLocation,
   unlockSanctuary,
   getLocationHubOptions,
-} from '@/utils/worldMap';
-import type { WorldState, Location, LocationType } from '@/types';
+} from '../../utils/worldMap';
+import type { WorldState, Location, LocationType } from '../../types';
 
 describe('worldMap utilities', () => {
   describe('canTravelToLocation', () => {
