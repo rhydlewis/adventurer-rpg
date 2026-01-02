@@ -256,6 +256,13 @@ export interface Location {
 
   // Phase 5: Exploration
   explorationTableId?: string; // Link to encounter table
+
+  // Canvas map fields (optional - for coordinate-based map view)
+  coordinates?: {
+    x: number;  // Abstract units (100 units = typical connection distance)
+    y: number;  // Abstract units
+  };
+  connections?: string[];  // IDs of locations this connects to
 }
 
 // =============================================================================
