@@ -195,6 +195,8 @@ export type NodeEffect =
   | { type: 'createDefaultCharacter' }
   | { type: 'createWizard' }
   | { type: 'createCleric' }
+  | { type: 'unlockLocation'; locationId: string }  // Phase 5
+  | { type: 'unlockSanctuary'; locationId: string } // Phase 5
   | {
       type: 'startPuzzle';
       puzzleType: PuzzleType;
