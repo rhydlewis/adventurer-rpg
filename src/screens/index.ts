@@ -14,3 +14,4 @@ export { RestScreen } from './RestScreen';
 export { ChooseCampaignScreen } from './ChooseCampaignScreen';
 export { WorldMapScreen } from './WorldMapScreen';
 export { WorldMapCanvasScreen } from './WorldMapCanvasScreen';
+export { WorldMapLeafletScreen } from './WorldMapLeafletScreen';
