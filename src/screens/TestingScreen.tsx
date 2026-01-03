@@ -339,6 +339,22 @@ export function TestingScreen({ onStartCombat, onCreateCharacter, onViewCharacte
                 </button>
               </Card>
           )}
+
+          {/* Test Leaflet World Map (Phase 5 POC) */}
+          {onNavigate && (
+              <Card variant="neutral" padding="compact" className="mt-3 border-success">
+                <p className="text-caption text-fg-primary label-primary mb-2 text-center">
+                  🗺️ POC: Leaflet.js World Map (Phase 5)
+                </p>
+                <button
+                    onClick={() => onNavigate({ type: 'worldMapLeaflet' })}
+                    className="w-full px-3 py-2 bg-success text-white button-text text-caption rounded-lg hover:bg-green-600 active:bg-green-700 transition-all duration-200 active:scale-[0.98]"
+                >
+                  View Leaflet Map
+                  <div className="text-[10px] opacity-75 mt-1">Native Pan/Zoom, Markers</div>
+                </button>
+              </Card>
+          )}
         </div>
       </div>
   );
