@@ -1,5 +1,6 @@
 import type { LogEntry } from '../../types';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface NarrativeLogProps {
   /**
@@ -47,7 +48,7 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
                 </div>
               )}
               <div className="prose prose-invert prose-sm max-w-none">
-                <ReactMarkdown>{entry.text}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{entry.text}</ReactMarkdown>
               </div>
             </div>
           )}
@@ -79,7 +80,7 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
 
           {entry.type === 'effect' && (
             <div className="text-fg-muted font-inter text-sm italic pl-4 border-l-2 border-border-default prose prose-invert prose-sm max-w-none">
-              <ReactMarkdown>{entry.message}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{entry.message}</ReactMarkdown>
             </div>
           )}
 
@@ -89,7 +90,7 @@ export function NarrativeLog({ entries, className = '' }: NarrativeLogProps) {
                 Companion Hint:
               </div>
               <div className="text-fg-secondary text-sm font-inter prose prose-invert prose-sm max-w-none">
-                <ReactMarkdown>{entry.hint}</ReactMarkdown>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{entry.hint}</ReactMarkdown>
               </div>
             </div>
           )}

@@ -20,7 +20,7 @@ const act0Nodes: StoryNode[] = [
     {
         id: 'ashford_gates',
         title: 'The Gates of Ashford',
-        description: 'You approach the wooden gates of Ashford, a modest village nestled at the edge of the Blackwood Forest. A guard in worn leather armor steps forward, hand raised in greeting.\n\n"Hold there, traveler. State your name and profession before entering."',
+        description: 'You approach the wooden gates of Ashford, a modest village nestled at the edge of the Blackwood Forest. A guard in worn leather armor steps forward, hand raised in greeting.\n\n\n"Hold there, traveler. State your name and profession before entering."',
         locationId: 'ashford',
         type: 'dialogue',
         speakerName: 'Village Guard',
@@ -28,7 +28,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'create_character',
-                text: '"I am a..."',
+                text: '"I am..."',
                 category: 'special',
                 outcome: {
                     type: 'characterCreation',
@@ -162,7 +162,6 @@ const act0Nodes: StoryNode[] = [
         locationId: 'ashford',
         type: 'explore',
         flavor: { tone: 'tense', icon: 'search' },
-        companionHint: 'Talk to the villagers to gather information. The blacksmith might have equipment to offer.',
         choices: [
             {
                 id: 'talk_innkeeper',
@@ -209,7 +208,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back to village square',
+                text: 'Back to village square',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'village_investigation_hub' }
             }
@@ -248,7 +247,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back to village square',
+                text: 'Back to village square',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'village_investigation_hub' }
             }
@@ -509,7 +508,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'read_letter',
-                text: '📜 Read the letter',
+                text: 'Read the letter',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'mysterious_letter' }
             }
@@ -600,13 +599,13 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_tavern',
-                text: '🍺 Enter The Splintered Shield',
+                text: 'Enter The Splintered Shield',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'splintered_shield_tavern' }
             },
             {
                 id: 'explore_village',
-                text: '🗺️ Explore the village',
+                text: 'Explore the village',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'oakhaven_exploration_hub' }
             }
@@ -622,13 +621,13 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_tavern',
-                text: '🍺 Go to The Splintered Shield',
+                text: 'Go to The Splintered Shield',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'splintered_shield_tavern' }
             },
             {
                 id: 'rest',
-                text: '✨ Rest (heal fully)',
+                text: 'Rest (heal fully)',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'rest_in_oakhaven' }
             }
@@ -661,13 +660,13 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'listen_to_poacher',
-                text: '👂 Listen to the terrified man',
+                text: 'Listen to the terrified man',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'poacher_rumor' }
             },
             {
                 id: 'order_drink',
-                text: '🍺 Order a drink',
+                text: 'Order a drink',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'tavern_barkeep' }
             }
@@ -749,13 +748,13 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'listen_to_poacher',
-                text: '👂 Listen to the terrified man nearby',
+                text: 'Listen to the terrified man nearby',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'poacher_rumor' }
             },
             {
                 id: 'leave',
-                text: '← Leave the tavern',
+                text: 'Leave the tavern',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'oakhaven_exploration_hub' }
             }
@@ -872,19 +871,19 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'search_left',
-                text: '🔍 Search the left side of the courtyard',
+                text: 'Search the left side of the courtyard',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'search_left_courtyard' }
             },
             {
                 id: 'search_right',
-                text: '🔍 Search the right side of the courtyard',
+                text: 'Search the right side of the courtyard',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'search_right_courtyard' }
             },
             {
                 id: 'search_center',
-                text: '🔍 Search the center fountain',
+                text: 'Search the center fountain',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'search_center_courtyard' }
             }
@@ -901,7 +900,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back to courtyard',
+                text: 'Back to courtyard',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'courtyard_progress_check' }
             }
@@ -918,7 +917,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back to courtyard',
+                text: 'Back to courtyard',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'courtyard_progress_check' }
             }
@@ -935,7 +934,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back to courtyard',
+                text: 'Back to courtyard',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'courtyard_progress_check' }
             }
@@ -951,25 +950,25 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'search_left',
-                text: '🔍 Search the left side',
+                text: 'Search the left side',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'search_left_courtyard' }
             },
             {
                 id: 'search_right',
-                text: '🔍 Search the right side',
+                text: 'Search the right side',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'search_right_courtyard' }
             },
             {
                 id: 'search_center',
-                text: '🔍 Search the center fountain',
+                text: 'Search the center fountain',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'search_center_courtyard' }
             },
             {
                 id: 'use_stones',
-                text: '✨ Use the Singing Stones on the barrier',
+                text: 'Use the Singing Stones on the barrier',
                 category: 'special',
                 requirements: [
                     { type: 'flag', flag: 'found_stone_1', value: true },
@@ -997,7 +996,7 @@ const act1Nodes: StoryNode[] = [
             },
             {
                 id: 'prepare',
-                text: '← Prepare before entering',
+                text: 'Prepare before entering',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'pre_tower_rest' }
             }
@@ -1055,7 +1054,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'explore_foyer',
-                text: '🔍 Search the foyer',
+                text: 'Search the foyer',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'foyer_search' }
             },
@@ -1078,7 +1077,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'back',
-                text: '← Back',
+                text: 'Back',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'tower_foyer' }
             }
@@ -1155,7 +1154,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'read_journals',
-                text: '📜 Examine the journals',
+                text: 'Examine the journals',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'sorath_journals' }
             },
@@ -1204,7 +1203,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'search_lab',
-                text: '🔍 Search the laboratory',
+                text: 'Search the laboratory',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'find_magic_skeleton' }
             }
@@ -1278,7 +1277,7 @@ const act3Nodes: StoryNode[] = [
             },
             {
                 id: 'search_catacombs',
-                text: '🔍 Search the nearby alcoves',
+                text: 'Search the nearby alcoves',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'catacomb_search' }
             }
@@ -1296,7 +1295,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '← Back',
+                text: 'Back',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'catacombs_entrance' }
             }
@@ -1391,7 +1390,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'examine_wall',
-                text: '🔍 Examine the wall',
+                text: 'Examine the wall',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'secret_wall' }
             }
@@ -1450,7 +1449,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'take_shard',
-                text: '✨ Take the Sun-Shard',
+                text: 'Take the Sun-Shard',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'shard_acquired' }
             }
@@ -1473,7 +1472,7 @@ const act3Nodes: StoryNode[] = [
             },
             {
                 id: 'prepare',
-                text: '← Prepare before the final battle',
+                text: 'Prepare before the final battle',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'pre_boss_preparation' }
             }
@@ -1604,7 +1603,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'use_sun_shard',
-                text: '✨ Use the Sun-Shard to destroy the phylactery!',
+                text: 'Use the Sun-Shard to destroy the phylactery!',
                 category: 'special',
                 requirements: [
                     { type: 'flag', flag: 'acquired_sun_shard', value: true }
@@ -1627,7 +1626,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'use_sun_shard',
-                text: '✨ Use the Sun-Shard!',
+                text: 'Use the Sun-Shard!',
                 category: 'special',
                 requirements: [
                     { type: 'flag', flag: 'acquired_sun_shard', value: true }
@@ -1683,7 +1682,7 @@ const epilogueNodes: StoryNode[] = [
         choices: [
             {
                 id: 'search_tower',
-                text: '🔍 Return to search the tower',
+                text: 'Return to search the tower',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'sorath_treasury' }
             }
@@ -1701,7 +1700,7 @@ const epilogueNodes: StoryNode[] = [
         choices: [
             {
                 id: 'claim_tower',
-                text: '👑 Claim the tower as your own',
+                text: 'Claim the tower as your own',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'epilogue_ending' }
             },
@@ -1721,7 +1720,7 @@ const epilogueNodes: StoryNode[] = [
         choices: [
             {
                 id: 'finish',
-                text: '👑 Finish Campaign',
+                text: 'Finish Campaign',
                 category: 'special',
                 outcome: { type: 'exit' }
             }
@@ -1738,13 +1737,13 @@ const deathNode: StoryNode = {
     choices: [
         {
             id: 'restart',
-            text: '↻ Return to last safe point',
+            text: 'Return to last safe point',
             category: 'special',
             outcome: { type: 'goto', nodeId: 'oakhaven_entrance' }
         },
         {
             id: 'exit',
-            text: '🚪 Exit Campaign',
+            text: 'Exit Campaign',
             category: 'movement',
             outcome: { type: 'exit' }
         }

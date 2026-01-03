@@ -27,6 +27,7 @@
     "react-dom": "^19.2.0",
     "react-leaflet": "^5.0.0",
     "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "rpg-awesome": "^0.2.0",
     "zod": "^4.2.1",
     "zustand": "^5.0.9"
