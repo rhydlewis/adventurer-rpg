@@ -395,8 +395,14 @@ function App() {
   };
 
   const handleSelectCampaign = (campaign: Campaign) => {
+    // Reset all state before starting a new game
+    const { resetCreation } = useCharacterStore.getState();
+    const { loadCampaign, startCampaign, resetNarrative } = useNarrativeStore.getState();
+
+    resetCreation(); // Clear old character
+    resetNarrative(); // Clear old world/conversation state
+
     // Load and start the selected campaign
-    const { loadCampaign, startCampaign } = useNarrativeStore.getState();
     loadCampaign(campaign);
 
     // Initialize Phase 3 data for single-node-campaign
