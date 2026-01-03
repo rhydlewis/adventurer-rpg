@@ -12,6 +12,8 @@ export { Card } from './Card';
 export { CharacterStatusBar } from './CharacterStatusBar';
 export { StatusBar } from './StatusBar';
 export { default as Icon } from './Icon';
+export { MapControls } from './MapControls';
+export { LocationMarker } from './LocationMarker';
 export { NarrativeLog } from './narrative/NarrativeLog';
 export { ChoiceButton } from './narrative/ChoiceButton';
 export { OptionsMenu } from './OptionsMenu';
