@@ -16,6 +16,7 @@ export type Screen =
   | { type: 'victory' }
   | { type: 'characterSheet' }
   | { type: 'worldMap' } // Phase 5
+  | { type: 'worldMapCanvas' } // Phase 5 - Canvas POC
   | { type: 'locationHub'; locationId: string } // Phase 5
   | { type: 'rest' } // Phase 4
   | { type: 'lockPicking'; difficulty: 'easy' | 'medium' | 'hard'; onSuccess: () => void; onFailure: () => void }

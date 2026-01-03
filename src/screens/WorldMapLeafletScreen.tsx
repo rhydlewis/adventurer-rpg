@@ -1,5 +1,5 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
-import { OptionsMenu, LocationMarker } from '../components';
+import { OptionsMenu, LocationMarker, ConnectionPolylines } from '../components';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import { canTravelToLocation } from '../utils/worldMap';
@@ -83,6 +83,9 @@ export function WorldMapLeafletScreen({
         >
           {/* Blank tile layer - no actual tiles */}
           <TileLayer url="" />
+
+          {/* Connection Lines */}
+          <ConnectionPolylines locations={locationsWithCoords} world={world} />
 
           {/* Location Markers */}
           {locationsWithCoords.map((location) => {

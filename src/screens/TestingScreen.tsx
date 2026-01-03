@@ -323,6 +323,22 @@ export function TestingScreen({ onStartCombat, onCreateCharacter, onViewCharacte
                 </div>
               </Card>
           )}
+
+          {/* Test Canvas World Map (Phase 5 POC) */}
+          {onNavigate && (
+              <Card variant="neutral" padding="compact" className="mt-3 border-player">
+                <p className="text-caption text-fg-primary label-primary mb-2 text-center">
+                  🗺️ POC: Canvas World Map (Phase 5)
+                </p>
+                <button
+                    onClick={() => onNavigate({ type: 'worldMapCanvas' })}
+                    className="w-full px-3 py-2 bg-player text-white button-text text-caption rounded-lg hover:bg-blue-600 active:bg-blue-700 transition-all duration-200 active:scale-[0.98]"
+                >
+                  View Canvas Map
+                  <div className="text-[10px] opacity-75 mt-1">Pan, Zoom, Navigate</div>
+                </button>
+              </Card>
+          )}
         </div>
       </div>
   );
