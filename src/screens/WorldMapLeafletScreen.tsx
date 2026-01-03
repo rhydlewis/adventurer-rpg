@@ -1,5 +1,7 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
 import { OptionsMenu } from '../components';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import L from 'leaflet';
 
 interface WorldMapLeafletScreenProps {
   onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
@@ -21,6 +23,33 @@ export function WorldMapLeafletScreen({
     );
   }
 
+  // Get campaign locations with coordinates
+  const campaignLocations = campaign.locations || [];
+  const locationsWithCoords = campaignLocations.filter(loc => loc.coordinates);
+
+  // Calculate bounds for Simple CRS
+  // Use padding to ensure all locations are visible
+  const padding = 200;
+  const allX = locationsWithCoords.map(loc => loc.coordinates!.x);
+  const allY = locationsWithCoords.map(loc => loc.coordinates!.y);
+  const minX = Math.min(...allX) - padding;
+  const maxX = Math.max(...allX) + padding;
+  const minY = Math.min(...allY) - padding;
+  const maxY = Math.max(...allY) + padding;
+
+  // In Simple CRS, bounds are [southWest, northEast] in [y, x] format
+  // Note: Leaflet uses [lat, lng] but in Simple CRS this is [y, x]
+  const bounds: L.LatLngBoundsExpression = [
+    [minY, minX], // Southwest corner
+    [maxY, maxX], // Northeast corner
+  ];
+
+  // Center of map
+  const center: L.LatLngExpression = [
+    (minY + maxY) / 2,
+    (minX + maxX) / 2,
+  ];
+
   return (
     <div className="relative min-h-screen bg-primary overflow-hidden">
       {/* Header with Options Menu */}
@@ -40,7 +69,19 @@ export function WorldMapLeafletScreen({
 
       {/* Map container - will add MapContainer here */}
       <div className="absolute inset-0" style={{ top: '80px' }}>
-        <p className="text-fg-primary p-4">Map will go here</p>
+        <MapContainer
+          center={center}
+          zoom={1}
+          minZoom={0.5}
+          maxZoom={2}
+          crs={L.CRS.Simple}
+          bounds={bounds}
+          style={{ height: '100%', width: '100%' }}
+          className="bg-primary"
+        >
+          {/* Blank tile layer - no actual tiles */}
+          <TileLayer url="" />
+        </MapContainer>
       </div>
     </div>
   );
