@@ -1,6 +1,74 @@
 import type { Location } from '../types';
 
 export const LOCATIONS: Record<string, Location> = {
+  // =============================================================================
+  // Spire of the Lich King Campaign Locations
+  // =============================================================================
+  'crossroads': {
+    id: 'crossroads',
+    name: 'The Crossroads',
+    image: 'card_location_signpost.png',
+    ambience: 'The Crossroads - Where your journey begins',
+    description: 'A weathered signpost marks the intersection of three paths',
+    locationType: 'wilderness',
+    coordinates: { x: 0, y: 0 },  // Center of map
+    connections: ['ashford', 'blackwood-forest', 'oakhaven', 'rusty-tavern', 'forest-path', 'bandit-camp', 'darkwood-forest', 'village-market', 'crypt']
+  },
+  'ashford': {
+    id: 'ashford',
+    name: 'Ashford Village',
+    image: 'card_location_exterior_00020.png',
+    ambience: 'Smoke still rises from the charred remains of buildings',
+    description: 'A modest village recently attacked by bandits',
+    locationType: 'town',
+    coordinates: { x: -140, y: 90 },  // Southwest of crossroads
+    connections: ['crossroads', 'blackwood-forest']
+  },
+  'blackwood-forest': {
+    id: 'blackwood-forest',
+    name: 'Blackwood Forest',
+    image: 'card_location_exterior_00015.png',
+    ambience: 'Ancient trees loom overhead, blocking out the sun',
+    description: 'A dark forest where corruption spreads from the tower',
+    locationType: 'wilderness',
+    coordinates: { x: 130, y: -90 },  // Northeast of crossroads
+    connections: ['crossroads', 'ashford', 'oakhaven', 'old-watchtower']
+  },
+  'oakhaven': {
+    id: 'oakhaven',
+    name: 'Oakhaven',
+    image: 'card_location_exterior_00020.png',
+    ambience: 'A prosperous village with cobblestone streets and stone buildings',
+    description: 'A larger settlement where rumors of the tower began',
+    locationType: 'town',
+    hasMerchant: true,
+    coordinates: { x: -180, y: 140 },  // West of crossroads
+    connections: ['crossroads', 'blackwood-forest', 'old-watchtower']
+  },
+  'old-watchtower': {
+    id: 'old-watchtower',
+    name: 'Old Watchtower',
+    image: 'card_location_exterior_00014.png',
+    ambience: 'A massive tower of black stone, glowing with emerald light',
+    description: 'The ancient tower where Sorath the Lich performs his dark ritual',
+    locationType: 'dungeon',
+    coordinates: { x: 200, y: -160 },  // Far northeast
+    connections: ['blackwood-forest', 'oakhaven', 'catacombs']
+  },
+  'catacombs': {
+    id: 'catacombs',
+    name: 'The Catacombs',
+    image: 'card_location_exterior_00014.png',
+    ambience: 'A vast labyrinth of tunnels filled with ancient bones',
+    description: 'The underground maze beneath the tower',
+    locationType: 'dungeon',
+    coordinates: { x: 200, y: -220 },  // Below the tower
+    connections: ['old-watchtower', 'void-sanctum']
+  },
+
+  // =============================================================================
+  // Example/Test Locations (Single Node Campaign)
+  // =============================================================================
   'rusty-tavern': {
     id: 'rusty-tavern',
     name: 'The Rusty Tavern',
@@ -33,16 +101,6 @@ export const LOCATIONS: Record<string, Location> = {
     coordinates: { x: 100, y: 60 },  // Southeast of crossroads
     connections: ['crossroads']
   },
-  'crossroads': {
-    id: 'crossroads',
-    name: 'The Crossroads',
-    image: 'card_location_signpost.png',
-    ambience: 'The Crossroads - Where your journey begins',
-    description: 'A weathered signpost marks the intersection of three paths',
-    locationType: 'wilderness',
-    coordinates: { x: 0, y: 0 },  // Center of map
-    connections: ['rusty-tavern', 'forest-path', 'bandit-camp']
-  },
   'bandit-camp': {
     id: 'bandit-camp',
     name: 'The Bandit Camp',
@@ -53,7 +111,10 @@ export const LOCATIONS: Record<string, Location> = {
     coordinates: { x: 80, y: -100 },  // Northeast of crossroads
     connections: ['crossroads']
   },
-  // Validation Campaign Locations
+
+  // =============================================================================
+  // Additional Locations (General Use)
+  // =============================================================================
   'darkwood-forest': {
     id: 'darkwood-forest',
     name: 'Darkwood Forest',
@@ -62,6 +123,8 @@ export const LOCATIONS: Record<string, Location> = {
     description: 'A dense woodland with winding game trails and shadowed paths',
     locationType: 'wilderness',
     explorationTableId: 'forest-exploration',
+    coordinates: { x: 150, y: 120 },  // Far southeast
+    connections: ['crossroads']
   },
   'village-market': {
     id: 'village-market',
@@ -71,6 +134,8 @@ export const LOCATIONS: Record<string, Location> = {
     description: 'A bustling market square with wooden carts and weathered traders',
     locationType: 'town',
     hasMerchant: true,
+    coordinates: { x: -90, y: 120 },  // Southwest area
+    connections: ['crossroads']
   },
   'crypt': {
     id: 'crypt',
@@ -79,6 +144,8 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'Cold stone walls echo with whispers of the long dead',
     description: 'A forgotten tomb beneath the earth, its air thick with dust and decay',
     locationType: 'dungeon',
+    coordinates: { x: 70, y: 180 },  // South area
+    connections: ['crossroads']
   },
   'void-sanctum': {
     id: 'void-sanctum',
@@ -87,6 +154,8 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'Reality itself seems to flicker and warp in this ethereal chamber',
     description: 'A place between worlds, where shadows dance with otherworldly light',
     locationType: 'dungeon',
+    coordinates: { x: 220, y: -280 },  // Deep beneath catacombs (final boss area)
+    connections: ['catacombs']
   },
   'character-reflection': {
     id: 'character-reflection',
@@ -95,6 +164,7 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'Time seems to slow as you contemplate your journey and growth',
     description: 'A space of inner reflection where potential becomes power',
     locationType: 'wilderness',
+    // No coordinates - abstract/meta location for level-up
   },
   'victory-hall': {
     id: 'victory-hall',
@@ -103,6 +173,7 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'Golden light cascades through ancient windows, celebrating your victory',
     description: 'A sacred place where heroes are forged and legends are born',
     locationType: 'town',
+    // No coordinates - abstract/meta location for victory
   },
   'shadowed-end': {
     id: 'shadowed-end',
@@ -111,6 +182,7 @@ export const LOCATIONS: Record<string, Location> = {
     ambience: 'All light fades as consciousness slips away into endless shadow',
     description: 'The cold embrace of defeat, where all journeys end',
     locationType: 'dungeon',
+    // No coordinates - abstract/meta location for death
   },
 } as const;
 

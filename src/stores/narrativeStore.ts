@@ -141,6 +141,10 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
     };
 
     set({ world, conversation });
+
+    // Enter the first node to process its description and effects
+    // Character may not exist yet (created during character creation nodes)
+    get().enterNode(firstAct.startingNodeId, {} as Character);
   },
 
   setNavigationCallback: (callback) => {
@@ -208,9 +212,14 @@ export const useNarrativeStore = create<NarrativeStore>((set, get) => ({
       ...worldUpdates,
       currentNodeId: nodeId,
       currentActId: act?.id || world.currentActId,
+      currentLocationId: node.locationId || world.currentLocationId, // Update location when entering node with locationId
       visitedNodeIds: world.visitedNodeIds.includes(nodeId)
         ? world.visitedNodeIds
         : [...world.visitedNodeIds, nodeId],
+      // Unlock location if entering a node with locationId
+      unlockedLocations: node.locationId && !world.unlockedLocations.includes(node.locationId)
+        ? [...world.unlockedLocations, node.locationId]
+        : world.unlockedLocations,
     };
 
     // Update conversation state

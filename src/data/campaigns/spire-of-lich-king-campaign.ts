@@ -28,7 +28,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'create_character',
-                text: '⚔️ "I am a warrior, skilled in battle."',
+                text: '"I am a..."',
                 category: 'special',
                 outcome: {
                     type: 'characterCreation',
@@ -38,7 +38,7 @@ const act0Nodes: StoryNode[] = [
             },
             {
                 id: 'quick_character',
-                text: '⚡ Skip character creation (use default)',
+                text: 'Skip character creation (use default)',
                 category: 'special',
                 outcome: {
                     type: 'goto',
@@ -58,7 +58,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_village',
-                text: '→ Enter the village',
+                text: 'Enter the village',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'burning_village_entrance' }
             }
@@ -78,14 +78,14 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'talk_to_guard',
-                text: '💬 "What happened here?"',
+                text: '"What happened here?"',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'guard_report' }
             },
             {
                 id: 'intimidate_guard',
-                text: '💪 "Tell me everything. Now."',
-                displayText: '🎲 Intimidate DC 10: "Tell me everything. Now."',
+                text: '"Tell me everything. Now."',
+                displayText: 'Intimidate DC 10: "Tell me everything. Now."',
                 category: 'dialogue',
                 outcome: {
                     type: 'check',
@@ -113,7 +113,7 @@ const act0Nodes: StoryNode[] = [
             },
             {
                 id: 'explore_village',
-                text: '→ Explore the village',
+                text: 'Explore the village',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'village_investigation_hub' }
             }
@@ -129,7 +129,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'explore_village',
-                text: '→ Explore the village',
+                text: 'Explore the village',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'village_investigation_hub' }
             }
@@ -145,7 +145,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'explore_village',
-                text: '→ Explore the village',
+                text: 'Explore the village',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'village_investigation_hub' }
             }
@@ -166,31 +166,31 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'talk_innkeeper',
-                text: '💬 Talk to the innkeeper',
+                text: 'Talk to the innkeeper',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'innkeeper_dialogue' }
             },
             {
                 id: 'talk_blacksmith',
-                text: '💬 Talk to the blacksmith',
+                text: 'Talk to the blacksmith',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'blacksmith_dialogue' }
             },
             {
                 id: 'talk_militia',
-                text: '💬 Talk to the wounded militia',
+                text: 'Talk to the wounded militia',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'militia_dialogue' }
             },
             {
                 id: 'talk_mayor',
-                text: '💬 Talk to the mayor',
+                text: 'Talk to the mayor',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'mayor_dialogue' }
             },
             {
                 id: 'pursue_bandits',
-                text: '→ Pursue the bandits into the Blackwood',
+                text: 'Pursue the bandits into the Blackwood',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'blackwood_entrance' }
             }
@@ -294,8 +294,8 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'track_bandits',
-                text: '🎲 Follow the tracks carefully',
-                displayText: '🎲 Perception DC 12: Follow the tracks',
+                text: 'Follow the tracks carefully',
+                displayText: 'Perception DC 12: Follow the tracks',
                 category: 'skillCheck',
                 outcome: {
                     type: 'check',
@@ -307,7 +307,7 @@ const act0Nodes: StoryNode[] = [
             },
             {
                 id: 'rush_forward',
-                text: '→ Rush forward blindly',
+                text: 'Rush forward blindly',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'forest_encounter' }
             }
@@ -316,24 +316,24 @@ const act0Nodes: StoryNode[] = [
     {
         id: 'forest_encounter',
         title: 'Corrupted Wildlife',
-        description: 'You lose the trail in the thick undergrowth. Suddenly, a low growl echoes through the trees. A wolf emerges from the shadows - but something is wrong. Parts of its hide have rotted away, exposing bone beneath. Its eyes glow with an unnatural light.\n\nIt charges!',
+        description: 'You lose the trail in the thick undergrowth. Suddenly, a low growl echoes through the trees. A wolf emerges from the shadows... It charges!',
         locationId: 'blackwood-forest',
         type: 'combat',
         flavor: { tone: 'danger', icon: 'skull' },
         onEnter: [
-            { type: 'startCombat', enemyId: 'corrupted-wolf', onVictoryNodeId: 'after_wolf_combat' }
+            { type: 'startCombat', enemyId: 'wolf', onVictoryNodeId: 'after_wolf_combat' }
         ],
         choices: []
     },
     {
         id: 'after_wolf_combat',
         title: 'Strange Corruption',
-        description: 'The corrupted wolf falls, its body dissolving into ash. What manner of dark magic could cause such a transformation?\n\nAfter a moment of searching, you pick up the bandit trail again.',
+        description: 'The wolf falls, its body lying on the path.\n\nAfter a moment of searching, you step over the wolf and pick up the bandit trail again.',
         flavor: { tone: 'mysterious', icon: 'search' },
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue tracking',
+                text: 'Continue tracking',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'bandit_clearing' }
             }
@@ -351,7 +351,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Approach the clearing',
+                text: 'Approach the clearing',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'bandit_clearing' }
             }
@@ -384,8 +384,8 @@ const act0Nodes: StoryNode[] = [
             },
             {
                 id: 'intimidate_bandit',
-                text: '💪 "Talk, or I\'ll finish what the forest started."',
-                displayText: '🎲 Intimidate DC 13: Threaten the bandit',
+                text: '"Talk, or I\'ll finish what the forest started."',
+                displayText: 'Intimidate DC 13: Threaten the bandit',
                 category: 'dialogue',
                 outcome: {
                     type: 'check',
@@ -397,7 +397,7 @@ const act0Nodes: StoryNode[] = [
             },
             {
                 id: 'attack',
-                text: '⚔️ "I\'m here for justice."',
+                text: '"I\'m here for justice."',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
             }
@@ -419,7 +419,7 @@ const act0Nodes: StoryNode[] = [
             },
             {
                 id: 'attack',
-                text: '⚔️ "Time to face justice."',
+                text: '"Time to face justice."',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
             }
@@ -438,7 +438,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'attack',
-                text: '⚔️ End this',
+                text: 'End this',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
             }
@@ -458,7 +458,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'attack',
-                text: '⚔️ "Your crimes end here."',
+                text: '"Your crimes end here."',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
             }
@@ -474,7 +474,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'attack',
-                text: '⚔️ Attack',
+                text: 'Attack',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'bandit_combat' }
             }
@@ -523,7 +523,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'explore_area',
-                text: '→ Search the area',
+                text: 'Search the area',
                 category: 'exploration',
                 outcome: { type: 'goto', nodeId: 'find_the_elder' }
             }
@@ -577,7 +577,7 @@ const act0Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'arrive_oakhaven',
-                text: '→ Enter Oakhaven',
+                text: 'Enter Oakhaven',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'oakhaven_entrance' }
             }
@@ -645,7 +645,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue',
+                text: 'Continue',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'oakhaven_exploration_hub' }
             }
@@ -711,13 +711,13 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'find_magistrate',
-                text: '→ Seek out the magistrate',
+                text: 'Seek out the magistrate',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'magistrate_scene' }
             },
             {
                 id: 'prepare',
-                text: '→ Prepare for the journey',
+                text: 'Prepare for the journey',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'oakhaven_exploration_hub' }
             }
@@ -798,13 +798,13 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'to_tower',
-                text: '→ Journey to the tower',
+                text: 'Journey to the tower',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'journey_to_tower' }
             },
             {
                 id: 'prepare_more',
-                text: '→ Prepare first',
+                text: 'Prepare first',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'oakhaven_exploration_hub' }
             }
@@ -825,7 +825,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'proceed_carefully',
-                text: '→ Proceed carefully',
+                text: 'Proceed carefully',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'corrupted_encounter' }
             }
@@ -851,7 +851,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue to the tower',
+                text: 'Continue to the tower',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'tower_courtyard' }
             }
@@ -991,7 +991,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_tower',
-                text: '→ Enter the tower',
+                text: 'Enter the tower',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'act_1_complete' }
             },
@@ -1014,7 +1014,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_tower',
-                text: '→ Enter the tower',
+                text: 'Enter the tower',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'act_1_complete' }
             }
@@ -1032,7 +1032,7 @@ const act1Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_foyer',
-                text: '→ Enter the foyer',
+                text: 'Enter the foyer',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'tower_foyer' }
             }
@@ -1061,7 +1061,7 @@ const act2Nodes: StoryNode[] = [
             },
             {
                 id: 'proceed_hallway',
-                text: '→ Proceed down the hallway',
+                text: 'Proceed down the hallway',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'statue_hallway' }
             }
@@ -1095,8 +1095,8 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'stealth_through',
-                text: '🎲 Move silently through the hall',
-                displayText: '🎲 Stealth DC 14: Move silently',
+                text: 'Move silently through the hall',
+                displayText: 'Stealth DC 14: Move silently',
                 category: 'skillCheck',
                 outcome: {
                     type: 'check',
@@ -1108,7 +1108,7 @@ const act2Nodes: StoryNode[] = [
             },
             {
                 id: 'walk_normally',
-                text: '→ Walk through normally',
+                text: 'Walk through normally',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'trap_triggered' }
             }
@@ -1122,7 +1122,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue to the laboratory',
+                text: 'Continue to the laboratory',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'laboratory_entrance' }
             }
@@ -1139,7 +1139,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue, wounded',
+                text: 'Continue, wounded',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'laboratory_entrance' }
             }
@@ -1161,7 +1161,7 @@ const act2Nodes: StoryNode[] = [
             },
             {
                 id: 'fight_skeletons',
-                text: '⚔️ Engage the skeletons',
+                text: 'Engage the skeletons',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'skeleton_combat' }
             }
@@ -1178,7 +1178,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'fight_skeletons',
-                text: '⚔️ The skeletons notice you!',
+                text: 'The skeletons notice you!',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'skeleton_combat' }
             }
@@ -1235,7 +1235,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'descend',
-                text: '→ Descend to the catacombs',
+                text: 'Descend to the catacombs',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'act_2_transition' }
             }
@@ -1249,7 +1249,7 @@ const act2Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'enter_catacombs',
-                text: '→ Enter the catacombs',
+                text: 'Enter the catacombs',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'catacombs_entrance' }
             }
@@ -1272,7 +1272,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'follow_light',
-                text: '→ Follow the emerald light',
+                text: 'Follow the emerald light',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'maze_navigation_1' }
             },
@@ -1312,8 +1312,8 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'perception_check',
-                text: '🎲 Look for signs of passage',
-                displayText: '🎲 Perception DC 13: Find the correct path',
+                text: 'Look for signs of passage',
+                displayText: 'Perception DC 13: Find the correct path',
                 category: 'skillCheck',
                 outcome: {
                     type: 'check',
@@ -1325,7 +1325,7 @@ const act3Nodes: StoryNode[] = [
             },
             {
                 id: 'follow_instinct',
-                text: '→ Trust your instincts',
+                text: 'Trust your instincts',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'wraith_ambush' }
             }
@@ -1351,7 +1351,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue through the maze',
+                text: 'Continue through the maze',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'correct_path' }
             }
@@ -1365,7 +1365,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Continue deeper',
+                text: 'Continue deeper',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'ghoul_chamber' }
             }
@@ -1405,8 +1405,8 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'search_mechanism',
-                text: '🎲 Search for a mechanism',
-                displayText: '🎲 Perception DC 12: Find the trigger',
+                text: 'Search for a mechanism',
+                displayText: 'Perception DC 12: Find the trigger',
                 category: 'skillCheck',
                 outcome: {
                     type: 'check',
@@ -1418,7 +1418,7 @@ const act3Nodes: StoryNode[] = [
             },
             {
                 id: 'push_wall',
-                text: '💪 Try to push the wall',
+                text: 'Try to push the wall',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'secret_chamber' }
             }
@@ -1432,7 +1432,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'push_wall',
-                text: '💪 Push the wall',
+                text: 'Push the wall',
                 category: 'special',
                 outcome: { type: 'goto', nodeId: 'secret_chamber' }
             }
@@ -1467,7 +1467,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'descend',
-                text: '→ Descend to the Void Sanctum',
+                text: 'Descend to the Void Sanctum',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'void_sanctum_entrance' }
             },
@@ -1490,7 +1490,7 @@ const act3Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'ready',
-                text: '→ I am ready',
+                text: 'I am ready',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'void_sanctum_entrance' }
             }
@@ -1514,7 +1514,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'challenge',
-                text: '⚔️ "Your ritual ends here, Sorath!"',
+                text: '"Your ritual ends here, Sorath!"',
                 category: 'dialogue',
                 outcome: { type: 'goto', nodeId: 'sorath_response' }
             },
@@ -1535,7 +1535,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'fight',
-                text: '⚔️ Fight the minions!',
+                text: 'Fight the minions!',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'phase_1_minions' }
             }
@@ -1550,7 +1550,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'fight',
-                text: '⚔️ Fight!',
+                text: 'Fight!',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'phase_1_minions' }
             }
@@ -1577,7 +1577,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'fight_sorath',
-                text: '⚔️ Engage Sorath!',
+                text: 'Engage Sorath!',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'phase_2_lich_battle' }
             }
@@ -1613,7 +1613,7 @@ const act4Nodes: StoryNode[] = [
             },
             {
                 id: 'without_shard',
-                text: '⚔️ Try to destroy it without the Sun-Shard',
+                text: 'Try to destroy it without the Sun-Shard',
                 category: 'combat',
                 outcome: { type: 'goto', nodeId: 'phylactery_too_strong' }
             }
@@ -1648,7 +1648,7 @@ const act4Nodes: StoryNode[] = [
         choices: [
             {
                 id: 'victory',
-                text: '→ It is done',
+                text: 'It is done',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'epilogue_start' }
             }
@@ -1668,7 +1668,7 @@ const epilogueNodes: StoryNode[] = [
         choices: [
             {
                 id: 'continue',
-                text: '→ Return to the surface',
+                text: 'Return to the surface',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'tower_cleansed' }
             }
@@ -1707,7 +1707,7 @@ const epilogueNodes: StoryNode[] = [
             },
             {
                 id: 'leave_tower',
-                text: '→ Leave the tower behind',
+                text: 'Leave the tower behind',
                 category: 'movement',
                 outcome: { type: 'goto', nodeId: 'epilogue_ending' }
             }
@@ -1810,7 +1810,19 @@ export const spireOfLichKingCampaign: Campaign = {
     acts: [act0, act1, act2, act3, act4],
 
     // Phase 5: World & Exploration
-    locations: Object.values(LOCATIONS),
+    // Campaign locations in narrative order for grid menu
+    locations: [
+        LOCATIONS['crossroads'],         // Starting location - center of map
+        LOCATIONS['ashford'],            // First location - burned village (southwest)
+        LOCATIONS['blackwood-forest'],   // Forest with spreading corruption (northeast)
+        LOCATIONS['oakhaven'],           // Larger settlement with merchant (west)
+        LOCATIONS['old-watchtower'],     // Lich's tower dungeon (far northeast)
+        LOCATIONS['catacombs'],          // Labyrinth beneath the tower
+        LOCATIONS['void-sanctum'],       // Final boss chamber (deep beneath catacombs)
+        LOCATIONS['character-reflection'], // Meta: level-up location
+        LOCATIONS['victory-hall'],       // Meta: victory location
+        LOCATIONS['shadowed-end'],       // Meta: death location
+    ],
     startingLocationId: 'crossroads',
     initialUnlockedLocations: ['crossroads'],
 };
