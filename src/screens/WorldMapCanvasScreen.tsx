@@ -290,8 +290,13 @@ export function WorldMapCanvasScreen({
         </div>
         <OptionsMenu
           onViewCharacterSheet={onViewCharacterSheet}
-          onExit={onExit}
+          onViewMapGrid={() => onNavigate({ type: 'worldMap' })}
+          onViewMapLeaflet={() => onNavigate({ type: 'worldMapLeaflet' })}
           showMap={false}
+          showMapGrid={true}
+          showMapCanvas={false}
+          showMapLeaflet={true}
+          onExit={onExit}
         />
       </div>
 

@@ -13,6 +13,21 @@ interface OptionsMenuProps {
   onViewMap?: () => void;
 
   /**
+   * Callback when "View Map Grid" is clicked
+   */
+  onViewMapGrid?: () => void;
+
+  /**
+   * Callback when "View Map Canvas" is clicked
+   */
+  onViewMapCanvas?: () => void;
+
+  /**
+   * Callback when "View Map Leaflet" is clicked
+   */
+  onViewMapLeaflet?: () => void;
+
+  /**
    * Callback when "Save Game" is clicked
    */
   onSaveGame?: () => void;
@@ -38,6 +53,24 @@ interface OptionsMenuProps {
    * @default true
    */
   showMap?: boolean;
+
+  /**
+   * Whether to show the "View Map Grid" option
+   * @default false
+   */
+  showMapGrid?: boolean;
+
+  /**
+   * Whether to show the "View Map Canvas" option
+   * @default false
+   */
+  showMapCanvas?: boolean;
+
+  /**
+   * Whether to show the "View Map Leaflet" option
+   * @default false
+   */
+  showMapLeaflet?: boolean;
 
   /**
    * Whether to show the "Save Game" option
@@ -71,11 +104,17 @@ interface OptionsMenuProps {
 export function OptionsMenu({
   onViewCharacterSheet,
   onViewMap,
+  onViewMapGrid,
+  onViewMapCanvas,
+  onViewMapLeaflet,
   onSaveGame,
   onExit,
   onRetreat,
   showCharacterSheet = true,
   showMap = true,
+  showMapGrid = false,
+  showMapCanvas = false,
+  showMapLeaflet = false,
   showSaveGame = true,
   showRetreat = false,
 }: OptionsMenuProps) {
@@ -140,6 +179,39 @@ export function OptionsMenu({
             >
               <Icon name="Map" size={20} className="text-player" />
               <span>View Map</span>
+            </button>
+          )}
+
+          {/* View Map Grid Option */}
+          {showMapGrid && onViewMapGrid && (
+            <button
+              onClick={() => handleMenuItemClick(onViewMapGrid)}
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
+            >
+              <Icon name="LayoutGrid" size={20} className="text-purple-400" />
+              <span>Map: Grid Menu</span>
+            </button>
+          )}
+
+          {/* View Map Canvas Option */}
+          {showMapCanvas && onViewMapCanvas && (
+            <button
+              onClick={() => handleMenuItemClick(onViewMapCanvas)}
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
+            >
+              <Icon name="PenTool" size={20} className="text-blue-400" />
+              <span>Map: Canvas POC</span>
+            </button>
+          )}
+
+          {/* View Map Leaflet Option */}
+          {showMapLeaflet && onViewMapLeaflet && (
+            <button
+              onClick={() => handleMenuItemClick(onViewMapLeaflet)}
+              className="w-full flex items-center gap-3 px-4 py-3 min-h-[44px] text-left body-primary text-fg-primary bg-secondary hover:bg-slate-700 transition-colors border-b border-border-default"
+            >
+              <Icon name="MapPin" size={20} className="text-green-400" />
+              <span>Map: Leaflet POC</span>
             </button>
           )}
 
