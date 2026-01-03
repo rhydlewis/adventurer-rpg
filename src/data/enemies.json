@@ -493,5 +493,253 @@
       "onLowHealth": ["*wounded but defiant*", "*makes one final charge*"]
     },
     "lootTableId": "boar_loot"
+  },
+  "corrupted-wolf": {
+    "id": "corrupted-wolf",
+    "baseName": "Corrupted Wolf",
+    "creatureClass": "Undead",
+    "avatarPaths": ["Werewolf"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 11, "max": 13 },
+      "DEX": { "min": 12, "max": 14 },
+      "CON": { "min": 10, "max": 12 },
+      "INT": { "min": 2, "max": 3 },
+      "WIS": { "min": 10, "max": 12 },
+      "CHA": { "min": 4, "max": 6 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weaponId": "bite",
+      "armorId": "natural-armor",
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 2,
+      "Stealth": 4,
+      "Perception": 3,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*unnatural growling*", "*rotting flesh exposed on bone*", "*eyes glow with unholy light*"],
+      "onPlayerMiss": ["*dodges with twisted agility*", "*corrupted snarl*"],
+      "onEnemyHit": ["*diseased fangs tear flesh*", "*claws dripping with corruption*"],
+      "onLowHealth": ["*body dissolving into ash*", "*final corrupted howl*"]
+    },
+    "lootTableId": "zombie_loot"
+  },
+  "corrupted-vines": {
+    "id": "corrupted-vines",
+    "baseName": "Corrupted Vines",
+    "creatureClass": "Beast",
+    "avatarPaths": ["Spider"],
+    "levelRange": { "min": 2, "max": 2 },
+    "attributeRanges": {
+      "STR": { "min": 13, "max": 15 },
+      "DEX": { "min": 8, "max": 10 },
+      "CON": { "min": 14, "max": 16 },
+      "INT": { "min": 1, "max": 1 },
+      "WIS": { "min": 8, "max": 10 },
+      "CHA": { "min": 1, "max": 1 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weaponId": "slam",
+      "armorId": "natural-armor",
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 4,
+      "Stealth": 2,
+      "Perception": 0,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*writhing tendrils lash out*", "*vines twist unnaturally*", "*thorns drip with dark ichor*"],
+      "onPlayerMiss": ["*vines recoil and strike*", "*thorny mass shifts*"],
+      "onEnemyHit": ["*constricting grasp*", "*thorns pierce flesh*"],
+      "onLowHealth": ["*vines wither and blacken*", "*turns to ash and decay*"]
+    },
+    "lootTableId": "spider_loot"
+  },
+  "skeleton-mage": {
+    "id": "skeleton-mage",
+    "baseName": "Skeleton Mage",
+    "creatureClass": "Undead",
+    "avatarPaths": ["Skeleton"],
+    "levelRange": { "min": 3, "max": 4 },
+    "attributeRanges": {
+      "STR": { "min": 8, "max": 10 },
+      "DEX": { "min": 13, "max": 15 },
+      "CON": { "min": 12, "max": 14 },
+      "INT": { "min": 16, "max": 18 },
+      "WIS": { "min": 12, "max": 14 },
+      "CHA": { "min": 6, "max": 8 }
+    },
+    "baseClass": "Wizard",
+    "equipment": {
+      "weaponId": null,
+      "armorId": null,
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 2,
+      "Perception": 3,
+      "Arcana": 8,
+      "Medicine": 0,
+      "Intimidate": 4
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*staff crackles with dark energy*", "My master's knowledge flows through me!", "*begins channeling necromantic power*"],
+      "onPlayerMiss": ["*phases through the attack*", "Your blade means nothing!", "*bones rattle mockingly*"],
+      "onEnemyHit": ["*necrotic energy burns*", "Feel the lich's power!", "*dark magic lashes out*"],
+      "onLowHealth": ["*bones begin to crumble*", "The master... will avenge...", "*spell fizzles and fails*"]
+    },
+    "lootTableId": "skeleton_loot",
+    "spellIds": ["ray_of_frost", "paralyzing_touch"]
+  },
+  "ghoul": {
+    "id": "ghoul",
+    "baseName": "Ghoul",
+    "creatureClass": "Undead",
+    "avatarPaths": ["Zombie"],
+    "levelRange": { "min": 3, "max": 4 },
+    "attributeRanges": {
+      "STR": { "min": 13, "max": 15 },
+      "DEX": { "min": 14, "max": 16 },
+      "CON": { "min": 12, "max": 14 },
+      "INT": { "min": 6, "max": 8 },
+      "WIS": { "min": 10, "max": 12 },
+      "CHA": { "min": 5, "max": 7 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weaponId": "bite",
+      "armorId": "natural-armor",
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 3,
+      "Stealth": 4,
+      "Perception": 2,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 2
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*hungry shriek*", "*flesh-hunger burns in dead eyes*", "*lunges with paralyzing claws*"],
+      "onPlayerMiss": ["*dodges with unnatural speed*", "*cackles with manic glee*"],
+      "onEnemyHit": ["*rends with paralytic claws*", "*sinks teeth into flesh*"],
+      "onLowHealth": ["*desperate, feral attacks*", "*retreats into shadows*"]
+    },
+    "lootTableId": "zombie_loot"
+  },
+  "sorath-lich": {
+    "id": "sorath-lich",
+    "baseName": "Sorath the Lich",
+    "creatureClass": "Undead",
+    "avatarPaths": ["Lich"],
+    "levelRange": { "min": 5, "max": 7 },
+    "attributeRanges": {
+      "STR": { "min": 10, "max": 12 },
+      "DEX": { "min": 16, "max": 18 },
+      "CON": { "min": 16, "max": 18 },
+      "INT": { "min": 18, "max": 20 },
+      "WIS": { "min": 14, "max": 16 },
+      "CHA": { "min": 16, "max": 18 }
+    },
+    "baseClass": "Wizard",
+    "equipment": {
+      "weaponId": null,
+      "armorId": "natural-armor",
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 0,
+      "Stealth": 3,
+      "Perception": 8,
+      "Arcana": 12,
+      "Medicine": 0,
+      "Intimidate": 8
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["You dare challenge centuries of dark mastery?", "*emerald fire burns in eye sockets*", "Your soul shall complete my ritual!"],
+      "onPlayerMiss": ["Pathetic mortal!", "*ice shards deflect the blow*", "Is that the best you can muster?"],
+      "onEnemyHit": ["*necrotic energy withers flesh*", "Feel the void's embrace!", "*paralytic cold spreads*"],
+      "onLowHealth": ["My phylactery ensures my return!", "This vessel means nothing!", "*begins reformation ritual*"]
+    },
+    "lootTableId": "lich_loot",
+    "spellIds": ["ray_of_frost", "paralyzing_touch", "thunderwave"]
+  },
+  "wolf": {
+    "id": "wolf",
+    "baseName": "Wolf",
+    "creatureClass": "Beast",
+    "avatarPaths": ["Wolf"],
+    "levelRange": { "min": 1, "max": 1 },
+    "attributeRanges": {
+      "STR": { "min": 9, "max": 11 },
+      "DEX": { "min": 10, "max": 13 },
+      "CON": { "min": 9, "max": 12 },
+      "INT": { "min": 2, "max": 3 },
+      "WIS": { "min": 7, "max": 9 },
+      "CHA": { "min": 4, "max": 6 }
+    },
+    "baseClass": "Fighter",
+    "equipment": {
+      "weaponId": "bite",
+      "armorId": "natural-armor",
+      "shield": {
+        "equipped": false,
+        "acBonus": 0
+      },
+      "items": []
+    },
+    "skills": {
+      "Athletics": 2,
+      "Stealth": 3,
+      "Perception": 2,
+      "Arcana": 0,
+      "Medicine": 0,
+      "Intimidate": 0
+    },
+    "feats": [],
+    "taunts": {
+      "onCombatStart": ["*growl*", "*eyes glow*"],
+      "onPlayerMiss": ["*dodges with agility*", "*snarl*"],
+      "onEnemyHit": ["*fangs tear flesh*", "*claws dripping with blood*"],
+      "onLowHealth": ["*whimper*", "*final howl*"]
+    },
+    "lootTableId": "wolf_loot"
   }
 }
