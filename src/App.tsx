@@ -10,6 +10,7 @@ import { StoryScreen } from './screens';
 import { ChooseCampaignScreen } from './screens';
 import { WorldMapScreen } from './screens';
 import { WorldMapCanvasScreen } from './screens';
+import { WorldMapLeafletScreen } from './screens';
 import { LocationHubScreen } from './screens/LocationHubScreen';
 import { useCharacterStore } from './stores/characterStore';
 import { useNarrativeStore } from './stores/narrativeStore';
@@ -240,6 +241,11 @@ function App() {
       }
 
       if (screen === 'worldMapCanvas') {
+        navigateBack();
+        return;
+      }
+
+      if (screen === 'worldMapLeaflet') {
         navigateBack();
         return;
       }
@@ -488,6 +494,13 @@ function App() {
       )}
       {currentScreen.type === 'worldMapCanvas' && (
         <WorldMapCanvasScreen
+          onNavigate={(screen) => setCurrentScreen(screen as Screen)}
+          onViewCharacterSheet={character ? handleViewSheet : undefined}
+          onExit={() => setCurrentScreen({ type: 'mainMenu' })}
+        />
+      )}
+      {currentScreen.type === 'worldMapLeaflet' && (
+        <WorldMapLeafletScreen
           onNavigate={(screen) => setCurrentScreen(screen as Screen)}
           onViewCharacterSheet={character ? handleViewSheet : undefined}
           onExit={() => setCurrentScreen({ type: 'mainMenu' })}
