@@ -1,7 +1,8 @@
 import { useNarrativeStore } from '../stores/narrativeStore';
-import { OptionsMenu } from '../components';
+import { OptionsMenu, LocationMarker } from '../components';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
+import { canTravelToLocation } from '../utils/worldMap';
 
 interface WorldMapLeafletScreenProps {
   onNavigate: (screen: { type: string; [key: string]: unknown }) => void;
@@ -10,6 +11,7 @@ interface WorldMapLeafletScreenProps {
 }
 
 export function WorldMapLeafletScreen({
+  onNavigate,
   onViewCharacterSheet,
   onExit,
 }: WorldMapLeafletScreenProps) {
@@ -81,6 +83,33 @@ export function WorldMapLeafletScreen({
         >
           {/* Blank tile layer - no actual tiles */}
           <TileLayer url="" />
+
+          {/* Location Markers */}
+          {locationsWithCoords.map((location) => {
+            const isUnlocked = canTravelToLocation(world, location.id);
+            const isCurrent = world.currentLocationId === location.id;
+
+            // In Simple CRS, position is [y, x]
+            const position: L.LatLngExpression = [
+              location.coordinates!.y,
+              location.coordinates!.x,
+            ];
+
+            return (
+              <LocationMarker
+                key={location.id}
+                position={position}
+                name={location.name}
+                isUnlocked={isUnlocked}
+                isCurrent={isCurrent}
+                onClick={() => {
+                  if (isUnlocked) {
+                    onNavigate({ type: 'locationHub', locationId: location.id });
+                  }
+                }}
+              />
+            );
+          })}
         </MapContainer>
       </div>
     </div>
